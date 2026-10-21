@@ -48,7 +48,7 @@ struct AboutScreen: View {
             Section {
                 Link(destination: Self.sourceURL) {
                     Label {
-                        Text(verbatim: "github.com/r4topunk/boar-ios-app")
+                        Text(verbatim: "github.com/sopa-agency/boar-ios-app")
                     } icon: {
                         Image(systemName: "chevron.left.forwardslash.chevron.right")
                     }
@@ -92,5 +92,5 @@ struct AboutScreen: View {
     }
 
     // A constant, valid URL literal.
-    private static let sourceURL = URL(string: "https://github.com/r4topunk/boar-ios-app") ?? URL.homeDirectory
+    private static let sourceURL = URL(string: "https://github.com/sopa-agency/boar-ios-app") ?? URL.homeDirectory
 }
