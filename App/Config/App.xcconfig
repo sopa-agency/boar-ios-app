@@ -1,0 +1,4 @@
+// Shared build settings for the Boar app target.
+// The signing team lives in the git-ignored Local.xcconfig at the repo root:
+//   DEVELOPMENT_TEAM = ABCDE12345
+#include? "../../Local.xcconfig"

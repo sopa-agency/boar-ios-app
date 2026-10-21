@@ -1,0 +1,1565 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "\"%@\" and its messages are deleted from this iPhone." : {
+
+    },
+    "\"%@\" has no text BOAR could read." : {
+
+    },
+    "\"%@\" is password-protected. Password-protected PDFs aren't supported." : {
+
+    },
+    "%@ %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ %2$@"
+          }
+        }
+      }
+    },
+    "%@ %@ · %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ %2$@ · %3$@"
+          }
+        }
+      }
+    },
+    "%@ Deep Research splits your question into parts. Slower." : {
+
+    },
+    "%@ Recommended" : {
+
+    },
+    "%@ closed BOAR while loading because this iPhone ran out of memory, so BOAR is answering with %@." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ closed BOAR while loading because this iPhone ran out of memory, so BOAR is answering with %2$@."
+          }
+        }
+      }
+    },
+    "%@ closed BOAR while loading because this iPhone ran out of memory. Pick a smaller model." : {
+
+    },
+    "%@ couldn't be loaded" : {
+
+    },
+    "%@ of %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ of %2$@"
+          }
+        }
+      }
+    },
+    "%@ page %lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ page %2$lld"
+          }
+        }
+      }
+    },
+    "%@ to download" : {
+
+    },
+    "%@ tok/s" : {
+
+    },
+    "%@ tok/s (~%lld words/s)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ tok/s (~%2$lld words/s)"
+          }
+        }
+      }
+    },
+    "%@ was added to Models. Download it from there." : {
+
+    },
+    "%@ · %@ downloads" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ · %2$@ downloads"
+          }
+        }
+      }
+    },
+    "%@ · %@ tok/s" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ · %2$@ tok/s"
+          }
+        }
+      }
+    },
+    "%@ · on this iPhone" : {
+
+    },
+    "%@, Deep Research on" : {
+
+    },
+    "%lld (%lld performance)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld (%2$lld performance)"
+          }
+        }
+      }
+    },
+    "%lld min" : {
+
+    },
+    "%lld of %lld articles" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld of %2$lld articles"
+          }
+        }
+      }
+    },
+    "1,000 common topics" : {
+
+    },
+    "4,000 topics" : {
+
+    },
+    "50,000 article intros" : {
+
+    },
+    "A research step took too long and was cut short" : {
+
+    },
+    "About" : {
+
+    },
+    "About %@ left" : {
+
+    },
+    "About %lld tokens per second" : {
+
+    },
+    "Accurate" : {
+
+    },
+    "Adaptive Routing" : {
+
+    },
+    "Adaptive local intelligence" : {
+
+    },
+    "Adaptive routing produced no answer: %@" : {
+
+    },
+    "Add" : {
+
+    },
+    "Add %@" : {
+
+    },
+    "Add files or photos of pages. BOAR reads them on this iPhone and never uploads them." : {
+
+    },
+    "Adds 50,000 Wikipedia article intros" : {
+
+    },
+    "Adjusted for this iPhone: %@." : {
+
+    },
+    "Advanced" : {
+
+    },
+    "Already on this iPhone" : {
+
+    },
+    "Answer Engine" : {
+
+    },
+    "Answer Length" : {
+
+    },
+    "Answer Model" : {
+
+    },
+    "Answer Style" : {
+
+    },
+    "Answer model" : {
+
+    },
+    "Answered" : {
+
+    },
+    "Answered in %@" : {
+
+    },
+    "Answered in %@ at %@ tokens per second" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Answered in %1$@ at %2$@ tokens per second"
+          }
+        }
+      }
+    },
+    "Answering…" : {
+
+    },
+    "Answers" : {
+
+    },
+    "Answers are AI-generated from the sources BOAR finds on this iPhone. They are not reviewed by clinicians or experts." : {
+
+    },
+    "Answers can cite it by this name." : {
+
+    },
+    "Answers come from models and a library on this iPhone. No internet needed." : {
+
+    },
+    "Answers come from your library, right on this iPhone." : {
+
+    },
+    "Answers will be %@" : {
+
+    },
+    "Answers with this model from now on" : {
+
+    },
+    "Any" : {
+
+    },
+    "Anyone who can open your iPhone can read your chats in BOAR." : {
+
+    },
+    "Appearance" : {
+
+    },
+    "Apple Intelligence" : {
+
+    },
+    "Apple on-device model" : {
+
+    },
+    "Ask" : {
+
+    },
+    "Ask Again" : {
+
+    },
+    "Ask BOAR" : {
+
+    },
+    "Ask BOAR ${question}" : {
+
+    },
+    "Ask with Deep Research" : {
+
+    },
+    "Asks BOAR. %@." : {
+
+    },
+    "Auto" : {
+
+    },
+    "Auto (%@)" : {
+
+    },
+    "Auto (%lld min)" : {
+
+    },
+    "Auto (Mapped)" : {
+
+    },
+    "Auto (Off)" : {
+
+    },
+    "Auto (On)" : {
+
+    },
+    "Auto (Recommended)" : {
+
+    },
+    "Auto fits the answer style (up to %lld tokens now). Shorter is faster. Adaptive Routing picks the best installed model for each question." : {
+
+    },
+    "Auto is what we measured best on real phones; anything you set wins. Changes apply from the next answer." : {
+
+    },
+    "Auto maps the model from storage. Repacking reads prompts about 2× faster. After a load that ran out of memory, the next one keeps the weights mapped." : {
+
+    },
+    "Available" : {
+
+    },
+    "BOAR" : {
+
+    },
+    "BOAR couldn't open its library" : {
+
+    },
+    "BOAR is locked" : {
+
+    },
+    "BOAR needs the microphone for dictation. Allow it in Settings → Privacy & Security → Microphone." : {
+
+    },
+    "BOAR writes its answers with this model, right on your iPhone. You can change it later in Models." : {
+
+    },
+    "Back" : {
+
+    },
+    "Back to the App" : {
+
+    },
+    "Battery Saver" : {
+
+    },
+    "Benchmark" : {
+
+    },
+    "Benchmark Runs" : {
+
+    },
+    "Better explanations, a little slower" : {
+
+    },
+    "Bigger models can answer better but need more memory." : {
+
+    },
+    "Built into iOS, nothing to download" : {
+
+    },
+    "CPU" : {
+
+    },
+    "Cancel" : {
+
+    },
+    "Cancel Download" : {
+
+    },
+    "Cancel Import" : {
+
+    },
+    "Cancelled" : {
+
+    },
+    "Chat History Cleared" : {
+
+    },
+    "Chat Memory" : {
+
+    },
+    "Chats" : {
+
+    },
+    "Chats are encrypted and open only after %@." : {
+
+    },
+    "Checking…" : {
+
+    },
+    "Checks your models and library again." : {
+
+    },
+    "Choose a Smaller Package" : {
+
+    },
+    "Choose how BOAR answers" : {
+
+    },
+    "Clear Chat History" : {
+
+    },
+    "Clear all chat history?" : {
+
+    },
+    "Compact general model" : {
+
+    },
+    "Compare models on your iPhone in Settings, Advanced, Benchmark." : {
+
+    },
+    "Context Size" : {
+
+    },
+    "Continue" : {
+
+    },
+    "Cool Down" : {
+
+    },
+    "Cooler and easier on the battery. Slower answers." : {
+
+    },
+    "Copy" : {
+
+    },
+    "Core topics for everyday questions" : {
+
+    },
+    "Couldn't prepare the library" : {
+
+    },
+    "Couldn't read \"%@\"." : {
+
+    },
+    "Custom" : {
+
+    },
+    "Custom: your own settings below. Pick a preset to start over from it." : {
+
+    },
+    "Dark" : {
+
+    },
+    "Deep Research" : {
+
+    },
+    "Delete" : {
+
+    },
+    "Delete %@?" : {
+
+    },
+    "Delete Model" : {
+
+    },
+    "Delete this chat?" : {
+
+    },
+    "Delete this collection?" : {
+
+    },
+    "Deleted %@" : {
+
+    },
+    "Details" : {
+
+    },
+    "Dictate" : {
+
+    },
+    "Dictation" : {
+
+    },
+    "Dictation isn't available on this iPhone." : {
+
+    },
+    "Dismiss" : {
+
+    },
+    "Document" : {
+
+    },
+    "Documents" : {
+
+    },
+    "Done" : {
+
+    },
+    "Download" : {
+
+    },
+    "Download %@" : {
+
+    },
+    "Download an answer model in Models first." : {
+
+    },
+    "Download an answer model to start asking questions." : {
+
+    },
+    "Download failed" : {
+
+    },
+    "Downloaded Model" : {
+
+    },
+    "Downloaded Model answers with the model you chose in Models. Apple Intelligence uses Apple's built-in model on iPhones that have it." : {
+
+    },
+    "Downloading" : {
+
+    },
+    "Downloading the speech model" : {
+
+    },
+    "Downloading…" : {
+
+    },
+    "Downloads not moving? Restarting keeps the bytes already on the iPhone." : {
+
+    },
+    "Edit Before Asking" : {
+
+    },
+    "Encyclopedia" : {
+
+    },
+    "Engine" : {
+
+    },
+    "Engine Tweaks" : {
+
+    },
+    "English Speech Model" : {
+
+    },
+    "Erase All Data" : {
+
+    },
+    "Erase Chats" : {
+
+    },
+    "Erase Chats and Turn Off the Lock" : {
+
+    },
+    "Erase all chats?" : {
+
+    },
+    "Erase all data?" : {
+
+    },
+    "Erasing…" : {
+
+    },
+    "Essentials" : {
+
+    },
+    "Evaluation" : {
+
+    },
+    "Every answer lists the passages behind it." : {
+
+    },
+    "Every saved chat and message on this iPhone is deleted. Models, documents and settings stay." : {
+
+    },
+    "Every saved chat is deleted. Models, documents and settings stay." : {
+
+    },
+    "Everything downloads once, together with the answer model. Then BOAR works offline." : {
+
+    },
+    "Everything runs offline from now on." : {
+
+    },
+    "Export" : {
+
+    },
+    "Extended" : {
+
+    },
+    "Face ID" : {
+
+    },
+    "Failed" : {
+
+    },
+    "Fast" : {
+
+    },
+    "Fastest" : {
+
+    },
+    "Fastest. A few short paragraphs, straight to the point." : {
+
+    },
+    "Find More Models" : {
+
+    },
+    "Finds the right passages in your library" : {
+
+    },
+    "Fits this iPhone" : {
+
+    },
+    "Flash Attention" : {
+
+    },
+    "For a hot iPhone. The slowest answers." : {
+
+    },
+    "Found ^[%lld source](inflect: true)" : {
+
+    },
+    "Free Space" : {
+
+    },
+    "Free Storage" : {
+
+    },
+    "Free on iPhone" : {
+
+    },
+    "Gemma 4" : {
+
+    },
+    "Generate Chat Titles" : {
+
+    },
+    "Get Started" : {
+
+    },
+    "Google's on-device model, needs a big iPhone" : {
+
+    },
+    "Haptics" : {
+
+    },
+    "Haptics tap when you send and when an answer finishes. Text size follows your iPhone's Dynamic Type setting." : {
+
+    },
+    "Helpful" : {
+
+    },
+    "Hides the details" : {
+
+    },
+    "How BOAR Answers" : {
+
+    },
+    "Hugging Face" : {
+
+    },
+    "Hugging Face answered %lld" : {
+
+    },
+    "Hugging Face sent an unexpected answer." : {
+
+    },
+    "Import" : {
+
+    },
+    "Import Files" : {
+
+    },
+    "Import failed: %@" : {
+
+    },
+    "Imported %@" : {
+
+    },
+    "In Memory" : {
+
+    },
+    "In Use" : {
+
+    },
+    "In use" : {
+
+    },
+    "Installed" : {
+
+    },
+    "Installing" : {
+
+    },
+    "KV Cache" : {
+
+    },
+    "Keep %lld Recent Turns" : {
+
+    },
+    "Keeps the words heard so far" : {
+
+    },
+    "Keychain error %d" : {
+
+    },
+    "Knowledge" : {
+
+    },
+    "LFM 8B" : {
+
+    },
+    "Large" : {
+
+    },
+    "Last Benchmark" : {
+
+    },
+    "Library" : {
+
+    },
+    "Licence" : {
+
+    },
+    "Light" : {
+
+    },
+    "Load More" : {
+
+    },
+    "Loaded the model" : {
+
+    },
+    "Loading" : {
+
+    },
+    "Loading more…" : {
+
+    },
+    "Loading the model" : {
+
+    },
+    "Loading the model…" : {
+
+    },
+    "Loading…" : {
+
+    },
+    "Lock with %@" : {
+
+    },
+    "Locked Chat" : {
+
+    },
+    "Long" : {
+
+    },
+    "Long chats keep their context: older turns are condensed and the most recent ones stay word for word." : {
+
+    },
+    "Mapped + Locked" : {
+
+    },
+    "Match" : {
+
+    },
+    "May be slow on this iPhone" : {
+
+    },
+    "Measure It Yourself" : {
+
+    },
+    "Medium" : {
+
+    },
+    "Memory" : {
+
+    },
+    "Memory Budget" : {
+
+    },
+    "Memory in Use" : {
+
+    },
+    "Micro-Batch" : {
+
+    },
+    "Model" : {
+
+    },
+    "Model %lld of %lld · Question %lld of %lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Model %1$lld of %2$lld · Question %3$lld of %4$lld"
+          }
+        }
+      }
+    },
+    "Model Page" : {
+
+    },
+    "Models" : {
+
+    },
+    "Models run on this iPhone. BOAR uses one at a time." : {
+
+    },
+    "Models to Test" : {
+
+    },
+    "More" : {
+
+    },
+    "More threads than performance cores is usually slower. Answers are written on the GPU where possible." : {
+
+    },
+    "Most Downloaded" : {
+
+    },
+    "Most Liked" : {
+
+    },
+    "Name" : {
+
+    },
+    "Name This Collection" : {
+
+    },
+    "Needed once for dictation" : {
+
+    },
+    "Needs %@ more free space" : {
+
+    },
+    "Needs a Bigger iPhone" : {
+
+    },
+    "Needs an iPhone with Apple Intelligence" : {
+
+    },
+    "New Chat" : {
+
+    },
+    "New chats are named from your first message. Older chats are removed past the limit." : {
+
+    },
+    "Newest" : {
+
+    },
+    "No Answer Model" : {
+
+    },
+    "No Answer Models" : {
+
+    },
+    "No Collections Yet" : {
+
+    },
+    "No Limit" : {
+
+    },
+    "No answer model" : {
+
+    },
+    "No answer model is installed." : {
+
+    },
+    "No answer model is installed. Download one in Models." : {
+
+    },
+    "No files BOAR can use in this model." : {
+
+    },
+    "No internet needed for this part." : {
+
+    },
+    "No matching sources" : {
+
+    },
+    "No text was found in the photos." : {
+
+    },
+    "Not Helpful" : {
+
+    },
+    "Not checked by BOAR. Look at the model's page for its licence before you use it." : {
+
+    },
+    "Nothing here leaves your iPhone." : {
+
+    },
+    "Now answering with %@" : {
+
+    },
+    "Now answering with Apple Intelligence" : {
+
+    },
+    "Off" : {
+
+    },
+    "Offline research assistant" : {
+
+    },
+    "On" : {
+
+    },
+    "On This iPhone" : {
+
+    },
+    "On-device dictation isn't available on this iPhone." : {
+
+    },
+    "Once it's set up, every answer is made offline." : {
+
+    },
+    "Open BOAR" : {
+
+    },
+    "Open Full Article" : {
+
+    },
+    "Open Models" : {
+
+    },
+    "Open Source" : {
+
+    },
+    "Opening BOAR" : {
+
+    },
+    "Opens BOAR on a new chat and starts answering your question with the models and library on this iPhone." : {
+
+    },
+    "Opens in Safari. Needs internet." : {
+
+    },
+    "Optic ID" : {
+
+    },
+    "Other Models" : {
+
+    },
+    "Packs add knowledge BOAR can search offline. Wikipedia text is CC BY-SA 4.0." : {
+
+    },
+    "Passage" : {
+
+    },
+    "Passcode" : {
+
+    },
+    "Performance Details" : {
+
+    },
+    "Phi 3.5 Mini" : {
+
+    },
+    "Photo %lld couldn't be read." : {
+
+    },
+    "Photos of Pages" : {
+
+    },
+    "Preparing Library" : {
+
+    },
+    "Preparing for search…" : {
+
+    },
+    "Preparing for search… %lld of %lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Preparing for search… %1$lld of %2$lld"
+          }
+        }
+      }
+    },
+    "Preparing the library for search…" : {
+
+    },
+    "Preset" : {
+
+    },
+    "Privacy" : {
+
+    },
+    "Private by design" : {
+
+    },
+    "Processor Cores" : {
+
+    },
+    "Progress" : {
+
+    },
+    "Prompt Batch" : {
+
+    },
+    "Prompt Threads" : {
+
+    },
+    "Q8_0 and Q4_0 use less memory for the KV cache; on some phones Q8_0 with flash attention generates slower." : {
+
+    },
+    "Question" : {
+
+    },
+    "Question copied to the input" : {
+
+    },
+    "Question set %@ · BOAR %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Question set %1$@ · BOAR %2$@"
+          }
+        }
+      }
+    },
+    "Quick answers, light on memory" : {
+
+    },
+    "Qwen 7B" : {
+
+    },
+    "Rated Helpful" : {
+
+    },
+    "Rated Not Helpful" : {
+
+    },
+    "Reading files…" : {
+
+    },
+    "Reading sources" : {
+
+    },
+    "Ready" : {
+
+    },
+    "Ready to search" : {
+
+    },
+    "Recognizing text…" : {
+
+    },
+    "Remove" : {
+
+    },
+    "Remove from List" : {
+
+    },
+    "Remove from the list?" : {
+
+    },
+    "Rename" : {
+
+    },
+    "Rename Chat" : {
+
+    },
+    "Repacking" : {
+
+    },
+    "Researched ^[%lld sub-question](inflect: true)" : {
+
+    },
+    "Reset All to Auto" : {
+
+    },
+    "Reset Settings" : {
+
+    },
+    "Reset Settings and Erase All Data reopen setup." : {
+
+    },
+    "Reset all settings?" : {
+
+    },
+    "Restart Downloads" : {
+
+    },
+    "Results" : {
+
+    },
+    "Retrieval" : {
+
+    },
+    "Retry Download" : {
+
+    },
+    "Run Benchmark" : {
+
+    },
+    "Run Setup Again" : {
+
+    },
+    "Runs on your iPhone" : {
+
+    },
+    "Saved Chats" : {
+
+    },
+    "Saved Chats to Keep" : {
+
+    },
+    "Saved to %@." : {
+
+    },
+    "Scanned Pages" : {
+
+    },
+    "Search Model" : {
+
+    },
+    "Search models" : {
+
+    },
+    "Searched ^[%lld source](inflect: true) · %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Searched ^[%1$lld source](inflect: true) · %2$@"
+          }
+        }
+      }
+    },
+    "Searched your library" : {
+
+    },
+    "Searching" : {
+
+    },
+    "Searching your library…" : {
+
+    },
+    "Searching…" : {
+
+    },
+    "Send" : {
+
+    },
+    "Set a passcode for this iPhone in Settings to use the lock." : {
+
+    },
+    "Set a passcode for your iPhone in the Settings app to lock BOAR." : {
+
+    },
+    "Settings" : {
+
+    },
+    "Settings go back to their defaults and setup opens again. Your models, packs, chats, documents and the lock are kept." : {
+
+    },
+    "Setup finished. BOAR is ready." : {
+
+    },
+    "Share" : {
+
+    },
+    "Share Results" : {
+
+    },
+    "Share as CSV" : {
+
+    },
+    "Share as JSONL" : {
+
+    },
+    "Short" : {
+
+    },
+    "Show Technical Details" : {
+
+    },
+    "Shows its sources" : {
+
+    },
+    "Shows performance details" : {
+
+    },
+    "Shows the details and the answer" : {
+
+    },
+    "Shows the model's details" : {
+
+    },
+    "Shows the passage BOAR read" : {
+
+    },
+    "Shows timings and speed under each answer." : {
+
+    },
+    "Size" : {
+
+    },
+    "Small" : {
+
+    },
+    "Sort" : {
+
+    },
+    "Source %lld" : {
+
+    },
+    "Source %lld: %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Source %1$lld: %2$@"
+          }
+        }
+      }
+    },
+    "Source code, model lists and the scripts that build the offline library." : {
+
+    },
+    "Speak your question; it's transcribed on this iPhone" : {
+
+    },
+    "Speech is recognized on your iPhone. The audio never leaves it." : {
+
+    },
+    "Speed" : {
+
+    },
+    "Speed on Phones" : {
+
+    },
+    "Split into ^[%lld sub-question](inflect: true)" : {
+
+    },
+    "Split your question" : {
+
+    },
+    "Splits your question into parts and researches each one. Slower." : {
+
+    },
+    "Splitting your question…" : {
+
+    },
+    "Started from a connected computer (request %@)." : {
+
+    },
+    "Starts after the downloads" : {
+
+    },
+    "Stays on Your iPhone" : {
+
+    },
+    "Step %lld of 4" : {
+
+    },
+    "Steps" : {
+
+    },
+    "Stop" : {
+
+    },
+    "Stop Answering" : {
+
+    },
+    "Stop Dictation" : {
+
+    },
+    "Stopped" : {
+
+    },
+    "Stopped While Thinking" : {
+
+    },
+    "Stopped early. Partial results saved to %@." : {
+
+    },
+    "Stopping" : {
+
+    },
+    "Stopping…" : {
+
+    },
+    "Storage" : {
+
+    },
+    "Storage Budget" : {
+
+    },
+    "Storage Used" : {
+
+    },
+    "Stream Experts" : {
+
+    },
+    "Stronger reasoning, needs a big iPhone" : {
+
+    },
+    "Sub-question %lld of %lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Sub-question %1$lld of %2$lld"
+          }
+        }
+      }
+    },
+    "Summarize Older Turns" : {
+
+    },
+    "System" : {
+
+    },
+    "Text read" : {
+
+    },
+    "The English speech model couldn't be downloaded. Try again when online." : {
+
+    },
+    "The benchmark failed: %@" : {
+
+    },
+    "The fastest answers, with more heat and battery use." : {
+
+    },
+    "The key that opens your chats is gone (this iPhone's passcode was turned off). The chats can't be read any more." : {
+
+    },
+    "The model and the library live on this iPhone. No cloud." : {
+
+    },
+    "The search model (%@) isn't on this iPhone, so answers can't use your library. Run Setup Again in Advanced." : {
+
+    },
+    "The search model is missing." : {
+
+    },
+    "The search model is missing. Run setup again from Settings → Recovery." : {
+
+    },
+    "Thinking" : {
+
+    },
+    "Thinking lets a reasoning model think before it answers; Auto keeps it off so the answer isn't cut short. The Auto time limit grows with the answer length; an answer that hits it keeps what it wrote." : {
+
+    },
+    "Thinking…" : {
+
+    },
+    "Thinks before answering, needs a big iPhone" : {
+
+    },
+    "This can't be undone. Every downloaded model, knowledge pack, document and chat is deleted, and setup starts over." : {
+
+    },
+    "This deletes \"%@\" from BOAR. This can't be undone: export it first to keep a copy." : {
+
+    },
+    "This frees %@ on your iPhone. Its topics can't be searched until you download it again." : {
+
+    },
+    "This frees %@ on your iPhone. You can download it again later." : {
+
+    },
+    "This iPhone" : {
+
+    },
+    "This iPhone has %@ of memory, so Fast is recommended." : {
+
+    },
+    "This is the only time BOAR uses the internet. Downloads continue in the background." : {
+
+    },
+    "This model isn't downloaded. You can add it again with Find More Models." : {
+
+    },
+    "Thought Process" : {
+
+    },
+    "Thought for %@" : {
+
+    },
+    "Thought it over" : {
+
+    },
+    "Threads" : {
+
+    },
+    "Time Limit" : {
+
+    },
+    "Time to first word" : {
+
+    },
+    "Tiny" : {
+
+    },
+    "Title" : {
+
+    },
+    "Too big for this iPhone" : {
+
+    },
+    "Too many failed attempts. Unlock with your passcode." : {
+
+    },
+    "Topic Packs" : {
+
+    },
+    "Topic pack" : {
+
+    },
+    "Total" : {
+
+    },
+    "Touch ID" : {
+
+    },
+    "Trending" : {
+
+    },
+    "Try Again" : {
+
+    },
+    "Turn off the lock for your chats" : {
+
+    },
+    "Turn on the lock for your chats" : {
+
+    },
+    "Turned-off collections are not used in answers." : {
+
+    },
+    "Unlock with %@" : {
+
+    },
+    "Unlock your saved chats" : {
+
+    },
+    "Use This Model" : {
+
+    },
+    "Used by BOAR" : {
+
+    },
+    "Version %@ (%@) · Development build" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Version %1$@ (%2$@) · Development build"
+          }
+        }
+      }
+    },
+    "Very Large" : {
+
+    },
+    "Voice" : {
+
+    },
+    "Wait for the current answer to finish before running the benchmark." : {
+
+    },
+    "Waiting · %@" : {
+
+    },
+    "Weights" : {
+
+    },
+    "Welcome to BOAR" : {
+
+    },
+    "What do you want to ask BOAR?" : {
+
+    },
+    "What we measured best on real phones. Balanced." : {
+
+    },
+    "When off, answers don't use this collection" : {
+
+    },
+    "Wikipedia" : {
+
+    },
+    "Words written" : {
+
+    },
+    "Works Offline" : {
+
+    },
+    "Works without internet" : {
+
+    },
+    "Write your own instructions…" : {
+
+    },
+    "Writing…" : {
+
+    },
+    "Wrote the answer" : {
+
+    },
+    "You're offline. Connect to the internet to search for models." : {
+
+    },
+    "You: %@" : {
+
+    },
+    "Your Collections" : {
+
+    },
+    "Your chats appear here." : {
+
+    },
+    "Your questions never leave your iPhone." : {
+
+    },
+    "Your questions, chats and documents never leave it." : {
+
+    },
+    "Your saved chats are encrypted on this iPhone." : {
+
+    },
+    "^[%lld article](inflect: true)" : {
+
+    },
+    "^[%lld document](inflect: true)" : {
+
+    },
+    "^[%lld question](inflect: true) × ^[%lld model](inflect: true) = ^[%lld answer](inflect: true). The screen stays on while it runs." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "^[%1$lld question](inflect: true) × ^[%2$lld model](inflect: true) = ^[%3$lld answer](inflect: true). The screen stays on while it runs."
+          }
+        }
+      }
+    },
+    "^[%lld source](inflect: true)" : {
+
+    },
+    "about %@ left" : {
+
+    },
+    "iOS Version" : {
+
+    },
+    "iPhone" : {
+
+    },
+    "iPhone & Storage" : {
+
+    },
+    "no retrieval" : {
+
+    },
+    "~%lld words (%lld tokens)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "~%1$lld words (%2$lld tokens)"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

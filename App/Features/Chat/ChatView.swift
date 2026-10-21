@@ -1,0 +1,166 @@
+import BoarAnswer
+import BoarModels
+import SwiftUI
+
+/// The chat (ChatScreen.tsx / ChatHeader.tsx): what BOAR is doing (or the model) under the title, the empty state with
+/// suggestions, the streaming conversation, and the composer.
+struct ChatView: View {
+    @Environment(AppModel.self) private var model
+    @Bindable var chat: ChatController
+
+    @State private var input = ""
+    @State private var showingTones = false
+    @State private var openSource: ChatSource?
+    #if os(macOS)
+    /// The Mac shows sources in a trailing inspector beside the answer instead of a sheet.
+    @State private var showingSources = false
+    @State private var inspectedSource: ChatSource?
+    #endif
+    @State private var voice = VoiceInputController()
+    @FocusState private var composerFocused: Bool
+    @Environment(\.scenePhase) private var scenePhase
+
+    /// The mic shows when voice input is on in Settings and this iPhone has the on-device transcriber.
+    private var voiceOn: Bool { chat.services.settings.voiceInputEnabled && VoiceInputController.supported }
+
+    /// The model answering and where it runs (the steps card under the question shows what an answer is doing).
+    private var subtitle: String {
+        if chat.loadingModel { return String(localized: "Loading the model…") }
+        guard let name = chat.modelName, !chat.noModel else { return String(localized: "No answer model") }
+        return "\(name) · \(chat.modelPlace)"
+    }
+
+    /// The open chat's title; a new chat is just BOAR.
+    private var title: String {
+        guard !chat.messages.isEmpty, let id = chat.sessionId,
+              let session = model.sessions.first(where: { $0.id == id }), !session.title.isEmpty else { return "BOAR" }
+        return session.title
+    }
+
+    var body: some View {
+        Group {
+            if chat.messages.isEmpty {
+                ChatEmptyState(noModel: chat.noModel, chat: chat, onAsk: send)
+            } else {
+                ChatConversation(chat: chat, onReuse: reuse, onOpenSource: open)
+            }
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .bottomBar {
+            Composer(text: $input, focused: $composerFocused, toneSymbol: chat.currentTone.symbol, toneLabel: chat.currentTone.label,
+                     deepResearch: chat.deepResearch, answering: chat.isAnswering, stopping: chat.stopping,
+                     onSend: sendInput, onStop: chat.stop, onTones: showTones, voice: voiceOn ? voice : nil, chat: chat)
+        }
+        .navigationTitle(Text(verbatim: title))
+        .navigationSubtitleIfAvailable(Text(subtitle))
+        .inlineNavigationTitle()
+        .toolbar {
+            #if os(macOS)
+            // New Chat sits at the top of the sidebar (⌘N); the chat's own toolbar holds the sources inspector.
+            ToolbarItem(placement: .primaryAction) {
+                Toggle(isOn: $showingSources) {
+                    Label("Sources", systemImage: "sidebar.trailing")
+                }
+                .help(showingSources ? "Hide Sources" : "Show Sources")
+            }
+            #else
+            ChatToolbar(chat: chat, onNewChat: model.newChat)
+            #endif
+        }
+        .sheet(isPresented: $showingTones) { ToneSheet(chat: chat) }
+        #if os(macOS)
+        .inspector(isPresented: $showingSources) {
+            SourceInspector(sources: inspectedSources, selected: $inspectedSource, technicalDetails: chat.technicalDetails)
+                .inspectorColumnWidth(min: 260, ideal: 300, max: 520)
+        }
+        .onChange(of: openSource) { _, source in
+            guard let source else { return }
+            inspectedSource = source
+            showingSources = true
+            openSource = nil
+        }
+        .onChange(of: chat.sessionId) { inspectedSource = nil }
+        .onChange(of: model.citationRequest) { _, url in
+            guard let url else { return }
+            model.citationRequest = nil
+            openCitation(url)
+        }
+        #else
+        .sheet(item: $openSource) { source in
+            SourceSheet(source: source, technicalDetails: chat.technicalDetails)
+        }
+        #endif
+        .debugChatSheets(source: $openSource, tones: $showingTones, chat: chat)
+        .overlay(alignment: .top) { ToastView(message: $chat.toast) }
+        // Haptic feedback (Settings → Display): a tap on send, a success when the answer is done.
+        .sensoryFeedback(.impact(weight: .light), trigger: chat.messages.count) { old, new in
+            new > old && chat.services.settings.hapticsEnabled
+        }
+        .sensoryFeedback(.success, trigger: chat.isAnswering) { was, now in
+            was && !now && chat.services.settings.hapticsEnabled
+        }
+        .onChange(of: scenePhase) { _, phase in
+            if phase != .active { voice.cancel() }
+        }
+        // A new chat opens ready to type, as Messages and ChatGPT do.
+        .onAppear(perform: focusIfEmpty)
+        .onChange(of: chat.messages.isEmpty) { _, empty in
+            if empty { focusIfEmpty() }
+        }
+    }
+
+    #if os(macOS)
+    /// `boar-source://<n>/<answer id>`: source n of that answer (of the latest answer when the id is missing).
+    private func openCitation(_ url: URL) {
+        guard let n = Int(url.host() ?? ""), n >= 1 else { return }
+        let id = url.path().split(separator: "/").first.map(String.init)?.removingPercentEncoding
+        let answer = chat.messages.last { $0.id == id } ?? chat.messages.last { !$0.isUser && !$0.sources.isEmpty }
+        guard let answer, n <= answer.sources.count else { return }
+        open(answer.sources[n - 1])
+    }
+
+    /// The sources of the answer the inspected source belongs to; with none picked, the latest answer's sources.
+    private var inspectedSources: [ChatSource] {
+        if let picked = inspectedSource, let owner = chat.messages.last(where: { $0.sources.contains(picked) }) {
+            return owner.sources
+        }
+        return chat.messages.last(where: { !$0.isUser && !$0.sources.isEmpty })?.sources ?? []
+    }
+    #endif
+
+    private func focusIfEmpty() {
+        guard chat.messages.isEmpty, !chat.noModel else { return }
+        composerFocused = true
+    }
+
+    private func showTones() {
+        showingTones = true
+    }
+
+    private func open(_ source: ChatSource) {
+        openSource = source
+    }
+
+    private func fill(_ text: String) {
+        input = text
+        composerFocused = true
+    }
+
+    private func reuse(_ text: String) {
+        fill(text)
+        chat.toast = String(localized: "Question copied to the input")
+    }
+
+    private func sendInput() {
+        send(input)
+    }
+
+    private func send(_ text: String) {
+        guard !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty, !chat.isAnswering else { return }
+        voice.cancel()
+        chat.send(text)
+        input = ""
+        // The answer gets the whole screen: the keyboard closes on send.
+        composerFocused = false
+    }
+}

@@ -1,0 +1,142 @@
+import BoarAppleAI
+import BoarCore
+import SwiftUI
+
+/// Settings → Advanced: answer length, chat memory, the answer engine, this iPhone, and setup again. The tools for people
+/// who want to look under the hood (adaptive routing, engine tweaks, benchmark) appear with Show Technical Details on.
+struct AdvancedSettingsScreen: View {
+    @Environment(AppModel.self) private var model
+    let services: BoarServices
+    let bridge: SettingsBridge
+
+    var body: some View {
+        @Bindable var model = model
+        let personalityId = bridge.read { $0.personalityId }
+        let deep = bridge.read { $0.deepResearchMode }
+        let summarize = bridge.read { $0.autoSummarize }
+        let turns = bridge.read { $0.historyTurnThreshold }
+        let technical = bridge.read { $0.showLiveStats }
+        let apple = model.appleModelAvailability
+        Form {
+            Section {
+                Picker(selection: bridge.binding({ AnswerLength(tokens: $0.maxTokensChoice) }, { $0.maxTokensChoice = $1.tokens })) {
+                    ForEach(AnswerLength.allCases) { Text($0.title).tag($0) }
+                } label: {
+                    SettingsLabel("Answer Length", symbol: "text.alignleft", color: .blue)
+                }
+                .pickerStyle(.menu)
+                Picker(selection: $model.backendChoice) {
+                    Text("Downloaded Model").tag(ModelBackend.llama)
+                    Text("Apple Intelligence").tag(ModelBackend.apple)
+                        .selectionDisabled(!apple.isAvailable)
+                    Text("Mac on Your Network").tag(ModelBackend.remote)
+                } label: {
+                    SettingsLabel("Engine", symbol: "cpu.fill", color: .indigo)
+                }
+                .drillDownPickerStyle()
+            } header: {
+                Text("Answers")
+            } footer: {
+                VStack(alignment: .leading) {
+                    Text("Auto fits the answer style (up to \(AppSettings.autoMaxTokens(personalityId: personalityId, deepResearch: deep)) tokens now). Apple Intelligence answers with Apple's built-in model where available; Mac on Your Network sends the writing to llama-server on another Mac.")
+                    if !apple.isAvailable {
+                        Text(apple.userMessage)
+                    }
+                }
+            }
+
+            if model.backend == .remote {
+                RemoteServerSection(settings: services.settings) {
+                    Task { await services.host.unload(); model.chat?.refreshModel() }
+                }
+            }
+
+            Section {
+                Toggle(isOn: bridge.binding({ $0.autoSummarize }, { $0.autoSummarize = $1 })) {
+                    SettingsLabel("Summarize Older Turns", symbol: "text.append", color: .orange)
+                }
+                Stepper(value: bridge.binding({ $0.historyTurnThreshold }, { $0.historyTurnThreshold = $1 }), in: 2...12, step: 2) {
+                    Text("Keep \(turns) Recent Turns")
+                        .monospacedDigit()
+                }
+                .disabled(!summarize)
+            } header: {
+                Text("Chat Memory")
+            } footer: {
+                Text("Long chats keep their context: older turns are condensed and the most recent ones stay word for word.")
+            }
+
+            Section {
+                #if !os(macOS)
+                // The Mac's Settings window has a Storage tab for it.
+                NavigationLink {
+                    DeviceInfoScreen(services: services)
+                } label: {
+                    SettingsLabel("\(Platform.deviceNoun) & Storage", symbol: "iphone", color: .gray)
+                }
+                #endif
+                Button(action: model.reopenSetup) {
+                    SettingsLabel("Run Setup Again", symbol: "arrow.clockwise", color: .teal)
+                }
+                .tint(.primary)
+                #if os(macOS)
+                .buttonStyle(.plain)
+                #endif
+            } footer: {
+                Text("Run Setup Again checks your models and library.")
+            }
+
+            Section {
+                Toggle(isOn: bridge.binding({ $0.showLiveStats }, { $0.showLiveStats = $1 })) {
+                    SettingsLabel("Show Technical Details", symbol: "chevron.left.forwardslash.chevron.right", color: .mint)
+                }
+                if technical {
+                    Toggle(isOn: bridge.binding({ $0.adaptiveRoutingEnabled }, { $0.adaptiveRoutingEnabled = $1 })) {
+                        SettingsLabel("Adaptive Routing", symbol: "arrow.triangle.branch", color: .purple)
+                    }
+                    #if os(macOS)
+                    // The Mac's Settings window shows Engine Tweaks as a tab; the benchmark runs in the main window.
+                    Button(action: openBenchmark) {
+                        SettingsLabel("Open Benchmark", symbol: "gauge.with.dots.needle.67percent", color: .green)
+                    }
+                    .buttonStyle(.plain)
+                    #else
+                    NavigationLink {
+                        EngineTweaksScreen(services: services, bridge: bridge)
+                    } label: {
+                        LabeledContent {
+                            Text(bridge.read { $0.engineTweaks.isAuto } ? "Auto" : "Custom")
+                        } label: {
+                            SettingsLabel("Engine Tweaks", symbol: "slider.horizontal.3", color: .gray)
+                        }
+                    }
+                    if let evaluation = model.evaluation {
+                        NavigationLink {
+                            EvaluationScreen(controller: evaluation, chatBusy: model.chat?.isAnswering ?? false)
+                        } label: {
+                            SettingsLabel("Benchmark", symbol: "gauge.with.dots.needle.67percent", color: .green)
+                        }
+                    }
+                    #endif
+                }
+            } header: {
+                Text("For Developers")
+            } footer: {
+                Text(technical
+                     ? "Timings and speed show under each answer. Adaptive Routing picks the best installed model for each question."
+                     : "Shows timings under each answer, plus the engine settings and the benchmark.")
+            }
+        }
+        .navigationTitle("Advanced")
+        .inlineNavigationTitle()
+    }
+
+    #if os(macOS)
+    @Environment(\.openWindow) private var openWindow
+
+    private func openBenchmark() {
+        model.selection = .screen(.evaluation)
+        openWindow(id: "main")
+    }
+    #endif
+}

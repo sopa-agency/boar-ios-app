@@ -1,0 +1,9 @@
+.build/
+.swiftpm/
+DerivedData/
+Vendor/llama.xcframework/
+.ref/
+*.xcodeproj/
+xcuserdata/
+Local.xcconfig
+.DS_Store

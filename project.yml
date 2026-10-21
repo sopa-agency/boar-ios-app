@@ -1,0 +1,160 @@
+name: Boar
+options:
+  bundleIdPrefix: team.sopa.boar
+  deploymentTarget:
+    iOS: "18.0"
+  createIntermediateGroups: true
+  developmentLanguage: en
+  defaultConfig: Debug
+
+configFiles:
+  Debug: App/Config/App.xcconfig
+  Release: App/Config/App.xcconfig
+
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    SWIFT_STRICT_CONCURRENCY: complete
+    ENABLE_USER_SCRIPT_SANDBOXING: YES
+    LOCALIZATION_PREFERS_STRING_CATALOGS: YES
+    SWIFT_EMIT_LOC_STRINGS: YES
+
+packages:
+  BoarEngine:
+    path: .
+
+targets:
+  Boar:
+    type: application
+    platform: iOS
+    deploymentTarget: "18.0"
+    sources:
+      - path: App
+        excludes:
+          - "Config/**"
+          - "Info.plist"
+          - "Mac/**"
+    dependencies:
+      - package: BoarEngine
+        product: BoarCore
+      - package: BoarEngine
+        product: BoarRouting
+      - package: BoarEngine
+        product: BoarRAG
+      - package: BoarEngine
+        product: BoarModels
+      - package: BoarEngine
+        product: BoarAnswer
+      - package: BoarEngine
+        product: BoarLlama
+      - package: BoarEngine
+        product: BoarAppleAI
+      - package: BoarEngine
+        product: BoarRemote
+    info:
+      path: App/Info.plist
+      properties:
+        CFBundleDisplayName: BOAR
+        CFBundleShortVersionString: "0.1.0"
+        CFBundleVersion: "1"
+        ITSAppUsesNonExemptEncryption: false
+        LSApplicationCategoryType: public.app-category.reference
+        UILaunchScreen: {}
+        UIApplicationSceneManifest:
+          UIApplicationSupportsMultipleScenes: false
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+        UISupportedInterfaceOrientations~ipad:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationPortraitUpsideDown
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+        UIFileSharingEnabled: false
+        NSMicrophoneUsageDescription: BOAR listens to your question on this iPhone when you dictate. The audio never leaves the device.
+        NSSpeechRecognitionUsageDescription: BOAR turns your dictated question into text on this iPhone. Nothing is sent to a server.
+        NSFaceIDUsageDescription: BOAR uses Face ID to unlock your saved chats.
+        NSPhotoLibraryUsageDescription: BOAR reads the photos you choose to turn the text in them into searchable documents on this iPhone.
+        NSLocalNetworkUsageDescription: BOAR can send the writing of an answer to a Mac on your network that you choose in Settings.
+        NSAppTransportSecurity:
+          NSAllowsLocalNetworking: true
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: team.sopa.boar.native
+        PRODUCT_NAME: Boar
+        TARGETED_DEVICE_FAMILY: "1,2"
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        GENERATE_INFOPLIST_FILE: NO
+        CODE_SIGN_STYLE: Automatic
+        SUPPORTS_MACCATALYST: NO
+        SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD: NO
+        SWIFT_APPROACHABLE_CONCURRENCY: YES
+
+  BoarMac:
+    type: application
+    platform: macOS
+    deploymentTarget: "26.0"
+    sources:
+      - path: App
+        excludes:
+          - "Config/**"
+          - "Info.plist"
+          - "Mac/**"
+    dependencies:
+      - package: BoarEngine
+        product: BoarCore
+      - package: BoarEngine
+        product: BoarRouting
+      - package: BoarEngine
+        product: BoarRAG
+      - package: BoarEngine
+        product: BoarModels
+      - package: BoarEngine
+        product: BoarAnswer
+      - package: BoarEngine
+        product: BoarLlama
+      - package: BoarEngine
+        product: BoarAppleAI
+      - package: BoarEngine
+        product: BoarRemote
+    entitlements:
+      path: App/Mac/BoarMac.entitlements
+      properties:
+        com.apple.security.app-sandbox: true
+        com.apple.security.network.client: true
+        com.apple.security.files.user-selected.read-write: true
+        com.apple.security.device.audio-input: true
+        com.apple.security.personal-information.photos-library: true
+    info:
+      path: App/Mac/Info.plist
+      properties:
+        CFBundleDisplayName: BOAR
+        CFBundleShortVersionString: "0.1.0"
+        CFBundleVersion: "1"
+        ITSAppUsesNonExemptEncryption: false
+        LSApplicationCategoryType: public.app-category.reference
+        LSMinimumSystemVersion: "26.0"
+        # Selectable answer text hands its citation links to the system on the Mac; this brings them back to BOAR.
+        CFBundleURLTypes:
+          - CFBundleURLName: team.sopa.boar.source
+            CFBundleURLSchemes: [boar-source]
+        NSMicrophoneUsageDescription: BOAR listens to your question on this Mac when you dictate. The audio never leaves the device.
+        NSSpeechRecognitionUsageDescription: BOAR turns your dictated question into text on this Mac. Nothing is sent to a server.
+        NSPhotoLibraryUsageDescription: BOAR reads the photos you choose to turn the text in them into searchable documents on this Mac.
+        NSLocalNetworkUsageDescription: BOAR can send the writing of an answer to another Mac on your network that you choose in Settings.
+        NSAppTransportSecurity:
+          NSAllowsLocalNetworking: true
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: team.sopa.boar.native
+        PRODUCT_NAME: BOAR
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        GENERATE_INFOPLIST_FILE: NO
+        CODE_SIGN_STYLE: Automatic
+        CODE_SIGN_IDENTITY: "-"
+        ENABLE_HARDENED_RUNTIME: YES
+        ENABLE_APP_SANDBOX: YES
+        SWIFT_APPROACHABLE_CONCURRENCY: YES

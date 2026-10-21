@@ -1,0 +1,59 @@
+c6bf8d0a1aa0cd11b34f776a52c89ca302f1375eb0a07b4ffcd7d8fb8be3e23b  ./Info.plist
+38bdcf5d89137b45e9165ac8c8b63c444e2c4953fb019ab2df1872d7abe2ea56  ./ios-arm64/dSYMs/llama.dSYM/Contents/Info.plist
+550f5d3d5d518d63d0bca0afbf1116bbed4a4c70041ea679040c70490d4aeb88  ./ios-arm64/dSYMs/llama.dSYM/Contents/Resources/DWARF/llama
+18e22e8faddd6be1ae325fb61bd1dee00e7ccc1343486c6a67fb49021861f30d  ./ios-arm64/dSYMs/llama.dSYM/Contents/Resources/Relocations/aarch64/llama.yml
+94e4cd069b9313b2ceb35dacec901981e0bb478d8bb31035b7126be091998c23  ./ios-arm64/llama.framework/Headers/ggml-alloc.h
+46d84cb998105f871240864fd0f55446939a2fe86c5c281afa63a010fb1f65a2  ./ios-arm64/llama.framework/Headers/ggml-backend.h
+e76cb8594dc9866d99e7d63191b9fff6ab8b50244b4a28ce3af0f962964a6b5b  ./ios-arm64/llama.framework/Headers/ggml-blas.h
+316279e004cdeb8e6ef78599acb602bf79a8abdf897fed9fd1914808c1518c6e  ./ios-arm64/llama.framework/Headers/ggml-cpu.h
+322f36cd30f3e9e7aad7b5b9bc63078012fd0b7706ac4e24f5721b604f3d8980  ./ios-arm64/llama.framework/Headers/ggml-metal.h
+3586de1bc8a934b5c72339e2b6937b0641e8f149b512231e666f67de0736eea2  ./ios-arm64/llama.framework/Headers/ggml-opt.h
+12ee71f99db7db9b353bc02b1fbb57c344ee17c01ac5fb7952b41a637a747ea9  ./ios-arm64/llama.framework/Headers/ggml.h
+e56714aab702e5ce62ee587a409643c08f7e93e8fbb77f48ef7cc85075f96fa4  ./ios-arm64/llama.framework/Headers/gguf.h
+fedb52ea9291c9900e637ed6ffec339919dd27c3dadc2c8cf216c552e0488dda  ./ios-arm64/llama.framework/Headers/llama.h
+a4f69e73bf7a4e93fdaac8052ca315e8b8f2c16942dc26f0d2e69238f3b5eb4b  ./ios-arm64/llama.framework/Headers/mtmd-helper.h
+b0f1ba884e8688980789f0547147d2b7330d65772ebac8f36c0dbb8ece7cf7d0  ./ios-arm64/llama.framework/Headers/mtmd.h
+d0100019d260cc910a6032801ec3b4c9e402c6a49d8fdf48c82a5c12004b1740  ./ios-arm64/llama.framework/Info.plist
+b5651903a342dc59fb4fe16ff9cc82ba4d08fdb142458aeacf516e7c31c15f15  ./ios-arm64/llama.framework/Modules/module.modulemap
+d7c9b0026617410be035e04b3946dc3f73012aa9951faa9b867b37b8f25fa2dd  ./ios-arm64/llama.framework/llama
+38bdcf5d89137b45e9165ac8c8b63c444e2c4953fb019ab2df1872d7abe2ea56  ./ios-arm64_x86_64-simulator/dSYMs/llama.dSYM/Contents/Info.plist
+019644e8a044bfe4b2bf8978df3c1601b4f45f83ea49c3e60122494140feaefb  ./ios-arm64_x86_64-simulator/dSYMs/llama.dSYM/Contents/Resources/DWARF/llama
+b87b43a9bef531b5036c7cafc82e6547c7f5323511b075ad3538d0af61758bfc  ./ios-arm64_x86_64-simulator/dSYMs/llama.dSYM/Contents/Resources/Relocations/aarch64/llama.yml
+7360d94a4a16fe75e1e6e697307973036af51d1f218961f9a13f0e0d8f238533  ./ios-arm64_x86_64-simulator/dSYMs/llama.dSYM/Contents/Resources/Relocations/x86_64/llama.yml
+94e4cd069b9313b2ceb35dacec901981e0bb478d8bb31035b7126be091998c23  ./ios-arm64_x86_64-simulator/llama.framework/Headers/ggml-alloc.h
+46d84cb998105f871240864fd0f55446939a2fe86c5c281afa63a010fb1f65a2  ./ios-arm64_x86_64-simulator/llama.framework/Headers/ggml-backend.h
+e76cb8594dc9866d99e7d63191b9fff6ab8b50244b4a28ce3af0f962964a6b5b  ./ios-arm64_x86_64-simulator/llama.framework/Headers/ggml-blas.h
+316279e004cdeb8e6ef78599acb602bf79a8abdf897fed9fd1914808c1518c6e  ./ios-arm64_x86_64-simulator/llama.framework/Headers/ggml-cpu.h
+322f36cd30f3e9e7aad7b5b9bc63078012fd0b7706ac4e24f5721b604f3d8980  ./ios-arm64_x86_64-simulator/llama.framework/Headers/ggml-metal.h
+3586de1bc8a934b5c72339e2b6937b0641e8f149b512231e666f67de0736eea2  ./ios-arm64_x86_64-simulator/llama.framework/Headers/ggml-opt.h
+12ee71f99db7db9b353bc02b1fbb57c344ee17c01ac5fb7952b41a637a747ea9  ./ios-arm64_x86_64-simulator/llama.framework/Headers/ggml.h
+e56714aab702e5ce62ee587a409643c08f7e93e8fbb77f48ef7cc85075f96fa4  ./ios-arm64_x86_64-simulator/llama.framework/Headers/gguf.h
+fedb52ea9291c9900e637ed6ffec339919dd27c3dadc2c8cf216c552e0488dda  ./ios-arm64_x86_64-simulator/llama.framework/Headers/llama.h
+a4f69e73bf7a4e93fdaac8052ca315e8b8f2c16942dc26f0d2e69238f3b5eb4b  ./ios-arm64_x86_64-simulator/llama.framework/Headers/mtmd-helper.h
+b0f1ba884e8688980789f0547147d2b7330d65772ebac8f36c0dbb8ece7cf7d0  ./ios-arm64_x86_64-simulator/llama.framework/Headers/mtmd.h
+d0100019d260cc910a6032801ec3b4c9e402c6a49d8fdf48c82a5c12004b1740  ./ios-arm64_x86_64-simulator/llama.framework/Info.plist
+b5651903a342dc59fb4fe16ff9cc82ba4d08fdb142458aeacf516e7c31c15f15  ./ios-arm64_x86_64-simulator/llama.framework/Modules/module.modulemap
+48bbf38d9448477ff9e313f61d4f88f45e93804643ce1d8c35410b554991ff8e  ./ios-arm64_x86_64-simulator/llama.framework/llama
+38bdcf5d89137b45e9165ac8c8b63c444e2c4953fb019ab2df1872d7abe2ea56  ./macos-arm64_x86_64/dSYMs/llama.dSYM/Contents/Info.plist
+d102539ed6ae5db0806c784bc7cec4d356af9d82613013cd325b9122423f513c  ./macos-arm64_x86_64/dSYMs/llama.dSYM/Contents/Resources/DWARF/llama
+3d213627264fc4b775874846e7e1314e95bcc8899cd2a98067b18788a8d7a1ed  ./macos-arm64_x86_64/dSYMs/llama.dSYM/Contents/Resources/Relocations/aarch64/llama.yml
+a9be1b08f4989af8da813b76b4f9adcaca192356160407e7752904f3ce35b545  ./macos-arm64_x86_64/dSYMs/llama.dSYM/Contents/Resources/Relocations/x86_64/llama.yml
+link ./macos-arm64_x86_64/llama.framework/Headers -> Versions/Current/Headers
+link ./macos-arm64_x86_64/llama.framework/Modules -> Versions/Current/Modules
+link ./macos-arm64_x86_64/llama.framework/Resources -> Versions/Current/Resources
+94e4cd069b9313b2ceb35dacec901981e0bb478d8bb31035b7126be091998c23  ./macos-arm64_x86_64/llama.framework/Versions/A/Headers/ggml-alloc.h
+46d84cb998105f871240864fd0f55446939a2fe86c5c281afa63a010fb1f65a2  ./macos-arm64_x86_64/llama.framework/Versions/A/Headers/ggml-backend.h
+e76cb8594dc9866d99e7d63191b9fff6ab8b50244b4a28ce3af0f962964a6b5b  ./macos-arm64_x86_64/llama.framework/Versions/A/Headers/ggml-blas.h
+316279e004cdeb8e6ef78599acb602bf79a8abdf897fed9fd1914808c1518c6e  ./macos-arm64_x86_64/llama.framework/Versions/A/Headers/ggml-cpu.h
+322f36cd30f3e9e7aad7b5b9bc63078012fd0b7706ac4e24f5721b604f3d8980  ./macos-arm64_x86_64/llama.framework/Versions/A/Headers/ggml-metal.h
+3586de1bc8a934b5c72339e2b6937b0641e8f149b512231e666f67de0736eea2  ./macos-arm64_x86_64/llama.framework/Versions/A/Headers/ggml-opt.h
+12ee71f99db7db9b353bc02b1fbb57c344ee17c01ac5fb7952b41a637a747ea9  ./macos-arm64_x86_64/llama.framework/Versions/A/Headers/ggml.h
+e56714aab702e5ce62ee587a409643c08f7e93e8fbb77f48ef7cc85075f96fa4  ./macos-arm64_x86_64/llama.framework/Versions/A/Headers/gguf.h
+fedb52ea9291c9900e637ed6ffec339919dd27c3dadc2c8cf216c552e0488dda  ./macos-arm64_x86_64/llama.framework/Versions/A/Headers/llama.h
+a4f69e73bf7a4e93fdaac8052ca315e8b8f2c16942dc26f0d2e69238f3b5eb4b  ./macos-arm64_x86_64/llama.framework/Versions/A/Headers/mtmd-helper.h
+b0f1ba884e8688980789f0547147d2b7330d65772ebac8f36c0dbb8ece7cf7d0  ./macos-arm64_x86_64/llama.framework/Versions/A/Headers/mtmd.h
+b5651903a342dc59fb4fe16ff9cc82ba4d08fdb142458aeacf516e7c31c15f15  ./macos-arm64_x86_64/llama.framework/Versions/A/Modules/module.modulemap
+518c9cbaa95bfa21f2acad01fe1d29bd8a6bdfd797021a2b39de3c5145b48ac0  ./macos-arm64_x86_64/llama.framework/Versions/A/Resources/Info.plist
+c7f17a4617ad26ccdb5a336fb89bf31600048cdb6d4115c62f0d433ffa8a17b0  ./macos-arm64_x86_64/llama.framework/Versions/A/llama
+link ./macos-arm64_x86_64/llama.framework/Versions/Current -> A
+link ./macos-arm64_x86_64/llama.framework/llama -> Versions/Current/llama
