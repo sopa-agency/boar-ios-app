@@ -28,31 +28,69 @@ import Testing
         return LoadGuard(store: store, ledger: ledger)
     }
 
-    @Test func aLoadThatReturnsLeavesNoMarkerAndNothingBlocked() {
+    // MARK: LoadGuardTest.kt
+
+    @Test func aLoadThatReturnsAndSettlesLeavesNoMarkerAndNothingBlocked() {
         let store = Mem(), ledger = L()
         let g = LoadGuard(store: store, ledger: ledger)
         g.begin(big, previous: nil, repacked: true)
-        #expect(store.v != nil)
         g.end(big, loaded: true)
+        g.settled("qwen3-4b")
         #expect(store.v == nil)
         #expect(!LoadGuard(store: store, ledger: ledger).isBlocked("qwen3-4b"))
     }
 
-    @Test func aKilledRepackedLoadKeepsTheMappedFileOnceAndIsntACrash() {
+    @Test func killedAfterTheLoadReturnedButBeforeItSettledStillCountsAsALoadKill() {
+        let store = Mem(), ledger = L()
+        let g = LoadGuard(store: store, ledger: ledger)
+        g.begin(big, previous: nil, repacked: true)
+        g.end(big, loaded: true)
+        // The process dies here (Android F3, Oct 18: 4 s after the load returned).
+        let next = LoadGuard(store: store, ledger: ledger)
+        #expect(next.isBlocked("qwen3-4b"))
+        #expect(next.consume()?.crashedModelId == "qwen3-4b")
+    }
+
+    @Test func settlingAnotherModelLeavesTheMarker() {
+        let store = Mem(), ledger = L()
+        let g = LoadGuard(store: store, ledger: ledger)
+        g.begin(big, previous: nil, repacked: true); g.end(big, loaded: true)
+        g.settled("qwen2.5-1.5b")
+        #expect(LoadGuard(store: store, ledger: ledger).isBlocked("qwen3-4b"))
+    }
+
+    @Test func aKilledRepackedLoadBlocksTheModelForAutomaticLoadsAfterOneKill() {
+        let store = Mem(), ledger = L()
+        let g = killedDuring(store, ledger, big, repacked: true, previous: small)
+        #expect(g.isBlocked("qwen3-4b"))
+        #expect(!g.mappedNext("qwen3-4b"))
+        let crash = g.consume()
+        #expect(crash?.crashedModelId == "qwen3-4b")
+        #expect(crash?.fallbackLabel == "Qwen2.5-1.5B")
+        #expect(g.consume() == nil)
+        #expect(store.v == nil)
+    }
+
+    @Test func tryAgainWithLessMemoryLoadsTheMappedFileAndKeepsItAfterItWorks() {
         let store = Mem(), ledger = L()
         let g = killedDuring(store, ledger, big, repacked: true)
-        #expect(g.mappedNext("qwen3-4b"))
+        g.retryMapped("qwen3-4b")
         #expect(!g.isBlocked("qwen3-4b"))
-        #expect(g.consume() == nil)
-        // The mapped load works: back to repacked weights next time.
+        #expect(g.mappedNext("qwen3-4b"))
         g.begin(big, previous: nil, repacked: false)
         g.end(big, loaded: true)
-        #expect(!g.mappedNext("qwen3-4b"))
+        g.settled("qwen3-4b")
+        // The next start doesn't go back to the repacked load that closed the app.
+        let g2 = LoadGuard(store: store, ledger: ledger)
+        #expect(g2.mappedNext("qwen3-4b"))
+        #expect(!g2.isBlocked("qwen3-4b"))
     }
 
     @Test func aKilledMappedLoadIsACrashReportedOnceWithTheFallback() {
         let store = Mem(), ledger = L()
         let g1 = killedDuring(store, ledger, big, repacked: true)
+        _ = g1.consume()
+        g1.retryMapped("qwen3-4b")
         #expect(g1.mappedNext("qwen3-4b"))
         g1.begin(big, previous: small, repacked: false)
         let g2 = LoadGuard(store: store, ledger: ledger)
@@ -63,6 +101,21 @@ import Testing
         #expect(g2.consume() == nil)
     }
 
+    @Test func ledgerAndMarkerJsonFromTheEarlierVersionStillParse() {
+        // A marker written before this change (no "repacked" key: a mapped load) and a crash as settings stored it.
+        let store = Mem()
+        store.v = #"{"filename":"models/qwen3-4b.gguf","modelId":"qwen3-4b","label":"Qwen3-4B","previous":{"filename":"models/qwen2.5-1.5b.gguf","modelId":"qwen2.5-1.5b","label":"Qwen2.5-1.5B"},"at":1000}"#
+        let ledger = L()
+        ledger.mappedIds = ["qwen3-4b", "lfm2.5-8b"]
+        let g = LoadGuard(store: store, ledger: ledger)
+        #expect(g.isBlocked("qwen3-4b"))
+        #expect(!g.mappedNext("qwen3-4b"))
+        #expect(g.mappedNext("lfm2.5-8b"))
+        let stored = LoadGuard.crashFromJson(#"{"crashedModelId":"a","crashedLabel":"A","fallbackModelId":"b","fallbackLabel":"B","at":5,"extra":1}"#)
+        #expect(stored == LoadGuard.Crash(crashedModelId: "a", crashedLabel: "A", fallbackModelId: "b", fallbackLabel: "B", at: 5))
+        #expect(stored.flatMap { LoadGuard.crashFromJson(LoadGuard.crashToJson($0)) } == stored)
+    }
+
     @Test func theUserPickingTheModelAgainOrALoadThatWorksUnblocksIt() {
         let store = Mem(), ledger = L()
         let g = killedDuring(store, ledger, big, repacked: false)
@@ -70,8 +123,17 @@ import Testing
         g.confirm("qwen3-4b")
         #expect(!g.isBlocked("qwen3-4b"))
         ledger.crashedIds = ["qwen3-4b"]
-        g.begin(big, previous: nil, repacked: true); g.end(big, loaded: true)
+        g.begin(big, previous: nil, repacked: true); g.end(big, loaded: true); g.settled("qwen3-4b")
         #expect(!g.isBlocked("qwen3-4b"))
+    }
+
+    @Test func pickingItAgainInModelsUnblocksItAfterARepackedKill() {
+        let store = Mem(), ledger = L()
+        let g = killedDuring(store, ledger, big, repacked: true)
+        #expect(g.isBlocked("qwen3-4b"))
+        g.confirm("qwen3-4b")
+        #expect(!g.isBlocked("qwen3-4b"))
+        #expect(!LoadGuard(store: store, ledger: ledger).isBlocked("qwen3-4b"))
     }
 
     @Test func aFailedLoadReturnedNotKilledIsNeitherACrashNorAMappedRetry() {
@@ -87,6 +149,25 @@ import Testing
         let g = LoadGuard(store: store, ledger: L())
         #expect(!g.isBlocked("qwen3-4b"))
         #expect(store.v == nil)
+    }
+
+    /// Android issue #89 (an exit the system records as the user's isn't a load kill); iOS has no such record, so the hook
+    /// stays off and every leftover marker counts.
+    @Test func anExitKnownNotToBeALoadKillClearsTheMarkerWithoutBlocking() {
+        let store = Mem(), ledger = L()
+        LoadGuard(store: store, ledger: ledger, now: { 1000 }).begin(big, previous: small, repacked: true)
+        let g = LoadGuard(store: store, ledger: ledger)
+        g.exitWasNotLoadKill = { $0 == 1000 }
+        #expect(!g.isBlocked("qwen3-4b"))
+        #expect(g.consume() == nil)
+        #expect(store.v == nil)
+    }
+
+    @Test func anUnknownExitStillCountsAsALoadKill() {
+        let store = Mem(), ledger = L()
+        let g = killedDuring(store, ledger, big, repacked: true, previous: small)
+        #expect(g.isBlocked("qwen3-4b"))
+        #expect(g.consume()?.crashedModelId == "qwen3-4b")
     }
 
     @Test func aStallIsUnder1TokPerSForAtLeast10SOfWriting() {

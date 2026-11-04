@@ -139,6 +139,16 @@ final class ChatController {
         }
     }
 
+    /// The crash note's "Try Again with Less Memory": the model is unblocked and loaded now, keeping the mapped file
+    /// instead of repacking it (LoadGuard.retryMapped). It answers from then on.
+    func retryWithLessMemory(_ modelId: String) {
+        services.loadGuard.retryMapped(modelId)
+        services.settings.setActiveModelId("llm", modelId)
+        loadCrash = nil
+        refreshModel()
+        preload()
+    }
+
     // MARK: sessions
 
     func newChat() {

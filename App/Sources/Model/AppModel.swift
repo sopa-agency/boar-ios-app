@@ -321,6 +321,8 @@ final class AppModel {
     /// kept). A Mac keeps answering behind other windows and while minimized.
     func didEnterBackground() {
         inForeground = false
+        // A kill from now on is iOS reclaiming a background app, not the model's load (LoadGuard).
+        services?.host.settleResident()
         #if !os(macOS)
         chat?.stopForBackground()
         scheduleMemoryRelease()

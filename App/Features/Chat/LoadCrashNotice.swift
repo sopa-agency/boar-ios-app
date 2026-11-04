@@ -10,8 +10,13 @@ struct LoadCrashNotice: View {
     var body: some View {
         if let crash = chat.loadCrash {
             NoticeCard(symbol: "memorychip", tint: .orange, title: "Not Enough Memory", message: message(crash)) {
+                // Loads it keeping the file mapped instead of copying its weights into memory (LoadGuard.retryMapped).
+                if chat.services.catalog.byId(crash.crashedModelId) != nil {
+                    Button("Try Again with Less Memory") { chat.retryWithLessMemory(crash.crashedModelId) }
+                        .buttonStyle(.borderedProminent)
+                }
                 Button("Choose a Model", action: openModels)
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.bordered)
                 Button("OK", action: dismiss)
                     .buttonStyle(.bordered)
             }

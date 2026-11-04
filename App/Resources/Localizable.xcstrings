@@ -1,6 +1,16 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "Try Again with Less Memory" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tentar de novo com menos memória"
+          }
+        }
+      }
+    },
     "Erase Chats and Files and Turn Off the Lock" : {
       "localizations" : {
         "pt" : {
