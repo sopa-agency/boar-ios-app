@@ -1,6 +1,26 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "BOAR can't read %@: it imports .txt, .md, .csv, .json and .pdf. Save the page as one of those (a browser can save it as PDF) and import it again." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O BOAR não consegue ler %@: ele importa .txt, .md, .csv, .json e .pdf. Salve a página em um desses formatos (o navegador salva como PDF) e importe de novo."
+          }
+        }
+      }
+    },
+    "Too large: %@ (over %lld MB)." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grande demais: %@ (mais de %lld MB)."
+          }
+        }
+      }
+    },
     "Knowledge" : {
       "localizations" : {
         "pt" : {
@@ -848,7 +868,14 @@
 
     },
     "Import failed: %@" : {
-
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A importação falhou: %@"
+          }
+        }
+      }
     },
     "Imported %@" : {
 

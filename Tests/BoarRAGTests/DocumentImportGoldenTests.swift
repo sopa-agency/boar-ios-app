@@ -101,3 +101,19 @@ final class Embedded: @unchecked Sendable {
     func add(_ s: String) { lock.lock(); items.append(s); lock.unlock() }
     var values: [String] { lock.lock(); defer { lock.unlock() }; return items }
 }
+
+/// Files over 25 MB are turned away before they're read (DocumentImportLimitTest.kt); unknown sizes are read, capped.
+@Suite struct DocumentImportLimitTests {
+    @Test func theReadLimitIs25MB() {
+        #expect(!DocumentImport.tooLargeToRead(25_000_000))
+        #expect(DocumentImport.tooLargeToRead(25_000_001))
+        #expect(DocumentImport.tooLargeToRead(90_000_000))
+        #expect(!DocumentImport.tooLargeToRead(0))
+        #expect(!DocumentImport.tooLargeToRead(-1))
+    }
+
+    @Test func onlyTheKindsBOARReadsAreImported() {
+        for name in ["a.txt", "notes.MD", "x.markdown", "t.csv", "d.json", "paper.pdf"] { #expect(DocumentImport.readable(name), "\(name)") }
+        for name in ["page.html", "letter.docx", "noext", "archive.zip"] { #expect(!DocumentImport.readable(name), "\(name)") }
+    }
+}

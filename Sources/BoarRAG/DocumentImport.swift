@@ -15,6 +15,22 @@ public enum DocumentImport {
     public static let textLimit: Int64 = 25_000_000
     public static let pdfLimit: Int64 = 100_000_000
 
+    /// The largest file read into memory at all, checked before reading: a whole file (and its text) sits in memory
+    /// beside a loaded model, and a bigger one can get the app killed for memory.
+    public static let readLimit: Int64 = textLimit
+
+    /// `sizeBytes` as the picker reports it; unknown (0 or less) is read, capped while it's read.
+    public static func tooLargeToRead(_ sizeBytes: Int64) -> Bool { sizeBytes > readLimit }
+
+    /// The extensions the importer reads (the screen's note lists them): anything else (an .html page, a .docx) would go
+    /// in as raw code, found by nothing.
+    public static let readableExtensions: Set<String> = ["txt", "md", "markdown", "csv", "json", "pdf"]
+
+    public static func readable(_ fileName: String) -> Bool {
+        guard let dot = fileName.lastIndex(of: ".") else { return false }
+        return readableExtensions.contains(fileName[fileName.index(after: dot)...].lowercased())
+    }
+
     /// `markdown`: a .md file, cut at its headings first (`markdownSections`).
     public struct Doc: Sendable, Equatable {
         public var title: String
