@@ -1,6 +1,24 @@
 # boar-ios — native iOS BOAR
 
-TL;DR: SwiftUI app + a Swift port of the android-native Kotlin engine. The Kotlin engine is the reference; the golden fixtures in `Fixtures/golden/` are the parity contract. Apple AI frameworks plug in behind one model seam in `BoarCore`.
+TL;DR: SwiftUI app + a Swift port of the android-native Kotlin engine. The Android app is the product and leads; iOS follows it in behaviour, screens and look. The golden fixtures in `Fixtures/golden/` are the parity contract. Apple AI frameworks plug in behind one model seam in `BoarCore`. iOS first; the Mac target comes after the iPhone app is on the App Store.
+
+## Who and where (since 2026-11-04)
+
+- **Owner: Biel** (GitHub `Bielcx`, push; the org account `sopacrew` is admin). r4to (r4topunk) left the project; the rules that named him are gone.
+- **Plan and progress:** https://claude.ai/artifact/PxWTkJ3v9zvvY4mNBu6UxN (phases 0–5, one status per step). The page keeps status in its db: collection `status`, doc id = the step id in the page source, body `{s: "todo"|"doing"|"done", at: <ISO date>}`. When a step changes, read the collection, then write it with the `ArtifactData` tool.
+- **Android reference:** `rferrari/boar-app`, branch **`main`** (android-native was merged into main; 2.0.0-rc2 on 2026-10-25). Local clone at `../boar-app` with remote `upstream`; Biel can't push there. Run `git -C ../boar-app fetch upstream` before reading it.
+- **This checkout (Windows PC, `~/Dev/boar-ios-app`)** is where code is read, edited and committed. Swift doesn't build on Windows.
+- **Build host: Mac mini `cx`** (M4, 16 GB, macOS 26.7.1), account `bielcx`, Biel's private account (the team's `eve` account must not see work in progress). SSH by key, home LAN only: `ssh -i ~/.ssh/id_ed25519_cx bielcx@10.0.10.226`. It also runs Biel's OpenClaw gateway (LaunchDaemon `ai.openclaw.gateway`): never stop it, and watch RAM.
+- **The loop:** edit here, then `bash scripts/cx.sh '<command>'` copies the working tree to `~/Dev/boar-ios-app` on cx and runs the command there (Homebrew on PATH; `DEVELOPER_DIR` set to Xcode 27 once it is installed). Build products, `Vendor/` and `.build/` live only on cx.
+- **cx setup status (2026-11-04):** Command Line Tools only. Xcode 27, xcodegen, the iOS simulator runtime and signing are phase 1 of the plan, not done yet. `xcodes` needs Biel's Apple ID once; `sudo` needs Biel's password (he types it with `! ` in the session).
+- Git: line endings are LF (`core.autocrlf false` in this clone; keep it). Commit in small steps, then stop and wait for Biel's OK; open a PR only when he asks.
+
+```bash
+bash scripts/cx.sh 'bash scripts/fetch-llama.sh && swift test --scratch-path .build/cx'
+bash scripts/cx.sh 'xcodegen generate && xcodebuild -project Boar.xcodeproj -scheme Boar -destination "generic/platform=iOS" CODE_SIGNING_ALLOWED=NO -derivedDataPath .build/DerivedData build'
+```
+
+## Build commands (run on cx)
 
 ```bash
 export DEVELOPER_DIR=/Applications/Xcode-27.0.0.app/Contents/Developer   # always build with Xcode 27 (iOS 27 SDK)
@@ -29,6 +47,7 @@ xcodebuild -project Boar.xcodeproj -scheme BoarMac -destination 'platform=macOS'
 
 ## Rules
 
+- **Android leads.** Every Android change on `upstream/main` is either ported or skipped with a written reason. Weekly: `scripts/sync-reference.sh` (now defaults to `upstream/main`), list the android-native commits since `Fixtures/SOURCE_SHA`, port them. On 2026-11-04 the fixtures were at `f174f35c` (2026-10-15) and android-native had 443 commits on top (PIN, Personal Files, Boar Labs, the Boar icon pack, themes, rc2 fixes). Some were ported before the hand-over, so compare behaviour, not commit counts.
 - **Parity first.** Port behaviour exactly, including string handling, regex semantics, rounding and ordering. Each Kotlin golden test gets a Swift Testing counterpart that reads the same fixture. A failing golden is a bug in the port, never a reason to edit the fixture.
 - Tests find fixtures relative to `#filePath` (repo root → `Fixtures/golden`), no SwiftPM resources.
 - The engine (`Sources/*`) never imports SwiftUI or UIKit and never imports from `App/`.
@@ -40,18 +59,21 @@ xcodebuild -project Boar.xcodeproj -scheme BoarMac -destination 'platform=macOS'
 
 ## App conventions (Apple patterns)
 
-**Stock Apple UI, no brand design system** (r4to, 2026-10-15): system font with semantic text styles, semantic system colors plus one AccentColor tint, standard List/Form/toolbar/sheet components. Never port the Android Campfire/Moonlight tokens, the Baloo 2/Lexend fonts, glows, gradients or hand-made cards and capsules. The mascot appears only in About and the app icon.
+**Android's look, Apple's pieces** (Biel, 2026-11-04; replaces r4to's "stock Apple UI, no brand"). Someone holding both phones sees the same app; an iPhone user still gets iPhone behaviour.
 
-Any work in `App/` follows the `swiftui-pro` skill (Paul Hudson, MIT, installed in the workspace's `.claude/skills/swiftui-pro`), with our iOS 26.0 deployment target: its iOS 27-only advice goes behind `#available`.
+- **Same as Android:** screens and their order, flows, copy (EN and PT), the Boar icon pack, the mascot where Android shows it, the themes and their tokens (`ui/theme/ThemeTokens.kt`, `Theme.kt`, `ExtraThemes.kt` in `.ref/android-native/app/...`), the BOAR fonts (`res/font`), accents and glyphs. Compare each screen with an Android capture side by side before calling it done.
+- **Apple's pieces:** navigation and back gestures, sheets, lists and forms, keyboard and text input, menus, the share sheet, file and photo pickers, Face ID, haptics, Dynamic Type, VoiceOver, and Liquid Glass where the system applies it. Never draw Android chrome (Material top bars, FABs, snackbars, ripples) on iOS.
+- Theme tokens live in one place (asset catalog colors or a `Theme` type) and are used by name; no literal colors in views. Light and dark both work.
+- Where Android has no icon, use an SF Symbol at the same weight.
 
 - SwiftUI + Observation: `@Observable` models injected with `.environment`, `@State` for view-owned state, `@Bindable` for bindings. No `ObservableObject`.
 - Navigation: `NavigationSplitView` (sessions sidebar → chat), `NavigationStack` inside; sheets for setup/settings flows; `Form` for settings; `ContentUnavailableView` for empty states; `ShareLink`; `.fileImporter` and `PhotosPicker` for documents.
 - Standard system components so Liquid Glass applies; no custom navigation chrome. SF Symbols, Dynamic Type, VoiceOver labels, light and dark.
-- Strings in a String Catalog (`Localizable.xcstrings`), English source.
+- Strings in a String Catalog (`Localizable.xcstrings`), English source, **Portuguese required**: the build is English only today; Android's PT is in `res/values-pt/strings*.xml`. The language follows the system.
 - Security: PIN lock becomes LocalAuthentication (Face ID / passcode); secrets in the Keychain; CryptoKit for the text cipher.
 - Downloads: background `URLSession`; models live in Application Support, excluded from backup.
 - Voice: SpeechAnalyzer / SpeechTranscriber on device. OCR: Vision document recognition. Siri: App Intents + App Shortcuts ("Ask BOAR").
-- Bundle id `team.sopa.boar.native` (coexists with the Expo build on the test iPhone). Signing team comes from the git-ignored `Local.xcconfig`.
+- Bundle id `team.sopa.boar.native` for now (it coexisted with the old Expo build). The final id is a phase-0 decision and can't change after the first App Store Connect upload. The signing team comes from the git-ignored `Local.xcconfig` (r4to's copy didn't come with the repo; Biel's is made in phase 1).
 
 ## Mac app
 
@@ -66,12 +88,13 @@ Any work in `App/` follows the `swiftui-pro` skill (Paul Hudson, MIT, installed 
 ## Mac on Your Network (remote engine)
 
 - Settings → Advanced → Engine → "Mac on Your Network": an address (`mac-mini.local:8080`) and an optional API key (Keychain). Retrieval, the library and chats stay on the device; generation streams from llama-server.
-- On the serving Mac: `scripts/serve-remote.sh <model.gguf> [port] [api-key]` (binds 0.0.0.0, `--jinja`). Do not start it on the research Mac mini without r4to's OK: it competes with the running arms.
+- On the serving Mac: `scripts/serve-remote.sh <model.gguf> [port] [api-key]` (binds 0.0.0.0, `--jinja`). cx can serve it on the LAN for tests: always set an API key, and stop it afterwards (RAM is shared with OpenClaw).
 - Tests: `swift test --filter BoarRemoteTests` (pure); `BOAR_REMOTE_URL=http://127.0.0.1:8199 swift test --filter RemoteSmokeTests` against a real server. DEBUG launch arg `-uiRemote <address>` selects the engine and checks the connection on launch.
 
 ## Devices
 
-- Test iPhone: iPhone 13 (iPhone14,5), iOS 26.6, 4 GB RAM, no Apple Intelligence → llama.cpp path with the 1.5B model.
-- No iOS 27 simulator runtime is installed, but the iOS 26.1 runtime is, and the app (deployment target 26.0) runs there: `xcodebuild ... -destination 'platform=iOS Simulator,id=<udid>'`, then `xcrun simctl install/launch`. Core AI and Vision's `OCRTool` overlay are not in the Simulator SDK, so that code sits behind `#if canImport(CoreAI)` / `#if !targetEnvironment(simulator)`. Models for a simulator run: APFS-clone (`cp -c`) the GGUFs from `../shared-models` into the app container's `Library/Application Support/BOAR/models/` under the catalog filenames.
-- **Performance:** measure Release builds on the cabled iPhone with `scripts/perf.sh` (docs/PERF.md). llama.cpp runs on the CPU on iPhone/iPad: runtime Metal shader compilation thrashed the 4 GB iPhone 13 (`BOAR_METAL=1` to experiment). Build, sign and install on this MacBook; never on the Mac mini (it runs the research jobs).
-- The MacBook has little free disk: one shared DerivedData under `.build/`, delete stale scratch paths when done.
+- Test iPhone: Biel's (record the model and iOS version here). r4to tested on an iPhone 13 with 4 GB RAM; 4 GB phones stay the target to protect (llama.cpp path with the 1.5B model, no Apple Intelligence).
+- Pair the iPhone with cx over USB once; after that `xcrun devicectl` installs over the home Wi-Fi. cx has no screen: a dummy HDMI plug makes Screen Sharing usable when Instruments or an Xcode dialog needs a display.
+- Simulator: install an iOS 26.x runtime on cx; the app runs there: `xcodebuild ... -destination 'platform=iOS Simulator,id=<udid>'`, then `xcrun simctl install/launch`. Core AI and Vision's `OCRTool` overlay are not in the Simulator SDK, so that code sits behind `#if canImport(CoreAI)` / `#if !targetEnvironment(simulator)`. Models for a simulator run: APFS-clone (`cp -c`) the GGUFs from `~/shared-models` on cx (empty for now; r4to's copy didn't come with the repo) into the app container's `Library/Application Support/BOAR/models/` under the catalog filenames.
+- **Performance:** measure Release builds on the cabled iPhone with `scripts/perf.sh` (docs/PERF.md). llama.cpp runs on the CPU on iPhone/iPad: runtime Metal shader compilation thrashed the 4 GB iPhone 13 (`BOAR_METAL=1` to experiment). Build, sign and install from cx.
+- cx disk: ~94 GB free before Xcode. One shared DerivedData under `.build/`; delete stale scratch paths when done.
