@@ -81,6 +81,22 @@ import Testing
         }
     }
 
+    @Test func personalFilesAutoLengthIs768EvenUnderDeepResearch() {
+        let s = AppSettings(store: InMemoryKeyValueStore())
+        s.personalityId = "personal"
+        #expect(s.maxTokens == AppSettings.personalMaxTokens)
+        s.deepResearchMode = true
+        #expect(s.maxTokens == 768)
+    }
+
+    @Test func aSavedExecutiveSummaryOpensInDetailed() {
+        let store = InMemoryKeyValueStore()
+        store.setValue(.string("summary"), forKey: "personalityId")
+        #expect(AppSettings(store: store).personalityId == "detailed")
+        store.setValue(.string("succinct"), forKey: "personalityId")
+        #expect(AppSettings(store: store).personalityId == "succinct")
+    }
+
     @Test func autoAnswerLengthIs2048WithDeepResearchOnInAnyStyleAndAPickStillWins() {
         let s = AppSettings(store: InMemoryKeyValueStore())
         s.deepResearchMode = true

@@ -10,7 +10,12 @@ public final class AppSettings: @unchecked Sendable {
     public let store: KeyValueStore
     private let writeLock = NSLock()
 
-    public init(store: KeyValueStore) { self.store = store }
+    public init(store: KeyValueStore) {
+        self.store = store
+        // Executive Summary became Personal Files (rc1): a saved Summary opens in Detailed, the default, not in a style
+        // that answers only from the user's files.
+        if str("personalityId") == Self.retiredSummaryStyle { set("personalityId", .string("detailed")) }
+    }
 
     // MARK: typed access
 
@@ -78,6 +83,10 @@ public final class AppSettings: @unchecked Sendable {
     public static let defaultMaxTokens = 512
     /// Detailed answers ran past 512 tokens and stopped mid-sentence.
     public static let detailedMaxTokens = 1024
+    /// Personal Files: the fact first, then two to four sentences; between Succinct's and Detailed's lengths.
+    public static let personalMaxTokens = 768
+    /// The retired Executive Summary style's id, moved to Detailed when settings load.
+    public static let retiredSummaryStyle = "summary"
     /// A Deep Research write-up, any style; the largest choice in Settings.
     public static let researchMaxTokens = 2048
     /// Context kept for the prompt (instructions, sources, history) when Auto sizes the answer.
@@ -93,8 +102,9 @@ public final class AppSettings: @unchecked Sendable {
         return min(cap, max(minAutoTokens, openedContext - promptReserve))
     }
 
-    /// No style set means Detailed, the app's default.
+    /// No style set means Detailed, the app's default. Personal Files comes first: Deep Research steps aside in that style.
     public static func autoMaxTokens(personalityId: String?, deepResearch: Bool = false) -> Int {
+        if personalityId == "personal" { return personalMaxTokens }
         if deepResearch { return researchMaxTokens }
         if (personalityId ?? "detailed") == "detailed" { return detailedMaxTokens }
         return defaultMaxTokens
