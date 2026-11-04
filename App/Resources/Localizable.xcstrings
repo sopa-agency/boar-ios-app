@@ -1,6 +1,26 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "Short answer: health questions are kept brief." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resposta curta: perguntas de saúde ficam breves."
+          }
+        }
+      }
+    },
+    "Short answer: seed-phrase questions are kept brief, for your safety." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resposta curta: perguntas sobre frase-semente ficam breves, para sua segurança."
+          }
+        }
+      }
+    },
     "From this device, with the part BOAR used marked." : {
       "localizations" : {
         "pt" : {

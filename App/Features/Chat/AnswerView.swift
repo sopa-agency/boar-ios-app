@@ -38,6 +38,14 @@ struct AnswerView: View {
                 if let failure = message.failure {
                     failureRow(failure)
                 }
+                // Answered in another style than the one picked (a health question under Detailed): said once, under it.
+                if !streaming, let note = message.receipt?.styleNote {
+                    switch note {
+                    case "health": MessageNote(symbol: Symbols.shortAnswer, text: "Short answer: health questions are kept brief.", warning: false)
+                    case "seed": MessageNote(symbol: Symbols.shortAnswer, text: "Short answer: seed-phrase questions are kept brief, for your safety.", warning: false)
+                    default: EmptyView()
+                    }
+                }
                 if message.stopped { MessageNote(symbol: Symbols.stop, text: "Stopped", warning: false) }
                 if message.timedOut { MessageNote(symbol: Symbols.caution, text: "A research step took too long and was cut short", warning: true) }
                 if !message.text.isEmpty && !streaming {

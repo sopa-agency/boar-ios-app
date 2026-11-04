@@ -296,7 +296,11 @@ final class ChatController {
         let personal = PersonalFiles.isOn(chosenStyle)
         // A small answer model (the 1.5B) gets Detailed without D4's "Always do what the user asks" (r4to, Oct 18).
         let smallModel = (services.answerModel()?.sizeBytes ?? .max) < Personalities.smallModelBytes
-        let (systemPrompt, styleReminder) = services.personalities.promptFor(chosenStyle, customPrompt: settings.customSystemPrompt, smallModel: smallModel)
+        // Health and seed-phrase questions answer in Succinct even under Detailed: a padded detail there can hurt (r4to's
+        // audits: 20 % of Detailed's first-aid claims wrong). A follow-up in such a chat too ("and for how long?").
+        let shortReason = ShortAnswer.reason(chosenStyle: chosenStyle, question: q, previousQuestion: prior.last { $0.isUser }?.text)
+        let style = shortReason != nil ? "succinct" : chosenStyle
+        let (systemPrompt, styleReminder) = services.personalities.promptFor(style, customPrompt: settings.customSystemPrompt, smallModel: smallModel)
         // The answer a meta follow-up ("summary", "continue") is written from: the last one with text.
         let lastAnswer = prior.last { !$0.isUser && !$0.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
         // Every answered question so far, oldest first: what "summarize our conversation" is written from.
@@ -466,7 +470,8 @@ final class ChatController {
             receipt = Receipt(
                 totalMs: Self.seconds(startAt.duration(to: end)) * 1000, ttftMs: Self.seconds(startAt.duration(to: firstAt)) * 1000,
                 tokPerSec: decodeRate > 0 ? decodeRate : wallRate, tokens: (metrics?.generatedTokens ?? 0) > 0 ? metrics!.generatedTokens : tokens,
-                model: modelLabel, retrievalMs: retrievalMs, prefillMs: metrics?.prefillMs, contextTokens: metrics?.promptTokens, loadMs: loadMs)
+                model: modelLabel, retrievalMs: retrievalMs, prefillMs: metrics?.prefillMs, contextTokens: metrics?.promptTokens, loadMs: loadMs,
+                styleNote: shortReason == ShortAnswer.smallTalk ? nil : shortReason)
         }
         let finalText = text
         let meta = (!shown.isEmpty || receipt != nil) ? MessageMeta.encode(shown, receipt) : nil

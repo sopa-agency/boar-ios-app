@@ -20,5 +20,5 @@ public enum AnswerPath: String, Sendable, Equatable {
     }
 
     /// A thank-you or greeting (ShortAnswer.isSmallTalk): a short reply.
-    public static func isSmallTalk(_ question: String) -> Bool { Classify.classifyTask(question) == .greeting }
+    public static func isSmallTalk(_ question: String) -> Bool { ShortAnswer.isSmallTalk(question) }
 }
