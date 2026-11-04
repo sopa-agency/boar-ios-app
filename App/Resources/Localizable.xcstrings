@@ -1,6 +1,66 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "Ask Before Deleting a Chat" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Perguntar antes de apagar um chat"
+          }
+        }
+      }
+    },
+    "New chats are named from your first message. Older chats are removed past the limit. Off, one tap deletes a chat." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chats novos ganham o nome da sua primeira mensagem. Os mais antigos saem quando passam do limite. Desligado, um toque apaga um chat."
+          }
+        }
+      }
+    },
+    "Fastest answers. The %@ gets warmer and uses more battery, and answers have no time limit (use Stop). Best while charging." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Respostas mais rápidas. O %@ esquenta mais e gasta mais bateria, e as respostas não têm limite de tempo (use Parar). Melhor carregando."
+          }
+        }
+      }
+    },
+    "This %@ has less than 8 GB of RAM: large models may run out of memory." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este %@ tem menos de 8 GB de RAM: modelos grandes podem ficar sem memória."
+          }
+        }
+      }
+    },
+    "Run" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Correr"
+          }
+        }
+      }
+    },
+    "Keep Auto" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Manter Auto"
+          }
+        }
+      }
+    },
     "Try Again with Less Memory" : {
       "localizations" : {
         "pt" : {
@@ -1143,9 +1203,6 @@
 
     },
     "New Chat" : {
-
-    },
-    "New chats are named from your first message. Older chats are removed past the limit." : {
 
     },
     "Newest" : {

@@ -16,10 +16,13 @@ struct SettingsMemorySection: View {
                 SettingsLabel("Saved Chats to Keep", symbol: "tray.full.fill", color: .brown)
             }
             .pickerStyle(.menu)
+            Toggle(isOn: bridge.binding({ $0.confirmChatDelete }, { $0.confirmChatDelete = $1 })) {
+                SettingsLabel("Ask Before Deleting a Chat", symbol: "trash.fill", color: .red)
+            }
         } header: {
             Text("Chats")
         } footer: {
-            Text("New chats are named from your first message. Older chats are removed past the limit.")
+            Text("New chats are named from your first message. Older chats are removed past the limit. Off, one tap deletes a chat.")
         }
     }
 }

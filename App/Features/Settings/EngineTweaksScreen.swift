@@ -28,6 +28,20 @@ struct EngineTweaksScreen: View {
 
     private func autoLabel(_ value: some CustomStringConvertible) -> Text { Text("Auto (\(value.description))") }
 
+    /// Fastest, picked for the first time: its heat and battery warning first (android `runPresetWarned`).
+    @State private var warningRun = false
+
+    private func choose(_ p: TweakPreset, _ tw: EngineTweaks) {
+        if p == .run && !services.settings.runPresetWarned { warningRun = true } else { save(p.applyTo(tw)) }
+    }
+
+    /// The warning, with a line for a phone under 8 GB, where large models may run out of memory.
+    private var runWarning: String {
+        let base = String(localized: "Fastest answers. The \(Platform.deviceNoun) gets warmer and uses more battery, and answers have no time limit (use Stop). Best while charging.")
+        guard services.totalRamBytes < 8 * 1_000_000_000 else { return base }
+        return base + "\n\n" + String(localized: "This \(Platform.deviceNoun) has less than 8 GB of RAM: large models may run out of memory.")
+    }
+
     var body: some View {
         let tw = tweaks
         let auto = EngineTweaks().resolve(services.topology, totalRamBytes: services.totalRamBytes).params
@@ -36,7 +50,7 @@ struct EngineTweaksScreen: View {
         let preset = TweakPreset.of(tw)
         Form {
             Section {
-                Picker(selection: Binding(get: { preset }, set: { p in if let p { save(p.applyTo(tw)) } })) {
+                Picker(selection: Binding(get: { preset }, set: { p in if let p { choose(p, tw) } })) {
                     ForEach(TweakPreset.allCases, id: \.self) { p in
                         Label(Self.presetName(p), systemImage: p.symbol).tag(Optional(p))
                     }
@@ -158,6 +172,15 @@ struct EngineTweaksScreen: View {
         }
         .navigationTitle("Engine Tweaks")
         .inlineNavigationTitle()
+        .alert(Self.presetName(.run), isPresented: $warningRun) {
+            Button("Run") {
+                services.settings.runPresetWarned = true
+                save(TweakPreset.run.applyTo(tweaks))
+            }
+            Button("Keep Auto", role: .cancel) {}
+        } message: {
+            Text(runWarning)
+        }
     }
 
     static func presetName(_ p: TweakPreset) -> String {

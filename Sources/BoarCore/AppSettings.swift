@@ -79,7 +79,7 @@ public final class AppSettings: @unchecked Sendable {
         "themeId", "fontScale", "personalityId", "maxTokens", "deepResearchMode", "researchBannerHidden",
         "adaptiveRoutingEnabled", "routingPreset", "engineTweaks", "showLiveStats", "voiceInputEnabled", "hapticsEnabled",
         "hidePromptIdeas", "autoSummarize", "historyTurnThreshold", "maxSavedSessions", "autoGenerateTitles",
-        "freeMemoryInBackground", "freeMemoryAfterMinutes",
+        "freeMemoryInBackground", "freeMemoryAfterMinutes", "confirmChatDelete",
     ]
     public static let defaultMaxTokens = 512
     /// Detailed answers ran past 512 tokens and stopped mid-sentence.
@@ -124,6 +124,10 @@ public final class AppSettings: @unchecked Sendable {
     public var languageId: String? { get { str("languageId") } set { set("languageId", newValue.map(JSONValue.string)) } }
     public var voiceInputEnabled: Bool { get { bool("voiceInputEnabled") ?? true } set { set("voiceInputEnabled", .bool(newValue)) } }
     public var hapticsEnabled: Bool { get { bool("hapticsEnabled") ?? true } set { set("hapticsEnabled", .bool(newValue)) } }
+    /// Settings → "Ask before deleting a chat": on by default; off, one tap deletes it.
+    public var confirmChatDelete: Bool { get { bool("confirmChatDelete") ?? true } set { set("confirmChatDelete", .bool(newValue)) } }
+    /// The Fastest preset's heat and battery warning was shown and accepted once (android `runPresetWarned`).
+    public var runPresetWarned: Bool { get { bool("runPresetWarned") ?? false } set { set("runPresetWarned", .bool(newValue)) } }
     /// Settings → "Free memory when I leave BOAR" (FreeMemory): on by default.
     public var freeMemoryInBackground: Bool { get { bool("freeMemoryInBackground") ?? true } set { set("freeMemoryInBackground", .bool(newValue)) } }
     /// Advanced → "Free memory after", in minutes; nil is Auto (at once).

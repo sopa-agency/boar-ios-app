@@ -41,13 +41,13 @@ struct SessionsSidebar: View {
                     SessionRow(session: session)
                         .tag(SidebarItem.session(session.id))
                         .swipeActions(edge: .trailing) {
-                            Button("Delete", systemImage: Symbols.delete, role: .destructive) { deleting = session }
+                            Button("Delete", systemImage: Symbols.delete, role: .destructive) { askDelete(session) }
                                 .disabled(isAnswering(in: session))
                             Button("Rename", systemImage: "pencil") { startRename(session) }
                         }
                         .contextMenu {
                             Button("Rename", systemImage: "pencil") { startRename(session) }
-                            Button("Delete", systemImage: Symbols.delete, role: .destructive) { deleting = session }
+                            Button("Delete", systemImage: Symbols.delete, role: .destructive) { askDelete(session) }
                                 .disabled(isAnswering(in: session))
                         }
                 }
@@ -82,7 +82,7 @@ struct SessionsSidebar: View {
         // The Delete key on a selected chat, and the Chat menu's Rename / Delete / Find commands.
         .onDeleteCommand {
             if let id = model.selectedSessionId, let session = model.sessions.first(where: { $0.id == id }),
-               !isAnswering(in: session) { deleting = session }
+               !isAnswering(in: session) { askDelete(session) }
         }
         .onChange(of: model.sidebarRequest) { _, request in handle(request) }
         #endif
@@ -105,7 +105,7 @@ struct SessionsSidebar: View {
         switch request {
         case .find: searching = true
         case .rename(let id): if let s = model.sessions.first(where: { $0.id == id }) { startRename(s) }
-        case .delete(let id): if let s = model.sessions.first(where: { $0.id == id }) { deleting = s }
+        case .delete(let id): if let s = model.sessions.first(where: { $0.id == id }) { askDelete(s) }
         }
     }
     #endif
@@ -126,6 +126,11 @@ struct SessionsSidebar: View {
     private func rename(_ session: ChatSession) {
         let title = newTitle
         Task { await model.renameSession(session.id, to: title) }
+    }
+
+    /// Settings → Ask before deleting a chat: on, the dialog naming the chat; off, one tap deletes it.
+    private func askDelete(_ session: ChatSession) {
+        if chat.services.settings.confirmChatDelete { deleting = session } else { delete(session) }
     }
 
     private func delete(_ session: ChatSession) {
