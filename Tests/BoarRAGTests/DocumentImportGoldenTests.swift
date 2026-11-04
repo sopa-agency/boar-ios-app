@@ -3,7 +3,10 @@ import BoarRAG
 import Foundation
 import Testing
 
-/// Document import must make the same collection and chunks as importDocuments (scripts/export-native-golden-import.mjs).
+/// Document import must make the same collection and chunks as importDocuments (scripts/export-native-golden-import.mjs),
+/// except for Markdown, which the native app cuts at its headings (Oct 21): there each heading starts one part, and the
+/// other files of the same import still match the TS. The native app adds a card for each long file (Oct 23,
+/// OwnFiles.card), after the parts: the TS comparison is on the parts.
 @Suite struct DocumentImportGoldenTests {
     @Test func sameCollectionChunksAndEmbeddingInputsAsTheTS() async throws {
         let runs = try Fixtures.golden("import.json").arr
@@ -24,12 +27,31 @@ import Testing
             #expect(m.name == col["name"]!.str)
             #expect(m.sourceFilename == col["sourceFilename"]!.str)
             #expect(m.docCount == col["docCount"]!.i64)
-            #expect(m.chunkCount == col["chunkCount"]!.i64)
             #expect(m.sizeBytes == col["sizeBytes"]!.i64)
-            let rows = try db.query("SELECT chunk_id, doc_id, title, body, source, collection_id FROM chunks ORDER BY rowid") { r in (0...5).map { r.string($0) } }
+            // A Markdown file's parts follow its headings, not the TS's fixed slices.
+            func isMarkdown(_ source: String?) -> Bool { (source ?? "").hasSuffix(".md") }
+            let headings = files.filter { isMarkdown($0.name) }.reduce(0) { n, f in
+                n + f.text.components(separatedBy: "\n").filter { $0.hasPrefix("# ") || $0.hasPrefix("## ") }.count
+            }
+            let markdown = headings > 0
+            let all = try db.query("SELECT chunk_id, doc_id, title, body, source, collection_id FROM chunks ORDER BY rowid") { r in (0...5).map { r.string($0) } }
+            let cards = all.filter { $0[0]!.hasSuffix(OwnFiles.cardSuffix) }
+            let rows = all.filter { !$0[0]!.hasSuffix(OwnFiles.cardSuffix) }
+            // Cards come last, one per long file that is one document.
+            #expect(try DocumentImport.cards(collectionId: id, files: files).map(\.chunkId) == cards.map { $0[0]! }, "\(name)")
+            #expect(Array(all.prefix(rows.count)) == rows, "\(name)")
             let want: [[String?]] = run["chunks"]!.arr.map { c in ["chunkId", "docId", "title", "body", "source"].map { c[$0]!.str } + [id] }
-            #expect(rows == want, "\(name)")
-            #expect(embedded.values == run["embedded"]!.arr.map { $0.str! }, "\(name)")
+            #expect(rows.filter { !isMarkdown($0[4]) } == want.filter { !isMarkdown($0[4]) }, "\(name)")
+            #expect(rows.filter { isMarkdown($0[4]) }.count == headings, "\(name)")
+            #expect(m.chunkCount == Int64(all.count))
+            if !markdown { #expect(col["chunkCount"]!.i64 == Int64(rows.count)) }
+            let parts = Array(embedded.values.prefix(rows.count))
+            if !markdown {
+                #expect(parts == run["embedded"]!.arr.map { $0.str! }, "\(name)")
+            } else {
+                #expect(parts == rows.map { "\($0[2]!)\n\($0[3]!)" }, "\(name)")
+            }
+            #expect(Array(embedded.values.dropFirst(rows.count)) == cards.map { "\($0[2]!)\n\($0[3]!)" }, "\(name)")
             // collectionId: "custom-<ms>-<slug of the name>"
             let ms = Int64(id.dropFirst("custom-".count).split(separator: "-", maxSplits: 1)[0])!
             #expect(DocumentImport.collectionId(name, nowMs: ms) == id)

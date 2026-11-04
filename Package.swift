@@ -20,7 +20,7 @@ let package = Package(
     targets: [
         .target(name: "BoarCore"),
         .target(name: "BoarRouting", dependencies: ["BoarCore"]),
-        .target(name: "BoarRAG", dependencies: ["BoarCore", .product(name: "libzstd", package: "zstd")]),
+        .target(name: "BoarRAG", dependencies: ["BoarCore", "BoarModels", .product(name: "libzstd", package: "zstd")]),
         .target(name: "BoarModels", dependencies: ["BoarCore"], resources: [.process("Resources")]),
         .target(name: "BoarAnswer", dependencies: ["BoarCore", "BoarRouting", "BoarRAG", "BoarModels"]),
         .binaryTarget(name: "llama", path: "Vendor/llama.xcframework"),

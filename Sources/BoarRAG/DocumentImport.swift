@@ -1,9 +1,11 @@
 import BoarCore
+import BoarModels
 import Foundation
 
 /// The user's own documents as a searchable collection (port of src/services/documentImporter.ts): text, Markdown, CSV
 /// and JSON (a list of { title, body } documents, or any JSON as text) cut into overlapping ~500-token chunks and embedded
-/// into the knowledge base. Same ids, titles and chunks as the TS (golden test). PDF text is extracted by the caller.
+/// into the knowledge base; Markdown is cut at its headings first. Same ids, titles and chunks as the TS for everything
+/// but Markdown (golden test). PDF text is extracted by the caller.
 public enum DocumentImport {
     private static let charsPerToken = 4
     public static let chunkChars = 500 * charsPerToken
@@ -13,11 +15,15 @@ public enum DocumentImport {
     public static let textLimit: Int64 = 25_000_000
     public static let pdfLimit: Int64 = 100_000_000
 
+    /// `markdown`: a .md file, cut at its headings first (`markdownSections`).
     public struct Doc: Sendable, Equatable {
         public var title: String
         public var source: String
         public var body: String
-        public init(title: String, source: String, body: String) { self.title = title; self.source = source; self.body = body }
+        public var markdown: Bool
+        public init(title: String, source: String, body: String, markdown: Bool = false) {
+            self.title = title; self.source = source; self.body = body; self.markdown = markdown
+        }
     }
 
     public struct File: Sendable, Equatable {
@@ -56,6 +62,33 @@ public enum DocumentImport {
     }
 
     private static let newline = Rx("\\r?\\n")
+    /// A line that opens a Markdown section: "# " or "## " (deeper headings stay inside their section).
+    private static let sectionHeading = Rx("^#{1,2} ")
+
+    /// A Markdown file's sections, each starting with its "# " or "## " heading line; text before the first heading is a
+    /// section of its own. A part then holds one whole section, so a fact and the heading that names it stay together
+    /// (the X6's notes, Oct 21: a fixed slice cut the line with the number away from its title).
+    public static func markdownSections(_ text: String) -> [String] {
+        var out: [String] = []
+        var current = ""
+        func close() {
+            let t = Js.trim(current)
+            if !t.isEmpty { out.append(t) }
+            current = ""
+        }
+        for line in newline.split(text) {
+            if sectionHeading.contains(line) { close() }
+            current += line + "\n"
+        }
+        close()
+        return out
+    }
+
+    /// The pieces of one document: Markdown by section (a long section sliced as `chunkText` does), the rest as before.
+    public static func pieces(_ doc: Doc) -> [String] {
+        guard doc.markdown else { return chunkText(doc.body) }
+        return markdownSections(doc.body).flatMap { $0.u16Count <= chunkChars ? [$0] : chunkText($0) }
+    }
 
     /// csvToText: one line per row, cells joined with " | ".
     public static func csvToText(_ raw: String) -> String {
@@ -121,7 +154,7 @@ public enum DocumentImport {
             return [Doc(title: title, source: file.name, body: file.text)]
         }
         if ext == "csv" { return [Doc(title: title, source: file.name, body: csvToText(file.text))] }
-        return [Doc(title: title, source: file.name, body: file.text)]
+        return [Doc(title: title, source: file.name, body: file.text, markdown: ext == "md" || ext == "markdown")]
     }
 
     /// The collection's chunks: ids "<collection>-doc<i>-<slug>-c<j>", titles "<title> (part j/n)" when a doc splits.
@@ -129,7 +162,7 @@ public enum DocumentImport {
         var chunks: [Chunk] = []
         for (di, doc) in docs.enumerated() {
             let docId = "\(collectionId)-doc\(di)-\(slug(doc.title))"
-            let pieces = chunkText(doc.body)
+            let pieces = pieces(doc)
             for (i, body) in pieces.enumerated() {
                 chunks.append(Chunk(
                     chunkId: "\(docId)-c\(i)", docId: docId, title: pieces.count > 1 ? "\(doc.title) (part \(i + 1)/\(pieces.count))" : doc.title,
@@ -144,8 +177,26 @@ public enum DocumentImport {
         "custom-\(nowMs)-\(slug(name))"
     }
 
-    /// importDocuments: parse, chunk, create the collection, embed each chunk as "title\nbody". On failure or stop the
-    /// half-made collection is removed.
+    /// The cards of a collection (OwnFiles.card): one for each file that is one long document, in `plan`'s doc order. A
+    /// file that is a list of documents (JSON) has none: its documents are the file's own outline.
+    public static func cards(collectionId: String, files: [File]) throws -> [Chunk] {
+        var di = 0
+        var out: [Chunk] = []
+        for f in files {
+            let docs = try parse(f)
+            let first = di
+            di += docs.count
+            guard docs.count == 1, let doc = docs.first else { continue }
+            if let card = OwnFiles.card(
+                docId: "\(collectionId)-doc\(first)-\(slug(doc.title))", collectionId: collectionId, title: doc.title, fileName: f.name,
+                body: doc.body, parts: pieces(doc).count, size: Units.formatBytes(f.sizeBytes)
+            ) { out.append(card) }
+        }
+        return out
+    }
+
+    /// importDocuments: parse, chunk, create the collection, embed each chunk as "title\nbody", then a card for each long
+    /// file (`cards`). On failure or stop the half-made collection is removed.
     public static func importDocuments(
         kb: KnowledgeBase, embed: @Sendable (String) async throws -> [Float], files: [File], collectionName: String,
         collectionId: String? = nil, onProgress: (_ done: Int, _ total: Int) -> Void = { _, _ in }, shouldStop: () -> Bool = { false }
@@ -153,18 +204,18 @@ public enum DocumentImport {
         let id = collectionId ?? Self.collectionId(collectionName)
         var docs: [Doc] = []
         for f in files { docs += try parse(f) }
-        let planned = plan(collectionId: id, docs: docs)
+        let all = plan(collectionId: id, docs: docs).chunks + (try cards(collectionId: id, files: files))
         try kb.createCollection(
             id: id, name: collectionName, sourceFilename: files.map(\.name).joined(separator: ", "),
-            docCount: Int64(docs.count), chunkCount: Int64(planned.chunks.count), sizeBytes: files.reduce(0) { $0 + $1.sizeBytes }
+            docCount: Int64(docs.count), chunkCount: Int64(all.count), sizeBytes: files.reduce(0) { $0 + $1.sizeBytes }
         )
         do {
-            for (i, c) in planned.chunks.enumerated() {
+            for (i, c) in all.enumerated() {
                 if shouldStop() { throw SeedCorpus.Stopped() }
-                onProgress(i, planned.chunks.count)
+                onProgress(i, all.count)
                 try kb.insertChunk(c, embedding: try await embed("\(c.title)\n\(c.body)"))
             }
-            onProgress(planned.chunks.count, planned.chunks.count)
+            onProgress(all.count, all.count)
         } catch {
             try? kb.deleteCollection(id)
             throw error

@@ -71,6 +71,15 @@ import Testing
         #expect(OwnFiles.card(docId: "c-doc1-n", collectionId: "c", title: "n", fileName: "n.txt", body: "Short.", parts: 1, size: "1 kB") == nil)
     }
 
+    @Test func importCardsOnlyTheLongFilesThatAreOneDocument() throws {
+        let files = [
+            DocumentImport.File(name: "trip.md", sizeBytes: 3_000, text: longMarkdown),
+            DocumentImport.File(name: "short.txt", sizeBytes: 10, text: "Short note."),
+            DocumentImport.File(name: "list.json", sizeBytes: 100, text: #"[{"title":"A","body":""# + String(repeating: "a", count: 2_500) + #""},{"title":"B","body":"b"}]"#),
+        ]
+        #expect(try DocumentImport.cards(collectionId: "c", files: files).map(\.chunkId) == ["c-doc0-trip-card"])
+    }
+
     @Test func aCardGoesOnceAPartOfItsFileIsThere() {
         let card = Chunk(chunkId: "d-card", docId: "d", title: "d (about this file)", body: "File: d.md")
         let part = Chunk(chunkId: "d-c1", docId: "d", title: "d (part 2/3)", body: "text")
