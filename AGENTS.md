@@ -10,7 +10,7 @@ TL;DR: SwiftUI app + a Swift port of the android-native Kotlin engine. The Andro
 - **This checkout (Windows PC, `~/Dev/boar-ios-app`)** is where code is read, edited and committed. Swift doesn't build on Windows.
 - **Build host: Mac mini `cx`** (M4, 16 GB, macOS 26.7.1), account `bielcx`, Biel's private account (the team's `eve` account must not see work in progress). SSH by key, home LAN only: `ssh -i ~/.ssh/id_ed25519_cx bielcx@10.0.10.226`. It also runs Biel's OpenClaw gateway (LaunchDaemon `ai.openclaw.gateway`): never stop it, and watch RAM.
 - **The loop:** edit here, then `bash scripts/cx.sh '<command>'` copies the working tree to `~/Dev/boar-ios-app` on cx and runs the command there (Homebrew on PATH; `DEVELOPER_DIR` set to Xcode 27 once it is installed). Build products, `Vendor/` and `.build/` live only on cx.
-- **cx setup status (2026-11-04):** Command Line Tools only. Xcode 27, xcodegen, the iOS simulator runtime and signing are phase 1 of the plan, not done yet. `xcodes` needs Biel's Apple ID once; `sudo` needs Biel's password (he types it with `! ` in the session).
+- **cx setup status (2026-11-04):** Xcode 27.2 (27B52) active via `xcode-select`, xcodegen 2.46, llama.cpp b11010 fetched; `swift test` green and both targets (`Boar`, `BoarMac`) build unsigned. Still to do in phase 1: the iOS simulator runtime and signing (`Local.xcconfig`). The engine tests read the Android seed assets from `~/Dev/boar-app/assets/{corpus,lexicon}` on cx (copied from the local clone; copy them again when they change upstream). `sudo` needs Biel's password: run it from his own terminal with `ssh -t`.
 - Git: line endings are LF (`core.autocrlf false` in this clone; keep it). Commit in small steps, then stop and wait for Biel's OK; open a PR only when he asks.
 
 ```bash
@@ -21,7 +21,7 @@ bash scripts/cx.sh 'xcodegen generate && xcodebuild -project Boar.xcodeproj -sch
 ## Build commands (run on cx)
 
 ```bash
-export DEVELOPER_DIR=/Applications/Xcode-27.0.0.app/Contents/Developer   # always build with Xcode 27 (iOS 27 SDK)
+export DEVELOPER_DIR=/Applications/Xcode-27.2.0.app/Contents/Developer   # always build with Xcode 27 (iOS 27 SDK)
 bash scripts/fetch-llama.sh                                              # pinned llama.cpp b11010 XCFramework → Vendor/
 swift test --scratch-path .build/<your-name> --filter <Target>Tests      # engine tests on the Mac host
 xcodegen generate && xcodebuild -project Boar.xcodeproj -scheme Boar -destination 'generic/platform=iOS' CODE_SIGNING_ALLOWED=NO -derivedDataPath .build/DerivedData build

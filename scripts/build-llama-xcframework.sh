@@ -25,7 +25,7 @@ MINI="${MINI:?set MINI to the ssh host that builds llama.cpp}"
 SPIKE_MIRROR="${SPIKE_MIRROR:-boar/spikes/llama-b11010}"
 REMOTE_DIR='boar/kiln/tmp-llama-xcf'
 MIN_FREE_GIB=25
-export DEVELOPER_DIR="${DEVELOPER_DIR:-/Applications/Xcode-27.0.0.app/Contents/Developer}"
+export DEVELOPER_DIR="${DEVELOPER_DIR:-/Applications/Xcode-27.2.0.app/Contents/Developer}"
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 VENDOR="$ROOT/Vendor"

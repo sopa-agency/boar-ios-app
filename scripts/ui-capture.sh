@@ -7,7 +7,7 @@
 # Output: <out-dir>/<screen>-light.png and -dark.png. DerivedData: the shared .build/DerivedData.
 # The simulator keeps existing afterwards (shut down), so reruns reuse it.
 set -u
-export DEVELOPER_DIR=/Applications/Xcode-27.0.0.app/Contents/Developer
+export DEVELOPER_DIR=/Applications/Xcode-27.2.0.app/Contents/Developer
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 OUT="${1:?usage: ui-capture.sh <out-dir> [--no-build] [--only a,b] [--wait N]}"; shift
 BUILD=1; ONLY=""; WAIT=9

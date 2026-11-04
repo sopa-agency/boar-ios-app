@@ -28,8 +28,10 @@ public enum DiskSpace {
         var probe = url
         let fm = FileManager.default
         while !fm.fileExists(atPath: probe.path), probe.pathComponents.count > 1 { probe = probe.deletingLastPathComponent() }
-        guard let values = try? probe.resourceValues(forKeys: [.volumeAvailableCapacityForImportantUsageKey]),
-              let free = values.volumeAvailableCapacityForImportantUsage, free > 0 else { return nil }
-        return free
+        guard let values = try? probe.resourceValues(forKeys: [.volumeAvailableCapacityForImportantUsageKey, .volumeAvailableCapacityKey]) else { return nil }
+        // Headless sessions (SSH, no GUI login) report 0 for important usage; fall back to the plain free space.
+        if let free = values.volumeAvailableCapacityForImportantUsage, free > 0 { return free }
+        if let free = values.volumeAvailableCapacity, free > 0 { return Int64(free) }
+        return nil
     }
 }

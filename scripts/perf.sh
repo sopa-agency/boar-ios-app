@@ -7,7 +7,7 @@
 #   scripts/perf.sh log                    live device log of BOAR's perf lines (model.load, main.stall, answer…)
 #   scripts/perf.sh metrickit              copies MetricKit hang/crash payloads out of the app container
 set -euo pipefail
-export DEVELOPER_DIR=${DEVELOPER_DIR:-/Applications/Xcode-27.0.0.app/Contents/Developer}
+export DEVELOPER_DIR=${DEVELOPER_DIR:-/Applications/Xcode-27.2.0.app/Contents/Developer}
 ROOT=$(cd "$(dirname "$0")/.." && pwd)
 OUT=$ROOT/.build/perf
 DEVICE=${BOAR_DEVICE:?set BOAR_DEVICE to the iPhone UDID (xcrun devicectl list devices)}
