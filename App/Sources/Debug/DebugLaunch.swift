@@ -6,6 +6,8 @@ import Foundation
 ///     -uiDemo            seed an in-memory-style demo state (no model needed); wipes BOAR's files in the app container
 ///     -uiScreen <name>   open that screen directly (see `DebugRouter`)
 ///     -uiScroll <pts|end> scroll the main list that far once the screen is up
+///     -uiStyle <id>      pick that answer style (succinct, detailed, personal, custom) on launch
+///     -uiAsk "<q1> || <q2>"  after any -uiImport, ask the questions in one new chat, each after the previous answer
 enum DebugLaunch {
     #if DEBUG
     /// `-uiScreen <name>`: the argument domain of UserDefaults carries it.
@@ -17,6 +19,11 @@ enum DebugLaunch {
     /// `-uiImport <file>`: imports that file into a "Test Import" collection on launch (Mac test of the import path
     /// without the system's file panel, which runs in another process).
     static let importFile: String? = UserDefaults.standard.string(forKey: "uiImport")
+    /// `-uiStyle <id>`: the answer style to pick on launch.
+    static let style: String? = UserDefaults.standard.string(forKey: "uiStyle")
+    /// `-uiAsk "<q1> || <q2>"`: questions asked in a new chat on launch, each after the previous answer ends.
+    static let questions: [String] = (UserDefaults.standard.string(forKey: "uiAsk") ?? "")
+        .components(separatedBy: " || ").map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }.filter { !$0.isEmpty }
     /// `-uiScroll <points>` or `-uiScroll end`.
     static let scroll: String? = UserDefaults.standard.string(forKey: "uiScroll")
     /// iPhone 13 memory: the demo shows the owner's phone numbers, not the Mac's.

@@ -13,6 +13,11 @@ enum DebugRouter {
             model.selection = .screen(.documents)
             model.documents?.importFiles([URL(filePath: file)], name: "Test Import")
         }
+        if let style = DebugLaunch.style, await waitReady(model) { model.chat?.setTone(style) }
+        if !DebugLaunch.questions.isEmpty, await waitReady(model) {
+            await ask(DebugLaunch.questions, model)
+            return
+        }
         guard let screen = DebugLaunch.screen else { return }
         if screen.hasPrefix("setup") {
             await setup(screen, model)
@@ -73,6 +78,23 @@ enum DebugRouter {
         }
         let steps = screen == "setup-model" ? 1 : screen == "setup-knowledge" ? 2 : 0
         for _ in 0..<steps { model.setup?.next() }
+    }
+
+    /// `-uiAsk`: once an import is done, one new chat gets the questions, each after the previous answer.
+    private static func ask(_ questions: [String], _ model: AppModel) async {
+        // An import started above runs in the background: wait for it (up to 5 minutes for a long PDF).
+        try? await Task.sleep(for: .milliseconds(500))
+        for _ in 0..<3000 where model.documents?.busy == true { try? await Task.sleep(for: .milliseconds(100)) }
+        model.selection = .newChat
+        try? await Task.sleep(for: .milliseconds(700))
+        guard let chat = model.chat else { return }
+        for q in questions {
+            chat.send(q)
+            try? await Task.sleep(for: .milliseconds(300))
+            // Up to 10 minutes per answer: a first load plus a long answer on the simulator's CPU.
+            for _ in 0..<6000 where chat.isAnswering { try? await Task.sleep(for: .milliseconds(100)) }
+            try? await Task.sleep(for: .seconds(1))
+        }
     }
 
     private static func openFirstSession(_ model: AppModel) async {
