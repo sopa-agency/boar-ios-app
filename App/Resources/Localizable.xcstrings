@@ -1,6 +1,56 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "Erase Chats and Files and Turn Off the Lock" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apagar conversas e arquivos e desligar o bloqueio"
+          }
+        }
+      }
+    },
+    "Erase your chats and Personal Files?" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apagar suas conversas e arquivos pessoais?"
+          }
+        }
+      }
+    },
+    "Erase Chats and Files" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apagar conversas e arquivos"
+          }
+        }
+      }
+    },
+    "Every saved chat and your Personal Files are deleted, and the lock turns off. Models and knowledge packs stay." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Todas as conversas salvas e seus Arquivos pessoais são apagados, e o bloqueio é desligado. Modelos e pacotes de conhecimento ficam."
+          }
+        }
+      }
+    },
+    "Couldn't erase everything. The lock stays on: try again." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não deu para apagar tudo. O bloqueio continua ativo: tente de novo."
+          }
+        }
+      }
+    },
     "Free Memory When I Leave BOAR" : {
       "localizations" : {
         "pt" : {
@@ -791,15 +841,6 @@
     "Erase All Data" : {
 
     },
-    "Erase Chats" : {
-
-    },
-    "Erase Chats and Turn Off the Lock" : {
-
-    },
-    "Erase all chats?" : {
-
-    },
     "Erase all data?" : {
 
     },
@@ -816,9 +857,6 @@
 
     },
     "Every saved chat and message on this iPhone is deleted. Models, documents and settings stay." : {
-
-    },
-    "Every saved chat is deleted. Models, documents and settings stay." : {
 
     },
     "Everything downloads once, together with the answer model. Then BOAR works offline." : {

@@ -175,6 +175,17 @@ final class AppModel {
             self.reloadSessions()
             self.drainInbox()
         }
+        // Erasing after a lost key: answers stop first (up to 15 s), then the chat on screen starts over.
+        lock.stopAnswers = { [weak self] in
+            guard let chat = self?.chat else { return }
+            chat.stopForBackground()
+            for _ in 0..<150 where chat.usesModel { try? await Task.sleep(for: .milliseconds(100)) }
+        }
+        lock.onErased = { [weak self] in
+            guard let self else { return }
+            self.newChat()
+            Task { await self.documents?.refresh() }
+        }
         self.models = models
         self.evaluation = evaluation
         self.documents = DocumentsController(services: services)

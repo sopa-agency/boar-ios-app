@@ -22,12 +22,13 @@ struct LockScreen: View {
             }
         } actions: {
             if lock.keyLost {
-                Button("Erase Chats and Turn Off the Lock", role: .destructive, action: askErase)
+                Button("Erase Chats and Files and Turn Off the Lock", role: .destructive, action: askErase)
                     .buttonStyle(.borderedProminent)
-                    .confirmationDialog("Erase all chats?", isPresented: $confirmErase, titleVisibility: .visible) {
-                        Button("Erase Chats", role: .destructive, action: erase)
+                    .disabled(lock.busy)
+                    .confirmationDialog("Erase your chats and Personal Files?", isPresented: $confirmErase, titleVisibility: .visible) {
+                        Button("Erase Chats and Files", role: .destructive, action: erase)
                     } message: {
-                        Text("Every saved chat is deleted. Models, documents and settings stay.")
+                        Text("Every saved chat and your Personal Files are deleted, and the lock turns off. Models and knowledge packs stay.")
                     }
             } else {
                 Button("Unlock with \(lock.methodName)", systemImage: lock.methodSymbol, action: unlock)
