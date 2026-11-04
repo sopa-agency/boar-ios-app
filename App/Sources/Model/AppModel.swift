@@ -4,6 +4,9 @@ import BoarCore
 import BoarModels
 import Foundation
 import Observation
+#if canImport(UIKit)
+import UIKit
+#endif
 
 /// The screens reachable from the sidebar besides the chat (`DestinationScreen`).
 enum AppScreen: String, Hashable, CaseIterable, Identifiable {
@@ -72,6 +75,9 @@ final class AppModel {
     private(set) var evaluation: EvaluationController?
     private(set) var lock: AppLock?
     @ObservationIgnored private let spotlight = SpotlightDonor()
+    /// Settings → Free memory when I leave BOAR: the release waiting to happen while BOAR is in the background.
+    @ObservationIgnored private var memoryRelease: Task<Void, Never>?
+    @ObservationIgnored private var inForeground = true
     var selection: SidebarItem? = .newChat
     /// System / Light / Dark (Settings → Display); persisted on every change.
     var appearance: AppAppearance = .system {
@@ -303,13 +309,55 @@ final class AppModel {
     /// The app went to the background: Metal work is not allowed there on iPhone, so a running answer stops (its text is
     /// kept). A Mac keeps answering behind other windows and while minimized.
     func didEnterBackground() {
+        inForeground = false
         #if !os(macOS)
-        chat?.stop()
+        chat?.stopForBackground()
+        scheduleMemoryRelease()
         #endif
         lock?.lockOnBackground()
     }
 
+    #if !os(macOS)
+    /// Settings → Free memory when I leave BOAR (android `BoarServices.onBackground`): after the chosen delay (Auto: at
+    /// once) the model is unloaded, so iOS doesn't end BOAR to get its memory back. A stopped answer, title or load is
+    /// waited for; coming back first cancels it. The chat stays as it is and the next question loads the model again.
+    /// iOS gives a backgrounded app about 30 s: a longer pick only takes effect if BOAR is still running then.
+    private func scheduleMemoryRelease() {
+        memoryRelease?.cancel()
+        memoryRelease = nil
+        guard let services, services.settings.freeMemoryInBackground else { return }
+        let settings = services.settings
+        let wait = FreeMemory.delayMs(settings.freeMemoryAfterMinutes)
+        #if canImport(UIKit)
+        let grant = UIApplication.shared.beginBackgroundTask(withName: "BOAR free memory")
+        #endif
+        memoryRelease = Task { @MainActor [weak self] in
+            #if canImport(UIKit)
+            defer { UIApplication.shared.endBackgroundTask(grant) }
+            #endif
+            try? await Task.sleep(for: .milliseconds(wait))
+            while !Task.isCancelled, let self {
+                let busy = self.chat?.usesModel ?? false
+                switch FreeMemory.decide(enabled: settings.freeMemoryInBackground, inForeground: self.inForeground,
+                                         loaded: services.host.current != nil, busy: busy) {
+                case .skip:
+                    return
+                case .wait:
+                    try? await Task.sleep(for: .milliseconds(FreeMemory.busyPollMs))
+                case .unload:
+                    await services.host.unload()
+                    BoarPerf.event("model.unloaded", "\(wait / 1000) s in the background")
+                    return
+                }
+            }
+        }
+    }
+    #endif
+
     func didBecomeActive() {
+        inForeground = true
+        memoryRelease?.cancel()
+        memoryRelease = nil
         setup?.onForeground()
         drainInbox()
     }

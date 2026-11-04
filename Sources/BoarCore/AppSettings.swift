@@ -79,6 +79,7 @@ public final class AppSettings: @unchecked Sendable {
         "themeId", "fontScale", "personalityId", "maxTokens", "deepResearchMode", "researchBannerHidden",
         "adaptiveRoutingEnabled", "routingPreset", "engineTweaks", "showLiveStats", "voiceInputEnabled", "hapticsEnabled",
         "hidePromptIdeas", "autoSummarize", "historyTurnThreshold", "maxSavedSessions", "autoGenerateTitles",
+        "freeMemoryInBackground", "freeMemoryAfterMinutes",
     ]
     public static let defaultMaxTokens = 512
     /// Detailed answers ran past 512 tokens and stopped mid-sentence.
@@ -123,6 +124,10 @@ public final class AppSettings: @unchecked Sendable {
     public var languageId: String? { get { str("languageId") } set { set("languageId", newValue.map(JSONValue.string)) } }
     public var voiceInputEnabled: Bool { get { bool("voiceInputEnabled") ?? true } set { set("voiceInputEnabled", .bool(newValue)) } }
     public var hapticsEnabled: Bool { get { bool("hapticsEnabled") ?? true } set { set("hapticsEnabled", .bool(newValue)) } }
+    /// Settings → "Free memory when I leave BOAR" (FreeMemory): on by default.
+    public var freeMemoryInBackground: Bool { get { bool("freeMemoryInBackground") ?? true } set { set("freeMemoryInBackground", .bool(newValue)) } }
+    /// Advanced → "Free memory after", in minutes; nil is Auto (at once).
+    public var freeMemoryAfterMinutes: Int? { get { int("freeMemoryAfterMinutes") } set { set("freeMemoryAfterMinutes", newValue.map { JSONValue($0) }) } }
     public var hidePromptIdeas: Bool { get { bool("hidePromptIdeas") ?? false } set { set("hidePromptIdeas", .bool(newValue)) } }
     /// Advanced tweaks → Show technical details. On by default: the bounty's judges and early users want the numbers.
     public var showLiveStats: Bool { get { bool("showLiveStats") ?? true } set { set("showLiveStats", .bool(newValue)) } }

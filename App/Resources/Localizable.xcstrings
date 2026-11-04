@@ -1,6 +1,46 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "Free Memory When I Leave BOAR" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Liberar memória quando eu sair do BOAR"
+          }
+        }
+      }
+    },
+    "Free Memory After" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Liberar memória depois de"
+          }
+        }
+      }
+    },
+    "Immediately" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Imediatamente"
+          }
+        }
+      }
+    },
+    "Shortly after you leave, when nothing is being answered, BOAR unloads the model, so the phone doesn't close BOAR to get its memory back. The next answer takes a few seconds longer to start." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Logo depois que você sai, quando nada está sendo respondido, o BOAR descarrega o modelo, para o celular não fechar o BOAR para recuperar a memória. A próxima resposta demora alguns segundos a mais para começar."
+          }
+        }
+      }
+    },
     "BOAR can't read %@: it imports .txt, .md, .csv, .json and .pdf. Save the page as one of those (a browser can save it as PDF) and import it again." : {
       "localizations" : {
         "pt" : {
@@ -338,7 +378,14 @@
       }
     },
     "%lld min" : {
-
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld min"
+          }
+        }
+      }
     },
     "%lld of %lld articles" : {
       "localizations" : {
@@ -974,7 +1021,14 @@
 
     },
     "Memory" : {
-
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Memória"
+          }
+        }
+      }
     },
     "Memory Budget" : {
 

@@ -23,6 +23,9 @@ struct SettingsScreen: View {
         Form {
             SettingsToneSection(services: services, bridge: bridge)
             SettingsMemorySection(bridge: bridge)
+            #if !os(macOS)
+            SettingsFreeMemorySection(bridge: bridge)
+            #endif
             SettingsDisplaySection(bridge: bridge)
             if let lock = model.lock { SettingsSecuritySection(lock: lock) }
             SettingsVoiceSection(bridge: bridge)

@@ -184,6 +184,16 @@ final class ChatController {
 
     // MARK: answering
 
+    /// An answer, a chat title or summary, or a model load still running (FreeMemory waits for them).
+    var usesModel: Bool { job != nil || background != nil || loadingModel }
+
+    /// Leaving the screen on iPhone: the answer stops (its text is kept) and a title or summary being written too, as
+    /// Metal work isn't allowed in the background.
+    func stopForBackground() {
+        stop()
+        Task { await stopBackground() }
+    }
+
     func stop() {
         stopFlag.set(true)
         if answeringId != nil { stopping = true }
