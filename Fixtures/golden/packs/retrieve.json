@@ -161,6 +161,7 @@
      "docId": "pack:local-fixture:Kuala Kubu Bharu",
      "title": "Kuala Kubu Bharu",
      "body": "Economy filler sentence number 0 about unrelated matters. Economy filler sentence number 1 about unrelated matters. Economy filler sentence number 2 about unrelated matters. Economy filler sentence number 3 about unrelated matters.",
+     "source": "Wikipedia — https://en.wikipedia.org/wiki/Kuala Kubu Bharu",
      "score": 0.8001783676829002,
      "matchType": "hybrid"
     }
@@ -2023,6 +2024,7 @@
      "docId": "pack:local-fixture:French Revolution",
      "title": "French Revolution",
      "body": "Financial crisis and debt, food scarcity and Enlightenment ideas contributed to the revolution.",
+     "source": "Wikipedia — https://en.wikipedia.org/wiki/French Revolution",
      "score": 0.7902434423008423,
      "matchType": "hybrid"
     }
@@ -2930,6 +2932,7 @@
      "docId": "pack:local-fixture:French Revolution",
      "title": "French Revolution",
      "body": "Financial crisis and debt, food scarcity and Enlightenment ideas contributed to the revolution.",
+     "source": "Wikipedia — https://en.wikipedia.org/wiki/French Revolution",
      "score": 0.7902434423008423,
      "matchType": "hybrid"
     }
