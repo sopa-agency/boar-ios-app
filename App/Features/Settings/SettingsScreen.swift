@@ -5,8 +5,8 @@ import BoarModels
 import SwiftUI
 
 /// Settings (android SettingsScreen.kt, ModelSetupScreen.tsx's sections), shaped like an Apple app's Settings page: how
-/// BOAR answers, chats, appearance, privacy, voice, then Advanced and the destructive actions last. Models and
-/// Documents have their own screens in the sidebar.
+/// BOAR answers, what it answers with and searches (each opening its own screen), chats, appearance, privacy, voice,
+/// then Advanced and the destructive actions last.
 ///
 /// Not ported: Android's text size (Dynamic Type replaces it) and the language picker (this build is English only).
 struct SettingsScreen: View {
@@ -22,6 +22,7 @@ struct SettingsScreen: View {
     var body: some View {
         Form {
             SettingsToneSection(services: services, bridge: bridge)
+            SettingsLibrarySection(services: services)
             SettingsMemorySection(bridge: bridge)
             #if !os(macOS)
             SettingsFreeMemorySection(bridge: bridge)

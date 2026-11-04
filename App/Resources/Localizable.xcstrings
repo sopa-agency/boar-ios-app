@@ -1,6 +1,66 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "^[%lld collection](inflect: true)" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "^[%lld coleção](inflect: true)"
+          }
+        }
+      }
+    },
+    "Answering With" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Respondendo com"
+          }
+        }
+      }
+    },
+    "Open Knowledge" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir Conhecimento"
+          }
+        }
+      }
+    },
+    "Models and Knowledge" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modelos e conhecimento"
+          }
+        }
+      }
+    },
+    "None" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nenhum"
+          }
+        }
+      }
+    },
+    "What BOAR answers with and searches, all on this %@." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Com o que o BOAR responde e onde ele pesquisa, tudo neste %@."
+          }
+        }
+      }
+    },
     "Ask Before Deleting a Chat" : {
       "localizations" : {
         "pt" : {
@@ -1281,7 +1341,14 @@
 
     },
     "Open Models" : {
-
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir Modelos"
+          }
+        }
+      }
     },
     "Open Source" : {
 
