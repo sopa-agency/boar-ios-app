@@ -4,7 +4,7 @@ import SwiftUI
 /// `-uiScreen <name>`: puts the running app on that screen once it is ready, without a tap.
 ///
 /// setup, setup-model, setup-knowledge, setup-install, setup-index, chat-empty, chat-error, chat-no-model, chat-load-crash, chat, chat-top, chat-streaming, chat-retrieving, chat-research,
-/// sidebar, citation-sheet, receipt, tone-sheet, models, model-detail, models-downloading, models-browse, documents,
+/// sidebar, citation-sheet, source-reader, receipt, tone-sheet, models, model-detail, models-downloading, models-browse, documents,
 /// settings, settings-advanced, settings-engine, device-info, evaluation, about, lock.
 @MainActor
 enum DebugRouter {
@@ -27,7 +27,7 @@ enum DebugRouter {
         // The split view has to be on screen before a selection change reaches `onChange`.
         try? await Task.sleep(for: .milliseconds(700))
         switch screen {
-        case "chat", "chat-top", "citation-sheet", "receipt", "tone-sheet":
+        case "chat", "chat-top", "citation-sheet", "source-reader", "receipt", "tone-sheet":
             await openFirstSession(model)
         case "chat-streaming":
             await openFirstSession(model)

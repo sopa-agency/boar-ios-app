@@ -80,7 +80,7 @@ private struct DebugChatSheets: ViewModifier {
     func body(content: Content) -> some View {
         content.task(id: chat.messages.count) {
             guard chat.messages.count >= 2 else { return }
-            if DebugLaunch.isScreen("citation-sheet"), source == nil,
+            if DebugLaunch.isScreen("citation-sheet") || DebugLaunch.isScreen("source-reader"), source == nil,
                let first = chat.messages.last(where: { !$0.isUser })?.sources.first {
                 try? await Task.sleep(for: .milliseconds(600))
                 source = first

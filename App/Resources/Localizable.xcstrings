@@ -1,6 +1,76 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "From this device, with the part BOAR used marked." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Do próprio aparelho, com a parte que o BOAR usou marcada."
+          }
+        }
+      }
+    },
+    "From this Mac, with the part BOAR used marked." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Do próprio Mac, com a parte que o BOAR usou marcada."
+          }
+        }
+      }
+    },
+    "Not on This Device" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não está neste aparelho"
+          }
+        }
+      }
+    },
+    "Opening…" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrindo…"
+          }
+        }
+      }
+    },
+    "Read the Whole Article" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ler o artigo inteiro"
+          }
+        }
+      }
+    },
+    "The part BOAR used is marked." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A parte que o BOAR usou está marcada."
+          }
+        }
+      }
+    },
+    "This article is no longer on the phone: its pack or collection was removed." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este artigo não está mais no celular: o pacote ou a coleção foi removido."
+          }
+        }
+      }
+    },
     "Check that the collection is switched on in Documents." : {
       "localizations" : {
         "pt" : {

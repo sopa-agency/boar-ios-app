@@ -82,6 +82,12 @@ final class BoarServices: @unchecked Sendable {
     /// The built-in catalog plus the models added from Hugging Face (listed after it, never twice).
     var catalog: Catalog { catalogLock.withLock { $0 } ?? baseCatalog }
 
+    /// A source under an answer, read whole from the phone (SourceArticle): the pack article or the user's file. Nil
+    /// when its pack or collection is gone. Database work: call it off the main actor.
+    func readSource(docId: String, title: String) -> SourceArticle.Article? {
+        SourceArticle.read(docId: docId, title: title, kb: knowledgeBase, packs: packs.open(catalog: catalog))
+    }
+
     /// Models added from the Hugging Face search (discoveredModels.ts, same file as the Expo app).
     func discovered() -> [CatalogAsset] {
         Self.readDiscovered()

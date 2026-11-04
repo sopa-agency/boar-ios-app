@@ -45,6 +45,7 @@ private struct SourceInspectorRow: View {
     let source: ChatSource
     let technicalDetails: Bool
     @Binding var expanded: Bool
+    @State private var reading = false
 
     private var symbol: String { source.number <= 50 ? "\(source.number).circle.fill" : "number.circle.fill" }
 
@@ -89,6 +90,10 @@ private struct SourceInspectorRow: View {
                     Spacer()
                     Button("Copy", systemImage: "doc.on.doc") { Platform.copy(source.body) }
                         .help("Copy the passage")
+                    if source.docId != nil {
+                        Button("Read the Whole Article", systemImage: "doc.text") { reading = true }
+                            .help("From this Mac, with the part BOAR used marked.")
+                    }
                     if let url = source.url {
                         Link(destination: url) {
                             Label("Open Article", systemImage: "safari")
@@ -101,6 +106,15 @@ private struct SourceInspectorRow: View {
             }
         }
         .padding(.vertical, 6)
+        .sheet(isPresented: $reading) {
+            NavigationStack {
+                SourceReader(source: source)
+                    .toolbar {
+                        ToolbarItem(placement: .cancellationAction) { Button("Done") { reading = false } }
+                    }
+            }
+            .frame(minWidth: 560, minHeight: 600)
+        }
     }
 }
 #endif
