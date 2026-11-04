@@ -16,7 +16,7 @@ enum AppScreen: String, Hashable, CaseIterable, Identifiable {
 
     var title: String {
         switch self {
-        case .documents: String(localized: "Documents")
+        case .documents: String(localized: "Knowledge")
         case .models: String(localized: "Models")
         case .settings: String(localized: "Settings")
         case .evaluation: String(localized: "Evaluation")
@@ -252,6 +252,13 @@ final class AppModel {
     func newChat() {
         chat?.newChat()
         selection = .newChat
+    }
+
+    /// After an import, "Ask about them": a new chat in the Personal Files style, which answers only from the files.
+    func askAboutFiles() {
+        documents?.imported = nil
+        chat?.setTone("personal")
+        newChat()
     }
 
     func deleteSession(_ id: String) async {

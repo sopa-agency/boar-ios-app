@@ -422,7 +422,7 @@ final class ChatController {
                     // how to ask when one is. The prompt lists the switched-on files by name.
                     let ownFiles = (try? await services.background { try $0.retriever.ownFiles() }) ?? []
                     let hint = ownFiles.isEmpty
-                        ? String(localized: "Check that the collection is switched on in Documents.")
+                        ? String(localized: "Check that the collection is switched on in Knowledge → Personal Files.")
                         : String(localized: "Try asking about something your files say, in their words, or ask for a summary of your files.")
                     request = PersonalFiles.request(
                         request, contextSize: openedContext ?? EngineTweaks.contextSizeForRam(services.totalRamBytes),

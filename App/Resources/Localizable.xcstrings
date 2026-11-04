@@ -1,6 +1,86 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "Knowledge" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conhecimento"
+          }
+        }
+      }
+    },
+    "BOAR Knowledge" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conhecimento BOAR"
+          }
+        }
+      }
+    },
+    "Personal Files" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arquivos pessoais"
+          }
+        }
+      }
+    },
+    "Ask About Them" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Perguntar sobre eles"
+          }
+        }
+      }
+    },
+    "What BOAR searches offline, besides your Personal Files. Wikipedia text is CC BY-SA 4.0." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O que o BOAR pesquisa offline, além dos seus Arquivos pessoais. O texto da Wikipédia é CC BY-SA 4.0."
+          }
+        }
+      }
+    },
+    "Ask about them with the Personal Files style. Turned-off collections are not used in answers." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pergunte sobre eles com o estilo Arquivos pessoais. Coleções desligadas não entram nas respostas."
+          }
+        }
+      }
+    },
+    "Imported into \"%@\". To ask about these files, switch the answer style to Personal Files: it answers only from your files." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importado em \"%@\". Para perguntar sobre esses arquivos, mude o estilo de resposta para Arquivos pessoais: ele responde só a partir dos seus arquivos."
+          }
+        }
+      }
+    },
+    "Check that the collection is switched on in Knowledge → Personal Files." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Confira se a coleção está ligada em Conhecimento → Arquivos pessoais."
+          }
+        }
+      }
+    },
     "Short answer: health questions are kept brief." : {
       "localizations" : {
         "pt" : {
@@ -87,16 +167,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Este artigo não está mais no celular: o pacote ou a coleção foi removido."
-          }
-        }
-      }
-    },
-    "Check that the collection is switched on in Documents." : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Confira se a coleção está ligada em Documentos."
           }
         }
       }
@@ -808,9 +878,6 @@
 
     },
     "Keychain error %d" : {
-
-    },
-    "Knowledge" : {
 
     },
     "LFM 8B" : {
