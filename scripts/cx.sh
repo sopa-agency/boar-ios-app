@@ -8,7 +8,12 @@ set -euo pipefail
 HOST="${CX_HOST:-bielcx@10.0.10.226}"; KEY="${CX_KEY:-$HOME/.ssh/id_ed25519_cx}"; DIR="${CX_DIR:-Dev/boar-ios-app}"
 cd "$(dirname "$0")/.."
 SSH=(ssh -i "$KEY" -o ConnectTimeout=8 "$HOST")
-git ls-files -co --exclude-standard -z | tar --null -T - -czf - | "${SSH[@]}" "mkdir -p $DIR && tar -xzf - -C $DIR"
+# Since 2026-11-04 cx holds a real git clone that the Boar iOS agent edits: never copy over it, only run the command.
+if "${SSH[@]}" "test -d $DIR/.git"; then
+  echo "cx.sh: $DIR on cx is a git clone; not copying (push here, then pull there)" >&2
+else
+  git ls-files -co --exclude-standard -z | tar --null -T - -czf - | "${SSH[@]}" "mkdir -p $DIR && tar -xzf - -C $DIR"
+fi
 "${SSH[@]}" bash -s <<REMOTE
 export PATH=/opt/homebrew/bin:\$PATH
 X=\$(ls -d /Applications/Xcode-27*.app/Contents/Developer 2>/dev/null | head -1); [ -n "\$X" ] && export DEVELOPER_DIR="\$X"
