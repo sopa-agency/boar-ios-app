@@ -73,7 +73,7 @@ final class ChatController {
     func setTone(_ id: String) {
         services.settings.personalityId = id
         personalityId = id
-        toast = String(localized: "Answers will be \(services.personalities.get(id).label)")
+        toast = String(localized: "Answers will be \(services.personalities.get(id).displayLabel)")
     }
 
     /// Deep Research as a bindable value (the answer-style sheet's toggle); writes go through `setDeepResearch`.

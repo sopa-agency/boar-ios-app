@@ -8,7 +8,8 @@ import SwiftUI
 /// BOAR answers, what it answers with and searches (each opening its own screen), chats, appearance, privacy, voice,
 /// then Advanced and the destructive actions last.
 ///
-/// Not ported: Android's text size (Dynamic Type replaces it) and the language picker (this build is English only).
+/// Not ported: Android's text size (Dynamic Type replaces it) and the language picker (iOS sets each app's language in
+/// the system Settings app; the app follows it, English or Portuguese).
 struct SettingsScreen: View {
     @Environment(AppModel.self) private var model
     let services: BoarServices

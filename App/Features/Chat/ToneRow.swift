@@ -10,14 +10,14 @@ struct ToneRow: View {
     private var detail: String { Self.detail(for: tone) }
 
     /// Android's wording since rc2 (Succinct no longer says "Default for mobile"), so no native override is left.
-    static func detail(for tone: Personality) -> String { tone.description }
+    static func detail(for tone: Personality) -> String { tone.displayDescription }
 
     var body: some View {
         Button(action: select) {
             HStack {
                 Label {
                     VStack(alignment: .leading) {
-                        Text(tone.label)
+                        Text(tone.displayLabel)
                         Text(detail).font(.subheadline).foregroundStyle(.secondary)
                     }
                 } icon: {

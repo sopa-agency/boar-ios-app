@@ -69,7 +69,7 @@ xcodebuild -project Boar.xcodeproj -scheme BoarMac -destination 'platform=macOS'
 - SwiftUI + Observation: `@Observable` models injected with `.environment`, `@State` for view-owned state, `@Bindable` for bindings. No `ObservableObject`.
 - Navigation: `NavigationSplitView` (sessions sidebar → chat), `NavigationStack` inside; sheets for setup/settings flows; `Form` for settings; `ContentUnavailableView` for empty states; `ShareLink`; `.fileImporter` and `PhotosPicker` for documents.
 - Standard system components so Liquid Glass applies; no custom navigation chrome. SF Symbols, Dynamic Type, VoiceOver labels, light and dark.
-- Strings in a String Catalog (`Localizable.xcstrings`), English source, **Portuguese required**: the build is English only today; Android's PT is in `res/values-pt/strings*.xml`. The language follows the system.
+- Strings in a String Catalog (`Localizable.xcstrings`), English source, **Portuguese required** for every new string (Android's PT is in `res/values-pt/strings*.xml`; reuse its wording). Every string had PT on 2026-11-04. `xcodebuild` doesn't add new keys to the catalog: compare the build's `*.stringsdata` with the catalog to find missing ones. Answer style names come from `personalities.json` and are catalog keys added by hand (`Personality.displayLabel`). The language follows the system (iOS Settings → BOAR → Language).
 - Security: PIN lock becomes LocalAuthentication (Face ID / passcode); secrets in the Keychain; CryptoKit for the text cipher.
 - Downloads: background `URLSession`; models live in Application Support, excluded from backup.
 - Voice: SpeechAnalyzer / SpeechTranscriber on device. OCR: Vision document recognition. Siri: App Intents + App Shortcuts ("Ask BOAR").
