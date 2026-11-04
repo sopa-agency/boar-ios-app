@@ -1,6 +1,36 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "Check that the collection is switched on in Documents." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Confira se a coleção está ligada em Documentos."
+          }
+        }
+      }
+    },
+    "I couldn't find this in your Personal Files." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não encontrei isso nos seus Arquivos pessoais."
+          }
+        }
+      }
+    },
+    "Try asking about something your files say, in their words, or ask for a summary of your files." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tente perguntar sobre algo que seus arquivos dizem, com as palavras deles, ou peça um resumo dos seus arquivos."
+          }
+        }
+      }
+    },
     "\"%@\" and its messages are deleted from this iPhone." : {
 
     },

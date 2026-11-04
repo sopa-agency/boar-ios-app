@@ -234,6 +234,22 @@ final class ChatController {
         }
     }
 
+    /// What a Deep Research, recap or adaptive answer hands back to the chat.
+    private struct Outcome: Sendable {
+        var sources: [Chunk]
+        var timedOut: Bool
+        var metrics: GenerationMetrics?
+        var fromPreviousAnswer = false
+    }
+
+    /// A message about the conversation itself, answered from it without a search: "summarize our conversation", or
+    /// "TL;DR" / "a summary please" after an answer. "continue" keeps the search: it asks for more than the chat holds.
+    nonisolated static func aboutConversation(_ query: String, _ history: ConversationHistory, _ conversation: [DeepResearch.Exchange]) -> Bool {
+        (DeepResearch.isConversationRecap(query)
+            && conversation.contains { !DeepResearch.isConversationRecap($0.question) && !DeepResearch.isSummaryFollowUp($0.question) })
+            || (DeepResearch.isSummaryFollowUp(query) && DeepResearch.lastAnswered(query, history) != nil)
+    }
+
     private enum Event: Sendable {
         case piece(String)
         case activity(ChatActivity)
@@ -275,12 +291,30 @@ final class ChatController {
         messages.append(ChatItem(id: answerId, role: "assistant", text: ""))
         if isNewSession { onSessionsChanged?() }
 
-        let (systemPrompt, styleReminder) = services.personalities.promptFor(settings.personalityId, customPrompt: settings.customSystemPrompt)
+        let chosenStyle = settings.personalityId ?? services.personalities.defaultId
+        // Personal Files: only the user's own files, whole; no Deep Research, router or recap of the library.
+        let personal = PersonalFiles.isOn(chosenStyle)
+        // A small answer model (the 1.5B) gets Detailed without D4's "Always do what the user asks" (r4to, Oct 18).
+        let smallModel = (services.answerModel()?.sizeBytes ?? .max) < Personalities.smallModelBytes
+        let (systemPrompt, styleReminder) = services.personalities.promptFor(chosenStyle, customPrompt: settings.customSystemPrompt, smallModel: smallModel)
+        // The answer a meta follow-up ("summary", "continue") is written from: the last one with text.
+        let lastAnswer = prior.last { !$0.isUser && !$0.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
+        // Every answered question so far, oldest first: what "summarize our conversation" is written from.
+        let conversation = zip(prior, prior.dropFirst()).compactMap { u, a -> DeepResearch.Exchange? in
+            u.isUser && !a.isUser && !a.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+                ? DeepResearch.Exchange(question: u.text, answer: AnswerText.stripThinking(a.text)) : nil
+        }
         let summary = try? await services.background { try $0.chats.listSessions().first { $0.id == sid }?.summary }
         // Within a token budget: earlier answers cut to their opening sentences (HistoryBudget).
         let turns = prior.suffix(Self.verbatimMessageCount).map { ConversationTurn(role: $0.role, text: $0.isUser ? $0.text : AnswerText.stripThinking($0.text)) }
         let history = ConversationHistory(summary: summary ?? nil, turns: HistoryBudget.budget(Array(turns)))
         let tweaks = settings.engineTweaks
+        // Small talk never starts a Deep Research or the router: "hi" took minutes on a big model (AnswerPath).
+        let smallTalk = AnswerPath.isSmallTalk(q)
+        let way = AnswerPath.of(
+            deepResearch: deepResearch && !personal, aboutConversation: Self.aboutConversation(q, history, conversation),
+            adaptive: !personal && settings.adaptiveRoutingEnabled, smallTalk: smallTalk
+        )
 
         let clock = ContinuousClock()
         let startAt = clock.now
@@ -293,11 +327,13 @@ final class ChatController {
         var timedOut = false
         var loadMs: Double?
         var failure: Error?
+        /// Written from the last answer: its numbers [n] are that answer's sources.
+        var reusedSources: [ChatSource]?
         /// Reasoning models: when the reasoning started, and whether it is still to be checked for.
         var thinkingAt: ContinuousClock.Instant?
         var thinkingOpen = true
 
-        let mark = BoarPerf.begin("answer", deepResearch ? "deep" : settings.adaptiveRoutingEnabled ? "adaptive" : "default")
+        let mark = BoarPerf.begin("answer", way.rawValue)
 
         func onPiece(_ piece: String) {
             tokens += 1
@@ -337,24 +373,31 @@ final class ChatController {
                 throw ChatError.noModel
             }
             loadMs = services.host.lastLoadMs
-            let maxTokens = settings.answerTokens(openedContext: session.capabilities.contextTokens ?? services.host.openedContext)
-            if deepResearch || settings.adaptiveRoutingEnabled {
+            let openedContext = session.capabilities.contextTokens ?? services.host.openedContext
+            var maxTokens = settings.answerTokens(openedContext: openedContext)
+            // A thank-you or greeting: Succinct's length in any style.
+            if smallTalk { maxTokens = min(maxTokens, AppSettings.defaultMaxTokens) }
+            if way != .pipeline {
                 let (events, sink) = AsyncStream<Event>.makeStream()
                 let stop = stopFlag
-                let deep = deepResearch
-                let work = Task.detached { () throws -> ([Chunk], Bool) in
+                let previousAnswer = lastAnswer.map { AnswerText.stripThinking($0.text) }
+                let work = Task.detached { () throws -> Outcome in
                     defer { sink.finish() }
-                    if deep {
+                    if way == .research || way == .recap {
+                        let research = way == .research
                         let r = try await DeepResearch(generator: SessionEngine(session, enableThinking: tweaks.thinkingEnabled), retriever: services.retriever, tweaks: tweaks)
                             .run(q, systemPrompt: systemPrompt, history: history, maxTokens: maxTokens,
                                  onProgress: { p in
-                                     sink.yield(.activity(.researching(p.stage, index: p.subQuestionIndex.map { $0 + 1 }, count: p.subQuestionCount)))
+                                     sink.yield(.activity(research
+                                         ? .researching(p.stage, index: p.subQuestionIndex.map { $0 + 1 }, count: p.subQuestionCount) : .thinking))
                                  },
-                                 onToken: { sink.yield(.piece($0)) }, shouldStop: { stop.value })
-                        return (r.citations, r.timedOut)
+                                 onToken: { sink.yield(.piece($0)) }, shouldStop: { stop.value },
+                                 previousAnswer: previousAnswer, conversation: conversation)
+                        return Outcome(sources: r.citations, timedOut: r.timedOut, metrics: r.metrics, fromPreviousAnswer: r.fromPreviousAnswer)
                     }
-                    return try await Self.adaptive(q, systemPrompt: systemPrompt, styleReminder: styleReminder, history: history, maxTokens: maxTokens,
-                                                    services: services, stop: stop, sink: sink)
+                    let (chunks, timedOut) = try await Self.adaptive(q, systemPrompt: systemPrompt, styleReminder: styleReminder, history: history,
+                                                                      maxTokens: maxTokens, services: services, stop: stop, sink: sink)
+                    return Outcome(sources: chunks, timedOut: timedOut)
                 }
                 for await e in events {
                     switch e {
@@ -362,11 +405,27 @@ final class ChatController {
                     case .activity(let a): if firstAt == nil { enter(a, answerId: answerId) }
                     }
                 }
-                (sources, timedOut) = try await work.value
+                let outcome = try await work.value
+                (sources, timedOut) = (outcome.sources, outcome.timedOut)
+                if outcome.metrics != nil { metrics = outcome.metrics }
+                if outcome.fromPreviousAnswer { reusedSources = lastAnswer?.sources }
             } else {
-                let pipeline = AnswerPipeline(session: session, retriever: services.retriever)
-                let request = AnswerRequest(query: q, systemPrompt: systemPrompt, styleReminder: styleReminder, maxTokens: maxTokens,
+                let pipeline = AnswerPipeline(session: session, retriever: services.retriever, params: personal ? PersonalFiles.retrieval() : .default)
+                var request = AnswerRequest(query: q, systemPrompt: systemPrompt, styleReminder: styleReminder, maxTokens: maxTokens,
                                             history: history, enableThinking: tweaks.thinkingEnabled)
+                if personal {
+                    // Nothing found in the files: the fixed line, then where to switch a collection on when none is on, or
+                    // how to ask when one is. The prompt lists the switched-on files by name.
+                    let ownFiles = (try? await services.background { try $0.retriever.ownFiles() }) ?? []
+                    let hint = ownFiles.isEmpty
+                        ? String(localized: "Check that the collection is switched on in Documents.")
+                        : String(localized: "Try asking about something your files say, in their words, or ask for a summary of your files.")
+                    request = PersonalFiles.request(
+                        request, contextSize: openedContext ?? EngineTweaks.contextSizeForRam(services.totalRamBytes),
+                        notFound: String(localized: "I couldn't find this in your Personal Files.") + "\n\n" + hint,
+                        filesNote: OwnFiles.note(ownFiles)
+                    )
+                }
                 for try await e in pipeline.answer(request) {
                     switch e {
                     case .stage(let s):
@@ -392,7 +451,12 @@ final class ChatController {
         }
 
         mark.end("\(tokens) tokens\(failure == nil ? "" : ", failed")")
-        let shown = sources.enumerated().map { ChatSource(number: $0.offset + 1, chunk: $0.element) }
+        // A model that opens with the not-found line and then answers from the files keeps only the answer.
+        if personal {
+            let kept = PersonalFiles.dropHedge(text)
+            if kept != text { text = kept }
+        }
+        let shown = reusedSources ?? sources.enumerated().map { ChatSource(number: $0.offset + 1, chunk: $0.element) }
         let stopped = stopFlag.value
         var receipt: Receipt?
         if let firstAt, tokens > 0 {
@@ -436,7 +500,7 @@ final class ChatController {
         stopping = false
         let all = prior + [ChatItem(id: userId, role: "user", text: q), ChatItem(id: answerId, role: "assistant", text: finalText)]
         if keep {
-            afterAnswer(sessionId: sid, isNewSession: isNewSession, stopped: stopped, all: all, systemPrompt: systemPrompt, hadSources: !sources.isEmpty)
+            afterAnswer(sessionId: sid, isNewSession: isNewSession, stopped: stopped, all: all, systemPrompt: systemPrompt, hadSources: !sources.isEmpty, filesOnly: personal)
         }
         onSessionsChanged?()
     }
@@ -481,7 +545,7 @@ final class ChatController {
 
     /// After an answer: a new chat gets a model-written title (autoGenerateTitles); a long one gets its older turns
     /// summarized (autoSummarize, past historyTurnThreshold), in the background.
-    private func afterAnswer(sessionId: String, isNewSession: Bool, stopped: Bool, all: [ChatItem], systemPrompt: String?, hadSources: Bool) {
+    private func afterAnswer(sessionId: String, isNewSession: Bool, stopped: Bool, all: [ChatItem], systemPrompt: String?, hadSources: Bool, filesOnly: Bool) {
         if stopped { return }
         let s = services.settings
         guard let session = services.host.current else { return }
@@ -495,7 +559,7 @@ final class ChatController {
                     _ = try? await services.background { try $0.chats.setTitle(sessionId: sessionId, title: title) }
                     self.onSessionsChanged?()
                 }
-                if !Task.isCancelled { await Self.warmPrefix(session, systemPrompt: systemPrompt, withSources: hadSources, thinking: thinking) }
+                if !Task.isCancelled { await Self.warmPrefix(session, systemPrompt: systemPrompt, withSources: hadSources, filesOnly: filesOnly, thinking: thinking) }
             }
         } else if s.autoSummarize && all.count / 2 > s.historyTurnThreshold {
             let older = Array(all.dropLast(Self.verbatimMessageCount))
@@ -507,15 +571,16 @@ final class ChatController {
                 if let summary = try? await Summarize.summary(gen, turns: turns, previousSummary: previous ?? nil), !Task.isCancelled {
                     _ = try? await services.background { try $0.chats.setSummary(sessionId: sessionId, summary: summary) }
                 }
-                if !Task.isCancelled { await Self.warmPrefix(session, systemPrompt: systemPrompt, withSources: hadSources, thinking: thinking) }
+                if !Task.isCancelled { await Self.warmPrefix(session, systemPrompt: systemPrompt, withSources: hadSources, filesOnly: filesOnly, thinking: thinking) }
             }
         }
     }
 
     /// A title or summary left its own prompt in the KV cache: prefill the answer's system head back so the next
     /// question reuses it (#72's warm-up).
-    nonisolated private static func warmPrefix(_ session: any TextModelSession, systemPrompt: String?, withSources: Bool, thinking: Bool) async {
-        let (head, plain) = RagPure.answerPromptPrefix(systemPrompt: systemPrompt, withContext: withSources)
+    nonisolated private static func warmPrefix(_ session: any TextModelSession, systemPrompt: String?, withSources: Bool, filesOnly: Bool, thinking: Bool) async {
+        // Personal Files answers from the files-only prompt, with its sources.
+        let (head, plain) = RagPure.answerPromptPrefix(systemPrompt: systemPrompt, withContext: withSources || filesOnly, filesOnly: filesOnly)
         let input: GenerationRequest.Input = session.capabilities.hasChatTemplate ? .messages([ChatMessage(role: .system, content: head)]) : .prompt(plain)
         await session.prewarm(input, enableThinking: thinking)
     }
