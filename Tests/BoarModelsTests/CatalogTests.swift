@@ -8,7 +8,7 @@ import Testing
 
     @Test func answerModelsAreTheDefaultThenTheCompactTier() {
         #expect(catalog.defaultAnswerModel.id == "qwen3-4b-instruct-2507-q4km")
-        #expect(catalog.compactAnswerModel.id == "qwen2.5-1.5b-instruct-q4km")
+        #expect(catalog.compactAnswerModel.id == "qwen3-1.7b-q4km")
         #expect(catalog.answerModels.map(\.answerTier) == [.default, .compact])
     }
 
@@ -34,6 +34,14 @@ import Testing
     @Test func everyTierPointsAtCorpusAssetsThatExist() {
         let corpus = Set(catalog.corpusCatalog.map(\.id))
         for t in catalog.tiers { for p in t.corpusPackIds { #expect(corpus.contains(p), "\(t.id): \(p)") } }
+    }
+
+    @Test func architectureIsOptionalSoOlderCatalogsAndSavedModelsStillParse() throws {
+        #expect(catalog.models.allSatisfy { $0.architecture == nil })
+        let asset = #"{"id":"hf-a-b","kind":"llm","label":"b","filename":"models/hf-a-b.gguf","sizeBytes":1,"sha256":"","sourceUrl":"u","license":"l","description":"d","required":false}"#
+        #expect(try JSONDecoder().decode(CatalogAsset.self, from: Data(asset.utf8)).architecture == nil)
+        let withArch = String(asset.dropLast()) + #","architecture":"lfm2moe"}"#
+        #expect(try JSONDecoder().decode(CatalogAsset.self, from: Data(withArch.utf8)).architecture == "lfm2moe")
     }
 
     @Test func phi35MiniIsNoLongerSuggestedAndNothingSetupNeedsIsHidden() {

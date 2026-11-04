@@ -38,10 +38,10 @@ struct AnswerTextGoldenTests {
 
     @Test func personalitiesFromTheExportedData() throws {
         let p = try Personalities.bundled()
-        #expect(p.personalities.map(\.id) == ["succinct", "detailed", "summary", "custom"])
-        #expect(p.defaultId == "succinct")
+        #expect(p.personalities.map(\.id) == ["succinct", "detailed", "personal", "custom"])
+        #expect(p.defaultId == "detailed")
         #expect(p.defaultMaxTokens == 512)
-        #expect(p.promptFor(nil, customPrompt: nil).systemPrompt == p.get("succinct").systemPrompt)
+        #expect(p.promptFor(nil, customPrompt: nil).systemPrompt == p.get("detailed").systemPrompt)
         let custom = p.promptFor("custom", customPrompt: "Mine.")
         #expect(custom.systemPrompt == "Mine." && custom.styleReminder == nil)
         #expect(p.get("unknown") == p.personalities[0])

@@ -39,7 +39,7 @@ extension Personality {
         switch id {
         case "succinct": "bolt"
         case "detailed": "text.alignleft"
-        case "summary": "list.bullet.clipboard"
+        case "personal": "folder"
         case "custom": "slider.horizontal.3"
         default: "text.alignleft"
         }
