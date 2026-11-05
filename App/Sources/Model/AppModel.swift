@@ -10,7 +10,7 @@ import UIKit
 
 /// The screens reachable from the sidebar besides the chat (`DestinationScreen`).
 enum AppScreen: String, Hashable, CaseIterable, Identifiable {
-    case documents, models, settings, evaluation, about
+    case documents, models, settings, evaluation, about, labs
     var id: String { rawValue }
 
     /// The sidebar's Library rows. Settings is the sidebar's top-left button; About is inside Settings and the
@@ -24,6 +24,7 @@ enum AppScreen: String, Hashable, CaseIterable, Identifiable {
         case .settings: String(localized: "Settings")
         case .evaluation: String(localized: "Evaluation")
         case .about: String(localized: "About")
+        case .labs: String(localized: "Boar Labs")
         }
     }
 
@@ -34,6 +35,7 @@ enum AppScreen: String, Hashable, CaseIterable, Identifiable {
         case .settings: "gearshape"
         case .evaluation: Symbols.benchmark
         case .about: "info.circle"
+        case .labs: "flask"
         }
     }
 }
@@ -264,6 +266,8 @@ final class AppModel {
         case .session(let id): chat.openSession(id)
         case .screen, .none: break
         }
+        // Leaving Boar Labs covers the leaked teasers again; moving between its labs keeps them.
+        if item != .screen(.labs) { Labs.shared.coverAll() }
     }
 
     func newChat() {

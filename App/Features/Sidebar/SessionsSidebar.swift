@@ -27,6 +27,11 @@ struct SessionsSidebar: View {
                     Label(screen.title, systemImage: screen.symbol)
                         .tag(SidebarItem.screen(screen))
                 }
+                // Android's drawer entry: only while Boar Labs is on (Settings → Advanced).
+                if Labs.shared.labsOn {
+                    Label(AppScreen.labs.title, systemImage: AppScreen.labs.symbol)
+                        .tag(SidebarItem.screen(.labs))
+                }
             }
 
             Section {

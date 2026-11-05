@@ -17,6 +17,8 @@ struct DestinationScreen: View {
             if let evaluation = model.evaluation { EvaluationScreen(controller: evaluation, chatBusy: model.chat?.isAnswering ?? false) }
         case .about:
             AboutScreen()
+        case .labs:
+            LabsScreen()
         }
     }
 }

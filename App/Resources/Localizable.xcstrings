@@ -159,6 +159,36 @@
         }
       }
     },
+    "%@ is classified: still in testing. Check back soon." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ é confidencial: ainda em teste. Volte em breve."
+          }
+        }
+      }
+    },
+    "%@ leaked, and it's yours: tap it to open it and switch it on. Still in testing." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ vazou, e é seu: toque para abrir e ligar. Ainda em teste."
+          }
+        }
+      }
+    },
+    "%@ leaked. Still in testing, with no release date." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ vazou. Ainda em testes, sem data de lançamento."
+          }
+        }
+      }
+    },
     "%@ needed more memory than this %@ had free, so BOAR closed while loading it. Answers now use %@." : {
       "localizations" : {
         "pt" : {
@@ -391,6 +421,16 @@
         }
       }
     },
+    "%lld open · %lld classified" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld abertos · %lld confidenciais"
+          }
+        }
+      }
+    },
     ", Deep Research" : {
       "localizations" : {
         "pt" : {
@@ -437,6 +477,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Uma etapa da pesquisa demorou demais e foi interrompida"
+          }
+        }
+      }
+    },
+    "A short daily quiz from BOAR's library, offline. Right answers unlock Boar Avatars." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Um quiz diário curto da biblioteca do BOAR, offline. Acertos liberam Avatares do Boar."
+          }
+        }
+      }
+    },
+    "ALPHA" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ALPHA"
           }
         }
       }
@@ -1248,6 +1308,16 @@
         }
       }
     },
+    "BETA" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BETA"
+          }
+        }
+      }
+    },
     "BOAR" : {
       "localizations" : {
         "pt" : {
@@ -1508,6 +1578,16 @@
         }
       }
     },
+    "Boar Labs" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Boar Labs"
+          }
+        }
+      }
+    },
     "Built into %@, nothing to download" : {
       "localizations" : {
         "pt" : {
@@ -1544,6 +1624,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Por tema"
+          }
+        }
+      }
+    },
+    "CLASSIFIED" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CONFIDENCIAL"
           }
         }
       }
@@ -1714,6 +1804,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Escolha como o BOAR responde"
+          }
+        }
+      }
+    },
+    "Classified lab" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lab confidencial"
           }
         }
       }
@@ -1924,6 +2024,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Personalizado: seus próprios ajustes abaixo. Escolha uma predefinição para recomeçar a partir dela."
+          }
+        }
+      }
+    },
+    "Daily Quiz" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quiz do Dia"
           }
         }
       }
@@ -2344,6 +2454,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Editar antes de perguntar"
+          }
+        }
+      }
+    },
+    "Enabled" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ativado"
           }
         }
       }
@@ -3079,6 +3199,16 @@
         }
       }
     },
+    "IN TESTING · NO RELEASE DATE" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "EM TESTE · SEM DATA DE LANÇAMENTO"
+          }
+        }
+      }
+    },
     "Ideas and money" : {
       "localizations" : {
         "pt" : {
@@ -3309,6 +3439,16 @@
         }
       }
     },
+    "Knowledge packs you collect, keep and open on this %@: whole libraries, offline." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pacotes de conhecimento que você coleciona, guarda e abre neste %@: bibliotecas inteiras, offline."
+          }
+        }
+      }
+    },
     "Knowledge that travels with you" : {
       "localizations" : {
         "pt" : {
@@ -3329,12 +3469,32 @@
         }
       }
     },
+    "LEAKED" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "VAZOU"
+          }
+        }
+      }
+    },
     "LFM 8B" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "LFM 8B"
+          }
+        }
+      }
+    },
+    "LIVE" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ATIVO"
           }
         }
       }
@@ -4245,6 +4405,16 @@
         }
       }
     },
+    "OFF" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DESL."
+          }
+        }
+      }
+    },
     "OK" : {
       "localizations" : {
         "pt" : {
@@ -4261,6 +4431,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Desligado"
+          }
+        }
+      }
+    },
+    "Off: this lab disappears from the chat too." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desligado: este lab some também da conversa."
           }
         }
       }
@@ -4641,6 +4821,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Escolha um tema para ter ideias ou digite sua pergunta abaixo."
+          }
+        }
+      }
+    },
+    "Point the camera at a sign or a menu: read and translated, offline." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aponte a câmera para uma placa ou cardápio: lido e traduzido, offline."
           }
         }
       }
@@ -5217,6 +5407,16 @@
         }
       }
     },
+    "Sanctuary" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Santuário"
+          }
+        }
+      }
+    },
     "Saved Chats" : {
       "localizations" : {
         "pt" : {
@@ -5649,6 +5849,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mostra os tempos embaixo de cada resposta, além dos ajustes do motor e do benchmark."
+          }
+        }
+      }
+    },
+    "Signboard" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Placa"
           }
         }
       }
@@ -6517,6 +6727,16 @@
         }
       }
     },
+    "This lab is off. Turn it on above." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este lab está desligado. Ligue acima."
+          }
+        }
+      }
+    },
     "This model isn't downloaded. You can add it again with Find More Models." : {
       "localizations" : {
         "pt" : {
@@ -6824,6 +7044,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Coleções desligadas não entram nas respostas."
+          }
+        }
+      }
+    },
+    "UNDER REVIEW" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "EM REVISÃO"
+          }
+        }
+      }
+    },
+    "Unfinished experiments in the menu and under answers. They may be slow, rough or change without notice." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Experimentos inacabados no menu e embaixo das respostas. Podem ser lentos, imperfeitos ou mudar sem aviso."
           }
         }
       }
@@ -7407,6 +7647,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "computador"
+          }
+        }
+      }
+    },
+    "everything here runs on this %@, offline" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "tudo aqui roda neste %@, offline"
+          }
+        }
+      }
+    },
+    "experimental: may be slow, rough, or gone tomorrow" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "experimental: pode ser lento, imperfeito ou sumir amanhã"
           }
         }
       }

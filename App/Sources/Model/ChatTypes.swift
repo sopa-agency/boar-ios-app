@@ -53,6 +53,9 @@ struct Receipt: Hashable, Sendable {
     var loadMs: Double?
     /// Why the answer came in Succinct though Detailed was picked: "health" or "seed" (ShortAnswer), shown under it.
     var styleNote: String?
+    /// The Boar Labs tool that answered instead of the model and/or the check that repaired it ("calculator-battery",
+    /// "facts-population+verdict-guard-date"); nil when the model wrote it as is.
+    var tool: String?
 
     var json: JSONValue {
         var o: [String: JSONValue] = ["totalMs": .double(totalMs), "ttftMs": .double(ttftMs), "tokPerSec": .double(tokPerSec), "tokens": JSONValue(tokens)]
@@ -62,14 +65,16 @@ struct Receipt: Hashable, Sendable {
         if let contextTokens { o["contextTokens"] = JSONValue(contextTokens) }
         if let loadMs { o["loadMs"] = .double(loadMs) }
         if let styleNote { o["styleNote"] = .string(styleNote) }
+        if let tool { o["tool"] = .string(tool) }
         return .object(o)
     }
 
     init(totalMs: Double, ttftMs: Double, tokPerSec: Double, tokens: Int, model: String?, retrievalMs: Double?, prefillMs: Double?, contextTokens: Int?, loadMs: Double?,
-         styleNote: String? = nil) {
+         styleNote: String? = nil, tool: String? = nil) {
         self.totalMs = totalMs; self.ttftMs = ttftMs; self.tokPerSec = tokPerSec; self.tokens = tokens; self.model = model
         self.retrievalMs = retrievalMs; self.prefillMs = prefillMs; self.contextTokens = contextTokens; self.loadMs = loadMs
         self.styleNote = styleNote
+        self.tool = tool
     }
 
     init?(json o: JSONValue) {
@@ -78,7 +83,7 @@ struct Receipt: Hashable, Sendable {
         self.init(totalMs: total, ttftMs: ttft, tokPerSec: rate, tokens: Int(tokens), model: o["model"]?.stringValue,
                   retrievalMs: o["retrievalMs"]?.doubleValue, prefillMs: o["prefillMs"]?.doubleValue,
                   contextTokens: o["contextTokens"]?.doubleValue.map { Int($0) }, loadMs: o["loadMs"]?.doubleValue,
-                  styleNote: o["styleNote"]?.stringValue)
+                  styleNote: o["styleNote"]?.stringValue, tool: o["tool"]?.stringValue)
     }
 
     /// "9.1 s" under a minute, "2 min 5 s" above (ReceiptFormat.seconds).

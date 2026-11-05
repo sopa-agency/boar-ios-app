@@ -335,10 +335,28 @@ final class ChatController {
         let tweaks = settings.engineTweaks
         // Small talk never starts a Deep Research or the router: "hi" took minutes on a big model (AnswerPath).
         let smallTalk = AnswerPath.isSmallTalk(q)
+        let aboutConversation = Self.aboutConversation(q, history, conversation)
         let way = AnswerPath.of(
-            deepResearch: deepResearch && !personal, aboutConversation: Self.aboutConversation(q, history, conversation),
+            deepResearch: deepResearch && !personal, aboutConversation: aboutConversation,
             adaptive: !personal && settings.adaptiveRoutingEnabled, smallTalk: smallTalk
         )
+        // The tool slot (Boar Labs): an instant answer needs no model, a context is read by it. Not for a recap; under
+        // Deep Research or Personal Files only a safety answer (Boar Cohazard).
+        let deep = deepResearch && !personal
+        let tool = aboutConversation ? nil : AnswerTools.run(
+            Labs.shared.activeTools, query: q,
+            history: prior.map { ConversationTurn(role: $0.role, text: $0.isUser ? $0.text : AnswerText.stripThinking($0.text)) }
+        ).flatMap { !(deep || personal) || PersonalFiles.keepsTool($0.tool) ? $0 : nil }
+        let instant = tool?.instantText
+        let toolPrompt = AnswerTools.systemPrompt(systemPrompt, tool)
+        // How this answer is written, for the check slot: Deep Research and recaps are not checked.
+        let path: String? = switch way {
+        case _ where instant != nil: nil
+        case .research: "deep"
+        case .recap: "chat"
+        case .adaptive: "adaptive"
+        case .pipeline: nil
+        }
 
         let clock = ContinuousClock()
         let startAt = clock.now
@@ -388,6 +406,11 @@ final class ChatController {
         }
 
         do {
+            if let instant {
+                // An instant answer doesn't load the model.
+                onPiece(instant)
+                throw InstantAnswer()
+            }
             if services.host.current == nil { enter(.loadingModel, answerId: answerId) }
             guard let session = await services.activeSession() else {
                 if services.backend == .remote {
@@ -419,7 +442,7 @@ final class ChatController {
                                  previousAnswer: previousAnswer, conversation: conversation)
                         return Outcome(sources: r.citations, timedOut: r.timedOut, metrics: r.metrics, fromPreviousAnswer: r.fromPreviousAnswer)
                     }
-                    let (chunks, timedOut) = try await Self.adaptive(q, systemPrompt: systemPrompt, styleReminder: styleReminder, history: history,
+                    let (chunks, timedOut) = try await Self.adaptive(q, systemPrompt: toolPrompt, styleReminder: styleReminder, history: history,
                                                                       maxTokens: maxTokens, services: services, stop: stop, sink: sink)
                     return Outcome(sources: chunks, timedOut: timedOut)
                 }
@@ -435,7 +458,7 @@ final class ChatController {
                 if outcome.fromPreviousAnswer { reusedSources = lastAnswer?.sources }
             } else {
                 let pipeline = AnswerPipeline(session: session, retriever: services.retriever, params: personal ? PersonalFiles.retrieval() : .default)
-                var request = AnswerRequest(query: q, systemPrompt: systemPrompt, styleReminder: styleReminder, maxTokens: maxTokens,
+                var request = AnswerRequest(query: q, systemPrompt: toolPrompt, styleReminder: styleReminder, maxTokens: maxTokens,
                                             history: history, enableThinking: tweaks.thinkingEnabled)
                 if personal {
                     // Nothing found in the files: the fixed line, then where to switch a collection on when none is on, or
@@ -470,6 +493,7 @@ final class ChatController {
                 }
             }
         } catch is CancellationError {
+        } catch is InstantAnswer {
         } catch {
             failure = error
         }
@@ -482,8 +506,20 @@ final class ChatController {
         }
         let shown = reusedSources ?? sources.enumerated().map { ChatSource(number: $0.offset + 1, chunk: $0.element) }
         let stopped = stopFlag.value
+        // The check slot (Boar Labs): a model's finished answer on the default or adaptive path may be repaired; not one
+        // that was stopped, timed out or failed part way, nor one from the user's own files.
+        let repair = personal || !LabTools.checksAnswer(instant: instant != nil, stopped: stopped, timedOut: timedOut, failed: failure != nil,
+                                                         path: path, blank: text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+            ? nil : AnswerChecks.run(Labs.shared.activeChecks, question: q, answer: text)
+        if let repair { text = repair.text }
+        let toolCodes = [tool?.tool, repair?.tool].compactMap { $0 }.joined(separator: "+")
         var receipt: Receipt?
-        if let firstAt, tokens > 0 {
+        if instant != nil, let firstAt {
+            // An instant answer generated nothing: its receipt has the time and the tool, no speed.
+            receipt = Receipt(totalMs: Self.seconds(startAt.duration(to: clock.now)) * 1000, ttftMs: Self.seconds(startAt.duration(to: firstAt)) * 1000,
+                              tokPerSec: 0, tokens: 0, model: nil, retrievalMs: nil, prefillMs: nil, contextTokens: nil, loadMs: nil,
+                              styleNote: nil, tool: toolCodes)
+        } else if let firstAt, tokens > 0 {
             let end = clock.now
             let wallRate = Double(tokens) / max(Self.seconds(firstAt.duration(to: end)), 1e-3)
             let decodeRate = metrics?.decodeTokPerSec ?? 0
@@ -491,7 +527,7 @@ final class ChatController {
                 totalMs: Self.seconds(startAt.duration(to: end)) * 1000, ttftMs: Self.seconds(startAt.duration(to: firstAt)) * 1000,
                 tokPerSec: decodeRate > 0 ? decodeRate : wallRate, tokens: (metrics?.generatedTokens ?? 0) > 0 ? metrics!.generatedTokens : tokens,
                 model: modelLabel, retrievalMs: retrievalMs, prefillMs: metrics?.prefillMs, contextTokens: metrics?.promptTokens, loadMs: loadMs,
-                styleNote: shortReason == ShortAnswer.smallTalk ? nil : shortReason)
+                styleNote: shortReason == ShortAnswer.smallTalk ? nil : shortReason, tool: toolCodes.isEmpty ? nil : toolCodes)
         }
         let finalText = text
         let meta = (!shown.isEmpty || receipt != nil) ? MessageMeta.encode(shown, receipt) : nil
@@ -614,6 +650,9 @@ final class ChatController {
         Double(d.components.seconds) + Double(d.components.attoseconds) / 1e18
     }
 }
+
+/// A Boar Labs tool answered: leaves the generation block without a model.
+private struct InstantAnswer: Error {}
 
 enum ChatError: LocalizedError {
     case noModel
