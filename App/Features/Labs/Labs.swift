@@ -172,6 +172,54 @@ final class Labs {
         unlockedIds.insert(id)
         defaults.set(true, forKey: "labs.unlocked.\(id)")
     }
+
+    /// Who wrote an instant answer, from its receipt's tool code: the lab speaks by its tile's name, so the chat and the
+    /// switch to turn it off say the same thing. `canBypass`: "Ask BOAR instead" is offered (not for the CO safety answer).
+    struct Speaker: Equatable {
+        let title: String
+        let art: String?
+        let emoji: String
+        let canBypass: Bool
+    }
+
+    /// android LabHooks' AnswerTools.speaker: nil keeps BOAR.
+    func speaker(tool: String) -> Speaker? {
+        let code = tool.split(separator: "+", maxSplits: 1).first.map(String.init) ?? tool
+        let id: String? = switch code {
+        case "safety-fact-co-hazard": "cohazard"
+        case _ where code.hasPrefix("calculator-travel-distance"): "distance"
+        case _ where code.hasPrefix("calculator-"): "calc"
+        case _ where code.hasPrefix("facts-"): "facts"
+        case "language": "polyglot"
+        default: nil
+        }
+        guard let lab = id.flatMap(byId) else { return nil }
+        return Speaker(title: lab.title, art: lab.art, emoji: lab.emoji, canBypass: lab.id != "cohazard")
+    }
+}
+
+/// The name and picture an instant answer speaks with, over its text.
+struct LabSpeakerLabel: View {
+    let speaker: Labs.Speaker
+
+    var body: some View {
+        HStack(spacing: 6) {
+            if let art = speaker.art {
+                Image(art)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: 20, height: 20)
+                    .clipShape(.rect(cornerRadius: 4))
+            } else {
+                Text(verbatim: speaker.emoji).font(.subheadline)
+            }
+            Text(verbatim: speaker.title)
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(.green)
+        }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(Text("Answered by \(speaker.title)"))
+    }
 }
 
 extension Labs {
@@ -179,6 +227,7 @@ extension Labs {
     /// Press, Big Boar and Wisp are studied in docs/labs-ios.md before any port.
     static var registry: [any LabPlugin] {
         [
+            CalcLab(),
             ClassifiedLab(id: "dailyQuiz", order: 80, emoji: "❔", title: String(localized: "Daily Quiz"),
                           body: String(localized: "A short daily quiz from BOAR's library, offline. Right answers unlock Boar Avatars.")),
             ClassifiedLab(id: "sanctuary", order: 85, emoji: "📚", title: String(localized: "Sanctuary"),

@@ -17,8 +17,14 @@ struct AnswerView: View {
         streaming ? split.answer : AnswerText.splitInlineBullets(AnswerText.cleanCitations(split.answer, sourceCount: message.sources.count))
     }
 
+    /// A Labs plugin's instant answer speaks as that plugin: its art and name, not BOAR's.
+    private var speaker: Labs.Speaker? { message.receipt?.tool.flatMap { Labs.shared.speaker(tool: $0) } }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
+            if let speaker, !streaming {
+                LabSpeakerLabel(speaker: speaker)
+            }
             if message.text == AesTextCipher.locked {
                 Label("Locked Chat", systemImage: "lock.fill")
                     .foregroundStyle(.secondary)
@@ -48,6 +54,13 @@ struct AnswerView: View {
                 }
                 if message.stopped { MessageNote(symbol: Symbols.stop, text: "Stopped", warning: false) }
                 if message.timedOut { MessageNote(symbol: Symbols.caution, text: "A research step took too long and was cut short", warning: true) }
+                // The plugin answered without the model: the same question, plugins skipped (never the CO safety answer).
+                if !streaming, speaker?.canBypass == true {
+                    Button("Ask BOAR instead", systemImage: "arrow.uturn.forward") { chat.askModel(message.id) }
+                        .buttonStyle(.bordered)
+                        .disabled(chat.isAnswering)
+                        .frame(maxWidth: .infinity, alignment: .trailing)
+                }
                 if !message.text.isEmpty && !streaming {
                     AnswerFooter(message: message, chat: chat, shown: shown)
                 }

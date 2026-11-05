@@ -220,6 +220,16 @@ final class ChatController {
         }
     }
 
+    /// "Ask BOAR instead": the question of a Labs tool's answer again, with the Labs tools skipped so the model answers.
+    func askModel(_ answerId: String) {
+        guard job == nil, let q = question(for: answerId) else { return }
+        skipToolsOnce = true
+        send(q)
+    }
+
+    /// Set by `askModel` for the next question only.
+    @ObservationIgnored private var skipToolsOnce = false
+
     /// The question an answer replied to (the user message just before it).
     func question(for answerId: String) -> String? {
         guard let i = messages.firstIndex(where: { $0.id == answerId }), i > 0, messages[i - 1].isUser else { return nil }
@@ -343,7 +353,9 @@ final class ChatController {
         // The tool slot (Boar Labs): an instant answer needs no model, a context is read by it. Not for a recap; under
         // Deep Research or Personal Files only a safety answer (Boar Cohazard).
         let deep = deepResearch && !personal
-        let tool = aboutConversation ? nil : AnswerTools.run(
+        let skipTools = skipToolsOnce
+        skipToolsOnce = false
+        let tool = skipTools || aboutConversation ? nil : AnswerTools.run(
             Labs.shared.activeTools, query: q,
             history: prior.map { ConversationTurn(role: $0.role, text: $0.isUser ? $0.text : AnswerText.stripThinking($0.text)) }
         ).flatMap { !(deep || personal) || PersonalFiles.keepsTool($0.tool) ? $0 : nil }
@@ -508,7 +520,7 @@ final class ChatController {
         let stopped = stopFlag.value
         // The check slot (Boar Labs): a model's finished answer on the default or adaptive path may be repaired; not one
         // that was stopped, timed out or failed part way, nor one from the user's own files.
-        let repair = personal || !LabTools.checksAnswer(instant: instant != nil, stopped: stopped, timedOut: timedOut, failed: failure != nil,
+        let repair = skipTools || personal || !LabTools.checksAnswer(instant: instant != nil, stopped: stopped, timedOut: timedOut, failed: failure != nil,
                                                          path: path, blank: text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
             ? nil : AnswerChecks.run(Labs.shared.activeChecks, question: q, answer: text)
         if let repair { text = repair.text }

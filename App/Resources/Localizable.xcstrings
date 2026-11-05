@@ -831,6 +831,16 @@
         }
       }
     },
+    "Answered by %@" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Respondido por %@"
+          }
+        }
+      }
+    },
     "Answered in %@" : {
       "localizations" : {
         "pt" : {
@@ -953,6 +963,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "As respostas vêm da sua biblioteca, aqui neste iPhone."
+          }
+        }
+      }
+    },
+    "Answers on its own" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Responde sozinha"
           }
         }
       }
@@ -1134,6 +1154,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Perguntar ao BOAR ${question}"
+          }
+        }
+      }
+    },
+    "Ask BOAR instead" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Perguntar ao BOAR"
           }
         }
       }
@@ -1574,6 +1604,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Modelos maiores podem responder melhor, mas precisam de mais memória."
+          }
+        }
+      }
+    },
+    "Boar Calculator" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Boar Calculadora"
           }
         }
       }
@@ -2658,6 +2698,16 @@
         }
       }
     },
+    "Exact answers to a few everyday calculations (battery, fuel, hiking, currency, water, temperature, how long, how many), instantly and without the model. Plain sums and percentages still go to the model." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Respostas exatas para algumas contas do dia a dia (bateria, consumo, trilha, câmbio, água, temperatura, quanto tempo, quantos), na hora e sem o modelo. Contas simples e porcentagens ainda vão para o modelo."
+          }
+        }
+      }
+    },
     "Export" : {
       "localizations" : {
         "pt" : {
@@ -3159,6 +3209,16 @@
         }
       }
     },
+    "How long to drive 240 miles at 60 mph?" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "How long to drive 240 miles at 60 mph?"
+          }
+        }
+      }
+    },
     "Hugging Face" : {
       "localizations" : {
         "pt" : {
@@ -3195,6 +3255,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Não encontrei isso nos seus Arquivos pessoais."
+          }
+        }
+      }
+    },
+    "I have 23 L of water and 5 L jerrycans. How many jerrycans do I need?" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meu carro alugado faz 7,5 litros a cada 100 km. Quanto isso dá em milhas por galão americano?"
           }
         }
       }
@@ -3345,6 +3415,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Instalando"
+          }
+        }
+      }
+    },
+    "It works out the answer from the numbers in your question and shows the formula. Anything else goes to the model as usual. A message about health, an injury, danger or a person (or a chat that was) never gets a calculator answer. The answer's details say Tool when the calculator wrote it. Word problems are English only. Ported from r4to's calculator (BOAR R&D)." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ela faz a conta com os números da sua pergunta e mostra a fórmula. O resto vai para o modelo, como sempre. Uma mensagem sobre saúde, ferimento, perigo ou uma pessoa (ou uma conversa que tenha sido) nunca recebe resposta da calculadora. Os detalhes da resposta mostram Ferramenta quando foi ela que escreveu. Problemas com palavras só em inglês. Portada da calculadora de r4to (BOAR R&D)."
           }
         }
       }
@@ -3991,6 +4071,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mais curtidos"
+          }
+        }
+      }
+    },
+    "My power bank is 5,000 mAh at 3.85 V. How many watt-hours is that, and can I take it on a plane?" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meu power bank é de 5.000 mAh a 3,85 V. Quantos watt-hora isso dá, e posso levar no avião?"
           }
         }
       }
@@ -6918,6 +7008,16 @@
         }
       }
     },
+    "Tool" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ferramenta"
+          }
+        }
+      }
+    },
     "Topic Packs" : {
       "localizations" : {
         "pt" : {
@@ -6974,6 +7074,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Em alta"
+          }
+        }
+      }
+    },
+    "Try" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Experimente"
           }
         }
       }
@@ -7793,6 +7903,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "~%lld palavras (%lld tokens)"
+          }
+        }
+      }
+    },
+    "• A battery's watt-hours, and whether it can fly\n• Fuel economy: L/100 km and miles per gallon\n• Hiking time by Naismith's rule\n• Currency at the rate you give, with a tip\n• Water for a trip: people × days × litres\n• Temperature: Celsius and Fahrenheit\n• How long: an amount at a rate (MB at MB/s, km at km/h, pages per hour)\n• How many: containers, trips or buses for a total, rounded up" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "• Watt-hora de uma bateria, e se ela pode ir no avião\n• Consumo: L/100 km e milhas por galão\n• Tempo de trilha pela regra de Naismith\n• Câmbio na cotação que você der, com gorjeta\n• Água para uma viagem: pessoas × dias × litros\n• Temperatura: Celsius e Fahrenheit\n• Quanto tempo: uma quantidade a uma taxa (MB a MB/s, km a km/h, páginas por hora), em inglês\n• Quantos: recipientes, viagens ou ônibus para um total, arredondando para cima, em inglês"
           }
         }
       }
