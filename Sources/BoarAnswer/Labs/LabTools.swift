@@ -55,6 +55,14 @@ public enum LabTools {
         return CoHazard.coHazardLanguage(query).map { Hit(tool: "safety-fact-co-hazard", text: CoHazard.coHazardAnswer(query, language: $0)) }
     }
 
+    /// Boar Guard: English, not health, no thinking block; else VerdictGuard's repair.
+    public static func `guard`(question: String, answer: String) -> Hit? {
+        if notEnglish(question) || QueryContext.isHealthQuestion(question) { return nil }
+        let split = AnswerText.splitThinking(answer)
+        if split.thinking != nil || split.thinkingInProgress { return nil }
+        return VerdictGuard.check(question, answer).map { Hit(tool: "verdict-guard-\($0.kind)", text: $0.text) }
+    }
+
     /// Safety answers before the rest: Boar Cohazard's CO answer must win over a calculation or a fact in the same
     /// question ("How long can I run a propane heater in the camper at 0.5 kg per hour?"). Then Boar Polyglot: a question
     /// BOAR can't read gets its reply before a tool half-reads it. Grid order within a rank.
