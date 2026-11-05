@@ -54,7 +54,7 @@ enum DebugRouter {
         case "settings", "settings-engine", "settings-advanced", "device-info": model.selection = .screen(.settings)
         case "evaluation": model.selection = .screen(.evaluation)
         case "about": model.selection = .screen(.about)
-        case "labs": model.selection = .screen(.labs)
+        case "labs", _ where screen.hasPrefix("lab-"): model.selection = .screen(.labs)
         default: break
         }
         if let scroll = DebugLaunch.scroll {

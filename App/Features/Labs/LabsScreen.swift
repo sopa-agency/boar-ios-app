@@ -53,6 +53,9 @@ struct LabsScreen: View {
             if let lab = labs.byId(route.id) { LabPage(lab: lab) }
         }
         .sensoryFeedback(.warning, trigger: leaks)
+        .debugPush("lab-\(DebugLaunch.labId ?? "")") {
+            if let lab = DebugLaunch.labId.flatMap(labs.byId) { LabPage(lab: lab) }
+        }
     }
 
     @ViewBuilder private func tile(_ lab: any LabPlugin) -> some View {

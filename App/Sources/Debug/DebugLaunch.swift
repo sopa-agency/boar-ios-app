@@ -4,7 +4,7 @@ import Foundation
 /// Release stubs are constants, so the call sites in the app need no `#if`.
 ///
 ///     -uiDemo            seed an in-memory-style demo state (no model needed); wipes BOAR's files in the app container
-///     -uiScreen <name>   open that screen directly (see `DebugRouter`)
+///     -uiScreen <name>   open that screen directly (see `DebugRouter`); `lab-<id>` opens that lab's page
 ///     -uiScroll <pts|end> scroll the main list that far once the screen is up
 ///     -uiStyle <id>      pick that answer style (succinct, detailed, personal, custom) on launch
 ///     -uiAsk "<q1> || <q2>"  after any -uiImport, ask the questions in one new chat, each after the previous answer
@@ -30,12 +30,15 @@ enum DebugLaunch {
     static let ramBytes: Int64? = demo ? 4 * 1_073_741_824 : nil
 
     static func isScreen(_ name: String) -> Bool { screen == name }
+    /// `-uiScreen lab-<id>`: that lab's page, pushed over Boar Labs.
+    static var labId: String? { screen.flatMap { $0.hasPrefix("lab-") ? String($0.dropFirst(4)) : nil } }
     /// The lock screen stays as it is drawn: no Face ID / passcode prompt, no error text under it.
     static var holdsLockScreen: Bool { screen == "lock" }
     #else
     static let demo = false
     static let ramBytes: Int64? = nil
     static func isScreen(_ name: String) -> Bool { false }
+    static var labId: String? { nil }
     static var holdsLockScreen: Bool { false }
     #endif
 }
