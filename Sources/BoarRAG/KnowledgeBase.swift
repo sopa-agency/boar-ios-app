@@ -108,6 +108,17 @@ public final class KnowledgeBase: Sendable {
         }
     }
 
+    /// The built-in library's articles, `limit` of them drawn by `seed` (android seedArticles, the same draw for the same
+    /// seed through KotlinRandom): title and opening, never the user's files. The Daily Quiz's pool.
+    public func seedArticles(seed: Int64, limit: Int) throws -> [(title: String, body: String)] {
+        // Only the opening: the quiz shows an article's first sentence, and a few thousand bodies would be megabytes.
+        let rows = try db.query(
+            "SELECT title, substr(body, 1, 600) AS head FROM chunks WHERE collection_id IS NULL AND title IS NOT NULL ORDER BY chunk_id"
+        ) { (title: try $0.string("title") ?? "", body: try $0.string("head") ?? "") }
+        var rnd = KotlinRandom(seed: seed)
+        return Array(rnd.shuffled(rows.filter { !$0.title.unicodeScalars.allSatisfy(\.properties.isWhitespace) }).prefix(limit))
+    }
+
     public func createCollection(
         id: String, name: String, sourceFilename: String?, docCount: Int64, chunkCount: Int64, sizeBytes: Int64,
         now: Int64 = Int64(Date().timeIntervalSince1970 * 1000)
