@@ -451,6 +451,16 @@
         }
       }
     },
+    "%lld° %@" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld° %@"
+          }
+        }
+      }
+    },
     ", Deep Research" : {
       "localizations" : {
         "pt" : {
@@ -487,6 +497,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "50.000 introduções de artigos"
+          }
+        }
+      }
+    },
+    "A compass from the %@'s own sensors, offline, no location needed." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uma bússola com os sensores do próprio %@, offline, sem precisar de localização."
           }
         }
       }
@@ -1724,6 +1744,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Boar Lunar"
+          }
+        }
+      }
+    },
+    "Boar Nomad" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Boar Nomad"
           }
         }
       }
@@ -4069,6 +4099,16 @@
         }
       }
     },
+    "Low accuracy: move the %@ in a figure 8 a few times, away from metal and magnets." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Precisão baixa: mova o %@ em forma de 8 algumas vezes, longe de metal e ímãs."
+          }
+        }
+      }
+    },
     "Mac" : {
       "localizations" : {
         "pt" : {
@@ -5301,6 +5341,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Aponte a câmera para uma placa ou cardápio: lido e traduzido, offline."
+          }
+        }
+      }
+    },
+    "Points to magnetic north, worked out on this %@ with no internet. True north differs by a few degrees depending on where you are; it would need your location, which BOAR doesn't ask for. Hold the %@ flat." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aponta para o norte magnético, calculado neste %@ sem internet. O norte verdadeiro difere alguns graus conforme onde você está; precisaria da sua localização, que o BOAR não pede. Segure o %@ na horizontal."
           }
         }
       }
@@ -7207,6 +7257,16 @@
         }
       }
     },
+    "This %@ has no magnetometer, so it can't show a compass." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este %@ não tem magnetômetro, então não pode mostrar uma bússola."
+          }
+        }
+      }
+    },
     "This article is no longer on the phone: its pack or collection was removed." : {
       "localizations" : {
         "pt" : {
@@ -8437,6 +8497,142 @@
         }
       },
       "comment" : "Header; PT is masculine (Boar Fatos, Boar Distância)"
+    },
+    "labs.compass.dir.e" : {
+      "comment" : "Compass: east",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "E"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L"
+          }
+        }
+      }
+    },
+    "labs.compass.dir.n" : {
+      "comment" : "Compass: north",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "N"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "N"
+          }
+        }
+      }
+    },
+    "labs.compass.dir.ne" : {
+      "comment" : "Compass: northeast",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "NE"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "NE"
+          }
+        }
+      }
+    },
+    "labs.compass.dir.nw" : {
+      "comment" : "Compass: northwest",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "NW"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "NO"
+          }
+        }
+      }
+    },
+    "labs.compass.dir.s" : {
+      "comment" : "Compass: south",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "S"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "S"
+          }
+        }
+      }
+    },
+    "labs.compass.dir.se" : {
+      "comment" : "Compass: southeast",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SE"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SE"
+          }
+        }
+      }
+    },
+    "labs.compass.dir.sw" : {
+      "comment" : "Compass: southwest",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SW"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SO"
+          }
+        }
+      }
+    },
+    "labs.compass.dir.w" : {
+      "comment" : "Compass: west",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "W"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O"
+          }
+        }
+      }
     },
     "load %@" : {
       "localizations" : {

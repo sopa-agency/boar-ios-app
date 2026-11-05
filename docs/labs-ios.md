@@ -9,6 +9,7 @@ Where each Android lab stands on iOS (2026-11-05), and what the rest would take.
 
 | Lab | Android id | Slot | Engine (iOS) | Tests |
 |---|---|---|---|---|
+| Boar Nomad | `compass` | page | `BoarAnswer/Labs/CompassMath`, sensor: Core Motion | `CompassMathTests` (Android has none) |
 | Boar Lunar | `lunar` | page | `BoarAnswer/Labs/MoonPhase` | `MoonPhaseTests` (Android has none) |
 | Boar Polyglot | `polyglot` | tool | `BoarRouting/LanguageGate`, detector: NaturalLanguage | `LanguageGateTests` |
 | Boar Calculator | `calc` | tool | `BoarRouting/Arithmetic`, `NumGuard`, `CalcShortcut` | `ArithmeticTests`, `NumGuardTests` |
@@ -30,6 +31,10 @@ Differences from Android, on purpose:
   Kotlin stdlib sources, not yet checked against a JVM run (cx has no Java).
 - **Polyglot:** the note leaves out Android's "without the phone's detector (Android 10+)" sentence: NaturalLanguage is
   always there.
+- **Nomad:** Core Motion device motion in the `.xMagneticNorthZVertical` frame (fused, no permission prompt) instead of
+  Android's rotation vector, so there is no raw accelerometer + magnetometer fallback. The figure-8 hint follows the
+  magnetometer's calibration accuracy and shows until the first report, like Android. The simulator and the Mac have no
+  magnetometer and show the "no magnetometer" text; the needle itself is still to be checked on the iPhone.
 - **Timing tests:** Kotlin's time limits are for a warm JVM; a Swift debug build with every suite in parallel takes about
   twice as long on the same regexes (`LabCombos.timeFactor`).
 
@@ -37,19 +42,6 @@ Open from the core (item 1 of the 2026-11-04 night): the Labs storage limit (`St
 restart after a crash in a lab (an iOS app can't relaunch itself; the next launch shows what happened instead).
 
 ## Not ported: what each would take
-
-### Boar Nomad (`compass`): feasible now, small
-
-Android reads the fused rotation vector (or accelerometer + magnetometer) and points to magnetic north.
-
-- iOS: Core Motion `CMMotionManager.startDeviceMotionUpdates(using: .xMagneticNorthZVertical)` gives the heading from the
-  fused sensors with no permission prompt (only motion *activity* and the pedometer ask). Core Location's
-  `startUpdatingHeading` also works and brings the system's figure-8 calibration screen; whether it asks for location
-  permission on iOS 18 and 27 needs a check on the iPhone before choosing it.
-- The rest is logic already in `CompassLab.kt`: smoothing along the shortest way round, whole degrees, the eight
-  cardinal names (PT strings exist).
-- The Mac has no magnetometer: the lab shows Android's "no magnetometer" text there.
-- Recommendation: port it next, one commit, and test on the iPhone (the simulator has no compass).
 
 ### Boar Vitals (`pulse`): partly, medium
 
@@ -60,7 +52,7 @@ Android shows battery temperature, the thermal status, each core's clock, free R
   what's left before the system ends the app (`os_proc_available_memory`), the model and chip, and CPU features
   (`sysctl hw.optional.arm.*`).
 - Not available to apps: battery temperature and per-core clocks. The heat line would become a thermal-state timeline.
-- Recommendation: port as a smaller "Vitals" after Nomad; the thermal timeline is what matters for the phase 3 perf work.
+- Recommendation: port as a smaller "Vitals" next; the thermal timeline is what matters for the phase 3 perf work.
 
 ### Boar Press (`printer`): feasible, medium to large
 
@@ -70,7 +62,7 @@ A basket of answers from any chat ("＋ Basket"), reordered and edited, compiled
   `UIGraphicsPDFRenderer` (iOS) or `ImageRenderer` (both), sharing through `ShareLink` and `.fileExporter`.
 - About 900 lines of Kotlin, most of it UI. Each entry's optional drawing comes from Designer: without it, entries keep
   their own illustration or none.
-- Recommendation: after Nomad and Vitals; it doesn't depend on anything iOS lacks.
+- Recommendation: after Vitals; it doesn't depend on anything iOS lacks.
 
 ### Boar Designer (`image`): possible, large, with a decision first
 
