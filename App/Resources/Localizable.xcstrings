@@ -471,6 +471,16 @@
         }
       }
     },
+    "A fixed carbon monoxide safety answer when you plan to run a fuel-burning device indoors, without the model." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uma resposta fixa de segurança sobre monóxido de carbono quando você planeja usar um aparelho a combustível em lugar fechado, sem o modelo."
+          }
+        }
+      }
+    },
     "A research step took too long and was cut short" : {
       "localizations" : {
         "pt" : {
@@ -1618,6 +1628,16 @@
         }
       }
     },
+    "Boar Cohazard" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Boar Cohazard"
+          }
+        }
+      }
+    },
     "Boar Distance" : {
       "localizations" : {
         "pt" : {
@@ -1704,6 +1724,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "CPU"
+          }
+        }
+      }
+    },
+    "Can I run my portable generator in the attached garage if I keep the door open?" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Can I run my portable generator in the attached garage if I keep the door open?"
+          }
+        }
+      }
+    },
+    "Can we bring the propane heater into the camper overnight?" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Can we bring the propane heater into the camper overnight?"
           }
         }
       }
@@ -3485,6 +3525,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Instalando"
+          }
+        }
+      }
+    },
+    "Is it safe to use a camping stove inside the tent to cook?" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Is it safe to use a camping stove inside the tent to cook?"
           }
         }
       }
@@ -6607,6 +6657,16 @@
         }
       }
     },
+    "The answer is always the same reviewed text, with its sources (CDC, US CPSC, NHS) and an emergency number line; it starts with No. only when you ask whether you can do it. Small models told people a generator in a garage was fine with the door open. Electric heaters, installed and vented appliances and a propane stove in a kitchen are left to the model. A message about headaches, dizziness or an alarm going off is a health question and goes to the model as one. Ported from r4to's CO hazard check (BOAR R&D)." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A resposta é sempre o mesmo texto revisado, com as fontes (CDC, US CPSC, NHS) e uma linha com o número de emergência; começa com No. só quando você pergunta se pode fazer. Modelos pequenos disseram que um gerador na garagem estava ok com a porta aberta. Aquecedores elétricos, aparelhos instalados com saída para fora e um fogão a gás na cozinha ficam com o modelo. Uma mensagem sobre dor de cabeça, tontura ou um alarme tocando é uma pergunta de saúde e vai para o modelo como tal. Portado da verificação de monóxido de carbono de r4to (BOAR R&D)."
+          }
+        }
+      }
+    },
     "The app's original %lld questions, for comparing with earlier and Android runs. No fact check." : {
       "localizations" : {
         "pt" : {
@@ -8050,6 +8110,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "• Watt-hora de uma bateria, e se ela pode ir no avião\n• Consumo: L/100 km e milhas por galão\n• Tempo de trilha pela regra de Naismith\n• Câmbio na cotação que você der, com gorjeta\n• Água para uma viagem: pessoas × dias × litros\n• Temperatura: Celsius e Fahrenheit\n• Quanto tempo: uma quantidade a uma taxa (MB a MB/s, km a km/h, páginas por hora), em inglês\n• Quantos: recipientes, viagens ou ônibus para um total, arredondando para cima, em inglês"
+          }
+        }
+      }
+    },
+    "• A generator, charcoal or gas grill, camping stove or lantern, or fuel heater in a home, garage, carport, basement, shed, tent or camper\n• A car or other engine left running in a garage\n• Heating a home with a gas oven or stove\n• How far a generator must be from doors, windows and vents" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "• Gerador, churrasqueira a carvão ou a gás, fogareiro ou lampião de camping, ou aquecedor a combustível dentro de casa, garagem, porão, depósito, barraca ou trailer\n• Carro ou outro motor ligado na garagem\n• Aquecer a casa com o forno ou o fogão a gás\n• A distância que um gerador precisa ficar de portas, janelas e respiros"
           }
         }
       }
