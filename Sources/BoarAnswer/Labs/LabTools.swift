@@ -29,6 +29,15 @@ public enum LabTools {
     /// A seed phrase or private key anywhere in the question: an instant fact or distance would drop that half of it.
     private static func seed(_ q: String) -> Bool { QueryContext.isSeedPhraseQuestion(q) }
 
+    /// Boar Distance: English only, not a seed phrase; NumGuard's health lexicon over this and the earlier user turns
+    /// keeps it off health.
+    public static func distance(_ table: TravelDistance?, _ query: String, userTurns: [String]) -> Hit? {
+        if query.utf16.count > maxQuestion || notEnglish(query) || seed(query) || ([query] + userTurns).contains(where: NumGuard.healthLexicon) {
+            return nil
+        }
+        return table?.answer(query).map { Hit(tool: "calculator-travel-distance", text: $0.text) }
+    }
+
     /// Boar Facts: English only, not a seed phrase; QueryContext's health detector over this and the earlier user turns
     /// keeps it off health.
     public static func facts(_ table: Facts?, _ query: String, userTurns: [String]) -> Hit? {
