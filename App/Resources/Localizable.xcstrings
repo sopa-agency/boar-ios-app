@@ -1678,6 +1678,16 @@
         }
       }
     },
+    "Boar Polyglot" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Boar Polyglot"
+          }
+        }
+      }
+    },
     "Built into %@, nothing to download" : {
       "localizations" : {
         "pt" : {
@@ -5507,6 +5517,16 @@
         }
       }
     },
+    "Replies on its own" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Responde sozinho"
+          }
+        }
+      }
+    },
     "Research Bench v0.1" : {
       "localizations" : {
         "pt" : {
@@ -5733,6 +5753,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Salvo em %@."
+          }
+        }
+      }
+    },
+    "Says so at once when you ask in a language BOAR doesn't speak yet, instead of a confused answer." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avisa na hora quando você pergunta numa língua que o BOAR ainda não fala, em vez de uma resposta confusa."
           }
         }
       }
@@ -6023,6 +6053,16 @@
         }
       }
     },
+    "Short messages, thanks and greetings, names, quotes, code and links go to the model as usual, and so does a question with English in it (What does 'merci' mean?). A short follow-up in a chat already going goes to the model too. The answer's details say Tool: language." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mensagens curtas, agradecimentos e cumprimentos, nomes, citações, código e links vão para o modelo como sempre, e uma pergunta com inglês no meio também (O que significa 'merci'?). Uma continuação curta numa conversa em andamento também vai para o modelo. Os detalhes da resposta dizem Ferramenta: language."
+          }
+        }
+      }
+    },
     "Shortly after you leave, when nothing is being answered, BOAR unloads the model, so the phone doesn't close BOAR to get its memory back. The next answer takes a few seconds longer to start." : {
       "localizations" : {
         "pt" : {
@@ -6209,6 +6249,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "O menor, respostas visivelmente piores"
+          }
+        }
+      }
+    },
+    "Sorry, BOAR doesn't speak %@ yet. Ask in English." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desculpe, o BOAR ainda não fala %@. Pergunte em inglês."
           }
         }
       }
@@ -7664,6 +7714,16 @@
         }
       }
     },
+    "Wie lange dauert es, bis das Wasser kocht?" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wie lange dauert es, bis das Wasser kocht?"
+          }
+        }
+      }
+    },
     "Wikipedia" : {
       "localizations" : {
         "pt" : {
@@ -8174,12 +8234,32 @@
         }
       }
     },
+    "Как долго нужно кипятить воду, чтобы она была безопасной?" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Как долго нужно кипятить воду, чтобы она была безопасной?"
+          }
+        }
+      }
+    },
     "• A battery's watt-hours, and whether it can fly\n• Fuel economy: L/100 km and miles per gallon\n• Hiking time by Naismith's rule\n• Currency at the rate you give, with a tip\n• Water for a trip: people × days × litres\n• Temperature: Celsius and Fahrenheit\n• How long: an amount at a rate (MB at MB/s, km at km/h, pages per hour)\n• How many: containers, trips or buses for a total, rounded up" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "• Watt-hora de uma bateria, e se ela pode ir no avião\n• Consumo: L/100 km e milhas por galão\n• Tempo de trilha pela regra de Naismith\n• Câmbio na cotação que você der, com gorjeta\n• Água para uma viagem: pessoas × dias × litros\n• Temperatura: Celsius e Fahrenheit\n• Quanto tempo: uma quantidade a uma taxa (MB a MB/s, km a km/h, páginas por hora), em inglês\n• Quantos: recipientes, viagens ou ônibus para um total, arredondando para cima, em inglês"
+          }
+        }
+      }
+    },
+    "• A full question in a language other than English\n• Other alphabets by their letters: Russian, Ukrainian, Chinese, Japanese, Korean, Arabic, Hebrew, Hindi, Thai, Greek and more\n• Languages in the Latin alphabet (French, German, Italian, Dutch, Polish, Turkish) when the language detector is sure" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "• Uma pergunta completa numa língua que não seja inglês\n• Outros alfabetos pelas letras: russo, ucraniano, chinês, japonês, coreano, árabe, hebraico, hindi, tailandês, grego e outros\n• Línguas no alfabeto latino (francês, alemão, italiano, holandês, polonês, turco) quando o detector de idioma tem certeza"
           }
         }
       }
@@ -8220,6 +8300,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "• A distância em linha reta entre duas cidades, em km e milhas\n• Quanto dá, mais ou menos, por estrada ou trilha: a pé cerca de 30% a mais, de bicicleta e de carro cerca de 25%\n• Quantos dias a pé ou de bicicleta, ou horas de carro\n• Ida e volta, quando você pergunta pelos dois trechos"
+          }
+        }
+      }
+    },
+    "烧水需要多长时间才能安全饮用？" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "烧水需要多长时间才能安全饮用？"
           }
         }
       }
