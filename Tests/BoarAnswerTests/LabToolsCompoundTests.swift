@@ -205,8 +205,9 @@ struct LabToolsCompoundTests {
                 var t20 = time(f, make(20_000))
                 // Below 0.05 ms the clock, not the regex, sets the ratio.
                 var ratio = t20 / max(t2, 0.05)
-                // Over a limit: measured again, so a burst of load from the other suites doesn't fail it.
-                if ratio >= maxRatio || t20 >= 300 * C.timeFactor {
+                // Over a limit: measured again (up to three more times, keeping the fastest), so a burst of load from the
+                // other suites or a parallel build doesn't fail it. A quadratic pattern stays over the limit every time.
+                for _ in 0..<3 where ratio >= maxRatio || t20 >= 300 * C.timeFactor {
                     t2 = min(t2, time(f, make(2_000)))
                     t20 = min(t20, time(f, make(20_000)))
                     ratio = t20 / max(t2, 0.05)
