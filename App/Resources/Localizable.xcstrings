@@ -1658,6 +1658,16 @@
         }
       }
     },
+    "Boar Guard" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Boar Guarda"
+          }
+        }
+      }
+    },
     "Boar Labs" : {
       "localizations" : {
         "pt" : {
@@ -1864,6 +1874,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Verificando…"
+          }
+        }
+      }
+    },
+    "Checks" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verifica"
           }
         }
       }
@@ -2334,6 +2354,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "O ditado não está disponível neste iPhone."
+          }
+        }
+      }
+    },
+    "Did astronauts walk on the Moon before 1970?" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Did astronauts walk on the Moon before 1970?"
           }
         }
       }
@@ -3009,6 +3039,16 @@
         }
       }
     },
+    "Fixes a Yes, No or winner that the model's own figures or dates contradict, after it answers." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Corrige um Sim, Não ou vencedor que os próprios números ou datas do modelo contradizem, depois que ele responde."
+          }
+        }
+      }
+    },
     "Flash Attention" : {
       "localizations" : {
         "pt" : {
@@ -3555,6 +3595,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ele conhece as 6.000 maiores cidades (GeoNames, CC BY 4.0) e calcula pelas coordenadas, então toda resposta é uma estimativa, não uma rota no mapa: não sabe de estradas, fronteiras, balsas ou bloqueios. Um lugar que não é uma dessas cidades (um hotel, uma praia, uma cidade pequena) vai para o modelo, como sempre, e uma conversa sobre saúde, ferimento ou perigo também. Perguntas só em inglês. Portado da distância de viagem de r4to (BOAR R&D)."
+          }
+        }
+      }
+    },
+    "It only reads the finished answer, so you see the model's text while it is written and the fixed one when it ends. The facts stay and the wrong verdict is rewritten from them, with the model's own corrections and restatements removed; nothing is generated again. It leaves the answer alone when it isn't sure: mixed units, overlapping ranges, a number that may belong to something else. Never on health questions, instant answers or Deep Research. The answer's details say Tool when it changed something. English only. Ported from r4to's verdict guard (BOAR R&D)." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ele só lê a resposta pronta: você vê o texto do modelo enquanto ele escreve e o corrigido no fim. Os fatos ficam e o veredito errado é reescrito a partir deles, sem as autocorreções e repetições do modelo; nada é gerado de novo. Quando não tem certeza, deixa a resposta como está: unidades diferentes, faixas que se sobrepõem, um número que pode ser de outra coisa. Nunca em perguntas de saúde, respostas instantâneas ou Pesquisa Profunda. Os detalhes da resposta mostram Ferramenta quando ele mudou algo. Só em inglês. Portado do verificador de veredito de r4to (BOAR R&D)."
           }
         }
       }
@@ -7594,6 +7644,26 @@
         }
       }
     },
+    "Which countries are bigger than India by area?" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Which countries are bigger than India by area?"
+          }
+        }
+      }
+    },
+    "Which is more densely populated, Japan or Germany, and by how much?" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Which is more densely populated, Japan or Germany, and by how much?"
+          }
+        }
+      }
+    },
     "Wikipedia" : {
       "localizations" : {
         "pt" : {
@@ -8120,6 +8190,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "• Gerador, churrasqueira a carvão ou a gás, fogareiro ou lampião de camping, ou aquecedor a combustível dentro de casa, garagem, porão, depósito, barraca ou trailer\n• Carro ou outro motor ligado na garagem\n• Aquecer a casa com o forno ou o fogão a gás\n• A distância que um gerador precisa ficar de portas, janelas e respiros"
+          }
+        }
+      }
+    },
+    "• Before or after a year: a No next to the answer's own first date that says Yes\n• Which is bigger, denser, taller or heavier, A or B: a winner the answer's own numbers in the same unit disagree with\n• Which are bigger than X: \"none\" next to \"X is the seventh-largest\"" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "• Antes ou depois de um ano: um Não ao lado da primeira data da própria resposta, que diz Sim\n• Qual é maior, mais denso, mais alto ou mais pesado, A ou B: um vencedor que os próprios números da resposta, na mesma unidade, desmentem\n• Quais são maiores que X: \"nenhum\" ao lado de \"X é o sétimo maior\""
           }
         }
       }

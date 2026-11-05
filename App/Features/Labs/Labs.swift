@@ -230,6 +230,7 @@ extension Labs {
             CalcLab(),
             DistanceLab(),
             FactsLab(),
+            GuardLab(),
             CoHazardLab(),
             ClassifiedLab(id: "dailyQuiz", order: 80, emoji: "❔", title: String(localized: "Daily Quiz"),
                           body: String(localized: "A short daily quiz from BOAR's library, offline. Right answers unlock Boar Avatars.")),
