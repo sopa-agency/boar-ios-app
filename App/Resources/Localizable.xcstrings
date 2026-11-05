@@ -1618,6 +1618,16 @@
         }
       }
     },
+    "Boar Facts" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Boar Fatos"
+          }
+        }
+      }
+    },
     "Boar Labs" : {
       "localizations" : {
         "pt" : {
@@ -2314,6 +2324,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Documentos"
+          }
+        }
+      }
+    },
+    "Does Brazil have more people than Russia?" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Does Brazil have more people than Russia?"
           }
         }
       }
@@ -3289,6 +3309,16 @@
         }
       }
     },
+    "If you stood the Burj Khalifa on the deepest point of Lake Baikal, would its top stick out of the water?" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "If you stood the Burj Khalifa on the deepest point of Lake Baikal, would its top stick out of the water?"
+          }
+        }
+      }
+    },
     "Immediately" : {
       "localizations" : {
         "pt" : {
@@ -3415,6 +3445,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Instalando"
+          }
+        }
+      }
+    },
+    "It answers only when the question names something in the table and asks for exactly one of these; every answer ends with its source and the table's date (Wikidata, CC0, October 2026), and an older population figure says how old it is. Two properties at once, an overview, a why or how question, a name it can't tell apart (Georgia), or a chat about health goes to the model as usual. Questions in English only. Ported from r4to's offline facts (BOAR R&D)." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Só responde quando a pergunta cita algo da tabela e pede exatamente um desses dados; toda resposta termina com a fonte e a data da tabela (Wikidata, CC0, outubro de 2026), e uma população mais antiga diz de quando é. Dois dados de uma vez, um resumo, um por quê ou como, um nome que ele não sabe distinguir (Georgia) ou uma conversa sobre saúde vão para o modelo, como sempre. Perguntas e respostas só em inglês. Portado dos fatos offline de r4to (BOAR R&D)."
           }
         }
       }
@@ -4621,6 +4661,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Depois de configurado, toda resposta é feita offline."
+          }
+        }
+      }
+    },
+    "One fact about a country, city, mountain, river, landmark or award, from a Wikidata table, without the model." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Um dado sobre um país, cidade, montanha, rio, monumento ou prêmio, de uma tabela da Wikidata, sem o modelo."
           }
         }
       }
@@ -7394,6 +7444,16 @@
         }
       }
     },
+    "What plug type and voltage does Brazil use?" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "What plug type and voltage does Brazil use?"
+          }
+        }
+      }
+    },
     "What we measured best on real phones. Balanced." : {
       "localizations" : {
         "pt" : {
@@ -7821,6 +7881,22 @@
         }
       }
     },
+    "labs.facts.answers" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Responde sozinho"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Answers on its own"
+          }
+        }
+      }
+    },
     "load %@" : {
       "localizations" : {
         "pt" : {
@@ -7913,6 +7989,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "• Watt-hora de uma bateria, e se ela pode ir no avião\n• Consumo: L/100 km e milhas por galão\n• Tempo de trilha pela regra de Naismith\n• Câmbio na cotação que você der, com gorjeta\n• Água para uma viagem: pessoas × dias × litros\n• Temperatura: Celsius e Fahrenheit\n• Quanto tempo: uma quantidade a uma taxa (MB a MB/s, km a km/h, páginas por hora), em inglês\n• Quantos: recipientes, viagens ou ônibus para um total, arredondando para cima, em inglês"
+          }
+        }
+      }
+    },
+    "• Population, area, capital, currency, official languages, continent and borders\n• Height or elevation, length and depth\n• When a landmark was built or came down\n• Plug types and mains voltage\n• Where an event was held, and an award's winner in a given year\n• Two places compared: which is bigger, taller, longer or has more people" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "• População, área, capital, moeda, línguas oficiais, continente e fronteiras\n• Altura ou altitude, comprimento e profundidade\n• Quando um monumento foi construído ou derrubado\n• Tipos de tomada e voltagem\n• Onde um evento aconteceu, e quem ganhou um prêmio em um ano\n• Dois lugares comparados: qual é maior, mais alto, mais longo ou tem mais gente"
           }
         }
       }

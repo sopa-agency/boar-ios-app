@@ -228,6 +228,7 @@ extension Labs {
     static var registry: [any LabPlugin] {
         [
             CalcLab(),
+            FactsLab(),
             ClassifiedLab(id: "dailyQuiz", order: 80, emoji: "❔", title: String(localized: "Daily Quiz"),
                           body: String(localized: "A short daily quiz from BOAR's library, offline. Right answers unlock Boar Avatars.")),
             ClassifiedLab(id: "sanctuary", order: 85, emoji: "📚", title: String(localized: "Sanctuary"),
