@@ -405,6 +405,16 @@
         }
       }
     },
+    "%lld items" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld itens"
+          }
+        }
+      }
+    },
     "%lld min" : {
       "localizations" : {
         "pt" : {
@@ -461,6 +471,16 @@
         }
       }
     },
+    "%lld sources" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld fontes"
+          }
+        }
+      }
+    },
     "%lld%% lit · day %@ of the cycle" : {
       "localizations" : {
         "pt" : {
@@ -487,6 +507,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : ", Pesquisa Profunda"
+          }
+        }
+      }
+    },
+    "1 item" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1 item"
+          }
+        }
+      }
+    },
+    "1 source" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1 fonte"
           }
         }
       }
@@ -737,6 +777,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Adicione o endereço do Mac em Ajustes → Avançado → Motor."
+          }
+        }
+      }
+    },
+    "Add to the Printer basket" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adicionar à cesta da Impressora"
           }
         }
       }
@@ -1184,6 +1234,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Arquitetura"
+          }
+        }
+      }
+    },
+    "Arrange" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Organizar"
           }
         }
       }
@@ -1788,6 +1848,26 @@
         }
       }
     },
+    "Boar Press" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Boar Press"
+          }
+        }
+      }
+    },
+    "Boar Press: %lld answers in the basket" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Boar Press: %lld respostas na cesta"
+          }
+        }
+      }
+    },
     "Boar Vitals" : {
       "localizations" : {
         "pt" : {
@@ -2068,6 +2148,16 @@
         }
       }
     },
+    "Clear" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Limpar"
+          }
+        }
+      }
+    },
     "Clear Chat History" : {
       "localizations" : {
         "pt" : {
@@ -2104,6 +2194,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Fechar"
+          }
+        }
+      }
+    },
+    "Collect answers from any chat into a basket, then compile them into a PDF or a Markdown file." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Junte respostas de qualquer conversa numa cesta e compile tudo em um PDF ou arquivo Markdown."
           }
         }
       }
@@ -2304,6 +2404,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Escuro"
+          }
+        }
+      }
+    },
+    "Date" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Data"
           }
         }
       }
@@ -2538,6 +2648,16 @@
         }
       }
     },
+    "Document title" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Título do documento"
+          }
+        }
+      }
+    },
     "Documents" : {
       "localizations" : {
         "pt" : {
@@ -2724,6 +2844,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Terra e natureza"
+          }
+        }
+      }
+    },
+    "Edit" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Editar"
           }
         }
       }
@@ -3099,6 +3229,16 @@
         }
       }
     },
+    "Field notes" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notas de campo"
+          }
+        }
+      }
+    },
     "File" : {
       "localizations" : {
         "pt" : {
@@ -3429,6 +3569,16 @@
         }
       }
     },
+    "Heading" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Título da seção"
+          }
+        }
+      }
+    },
     "Heat" : {
       "localizations" : {
         "pt" : {
@@ -3725,6 +3875,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Em uso"
+          }
+        }
+      }
+    },
+    "In the Printer basket (tap to remove)" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Na cesta da Impressora (toque para tirar)"
           }
         }
       }
@@ -4365,6 +4525,16 @@
         }
       }
     },
+    "Model & speed" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modelo e velocidade"
+          }
+        }
+      }
+    },
     "Model Page" : {
       "localizations" : {
         "pt" : {
@@ -4481,6 +4651,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mais curtidos"
+          }
+        }
+      }
+    },
+    "Move down" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mover para baixo"
+          }
+        }
+      }
+    },
+    "Move up" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mover para cima"
           }
         }
       }
@@ -5491,12 +5681,32 @@
         }
       }
     },
+    "Preview" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prévia"
+          }
+        }
+      }
+    },
     "Previous month" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mês anterior"
+          }
+        }
+      }
+    },
+    "Print" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Imprimir"
           }
         }
       }
@@ -5747,6 +5957,16 @@
         }
       }
     },
+    "Reasoning" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Raciocínio"
+          }
+        }
+      }
+    },
     "Recognizing text…" : {
       "localizations" : {
         "pt" : {
@@ -5957,6 +6177,16 @@
         }
       }
     },
+    "Retrieved sources" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fontes consultadas"
+          }
+        }
+      }
+    },
     "Retry Download" : {
       "localizations" : {
         "pt" : {
@@ -6053,6 +6283,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Santuário"
+          }
+        }
+      }
+    },
+    "Save as Markdown" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salvar em Markdown"
           }
         }
       }
@@ -6399,6 +6639,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Logo depois que você sai, quando nada está sendo respondido, o BOAR descarrega o modelo, para o celular não fechar o BOAR para recuperar a memória. A próxima resposta demora alguns segundos a mais para começar."
+          }
+        }
+      }
+    },
+    "Show" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar"
           }
         }
       }
@@ -7117,6 +7367,16 @@
         }
       }
     },
+    "The basket is empty." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A cesta está vazia."
+          }
+        }
+      }
+    },
     "The benchmark failed: %@" : {
       "localizations" : {
         "pt" : {
@@ -7688,6 +7948,16 @@
         }
       }
     },
+    "Touch and hold an answer, then drag it to change the order." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toque e segure uma resposta e arraste para mudar a ordem."
+          }
+        }
+      }
+    },
     "Traces for the Judge" : {
       "localizations" : {
         "pt" : {
@@ -7794,6 +8064,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "EM REVISÃO"
+          }
+        }
+      }
+    },
+    "Under any answer in a chat, open More (…) and add it to the basket. Collect from as many chats as you like, then come back to arrange and compile." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Embaixo de qualquer resposta numa conversa, abra Mais (…) e adicione-a à cesta. Junte de quantas conversas quiser e volte para organizar e compilar."
           }
         }
       }
@@ -8507,6 +8787,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "bateria"
+          }
+        }
+      }
+    },
+    "compiled offline with BOAR" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "compilado offline com o BOAR"
           }
         }
       }

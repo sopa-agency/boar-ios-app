@@ -173,6 +173,7 @@ final class AppLock {
             self.error = String(localized: "Couldn't erase everything. The lock stays on: try again.")
             return
         }
+        Labs.shared.eraseUserData()
         services.chats.cipher = PlainCipher()
         keychain.delete()
         keyLoaded = false

@@ -9,6 +9,7 @@ Where each Android lab stands on iOS (2026-11-05), and what the rest would take.
 
 | Lab | Android id | Slot | Engine (iOS) | Tests |
 |---|---|---|---|---|
+| Boar Press | `printer` | page, answer menu, chat toolbar | `BoarAnswer/Labs/Basket` (Basket, Press), `BoarAnswer/Chat/ChatExport` | `BasketTests` (PressSelfTest's baskets), `ChatExportTests` |
 | Boar Vitals | `pulse` | page | `BoarCore/CoreLoad`, thermal state, footprint | `CoreLoadTests` (Android has none) |
 | Boar Nomad | `compass` | page | `BoarAnswer/Labs/CompassMath`, sensor: Core Motion | `CompassMathTests` (Android has none) |
 | Boar Lunar | `lunar` | page | `BoarAnswer/Labs/MoonPhase` | `MoonPhaseTests` (Android has none) |
@@ -41,6 +42,11 @@ Differences from Android, on purpose:
   the cores card shows each core's load from Mach's tick counters (`host_processor_info`); memory is BOAR's footprint
   against what iOS lets it use (`os_proc_available_memory`; the Mac against its RAM), as on the device screen. The chip
   card keeps engine (llama.cpp · Metal/CPU, Apple Intelligence or llama-server), CPU features, battery and device.
+- **Press:** the 📎 action sits in the answer's More menu (iOS has no 🧩 sheet); the basket is Android's JSON file at
+  `labs/basket.json`, erased with the chats (Erase Chats, Erase All Data, the lock's erase). Reordering is the list's
+  drag, plus Move Up/Down in the context menu and as accessibility actions. Files go out through the share sheet (Save to
+  Files included) instead of Android's Save as. No drawings: iOS has no Image Gen, so the drawing switches stay hidden,
+  as Android hides them when no answer has a drawing. The PDF is the next commit.
 - **Timing tests:** Kotlin's time limits are for a warm JVM; a Swift debug build with every suite in parallel takes about
   twice as long on the same regexes (`LabCombos.timeFactor`).
 
@@ -48,16 +54,6 @@ Open from the core (item 1 of the 2026-11-04 night): the Labs storage limit (`St
 restart after a crash in a lab (an iOS app can't relaunch itself; the next launch shows what happened instead).
 
 ## Not ported: what each would take
-
-### Boar Press (`printer`): feasible, medium to large
-
-A basket of answers from any chat ("＋ Basket"), reordered and edited, compiled to an A4 PDF or Markdown.
-
-- All of it has Apple pieces: a basket action in the answer menu, a `List` with edit mode for ordering, PDF through
-  `UIGraphicsPDFRenderer` (iOS) or `ImageRenderer` (both), sharing through `ShareLink` and `.fileExporter`.
-- About 900 lines of Kotlin, most of it UI. Each entry's optional drawing comes from Designer: without it, entries keep
-  their own illustration or none.
-- Recommendation: the next lab to port; it doesn't depend on anything iOS lacks.
 
 ### Boar Designer (`image`): possible, large, with a decision first
 

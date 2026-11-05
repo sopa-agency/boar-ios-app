@@ -6,6 +6,7 @@ import Foundation
 ///     -uiDemo            seed an in-memory-style demo state (no model needed); wipes BOAR's files in the app container
 ///     -uiScreen <name>   open that screen directly (see `DebugRouter`); `lab-<id>` opens that lab's page
 ///     -uiScroll <pts|end> scroll the main list that far once the screen is up
+///     -uiBasket YES      with -uiDemo, Boar Press's basket starts with the demo chats' answers
 ///     -uiStyle <id>      pick that answer style (succinct, detailed, personal, custom) on launch
 ///     -uiAsk "<q1> || <q2>"  after any -uiImport, ask the questions in one new chat, each after the previous answer
 enum DebugLaunch {

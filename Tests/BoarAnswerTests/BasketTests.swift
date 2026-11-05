@@ -98,6 +98,15 @@ struct BasketTests {
         #expect(Press.sourceLines(i) == "[1] Article 1 — Wikipedia\n[2] Article 2 — Wikipedia")
     }
 
+    @Test func fileSlugs() {
+        #expect(Press.slug("Field notes") == "field-notes")
+        // Kotlin's [^a-z0-9]+ after lowercase(): an accented letter is a separator, not folded.
+        #expect(Press.slug("  Céu azul! ") == "c-u-azul")
+        #expect(Press.slug("🐗") == "boar-document")
+        // take(48) with no trimEnd: a cut can end on a dash.
+        #expect(Press.slug(String(repeating: "a", count: 47) + " b") == String(repeating: "a", count: 47) + "-")
+    }
+
     @Test func placements() {
         #expect((0..<4).map { Press.Placement.alternate.side(of: $0) } == [.right, .left, .right, .left])
         #expect(Press.Placement.left.side(of: 1) == .left)

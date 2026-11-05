@@ -172,6 +172,24 @@ public enum Press {
         i.sources.enumerated().map { n, s in "[\(n + 1)] \(s.title)" + (s.source.map { " — \($0)" } ?? "") }.joined(separator: "\n")
     }
 
+    /// The file name before ".pdf" or ".md" (PrinterLab.kt `slug`): lowercase ASCII letters and digits, the rest as
+    /// dashes, at most 48 characters, "boar-document" when nothing is left. Unlike ChatExport's, accents aren't folded.
+    public static func slug(_ s: String) -> String {
+        var out = ""
+        var dash = false
+        for u in s.lowercased().unicodeScalars {
+            if ("a"..."z").contains(u) || ("0"..."9").contains(u) {
+                if dash, !out.isEmpty { out += "-" }
+                dash = false
+                out.unicodeScalars.append(u)
+            } else {
+                dash = true
+            }
+        }
+        let cut = String(out.prefix(48))
+        return cut.isEmpty ? "boar-document" : cut
+    }
+
     /// The heading an item prints under: its question, or its chat's title when the question is blank.
     public static func heading(_ i: Basket.Item) -> String {
         i.question.allSatisfy(\.isWhitespace) ? i.chatTitle : i.question

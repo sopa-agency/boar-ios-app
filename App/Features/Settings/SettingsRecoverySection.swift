@@ -67,6 +67,7 @@ struct SettingsRecoverySection: View {
     private func clearChats() {
         Task {
             _ = try? await services.background { try $0.chats.clearAll() }
+            Labs.shared.eraseUserData()
             cleared = true
             model.reloadSessions()
             await model.chat?.refreshSettings()

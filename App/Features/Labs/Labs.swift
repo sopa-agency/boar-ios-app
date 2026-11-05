@@ -6,7 +6,8 @@ import SwiftUI
 /// starts off (Android, Oct 24), and a switched-off lab fills no slot.
 ///
 /// Slots are where a lab reaches into the app: the tool slot (answers or adds context before the model), the check slot
-/// (repairs a finished answer) and the lab's own page. A CLASSIFIED lab shows its tile locked and never opens or fills a
+/// (repairs a finished answer), actions in a finished answer's More menu (android's 🧩 sheet), a badge in the chat's
+/// toolbar, and the lab's own page. A CLASSIFIED lab shows its tile locked and never opens or fills a
 /// slot: a teaser for what's in testing.
 enum LabsBuild {
     /// Android shows Boar Labs only in builds with EXPERIMENTAL_FEATURES=true. Every iOS build is a test build until the
@@ -57,6 +58,36 @@ protocol LabPlugin {
     var answerCheck: (any AnswerCheck)? { get }
     /// The experiment's page, below the shared header.
     func content() -> AnyView
+    /// Rows in a finished answer's More menu (android `answerActions`, the 🧩 sheet).
+    func answerActions(_ answer: AnswerRef) -> [LabAnswerAction]
+    /// A small badge in the chat's toolbar (android `HeaderBadge`); `open` shows this lab's page.
+    func headerBadge(open: @escaping () -> Void) -> AnyView?
+    /// Erases what this lab made from the user's chats (android `eraseUserData`): runs with the chats' erase, even while
+    /// the lab is switched off.
+    func eraseUserData()
+}
+
+/// A finished answer, as the answer slots see it (android `plugins.AnswerRef`).
+struct AnswerRef {
+    let id: String
+    let sessionId: String?
+    /// The open chat's title, "" when it has none yet.
+    let chatTitle: String
+    let question: String
+    let text: String
+    /// (title, source) of each numbered source.
+    let sources: [(String, String?)]
+    let model: String?
+    let tokPerSec: Double?
+}
+
+/// One row a lab adds to an answer's More menu. `done`: the action already happened (a checkmark; choosing it undoes it).
+struct LabAnswerAction: Identifiable {
+    let id: String
+    let title: String
+    let systemImage: String
+    var done = false
+    let run: @MainActor () -> Void
 }
 
 extension LabPlugin {
@@ -66,6 +97,9 @@ extension LabPlugin {
     var answerTool: (any AnswerTool)? { nil }
     var answerCheck: (any AnswerCheck)? { nil }
     func content() -> AnyView { AnyView(EmptyView()) }
+    func answerActions(_ answer: AnswerRef) -> [LabAnswerAction] { [] }
+    func headerBadge(open: @escaping () -> Void) -> AnyView? { nil }
+    func eraseUserData() {}
     /// A lab under review (frozen) shows the ice boar, whatever its own art.
     var shownArt: String? { status == .review ? "lab_frozen" : art }
 }
@@ -153,6 +187,12 @@ final class Labs {
 
     var activeChecks: [any AnswerCheck] { active.compactMap(\.answerCheck) }
 
+    /// The More menu's lab rows for a finished answer, in grid order.
+    func answerActions(_ answer: AnswerRef) -> [LabAnswerAction] { active.flatMap { $0.answerActions(answer) } }
+
+    /// The chat erased: every lab drops what it made from it, switched on or not (android `UserData.Scope.CHATS`).
+    func eraseUserData() { all.forEach { $0.eraseUserData() } }
+
     func enabled(_ id: String) -> Bool { enabledIds.contains(id) }
 
     func setEnabled(_ id: String, _ value: Bool) {
@@ -228,6 +268,7 @@ extension Labs {
     static var registry: [any LabPlugin] {
         [
             VitalsLab(),
+            PressLab(),
             CompassLab(),
             LunarLab(),
             PolyglotLab(),
