@@ -1258,6 +1258,26 @@
         }
       }
     },
+    "BOAR %@ of this %@'s memory" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BOAR %@ da memória deste %@"
+          }
+        }
+      }
+    },
+    "BOAR %@ · %@ more before %@ closes it" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BOAR %@ · mais %@ antes de o %@ fechá-lo"
+          }
+        }
+      }
+    },
     "BOAR %@. Each model answers every question with the default answer style; one model is in memory at a time." : {
       "localizations" : {
         "pt" : {
@@ -1374,6 +1394,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "O BOAR escreve as respostas com este modelo, aqui no seu iPhone. Você pode trocar depois em Modelos."
+          }
+        }
+      }
+    },
+    "BOAR's storage limit, not the %@'s" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Limite de armazenamento do BOAR, não do %@"
           }
         }
       }
