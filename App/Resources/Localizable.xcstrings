@@ -421,6 +421,16 @@
         }
       }
     },
+    "%lld of %lld right today." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld de %lld certas hoje."
+          }
+        }
+      }
+    },
     "%lld open · %lld classified" : {
       "localizations" : {
         "pt" : {
@@ -491,12 +501,32 @@
         }
       }
     },
+    "A new quiz tomorrow." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Um quiz novo amanhã."
+          }
+        }
+      }
+    },
     "A research step took too long and was cut short" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Uma etapa da pesquisa demorou demais e foi interrompida"
+          }
+        }
+      }
+    },
+    "A short daily quiz from BOAR's library, offline." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Um quiz diário curto da biblioteca do BOAR, offline."
           }
         }
       }
@@ -4495,6 +4525,16 @@
         }
       }
     },
+    "Next" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Próxima"
+          }
+        }
+      }
+    },
     "Next full moon" : {
       "localizations" : {
         "pt" : {
@@ -4751,6 +4791,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Não está neste aparelho"
+          }
+        }
+      }
+    },
+    "Not this time: it was %@." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi dessa vez: era %@."
           }
         }
       }
@@ -5235,6 +5285,16 @@
         }
       }
     },
+    "Picking today's questions…" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolhendo as perguntas de hoje…"
+          }
+        }
+      }
+    },
     "Point the camera at a sign or a menu: read and translated, offline." : {
       "localizations" : {
         "pt" : {
@@ -5387,6 +5447,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pergunta"
+          }
+        }
+      }
+    },
+    "Question %lld of %lld" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pergunta %lld de %lld"
           }
         }
       }
@@ -5763,6 +5833,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Repetir Download"
+          }
+        }
+      }
+    },
+    "Right!" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acertou!"
           }
         }
       }
@@ -6947,6 +7027,16 @@
         }
       }
     },
+    "The library isn't ready yet: finish setup, then come back." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A biblioteca ainda não está pronta: termine a configuração e volte."
+          }
+        }
+      }
+    },
     "The model and the library live on this iPhone. No cloud." : {
       "localizations" : {
         "pt" : {
@@ -7870,6 +7960,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Desligada, as respostas não usam esta coleção"
+          }
+        }
+      }
+    },
+    "Which article does this come from?" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "De qual artigo é este trecho?"
           }
         }
       }
