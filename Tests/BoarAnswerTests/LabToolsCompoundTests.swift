@@ -194,6 +194,10 @@ struct LabToolsCompoundTests {
         var bad: [String] = []
         var out = "\n== adversarial strings: worst attack per entry point, ms (min of 5, warm) ==\n"
         func pad(_ s: String, _ n: Int) -> String { s.padding(toLength: max(n, s.count), withPad: " ", startingAt: 0) }
+        // Ten times the input: about 10x the time when linear, about 100x when quadratic. Kotlin fails at 25x; a debug build
+        // with every other suite running jitters more (Cohazard on "((((" measured 31x once under load, 10x alone), so the
+        // limit scales with the time factor and still catches a quadratic pattern.
+        let maxRatio = 25 * C.timeFactor
         for (entry, f) in entries {
             var worst: (String, Double, Double)?
             for (attack, make) in attacks {
@@ -202,12 +206,12 @@ struct LabToolsCompoundTests {
                 // Below 0.05 ms the clock, not the regex, sets the ratio.
                 var ratio = t20 / max(t2, 0.05)
                 // Over a limit: measured again, so a burst of load from the other suites doesn't fail it.
-                if ratio >= 25 || t20 >= 300 * C.timeFactor {
+                if ratio >= maxRatio || t20 >= 300 * C.timeFactor {
                     t2 = min(t2, time(f, make(2_000)))
                     t20 = min(t20, time(f, make(20_000)))
                     ratio = t20 / max(t2, 0.05)
                 }
-                if ratio >= 25 || t20 >= 300 * C.timeFactor {
+                if ratio >= maxRatio || t20 >= 300 * C.timeFactor {
                     bad.append("\(entry) on \(attack): 2k \(String(format: "%.3f", t2)) ms, 20k \(String(format: "%.3f", t20)) ms, ratio \(String(format: "%.1f", ratio))")
                 }
                 if worst == nil || t20 > worst!.2 { worst = (attack, t2, t20) }
