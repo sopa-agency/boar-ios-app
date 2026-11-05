@@ -9,7 +9,7 @@ Where each Android lab stands on iOS (2026-11-05), and what the rest would take.
 
 | Lab | Android id | Slot | Engine (iOS) | Tests |
 |---|---|---|---|---|
-| Boar Press | `printer` | page, answer menu, chat toolbar | `BoarAnswer/Labs/Basket` (Basket, Press), `BoarAnswer/Chat/ChatExport` | `BasketTests` (PressSelfTest's baskets), `ChatExportTests` |
+| Boar Press | `printer` | page, answer menu, chat toolbar | `BoarAnswer/Labs/Basket` (Basket, Press), `PressPDF`, `BoarAnswer/Chat/ChatExport` | `BasketTests`, `PressPDFTests` (PressSelfTest's baskets), `ChatExportTests` |
 | Boar Vitals | `pulse` | page | `BoarCore/CoreLoad`, thermal state, footprint | `CoreLoadTests` (Android has none) |
 | Boar Nomad | `compass` | page | `BoarAnswer/Labs/CompassMath`, sensor: Core Motion | `CompassMathTests` (Android has none) |
 | Boar Lunar | `lunar` | page | `BoarAnswer/Labs/MoonPhase` | `MoonPhaseTests` (Android has none) |
@@ -46,7 +46,9 @@ Differences from Android, on purpose:
   `labs/basket.json`, erased with the chats (Erase Chats, Erase All Data, the lock's erase). Reordering is the list's
   drag, plus Move Up/Down in the context menu and as accessibility actions. Files go out through the share sheet (Save to
   Files included) instead of Android's Save as. No drawings: iOS has no Image Gen, so the drawing switches stay hidden,
-  as Android hides them when no answer has a drawing. The PDF is the next commit.
+  as Android hides them when no answer has a drawing. The PDF is Core Text on Android's A4 layout (`PressPDF`, same
+  sizes, colors and spacing; Georgia for Android's serif, with Core Text's fallback for Arabic, Chinese and emoji);
+  Android's 2.4 s printing animation is left out.
 - **Timing tests:** Kotlin's time limits are for a warm JVM; a Swift debug build with every suite in parallel takes about
   twice as long on the same regexes (`LabCombos.timeFactor`).
 

@@ -3,9 +3,10 @@ import BoarCore
 import SwiftUI
 
 /// Boar Press (android labs/plugins/printer `PrinterLab.kt`): the research basket as a document. Answers come in from any
-/// chat (More → Add to the Printer basket); here they're reordered, edited or dropped, and compiled to a Markdown file or
-/// an A4 PDF, shared through the share sheet (Save to Files included). iOS has no Image Gen, so there are no drawings to
-/// pick and the drawing switches stay hidden, as Android hides them when no answer has a drawing.
+/// chat (More → Add to the Printer basket); here they're reordered, edited or dropped, and compiled to an A4 PDF
+/// (BoarAnswer `PressPDF`) or a Markdown file, shared through the share sheet (Save to Files included). iOS has no Image
+/// Gen, so there are no drawings to pick and the drawing switches stay hidden, as Android hides them when no answer has
+/// a drawing.
 struct PressLab: LabPlugin {
     let id = "printer"
     let order = 30
@@ -207,6 +208,9 @@ private struct PressSections: View {
                     itemsSection
                 }
                 Section {
+                    ShareLink(item: pdfFile, preview: SharePreview(Text(verbatim: pdfFile.filename))) {
+                        Label("Print to PDF", systemImage: "printer")
+                    }
                     ShareLink(item: markdownFile, preview: SharePreview(Text(verbatim: markdownFile.filename))) {
                         Label("Save as Markdown", systemImage: "doc.text")
                     }
@@ -253,6 +257,15 @@ private struct PressSections: View {
 
     private func metaBinding(_ key: WritableKeyPath<Press.Meta, Bool>) -> Binding<Bool> {
         Binding(get: { meta[keyPath: key] }, set: { meta[keyPath: key] = $0; PressPrefs.meta = meta })
+    }
+
+    /// The A4 PDF, compiled when the share sheet asks for it.
+    private var pdfFile: ExportedFile {
+        let (title, items, meta, date) = (docTitle, basket.items, meta, PressPrefs.today)
+        let footer = PressPrefs.footer
+        return ExportedFile(filename: Press.slug(title) + ".pdf") {
+            PressPDF.compile(title: title, items: items, footer: footer, meta: meta, date: date)
+        }
     }
 
     private var markdownFile: ExportedFile {

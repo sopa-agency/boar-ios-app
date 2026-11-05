@@ -5711,6 +5711,16 @@
         }
       }
     },
+    "Print to PDF" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Imprimir em PDF"
+          }
+        }
+      }
+    },
     "Privacy" : {
       "localizations" : {
         "pt" : {
