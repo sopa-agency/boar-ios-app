@@ -59,6 +59,9 @@ restart after a crash in a lab (an iOS app can't relaunch itself; the next launc
 
 ### Boar Designer (`image`): possible, large, with a decision first
 
+**Status (2026-11-05):** moved to phase 3. The choice waits for phase 3's memory measurements: the iPhone 14 Pro (6 GB)
+lets BOAR use about 3 GB before iOS ends it, and the chat model alone takes about 1 GB.
+
 Android runs stable-diffusion.cpp's `sd-cli` with SDXS-512 (one step) as its own process, so its ggml can't clash with
 the chat engine's and an out-of-memory kill takes only the image down.
 
