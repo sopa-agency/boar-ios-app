@@ -18,6 +18,12 @@ public enum LabTools {
     /// scan it. Boar Cohazard reads any length: it is the safety answer and about ten times cheaper.
     public static let maxQuestion = 2_000
 
+    /// Boar Calculator: CalcShortcut, with its own NumGuard lexicon over this and the earlier user turns.
+    public static func calc(_ query: String, userTurns: [String]) -> Hit? {
+        if query.utf16.count > maxQuestion { return nil }
+        return CalcShortcut.answer(query, userTurns: userTurns).map { Hit(tool: $0.code, text: $0.text) }
+    }
+
     /// Safety answers before the rest: Boar Cohazard's CO answer must win over a calculation or a fact in the same
     /// question ("How long can I run a propane heater in the camper at 0.5 kg per hour?"). Then Boar Polyglot: a question
     /// BOAR can't read gets its reply before a tool half-reads it. Grid order within a rank.
