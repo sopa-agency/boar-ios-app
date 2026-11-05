@@ -1618,6 +1618,16 @@
         }
       }
     },
+    "Boar Distance" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Boar Distância"
+          }
+        }
+      }
+    },
     "Boar Facts" : {
       "localizations" : {
         "pt" : {
@@ -3229,12 +3239,42 @@
         }
       }
     },
+    "How far apart two cities are, and how long to walk, cycle or drive it, as an estimate and without the model." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A distância entre duas cidades, e quanto tempo a pé, de bicicleta ou de carro, como estimativa e sem o modelo."
+          }
+        }
+      }
+    },
+    "How far is it to walk from Paris to Rome and back?" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "How far is it to walk from Paris to Rome and back?"
+          }
+        }
+      }
+    },
     "How long to drive 240 miles at 60 mph?" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "How long to drive 240 miles at 60 mph?"
+          }
+        }
+      }
+    },
+    "How long would it take to bike from Vienna to Budapest?" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "How long would it take to bike from Vienna to Budapest?"
           }
         }
       }
@@ -3455,6 +3495,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Só responde quando a pergunta cita algo da tabela e pede exatamente um desses dados; toda resposta termina com a fonte e a data da tabela (Wikidata, CC0, outubro de 2026), e uma população mais antiga diz de quando é. Dois dados de uma vez, um resumo, um por quê ou como, um nome que ele não sabe distinguir (Georgia) ou uma conversa sobre saúde vão para o modelo, como sempre. Perguntas e respostas só em inglês. Portado dos fatos offline de r4to (BOAR R&D)."
+          }
+        }
+      }
+    },
+    "It knows the 6,000 largest cities (GeoNames, CC BY 4.0) and works from their coordinates, so every answer is an estimate, not a mapped route: it can't know roads, borders, ferries or closures. A place that isn't one of those cities (a hotel, a beach, a small town) goes to the model as usual, and so does a chat about health, an injury or danger. Questions in English only. Ported from r4to's travel distance (BOAR R&D)." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ele conhece as 6.000 maiores cidades (GeoNames, CC BY 4.0) e calcula pelas coordenadas, então toda resposta é uma estimativa, não uma rota no mapa: não sabe de estradas, fronteiras, balsas ou bloqueios. Um lugar que não é uma dessas cidades (um hotel, uma praia, uma cidade pequena) vai para o modelo, como sempre, e uma conversa sobre saúde, ferimento ou perigo também. Perguntas só em inglês. Portado da distância de viagem de r4to (BOAR R&D)."
           }
         }
       }
@@ -7464,6 +7514,16 @@
         }
       }
     },
+    "What's the distance between Madrid and Barcelona?" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "What's the distance between Madrid and Barcelona?"
+          }
+        }
+      }
+    },
     "When off, answers don't use this collection" : {
       "localizations" : {
         "pt" : {
@@ -7881,7 +7941,7 @@
         }
       }
     },
-    "labs.facts.answers" : {
+    "labs.answersOnItsOwn.m" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
@@ -7895,7 +7955,8 @@
             "value" : "Answers on its own"
           }
         }
-      }
+      },
+      "comment" : "Header; PT is masculine (Boar Fatos, Boar Distância)"
     },
     "load %@" : {
       "localizations" : {
@@ -7999,6 +8060,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "• População, área, capital, moeda, línguas oficiais, continente e fronteiras\n• Altura ou altitude, comprimento e profundidade\n• Quando um monumento foi construído ou derrubado\n• Tipos de tomada e voltagem\n• Onde um evento aconteceu, e quem ganhou um prêmio em um ano\n• Dois lugares comparados: qual é maior, mais alto, mais longo ou tem mais gente"
+          }
+        }
+      }
+    },
+    "• The straight-line distance between two cities, in km and miles\n• Roughly how far by road or trail: walking about 30% longer, cycling and driving about 25%\n• How many days to walk or cycle it, or hours to drive\n• There and back, when you ask for the round trip" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "• A distância em linha reta entre duas cidades, em km e milhas\n• Quanto dá, mais ou menos, por estrada ou trilha: a pé cerca de 30% a mais, de bicicleta e de carro cerca de 25%\n• Quantos dias a pé ou de bicicleta, ou horas de carro\n• Ida e volta, quando você pergunta pelos dois trechos"
           }
         }
       }

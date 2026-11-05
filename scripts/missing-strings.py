@@ -15,10 +15,17 @@ import sys
 root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 catalog = json.load(open(os.path.join(root, "App/Resources/Localizable.xcstrings")))["strings"]
 
-used = {}
+# Each source file's newest stringsdata (the iPhone, simulator and Mac builds each keep one; an older one is stale).
+newest = {}
 for path in glob.glob(os.path.join(root, ".build/DerivedData/Build/Intermediates.noindex/Boar.build/**/*.stringsdata"), recursive=True):
     data = json.load(open(path))
-    source = os.path.relpath(data.get("source", path), root)
+    source = data.get("source", path)
+    if source not in newest or os.path.getmtime(path) > newest[source][0]:
+        newest[source] = (os.path.getmtime(path), data)
+
+used = {}
+for source, (_, data) in newest.items():
+    source = os.path.relpath(source, root)
     for entry in data.get("tables", {}).get("Localizable", []):
         used.setdefault(entry["key"], f"{source}:{entry.get('location', {}).get('startingLine', '?')}")
 

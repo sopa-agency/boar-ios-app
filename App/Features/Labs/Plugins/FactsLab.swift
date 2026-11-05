@@ -41,7 +41,7 @@ struct FactsLab: LabPlugin {
             Section {
                 Text("• Population, area, capital, currency, official languages, continent and borders\n• Height or elevation, length and depth\n• When a landmark was built or came down\n• Plug types and mains voltage\n• Where an event was held, and an award's winner in a given year\n• Two places compared: which is bigger, taller, longer or has more people")
             } header: {
-                Text(LocalizedStringResource("labs.facts.answers", defaultValue: "Answers on its own"))
+                Text(LocalizedStringResource("labs.answersOnItsOwn.m", defaultValue: "Answers on its own", comment: "Header; PT is masculine (Boar Fatos, Boar Distância)"))
             }
             Section {
                 LabExample("Does Brazil have more people than Russia?")
