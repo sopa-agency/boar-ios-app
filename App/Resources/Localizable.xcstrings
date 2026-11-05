@@ -11,16 +11,6 @@
         }
       }
     },
-    "\"%@\" and its messages are deleted from this iPhone." : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "\"%@\" e as mensagens dele são apagados deste iPhone."
-          }
-        }
-      }
-    },
     "\"%@\" has no text BOAR could read." : {
       "localizations" : {
         "pt" : {
@@ -53,22 +43,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ %@"
-          }
-        }
-      }
-    },
-    "%@ %@ · %@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$@ %2$@ · %3$@"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ %@ · %@"
           }
         }
       }
@@ -109,32 +83,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Versão do %@"
-          }
-        }
-      }
-    },
-    "%@ closed BOAR while loading because this iPhone ran out of memory, so BOAR is answering with %@." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$@ closed BOAR while loading because this iPhone ran out of memory, so BOAR is answering with %2$@."
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ fechou o BOAR ao carregar porque este iPhone ficou sem memória, então o BOAR está respondendo com %@."
-          }
-        }
-      }
-    },
-    "%@ closed BOAR while loading because this iPhone ran out of memory. Pick a smaller model." : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ fechou o BOAR ao carregar porque este iPhone ficou sem memória. Escolha um modelo menor."
           }
         }
       }
@@ -281,16 +229,6 @@
         }
       }
     },
-    "%@ tok/s" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ tok/s"
-          }
-        }
-      }
-    },
     "%@ tok/s (~%lld words/s)" : {
       "localizations" : {
         "en" : {
@@ -313,16 +251,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ tokens"
-          }
-        }
-      }
-    },
-    "%@ was added to Models. Download it from there." : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ foi adicionado aos Modelos. Baixe por lá."
           }
         }
       }
@@ -365,16 +293,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ · precisa de mais %@ livres"
-          }
-        }
-      }
-    },
-    "%@ · on this iPhone" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · neste iPhone"
           }
         }
       }
@@ -611,16 +529,6 @@
         }
       }
     },
-    "A short daily quiz from BOAR's library, offline. Right answers unlock Boar Avatars." : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Um quiz diário curto da biblioteca do BOAR, offline. Acertos liberam Avatares do Boar."
-          }
-        }
-      }
-    },
     "ALPHA" : {
       "localizations" : {
         "pt" : {
@@ -701,42 +609,12 @@
         }
       }
     },
-    "Adaptive local intelligence" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Inteligência local adaptativa"
-          }
-        }
-      }
-    },
     "Adaptive routing produced no answer: %@" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "O roteamento adaptativo não gerou resposta: %@"
-          }
-        }
-      }
-    },
-    "Add" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Adicionar"
-          }
-        }
-      }
-    },
-    "Add %@" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Adicionar %@"
           }
         }
       }
@@ -757,16 +635,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Adicione arquivos ou fotos de páginas. O BOAR os lê neste %@ e nunca os envia para fora."
-          }
-        }
-      }
-    },
-    "Add files or photos of pages. BOAR reads them on this iPhone and never uploads them." : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Adicione arquivos ou fotos de páginas. O BOAR os lê neste iPhone e nunca os envia para fora."
           }
         }
       }
@@ -841,16 +709,6 @@
         }
       }
     },
-    "Adjusted for this iPhone: %@." : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ajustado para este iPhone: %@."
-          }
-        }
-      }
-    },
     "Advanced" : {
       "localizations" : {
         "pt" : {
@@ -887,26 +745,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Já está neste %@"
-          }
-        }
-      }
-    },
-    "Already on this iPhone" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Já está neste iPhone"
-          }
-        }
-      }
-    },
-    "Answer Engine" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Motor de respostas"
           }
         }
       }
@@ -961,16 +799,6 @@
         }
       }
     },
-    "Answered" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Respondido"
-          }
-        }
-      }
-    },
     "Answered by %@" : {
       "localizations" : {
         "pt" : {
@@ -1017,16 +845,6 @@
         }
       }
     },
-    "Answering…" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Respondendo…"
-          }
-        }
-      }
-    },
     "Answers" : {
       "localizations" : {
         "pt" : {
@@ -1043,16 +861,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "As respostas são geradas por IA a partir das fontes que o BOAR encontra neste %@. Elas não são revisadas por médicos nem por especialistas."
-          }
-        }
-      }
-    },
-    "Answers are AI-generated from the sources BOAR finds on this iPhone. They are not reviewed by clinicians or experts." : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "As respostas são geradas por IA a partir das fontes que o BOAR encontra neste iPhone. Elas não são revisadas por médicos nem por especialistas."
           }
         }
       }
@@ -1083,26 +891,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "As respostas vêm de modelos e de uma biblioteca neste %@. Não precisa de internet."
-          }
-        }
-      }
-    },
-    "Answers come from models and a library on this iPhone. No internet needed." : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "As respostas vêm de modelos e de uma biblioteca neste iPhone. Não precisa de internet."
-          }
-        }
-      }
-    },
-    "Answers come from your library, right on this iPhone." : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "As respostas vêm da sua biblioteca, aqui neste iPhone."
           }
         }
       }
@@ -1168,32 +956,12 @@
         }
       }
     },
-    "Anyone who can open your iPhone can read your chats in BOAR." : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Quem conseguir abrir seu iPhone pode ler suas conversas no BOAR."
-          }
-        }
-      }
-    },
     "App Smoke Test" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Teste rápido do app"
-          }
-        }
-      }
-    },
-    "Appearance" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aparência"
           }
         }
       }
@@ -1254,16 +1022,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Artigos"
-          }
-        }
-      }
-    },
-    "Ask" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Perguntar"
           }
         }
       }
@@ -1358,16 +1116,6 @@
         }
       }
     },
-    "Asks BOAR. %@." : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pergunta ao BOAR. %@."
-          }
-        }
-      }
-    },
     "Auto" : {
       "localizations" : {
         "pt" : {
@@ -1444,16 +1192,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "O Auto ajusta ao estilo de resposta (até %lld tokens agora). Apple Intelligence responde com o modelo da própria Apple onde houver; Mac na sua rede manda a escrita para o llama-server em outro Mac."
-          }
-        }
-      }
-    },
-    "Auto fits the answer style (up to %lld tokens now). Shorter is faster. Adaptive Routing picks the best installed model for each question." : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "O Auto ajusta ao estilo de resposta (até %lld tokens agora). Mais curto é mais rápido. O roteamento adaptativo escolhe o melhor modelo instalado para cada pergunta."
           }
         }
       }
@@ -1634,16 +1372,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "O BOAR escreve as respostas com este modelo, aqui no seu %@. Você pode trocar depois em Modelos."
-          }
-        }
-      }
-    },
-    "BOAR writes its answers with this model, right on your iPhone. You can change it later in Models." : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "O BOAR escreve as respostas com este modelo, aqui no seu iPhone. Você pode trocar depois em Modelos."
           }
         }
       }
@@ -1888,16 +1616,6 @@
         }
       }
     },
-    "Built into iOS, nothing to download" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Já vem no iOS, nada para baixar"
-          }
-        }
-      }
-    },
     "Burns, bleeding, fever" : {
       "localizations" : {
         "pt" : {
@@ -1988,16 +1706,6 @@
         }
       }
     },
-    "Cancelled" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cancelado"
-          }
-        }
-      }
-    },
     "Chat" : {
       "localizations" : {
         "pt" : {
@@ -2084,16 +1792,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Verifica"
-          }
-        }
-      }
-    },
-    "Checks your models and library again." : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Verifica seus modelos e a biblioteca de novo."
           }
         }
       }
@@ -2214,16 +1912,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Modelo geral compacto"
-          }
-        }
-      }
-    },
-    "Compare models on your iPhone in Settings, Advanced, Benchmark." : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Compare modelos no seu iPhone em Ajustes, Avançado, Benchmark."
           }
         }
       }
@@ -2598,32 +2286,12 @@
         }
       }
     },
-    "Dictation isn't available on this iPhone." : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "O ditado não está disponível neste iPhone."
-          }
-        }
-      }
-    },
     "Did astronauts walk on the Moon before 1970?" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Did astronauts walk on the Moon before 1970?"
-          }
-        }
-      }
-    },
-    "Dismiss" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dispensar"
           }
         }
       }
@@ -2758,16 +2426,6 @@
         }
       }
     },
-    "Downloaded Model answers with the model you chose in Models. Apple Intelligence uses Apple's built-in model on iPhones that have it." : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Modelo baixado responde com o modelo que você escolheu em Modelos. Apple Intelligence usa o modelo da própria Apple nos iPhones que o têm."
-          }
-        }
-      }
-    },
     "Downloading" : {
       "localizations" : {
         "pt" : {
@@ -2818,16 +2476,6 @@
         }
       }
     },
-    "Downloads not moving? Restarting keeps the bytes already on the iPhone." : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Os downloads não andam? Recomeçar mantém o que já está no iPhone."
-          }
-        }
-      }
-    },
     "Downloads once, over Wi‑Fi. Nothing you ask leaves this %@." : {
       "localizations" : {
         "pt" : {
@@ -2854,16 +2502,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Editar"
-          }
-        }
-      }
-    },
-    "Edit Before Asking" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Editar antes de perguntar"
           }
         }
       }
@@ -3008,16 +2646,6 @@
         }
       }
     },
-    "Every answer lists the passages behind it." : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Toda resposta lista os trechos em que se baseia."
-          }
-        }
-      }
-    },
     "Every saved chat and message on this %@ is deleted. Models, documents and settings stay." : {
       "localizations" : {
         "pt" : {
@@ -3028,32 +2656,12 @@
         }
       }
     },
-    "Every saved chat and message on this iPhone is deleted. Models, documents and settings stay." : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Todas as conversas e mensagens salvas neste iPhone são apagadas. Modelos, documentos e ajustes ficam."
-          }
-        }
-      }
-    },
     "Every saved chat and your Personal Files are deleted, and the lock turns off. Models and knowledge packs stay." : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Todas as conversas salvas e seus Arquivos pessoais são apagados, e o bloqueio é desligado. Modelos e pacotes de conhecimento ficam."
-          }
-        }
-      }
-    },
-    "Everything downloads once, together with the answer model. Then BOAR works offline." : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tudo é baixado uma vez, junto com o modelo de resposta. Depois o BOAR funciona offline."
           }
         }
       }
@@ -3319,16 +2927,6 @@
         }
       }
     },
-    "Fits this iPhone" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cabe neste iPhone"
-          }
-        }
-      }
-    },
     "Fixes a Yes, No or winner that the model's own figures or dates contradict, after it answers." : {
       "localizations" : {
         "pt" : {
@@ -3369,16 +2967,6 @@
         }
       }
     },
-    "For a hot iPhone. The slowest answers." : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Para um iPhone quente. As respostas mais lentas."
-          }
-        }
-      }
-    },
     "Found ^[%lld source](inflect: true)" : {
       "localizations" : {
         "pt" : {
@@ -3409,32 +2997,12 @@
         }
       }
     },
-    "Free Space" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Espaço livre"
-          }
-        }
-      }
-    },
     "Free Storage" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Armazenamento livre"
-          }
-        }
-      }
-    },
-    "Free on iPhone" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Livre no iPhone"
           }
         }
       }
@@ -3509,32 +3077,12 @@
         }
       }
     },
-    "Get Started" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Começar"
-          }
-        }
-      }
-    },
     "Get Your Library" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Baixe sua biblioteca"
-          }
-        }
-      }
-    },
-    "Google's on-device model, needs a big iPhone" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "O modelo do Google para o aparelho, precisa de um iPhone grande"
           }
         }
       }
@@ -3559,16 +3107,6 @@
         }
       }
     },
-    "Haptics tap when you send and when an answer finishes. Text size follows your iPhone's Dynamic Type setting." : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "A vibração toca quando você envia e quando a resposta termina. O tamanho do texto segue o Tipo Dinâmico do seu iPhone."
-          }
-        }
-      }
-    },
     "Heading" : {
       "localizations" : {
         "pt" : {
@@ -3585,16 +3123,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Calor"
-          }
-        }
-      }
-    },
-    "Helpful" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Útil"
           }
         }
       }
@@ -4179,16 +3707,6 @@
         }
       }
     },
-    "Licence" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Licença"
-          }
-        }
-      }
-    },
     "License" : {
       "localizations" : {
         "pt" : {
@@ -4419,16 +3937,6 @@
         }
       }
     },
-    "May be slow on this iPhone" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pode ser lento neste iPhone"
-          }
-        }
-      }
-    },
     "Measure It Yourself" : {
       "localizations" : {
         "pt" : {
@@ -4455,26 +3963,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Memória"
-          }
-        }
-      }
-    },
-    "Memory Budget" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Limite de memória"
-          }
-        }
-      }
-    },
-    "Memory in Use" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Memória em uso"
           }
         }
       }
@@ -4585,16 +4073,6 @@
         }
       }
     },
-    "Models run on this iPhone. BOAR uses one at a time." : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Os modelos rodam neste iPhone. O BOAR usa um de cada vez."
-          }
-        }
-      }
-    },
     "Models to Test" : {
       "localizations" : {
         "pt" : {
@@ -4611,16 +4089,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mais"
-          }
-        }
-      }
-    },
-    "More threads than performance cores is usually slower. Answers are written on the GPU where possible." : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mais threads do que núcleos de desempenho costuma ser mais lento. As respostas são escritas na GPU quando possível."
           }
         }
       }
@@ -4725,16 +4193,6 @@
         }
       }
     },
-    "Needs %@ more free space" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Precisa de mais %@ livres"
-          }
-        }
-      }
-    },
     "Needs Apple Intelligence" : {
       "localizations" : {
         "pt" : {
@@ -4751,26 +4209,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Precisa de mais memória"
-          }
-        }
-      }
-    },
-    "Needs a Bigger iPhone" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Precisa de um iPhone maior"
-          }
-        }
-      }
-    },
-    "Needs an iPhone with Apple Intelligence" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Precisa de um iPhone com Apple Intelligence"
           }
         }
       }
@@ -4985,16 +4423,6 @@
         }
       }
     },
-    "No internet needed for this part." : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Esta parte não precisa de internet."
-          }
-        }
-      }
-    },
     "No matching sources" : {
       "localizations" : {
         "pt" : {
@@ -5055,26 +4483,6 @@
         }
       }
     },
-    "Not Helpful" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Não ajudou"
-          }
-        }
-      }
-    },
-    "Not checked by BOAR. Look at the model's page for its licence before you use it." : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Não verificado pelo BOAR. Veja a licença na página do modelo antes de usar."
-          }
-        }
-      }
-    },
     "Not checked by BOAR. Look at the model's page for its license before you use it." : {
       "localizations" : {
         "pt" : {
@@ -5131,16 +4539,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nada aqui sai do seu %@."
-          }
-        }
-      }
-    },
-    "Nothing here leaves your iPhone." : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nada aqui sai do seu iPhone."
           }
         }
       }
@@ -5215,16 +4613,6 @@
         }
       }
     },
-    "Offline research assistant" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Assistente de pesquisa offline"
-          }
-        }
-      }
-    },
     "On" : {
       "localizations" : {
         "pt" : {
@@ -5245,16 +4633,6 @@
         }
       }
     },
-    "On This iPhone" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Neste iPhone"
-          }
-        }
-      }
-    },
     "On this %@" : {
       "localizations" : {
         "pt" : {
@@ -5271,26 +4649,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "O ditado no aparelho não está disponível neste %@."
-          }
-        }
-      }
-    },
-    "On-device dictation isn't available on this iPhone." : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "O ditado no aparelho não está disponível neste iPhone."
-          }
-        }
-      }
-    },
-    "Once it's set up, every answer is made offline." : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Depois de configurado, toda resposta é feita offline."
           }
         }
       }
@@ -5405,16 +4763,6 @@
         }
       }
     },
-    "Opens in Safari. Needs internet." : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Abre no Safari. Precisa de internet."
-          }
-        }
-      }
-    },
     "Opens in your browser. Needs internet." : {
       "localizations" : {
         "pt" : {
@@ -5461,16 +4809,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Outras versões (%lld)"
-          }
-        }
-      }
-    },
-    "Packs add knowledge BOAR can search offline. Wikipedia text is CC BY-SA 4.0." : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pacotes acrescentam conhecimento que o BOAR pesquisa offline. O texto da Wikipédia é CC BY-SA 4.0."
           }
         }
       }
@@ -5731,16 +5069,6 @@
         }
       }
     },
-    "Private by design" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Privado de propósito"
-          }
-        }
-      }
-    },
     "Processor Cores" : {
       "localizations" : {
         "pt" : {
@@ -5831,22 +5159,6 @@
         }
       }
     },
-    "Question set %@ · BOAR %@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Question set %1$@ · BOAR %2$@"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Conjunto de perguntas %@ · BOAR %@"
-          }
-        }
-      }
-    },
     "Questions" : {
       "localizations" : {
         "pt" : {
@@ -5883,26 +5195,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Qwen 7B"
-          }
-        }
-      }
-    },
-    "Rated Helpful" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Avaliada como útil"
-          }
-        }
-      }
-    },
-    "Rated Not Helpful" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Avaliada como não útil"
           }
         }
       }
@@ -6097,16 +5389,6 @@
         }
       }
     },
-    "Researched ^[%lld sub-question](inflect: true)" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pesquisou ^[%lld subpergunta](inflect: true)"
-          }
-        }
-      }
-    },
     "Researching part %lld of %lld…" : {
       "localizations" : {
         "pt" : {
@@ -6163,16 +5445,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Baixar de novo"
-          }
-        }
-      }
-    },
-    "Results" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Resultados"
           }
         }
       }
@@ -6273,16 +5545,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Rodar a configuração de novo confere seus modelos e a biblioteca."
-          }
-        }
-      }
-    },
-    "Runs on your iPhone" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Roda no seu iPhone"
           }
         }
       }
@@ -6503,32 +5765,12 @@
         }
       }
     },
-    "Set a passcode for this iPhone in Settings to use the lock." : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Defina um código para este iPhone em Ajustes para usar o bloqueio."
-          }
-        }
-      }
-    },
     "Set a passcode for your %@ in the Settings app to lock BOAR." : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Defina um código para o seu %@ no app Ajustes para bloquear o BOAR."
-          }
-        }
-      }
-    },
-    "Set a passcode for your iPhone in the Settings app to lock BOAR." : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Defina um código para o seu iPhone no app Ajustes para bloquear o BOAR."
           }
         }
       }
@@ -6563,42 +5805,12 @@
         }
       }
     },
-    "Share" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Compartilhar"
-          }
-        }
-      }
-    },
     "Share Results" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Compartilhar resultados"
-          }
-        }
-      }
-    },
-    "Share as CSV" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Compartilhar como CSV"
-          }
-        }
-      }
-    },
-    "Share as JSONL" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Compartilhar como JSONL"
           }
         }
       }
@@ -6693,16 +5905,6 @@
         }
       }
     },
-    "Shows its sources" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mostra as fontes"
-          }
-        }
-      }
-    },
     "Shows performance details" : {
       "localizations" : {
         "pt" : {
@@ -6749,16 +5951,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mostra o trecho que o BOAR leu"
-          }
-        }
-      }
-    },
-    "Shows timings and speed under each answer." : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mostra tempos e velocidade embaixo de cada resposta."
           }
         }
       }
@@ -6949,32 +6141,12 @@
         }
       }
     },
-    "Speak your question; it's transcribed on this iPhone" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fale sua pergunta; ela é transcrita neste iPhone"
-          }
-        }
-      }
-    },
     "Speech is recognized on your %@. The audio never leaves it." : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "A fala é reconhecida no seu %@. O áudio nunca sai dele."
-          }
-        }
-      }
-    },
-    "Speech is recognized on your iPhone. The audio never leaves it." : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "A fala é reconhecida no seu iPhone. O áudio nunca sai dele."
           }
         }
       }
@@ -7075,16 +6247,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Fica no seu %@"
-          }
-        }
-      }
-    },
-    "Stays on Your iPhone" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fica no seu iPhone"
           }
         }
       }
@@ -7209,42 +6371,12 @@
         }
       }
     },
-    "Storage Budget" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Limite de armazenamento"
-          }
-        }
-      }
-    },
-    "Storage Used" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Armazenamento usado"
-          }
-        }
-      }
-    },
     "Stream Experts" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Transmitir especialistas"
-          }
-        }
-      }
-    },
-    "Stronger reasoning, needs a big iPhone" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Raciocínio mais forte, precisa de um iPhone grande"
           }
         }
       }
@@ -7417,32 +6549,12 @@
         }
       }
     },
-    "The key that opens your chats is gone (this iPhone's passcode was turned off). The chats can't be read any more." : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "A chave que abre suas conversas sumiu (o código deste iPhone foi desligado). As conversas não podem mais ser lidas."
-          }
-        }
-      }
-    },
     "The library isn't ready yet: finish setup, then come back." : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "A biblioteca ainda não está pronta: termine a configuração e volte."
-          }
-        }
-      }
-    },
-    "The model and the library live on this iPhone. No cloud." : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "O modelo e a biblioteca ficam neste iPhone. Sem nuvem."
           }
         }
       }
@@ -7493,16 +6605,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "O modelo de busca (%@) não está neste %@, então as respostas não podem usar sua biblioteca. Rode a configuração de novo em Avançado."
-          }
-        }
-      }
-    },
-    "The search model (%@) isn't on this iPhone, so answers can't use your library. Run Setup Again in Advanced." : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "O modelo de busca (%@) não está neste iPhone, então as respostas não podem usar sua biblioteca. Rode a configuração de novo em Avançado."
           }
         }
       }
@@ -7563,16 +6665,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pensando…"
-          }
-        }
-      }
-    },
-    "Thinks before answering, needs a big iPhone" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pensa antes de responder, precisa de um iPhone grande"
           }
         }
       }
@@ -7663,46 +6755,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Isso libera %@ no seu %@. Você pode baixar de novo depois."
-          }
-        }
-      }
-    },
-    "This frees %@ on your iPhone. Its topics can't be searched until you download it again." : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Isso libera %@ no seu iPhone. Os temas dele não podem ser pesquisados até você baixar de novo."
-          }
-        }
-      }
-    },
-    "This frees %@ on your iPhone. You can download it again later." : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Isso libera %@ no seu iPhone. Você pode baixar de novo depois."
-          }
-        }
-      }
-    },
-    "This iPhone" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Este iPhone"
-          }
-        }
-      }
-    },
-    "This iPhone has %@ of memory, so Fast is recommended." : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Este iPhone tem %@ de memória, então o Rápido é o recomendado."
           }
         }
       }
@@ -7878,16 +6930,6 @@
         }
       }
     },
-    "Too big for this iPhone" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Grande demais para este iPhone"
-          }
-        }
-      }
-    },
     "Too large: %@ (over %lld MB)." : {
       "localizations" : {
         "pt" : {
@@ -7914,26 +6956,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ferramenta"
-          }
-        }
-      }
-    },
-    "Topic Packs" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pacotes de temas"
-          }
-        }
-      }
-    },
-    "Topic pack" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pacote de temas"
           }
         }
       }
@@ -8058,16 +7080,6 @@
         }
       }
     },
-    "Turned-off collections are not used in answers." : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Coleções desligadas não entram nas respostas."
-          }
-        }
-      }
-    },
     "UNDER REVIEW" : {
       "localizations" : {
         "pt" : {
@@ -8154,16 +7166,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Usar nas respostas"
-          }
-        }
-      }
-    },
-    "Used by BOAR" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Usado pelo BOAR"
           }
         }
       }
@@ -8300,16 +7302,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pesos"
-          }
-        }
-      }
-    },
-    "Welcome to BOAR" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Boas-vindas ao BOAR"
           }
         }
       }
@@ -8615,16 +7607,6 @@
         }
       }
     },
-    "Your Collections" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Suas coleções"
-          }
-        }
-      }
-    },
     "Your Mac stays awake while it runs." : {
       "localizations" : {
         "pt" : {
@@ -8655,16 +7637,6 @@
         }
       }
     },
-    "Your questions never leave your iPhone." : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Suas perguntas nunca saem do seu iPhone."
-          }
-        }
-      }
-    },
     "Your questions, chats and documents never leave it." : {
       "localizations" : {
         "pt" : {
@@ -8681,16 +7653,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Suas conversas salvas são criptografadas neste %@."
-          }
-        }
-      }
-    },
-    "Your saved chats are encrypted on this iPhone." : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Suas conversas salvas são criptografadas neste iPhone."
           }
         }
       }
@@ -8751,22 +7713,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "^[%lld pergunta](inflect: true) × ^[%lld modelo](inflect: true) = ^[%lld resposta](inflect: true). %@"
-          }
-        }
-      }
-    },
-    "^[%lld question](inflect: true) × ^[%lld model](inflect: true) = ^[%lld answer](inflect: true). The screen stays on while it runs." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "^[%1$lld question](inflect: true) × ^[%2$lld model](inflect: true) = ^[%3$lld answer](inflect: true). The screen stays on while it runs."
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "^[%lld pergunta](inflect: true) × ^[%lld modelo](inflect: true) = ^[%lld resposta](inflect: true). A tela fica ligada enquanto roda."
           }
         }
       }
@@ -8901,32 +7847,12 @@
         }
       }
     },
-    "iOS Version" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Versão do iOS"
-          }
-        }
-      }
-    },
     "iPhone" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "iPhone"
-          }
-        }
-      }
-    },
-    "iPhone & Storage" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "iPhone e armazenamento"
           }
         }
       }
