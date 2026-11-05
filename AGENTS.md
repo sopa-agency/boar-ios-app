@@ -47,7 +47,7 @@ xcodebuild -project Boar.xcodeproj -scheme BoarMac -destination 'platform=macOS'
 
 ## Rules
 
-- **Android leads.** Every Android change on `upstream/main` is either ported or skipped with a written reason. Weekly: `scripts/sync-reference.sh` (now defaults to `upstream/main`), list the android-native commits since `Fixtures/SOURCE_SHA`, port them. On 2026-11-04 the fixtures moved from `f174f35c` (2026-10-15) to `6c52c623` (2.0.0-rc2, 2026-10-25) and every golden suite passes; the engine ports so far are routing, Personal Files retrieval, answer styles and Deep Research's follow-ups. Still open from that range: the app side of Personal Files, Boar Labs, the icon pack and themes, setup's tour, PIN erase, memory release, and the rest of the UI. Some were ported before the hand-over, so compare behaviour, not commit counts.
+- **Android leads.** Every Android change on `upstream/main` is either ported or skipped with a written reason. Weekly: `scripts/sync-reference.sh` (now defaults to `upstream/main`), list the android-native commits since `Fixtures/SOURCE_SHA`, port them. On 2026-11-04 the fixtures moved from `f174f35c` (2026-10-15) to `6c52c623` (2.0.0-rc2, 2026-10-25) and every golden suite passes; the engine ports so far are routing, Personal Files retrieval, answer styles and Deep Research's follow-ups. Still open from that range: the app side of Personal Files, the labs listed as not ported in `docs/labs-ios.md`, the icon pack and themes, setup's tour, PIN erase, memory release, and the rest of the UI. Some were ported before the hand-over, so compare behaviour, not commit counts.
 - **Parity first.** Port behaviour exactly, including string handling, regex semantics, rounding and ordering. Each Kotlin golden test gets a Swift Testing counterpart that reads the same fixture. A failing golden is a bug in the port, never a reason to edit the fixture.
 - Tests find fixtures relative to `#filePath` (repo root → `Fixtures/golden`), no SwiftPM resources.
 - The engine (`Sources/*`) never imports SwiftUI or UIKit and never imports from `App/`.
@@ -84,6 +84,14 @@ xcodebuild -project Boar.xcodeproj -scheme BoarMac -destination 'platform=macOS'
 - Sandboxed (network client, user-selected files, microphone, photos); data lives in `~/Library/Containers/team.sopa.boar.native`. A DEBUG `-uiDemo` run keeps its files in `Application Support/BOAR-demo` and its settings in the `team.sopa.boar.native.demo` defaults suite, so it never touches the real models, chats or preferences; still never run it unsandboxed. DEBUG `-uiImport <file>` imports a file on launch (tests the import path without the system file panel).
 - llama.cpp uses Metal on the Mac by default (`BOAR_METAL=0` turns it off).
 - UI capture without stealing focus: `scripts/mac-capture.sh <out> chat,models [light|dark]` (launches a second, demo instance in the background with `-uiDemo -uiScreen … -uiSnapshot 7 -uiAppearance <mode>` at 1240×800, or `EXTRA="-uiSize 1040x600"`), captures only its window with `screencapture -l`, and quits only demo instances). The Settings and About windows are separate scenes: capture them live.
+
+## Boar Labs
+
+- Android's `app/src/labs/plugins/<id>` maps to `App/Features/Labs/Plugins/<Name>Lab.swift` (registered in `Labs.registry`, same `order` as `plugin.properties`); the lab's logic goes in the engine with its Kotlin test ported. `docs/labs-ios.md` lists what's ported, the deliberate differences and what each remaining lab would take.
+- Slots: `answerTool` (before the model, `LabTools.slotRank` order: Cohazard, Polyglot, then the grid), `answerCheck` (a finished model answer, `LabTools.checksAnswer`), or only a page (`content()`, sections in the lab page's Form). A classified tile with code takes it as `inner` (the Daily Quiz).
+- `LabToolsCombinationTests` and `LabToolsCompoundTests` run the tool plugins together over `Fixtures/labs` (Android's corpus); a new tool joins `LabCombos.run`. Their time limits are Kotlin's times `LabCombos.timeFactor` (2 in debug builds).
+- A draw Android makes from a seed goes through `KotlinRandom` (Kotlin's XorWowRandom), so both phones agree.
+- UI audit: `-uiScreen lab-<id>` opens that lab's page; launch args `-labs.enabled.<id> YES` and `-labs.unlocked.<id> YES` switch it on (one argument each).
 
 ## Mac on Your Network (remote engine)
 
