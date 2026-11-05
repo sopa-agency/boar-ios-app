@@ -47,6 +47,14 @@ public enum LabTools {
         return table?.answer(query).map { Hit(tool: "facts-\($0.template)", text: $0.text) }
     }
 
+    /// Boar Cohazard: planning questions about a fuel-burning device in an enclosed space. English as before; then the
+    /// Portuguese and Spanish patterns (draft answers in the question's language), whatever the language detectors say:
+    /// "gerador na garagem fechada" has none of their words.
+    public static func coHazard(_ query: String) -> Hit? {
+        if !notEnglish(query) && CoHazard.isCoHazardQuestion(query) { return Hit(tool: "safety-fact-co-hazard", text: CoHazard.coHazardAnswer(query)) }
+        return CoHazard.coHazardLanguage(query).map { Hit(tool: "safety-fact-co-hazard", text: CoHazard.coHazardAnswer(query, language: $0)) }
+    }
+
     /// Safety answers before the rest: Boar Cohazard's CO answer must win over a calculation or a fact in the same
     /// question ("How long can I run a propane heater in the camper at 0.5 kg per hour?"). Then Boar Polyglot: a question
     /// BOAR can't read gets its reply before a tool half-reads it. Grid order within a rank.
