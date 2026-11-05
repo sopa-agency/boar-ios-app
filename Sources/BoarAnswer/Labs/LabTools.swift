@@ -24,6 +24,20 @@ public enum LabTools {
         return CalcShortcut.answer(query, userTurns: userTurns).map { Hit(tool: $0.code, text: $0.text) }
     }
 
+    private static func notEnglish(_ q: String) -> Bool { QueryContext.isPortugueseQuestion(q) || QueryContext.isSpanishQuestion(q) }
+
+    /// A seed phrase or private key anywhere in the question: an instant fact or distance would drop that half of it.
+    private static func seed(_ q: String) -> Bool { QueryContext.isSeedPhraseQuestion(q) }
+
+    /// Boar Facts: English only, not a seed phrase; QueryContext's health detector over this and the earlier user turns
+    /// keeps it off health.
+    public static func facts(_ table: Facts?, _ query: String, userTurns: [String]) -> Hit? {
+        if query.utf16.count > maxQuestion || notEnglish(query) || seed(query) || ([query] + userTurns).contains(where: QueryContext.isHealthQuestion) {
+            return nil
+        }
+        return table?.answer(query).map { Hit(tool: "facts-\($0.template)", text: $0.text) }
+    }
+
     /// Safety answers before the rest: Boar Cohazard's CO answer must win over a calculation or a fact in the same
     /// question ("How long can I run a propane heater in the camper at 0.5 kg per hour?"). Then Boar Polyglot: a question
     /// BOAR can't read gets its reply before a tool half-reads it. Grid order within a rank.
