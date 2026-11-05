@@ -431,6 +431,16 @@
         }
       }
     },
+    "%lld%% lit · day %@ of the cycle" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld%% iluminada · dia %@ do ciclo"
+          }
+        }
+      }
+    },
     ", Deep Research" : {
       "localizations" : {
         "pt" : {
@@ -1674,6 +1684,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Boar Labs"
+          }
+        }
+      }
+    },
+    "Boar Lunar" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Boar Lunar"
           }
         }
       }
@@ -3019,6 +3039,16 @@
         }
       }
     },
+    "First quarter" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quarto crescente"
+          }
+        }
+      }
+    },
     "First word" : {
       "localizations" : {
         "pt" : {
@@ -3179,6 +3209,16 @@
         }
       }
     },
+    "Full moon" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lua cheia"
+          }
+        }
+      }
+    },
     "Full quality, largest" : {
       "localizations" : {
         "pt" : {
@@ -3285,6 +3325,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Útil"
+          }
+        }
+      }
+    },
+    "Hemisphere" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hemisfério"
           }
         }
       }
@@ -3805,6 +3855,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Último benchmark"
+          }
+        }
+      }
+    },
+    "Last quarter" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quarto minguante"
           }
         }
       }
@@ -4415,12 +4475,52 @@
         }
       }
     },
+    "New moon" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lua nova"
+          }
+        }
+      }
+    },
     "Newest" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mais recentes"
+          }
+        }
+      }
+    },
+    "Next full moon" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Próxima lua cheia"
+          }
+        }
+      }
+    },
+    "Next month" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Próximo mês"
+          }
+        }
+      }
+    },
+    "Next new moon" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Próxima lua nova"
           }
         }
       }
@@ -4581,6 +4681,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nenhum"
+          }
+        }
+      }
+    },
+    "Northern hemisphere" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hemisfério Norte"
           }
         }
       }
@@ -5187,6 +5297,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Perfil"
+          }
+        }
+      }
+    },
+    "Previous month" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mês anterior"
           }
         }
       }
@@ -6329,6 +6449,16 @@
         }
       }
     },
+    "Southern hemisphere" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hemisfério Sul"
+          }
+        }
+      }
+    },
     "Space and physics" : {
       "localizations" : {
         "pt" : {
@@ -6823,6 +6953,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "O modelo e a biblioteca ficam neste iPhone. Sem nuvem."
+          }
+        }
+      }
+    },
+    "The moon tonight and this month, offline: phase, lit share, the next full and new moon." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A lua hoje e neste mês, offline: fase, quanto está iluminada, a próxima lua cheia e nova."
           }
         }
       }
@@ -7574,6 +7714,46 @@
         }
       }
     },
+    "Waning crescent" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minguante"
+          }
+        }
+      }
+    },
+    "Waning gibbous" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minguante gibosa"
+          }
+        }
+      }
+    },
+    "Waxing crescent" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Crescente"
+          }
+        }
+      }
+    },
+    "Waxing gibbous" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Crescente gibosa"
+          }
+        }
+      }
+    },
     "Weather & Climate" : {
       "localizations" : {
         "pt" : {
@@ -7740,6 +7920,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Palavras escritas"
+          }
+        }
+      }
+    },
+    "Worked out from the date on this %@, no internet and no location. The hemisphere only changes which side of the moon is lit. Moonrise and moonset need your location, so they are not shown." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calculado a partir da data deste %@, sem internet e sem localização. O hemisfério só muda qual lado da lua aparece iluminado. Nascer e pôr da lua precisam da sua localização, por isso não aparecem."
           }
         }
       }
