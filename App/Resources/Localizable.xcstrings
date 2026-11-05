@@ -149,6 +149,16 @@
         }
       }
     },
+    "%@ doesn't give apps the battery temperature: this is its own heat level, the one that makes it slow the %@ down." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O %1$@ não passa a temperatura da bateria para os apps: este é o nível de calor do próprio sistema, o que faz ele deixar o %2$@ mais lento."
+          }
+        }
+      }
+    },
     "%@ free on this %@" : {
       "localizations" : {
         "pt" : {
@@ -185,6 +195,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ vazou. Ainda em testes, sem data de lançamento."
+          }
+        }
+      }
+    },
+    "%@ more before %@ closes it" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "mais %1$@ antes que o %2$@ feche o app"
           }
         }
       }
@@ -1768,6 +1788,16 @@
         }
       }
     },
+    "Boar Vitals" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Boar Vitals"
+          }
+        }
+      }
+    },
     "Built into %@, nothing to download" : {
       "localizations" : {
         "pt" : {
@@ -1988,6 +2018,16 @@
         }
       }
     },
+    "Chip" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chip"
+          }
+        }
+      }
+    },
     "Choose a Model" : {
       "localizations" : {
         "pt" : {
@@ -2184,6 +2224,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Temas básicos para perguntas do dia a dia"
+          }
+        }
+      }
+    },
+    "Cores" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Núcleos"
           }
         }
       }
@@ -3379,6 +3429,16 @@
         }
       }
     },
+    "Heat" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calor"
+          }
+        }
+      }
+    },
     "Helpful" : {
       "localizations" : {
         "pt" : {
@@ -3435,6 +3495,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Como o BOAR responde"
+          }
+        }
+      }
+    },
+    "How busy each core is. %@ doesn't give apps the clock speed." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quanto cada núcleo está ocupado. O %@ não passa o clock para os apps."
           }
         }
       }
@@ -3925,6 +3995,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Quarto minguante"
+          }
+        }
+      }
+    },
+    "Leave this open, ask BOAR something, then come back to see what it cost." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deixe aberto, pergunte algo ao BOAR e volte para ver quanto custou."
           }
         }
       }
@@ -7884,6 +7964,16 @@
         }
       }
     },
+    "Watch your %@ work: heat, every core's load, memory and the chip BOAR runs on." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Veja o %@ trabalhar: calor, a carga de cada núcleo, a memória e o chip em que o BOAR roda."
+          }
+        }
+      }
+    },
     "Waxing crescent" : {
       "localizations" : {
         "pt" : {
@@ -8411,12 +8501,52 @@
         }
       }
     },
+    "battery" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "bateria"
+          }
+        }
+      }
+    },
     "computer" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "computador"
+          }
+        }
+      }
+    },
+    "cool" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "frio"
+          }
+        }
+      }
+    },
+    "device" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "aparelho"
+          }
+        }
+      }
+    },
+    "engine" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "motor"
           }
         }
       }
@@ -8441,12 +8571,32 @@
         }
       }
     },
+    "features" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "recursos"
+          }
+        }
+      }
+    },
     "first word %@" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "primeira palavra %@"
+          }
+        }
+      }
+    },
+    "hot: %@ may slow it down" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "quente: o %@ pode reduzir a velocidade"
           }
         }
       }
@@ -8634,6 +8784,36 @@
         }
       }
     },
+    "last %lld s · hottest: %@" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "últimos %1$lld s · mais quente: %2$@"
+          }
+        }
+      }
+    },
+    "limit" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "limite"
+          }
+        }
+      }
+    },
+    "llama-server on your network" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "llama-server na sua rede"
+          }
+        }
+      }
+    },
     "load %@" : {
       "localizations" : {
         "pt" : {
@@ -8694,12 +8874,32 @@
         }
       }
     },
+    "too hot: %@ is slowing it down" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "quente demais: o %@ está reduzindo a velocidade"
+          }
+        }
+      }
+    },
     "used by BOAR" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "usado pelo BOAR"
+          }
+        }
+      }
+    },
+    "warm" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "morno"
           }
         }
       }

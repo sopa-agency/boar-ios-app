@@ -227,6 +227,7 @@ extension Labs {
     /// Press, Big Boar and Wisp are studied in docs/labs-ios.md before any port.
     static var registry: [any LabPlugin] {
         [
+            VitalsLab(),
             CompassLab(),
             LunarLab(),
             PolyglotLab(),

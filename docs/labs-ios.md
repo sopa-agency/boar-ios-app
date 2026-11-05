@@ -9,6 +9,7 @@ Where each Android lab stands on iOS (2026-11-05), and what the rest would take.
 
 | Lab | Android id | Slot | Engine (iOS) | Tests |
 |---|---|---|---|---|
+| Boar Vitals | `pulse` | page | `BoarCore/CoreLoad`, thermal state, footprint | `CoreLoadTests` (Android has none) |
 | Boar Nomad | `compass` | page | `BoarAnswer/Labs/CompassMath`, sensor: Core Motion | `CompassMathTests` (Android has none) |
 | Boar Lunar | `lunar` | page | `BoarAnswer/Labs/MoonPhase` | `MoonPhaseTests` (Android has none) |
 | Boar Polyglot | `polyglot` | tool | `BoarRouting/LanguageGate`, detector: NaturalLanguage | `LanguageGateTests` |
@@ -35,6 +36,11 @@ Differences from Android, on purpose:
   Android's rotation vector, so there is no raw accelerometer + magnetometer fallback. The figure-8 hint follows the
   magnetometer's calibration accuracy and shows until the first report, like Android. The simulator and the Mac have no
   magnetometer and show the "no magnetometer" text; the needle itself is still to be checked on the iPhone.
+- **Vitals:** iOS gives apps neither the battery temperature, nor the cores' clocks, nor the other apps' memory. The heat
+  card shows the thermal state (`ProcessInfo.thermalState`, Android's four labels) and its last two minutes as a step line;
+  the cores card shows each core's load from Mach's tick counters (`host_processor_info`); memory is BOAR's footprint
+  against what iOS lets it use (`os_proc_available_memory`; the Mac against its RAM), as on the device screen. The chip
+  card keeps engine (llama.cpp · Metal/CPU, Apple Intelligence or llama-server), CPU features, battery and device.
 - **Timing tests:** Kotlin's time limits are for a warm JVM; a Swift debug build with every suite in parallel takes about
   twice as long on the same regexes (`LabCombos.timeFactor`).
 
@@ -42,17 +48,6 @@ Open from the core (item 1 of the 2026-11-04 night): the Labs storage limit (`St
 restart after a crash in a lab (an iOS app can't relaunch itself; the next launch shows what happened instead).
 
 ## Not ported: what each would take
-
-### Boar Vitals (`pulse`): partly, medium
-
-Android shows battery temperature, the thermal status, each core's clock, free RAM and BOAR's share, and the CPU features.
-
-- Available on iOS: `ProcessInfo.thermalState` (nominal, fair, serious, critical, with a change notification), battery
-  level and charging (`UIDevice`), BOAR's own memory (`task_vm_info.phys_footprint`, already on the device screen) and
-  what's left before the system ends the app (`os_proc_available_memory`), the model and chip, and CPU features
-  (`sysctl hw.optional.arm.*`).
-- Not available to apps: battery temperature and per-core clocks. The heat line would become a thermal-state timeline.
-- Recommendation: port as a smaller "Vitals" next; the thermal timeline is what matters for the phase 3 perf work.
 
 ### Boar Press (`printer`): feasible, medium to large
 
@@ -62,7 +57,7 @@ A basket of answers from any chat ("＋ Basket"), reordered and edited, compiled
   `UIGraphicsPDFRenderer` (iOS) or `ImageRenderer` (both), sharing through `ShareLink` and `.fileExporter`.
 - About 900 lines of Kotlin, most of it UI. Each entry's optional drawing comes from Designer: without it, entries keep
   their own illustration or none.
-- Recommendation: after Vitals; it doesn't depend on anything iOS lacks.
+- Recommendation: the next lab to port; it doesn't depend on anything iOS lacks.
 
 ### Boar Designer (`image`): possible, large, with a decision first
 
