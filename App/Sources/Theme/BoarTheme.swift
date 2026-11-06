@@ -56,6 +56,46 @@ extension View {
     func boarText(_ name: String) -> some View {
         modifier(BoarTextModifier(name: name))
     }
+
+    /// Baloo's tall ascent and descent spread a wrapped title's lines apart: pull them to about Android's 1.25 line
+    /// height (iOS 26 and later; earlier systems keep the font's own spacing).
+    @ViewBuilder func boarDisplayLines() -> some View {
+        if #available(iOS 26.0, macOS 26.0, *) {
+            // The tighter line box also clips the block's own top and bottom: give that room back.
+            lineHeight(.multiple(factor: 0.85))
+                .padding(.vertical, 6)
+        } else {
+            self
+        }
+    }
+
+    /// A List on Android's screen background (bgTerminal) instead of the grouped system gray.
+    func boarListBackground() -> some View {
+        modifier(BoarListBackground())
+    }
+
+    /// The rows of a List section on Android's card color (bgCard).
+    func boarRowBackground() -> some View {
+        modifier(BoarRowBackground())
+    }
+}
+
+private struct BoarListBackground: ViewModifier {
+    @Environment(\.palette) private var palette
+
+    func body(content: Content) -> some View {
+        content
+            .scrollContentBackground(.hidden)
+            .background(Color(palette.bgTerminal).ignoresSafeArea())
+    }
+}
+
+private struct BoarRowBackground: ViewModifier {
+    @Environment(\.palette) private var palette
+
+    func body(content: Content) -> some View {
+        content.listRowBackground(Color(palette.bgCard))
+    }
 }
 
 private struct BoarTextModifier: ViewModifier {
@@ -80,6 +120,11 @@ extension Font {
             ? .system(size: size, design: .monospaced)
             : .custom(style.face.rawValue, size: size, relativeTo: relative)
         return style.tabular ? font.monospacedDigit() : font
+    }
+
+    /// Baloo 2 ExtraBold at an iOS title size (the editorial setup titles, larger than Android's 24 pt headline).
+    static func boarDisplay(size: CGFloat, relativeTo style: Font.TextStyle) -> Font {
+        .custom(BrandType.Face.baloo800.rawValue, size: size, relativeTo: style)
     }
 
     /// The system text style each brand style grows with under Dynamic Type.

@@ -23,6 +23,7 @@ struct ModelStep: View {
                 ForEach(tiers) { m in
                     ModelChoiceRow(model: m, flow: flow)
                 }
+                .boarRowBackground()
             } footer: {
                 if compactRecommended {
                     Text("This \(Platform.deviceNoun) has \(flow.totalRamBytes.formatted(.byteCount(style: .memory))) of memory, so Fast is recommended.")
@@ -42,10 +43,12 @@ struct ModelStep: View {
                             Text("Larger and alternative models")
                         }
                     }
+                    .boarRowBackground()
                 }
             }
         }
         .groupedListStyle()
+        .boarListBackground()
         .readableWidth()
         // The header is the first row: no extra list margin between it and the navigation bar.
         .contentMargins(.top, 0, for: .scrollContent)

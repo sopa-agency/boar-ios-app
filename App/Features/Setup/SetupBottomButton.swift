@@ -1,3 +1,4 @@
+import BoarCore
 import SwiftUI
 
 /// The step's one full-width primary button, pinned above the bottom safe area.
@@ -5,6 +6,7 @@ struct SetupBottomButton: View {
     let title: LocalizedStringKey
     var enabled = true
     let action: () -> Void
+    @Environment(\.palette) private var palette
 
     var body: some View {
         #if os(macOS)
@@ -25,12 +27,17 @@ struct SetupBottomButton: View {
         .frame(maxWidth: 720)
         .frame(maxWidth: .infinity)
         #else
+        // Android's PrimaryButton: the accent with inverse text, bgCard and dim text when disabled.
         Button(action: action) {
             Text(title)
-                .frame(maxWidth: .infinity)
+                .boarText("ui.title")
+                .foregroundStyle(Color(enabled ? palette.textInverse : palette.textDim))
+                .frame(maxWidth: .infinity, minHeight: 22)
+                .padding(.vertical, 15)
+                .background(Color(enabled ? palette.emerald500 : palette.bgCard), in: .rect(cornerRadius: 14))
+                .contentShape(.rect(cornerRadius: 14))
         }
-        .buttonStyle(.borderedProminent)
-        .controlSize(.large)
+        .buttonStyle(.plain)
         .disabled(!enabled)
         .padding()
         #endif

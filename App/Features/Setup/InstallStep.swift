@@ -20,7 +20,9 @@ struct InstallStep: View {
                     ForEach(flow.downloads) { d in
                         DownloadRow(progress: d)
                     }
+                    .boarRowBackground()
                     IndexRow(flow: flow)
+                        .boarRowBackground()
                 }
                 if flow.stalled {
                     Section {
@@ -49,6 +51,7 @@ struct InstallStep: View {
             }
         }
         .groupedListStyle()
+        .boarListBackground()
         .readableWidth()
         // The header is the first row: no extra list margin between it and the navigation bar.
         .contentMargins(.top, 0, for: .scrollContent)

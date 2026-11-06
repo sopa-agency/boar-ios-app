@@ -1,3 +1,4 @@
+import BoarCore
 import SwiftUI
 
 /// The first-run setup (android SetupScreen / SetupWizardScreen.tsx): welcome with this iPhone's numbers, the answer
@@ -6,6 +7,7 @@ import SwiftUI
 struct SetupView: View {
     @Environment(AppModel.self) private var model
     @Environment(\.scenePhase) private var scenePhase
+    @Environment(\.palette) private var palette
     let flow: SetupFlow
 
     var body: some View {
@@ -18,6 +20,8 @@ struct SetupView: View {
                 case .install: InstallStep(flow: flow)
                 }
             }
+            // Android's setup background (bgTerminal), under the bars too.
+            .background(Color(palette.bgTerminal).ignoresSafeArea())
             .navigationTitle(flow.step == .welcome ? Text(verbatim: "") : Text("Step \(flow.step.rawValue) of 4"))
             .inlineNavigationTitle()
             .toolbar {
