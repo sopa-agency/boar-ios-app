@@ -35,8 +35,6 @@
 	<string>BOAR can send the writing of an answer to a Mac on your network that you choose in Settings.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>BOAR listens to your question on this iPhone when you dictate. The audio never leaves the device.</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>BOAR reads the photos you choose to turn the text in them into searchable documents on this iPhone.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>BOAR turns your dictated question into text on this iPhone. Nothing is sent to a server.</string>
 	<key>UIApplicationSceneManifest</key>
