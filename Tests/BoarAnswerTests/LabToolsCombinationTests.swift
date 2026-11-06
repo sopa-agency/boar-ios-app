@@ -10,12 +10,17 @@ import Testing
 /// exception (a Swift crash fails the run on its own), (b) one deterministic winner, (c) health, seed, PT and ES kept from
 /// the tools that must not take them, (d) Cohazard wins its questions (EN, PT and ES), (e) Guard only on model answers,
 /// sound and idempotent, (f) each tool decides fast, (g) no leaked placeholders, type names or non-finite numbers.
-/// Failures are collected and printed before the test fails, so one run shows every broken combination.
+/// Failures are collected and listed in the failing #expect, so one run shows every broken combination.
 enum LabCombos {
-    /// The suites' reports (Kotlin prints them to the test log): only with BOAR_TEST_REPORT set, so a normal
-    /// `swift test` stays quiet. Failures carry their own lines in the #expect message.
+    /// The suites' tables (Kotlin prints them to the test log): only with BOAR_TEST_REPORT set, so a normal
+    /// `swift test` stays quiet. Failures always show, through `failures` in the #expect message.
     static func report(_ text: String) {
         if ProcessInfo.processInfo.environment["BOAR_TEST_REPORT"] != nil { print(text) }
+    }
+
+    /// Every failure line for an #expect message (callers already cap their lists), with the count first.
+    static func failures(_ lines: [String]) -> String {
+        "\(lines.count) failures:\n" + lines.joined(separator: "\n")
     }
 
     static let distanceTable: TravelDistance = {
@@ -189,7 +194,6 @@ enum LabCombos {
                 sb += k.padding(toLength: 30, withPad: " ", startingAt: 0) + "\(byCombo[k]!)\n"
             }
             LabCombos.report(sb)
-            lines.forEach { LabCombos.report($0) }
         }
     }
 }
@@ -272,7 +276,7 @@ struct LabToolsCombinationTests {
             for (id, _) in direct(q, healthTurns) where id != "cohazard" { f.add("tool \(id)", "c", "after a health turn: \(C.short(q))") }
         }
         f.report("corpus: \(C.corpus.count) questions x \(C.combos.count) combinations", "bcdegx")
-        #expect(f.lines.isEmpty, "\(f.lines.count) failures, first: \(f.lines.first ?? "")")
+        #expect(f.lines.isEmpty, "\(LabCombos.failures(f.lines))")
     }
 
     @Test func theWinnerDependsOnlyOnTheSwitchedOnSetInAnyQuestionOrder() {
@@ -292,7 +296,7 @@ struct LabToolsCombinationTests {
             }
         }
         f.report("order independence", "b")
-        #expect(f.lines.isEmpty, "\(f.lines.first ?? "")")
+        #expect(f.lines.isEmpty, "\(LabCombos.failures(f.lines))")
     }
 
     @Test func guardIsSoundKeepsThinkingBlocksAndIsIdempotent() {
@@ -330,8 +334,7 @@ struct LabToolsCombinationTests {
             n + C.tools.compactMap { C.run($0, item.1) }.filter { LabTools.guard(question: item.1, answer: $0.text) != nil }.count
         }
         LabCombos.report("guard: \(questions.count) questions x \(answers.count) answers, \(repaired) repaired; tool answers it would change if it read them: \(wouldTouch)")
-        f.lines.forEach { LabCombos.report($0) }
-        #expect(f.lines.isEmpty, "\(f.lines.first ?? "")")
+        #expect(f.lines.isEmpty, "\(LabCombos.failures(f.lines))")
     }
 
     @Test func eachToolDecidesFastWarmEvenOn20000Characters() {
@@ -359,8 +362,7 @@ struct LabToolsCombinationTests {
             }
         }
         LabCombos.report(report)
-        slow.forEach { LabCombos.report($0) }
-        #expect(slow.isEmpty, "\(slow.joined(separator: "\n"))")
+        #expect(slow.isEmpty, "\(LabCombos.failures(slow))")
     }
 
     @Test func fuzzedStringsThroughAllCombinationsKeepBAndG() {
@@ -399,7 +401,7 @@ struct LabToolsCombinationTests {
             }
         }
         f.report("fuzz: 5,000 strings x \(C.combos.count) combinations", "bg")
-        #expect(f.lines.isEmpty, "\(f.lines.count) failures, first: \(f.lines.first ?? "")")
+        #expect(f.lines.isEmpty, "\(LabCombos.failures(f.lines))")
     }
 
     struct Boom: Error {}

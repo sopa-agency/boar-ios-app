@@ -51,8 +51,7 @@ struct LabToolsCompoundTests {
                 if let win, ["facts", "distance"].contains(C.owner(win)) { bad.append("\(C.name(c)): \(win.tool) on a seed-phrase compound: \(q)") }
             }
         }
-        bad.forEach { LabCombos.report($0) }
-        #expect(bad.isEmpty, "\(bad.first ?? "")")
+        #expect(bad.isEmpty, "\(LabCombos.failures(bad))")
     }
 
     @Test func compoundWithASeedPhraseAndNoCOHazardOnlyTheCalculatorMayAnswer() {
@@ -70,8 +69,7 @@ struct LabToolsCompoundTests {
             }
         }
         LabCombos.report(table)
-        bad.forEach { LabCombos.report($0) }
-        #expect(bad.isEmpty, "\(bad.first ?? "")")
+        #expect(bad.isEmpty, "\(LabCombos.failures(bad))")
     }
 
     // BIP39-looking words (the first 24 of the English list): a seed someone pasted.
@@ -135,8 +133,7 @@ struct LabToolsCompoundTests {
                 if !more.isEmpty { bad.append("guard adds \(more): \(q) / \(a)") }
             }
         }
-        bad.forEach { LabCombos.report($0) }
-        #expect(bad.isEmpty, "\(bad.first ?? "")")
+        #expect(bad.isEmpty, "\(LabCombos.failures(bad))")
     }
 
     /// Adversarial strings, about `n` characters each.
@@ -236,7 +233,6 @@ struct LabToolsCompoundTests {
             }
         }
         LabCombos.report(out)
-        bad.forEach { LabCombos.report($0) }
-        #expect(bad.isEmpty, "\(bad.joined(separator: "\n"))")
+        #expect(bad.isEmpty, "\(LabCombos.failures(bad))")
     }
 }
