@@ -5,7 +5,7 @@ import BoarRAG
 import Foundation
 
 /// Settings → Erase All Data (Android's "clear app data", which iOS has no API for): every downloaded file, document,
-/// chat and BOAR setting. The knowledge base file stays open and is emptied instead of deleted.
+/// chat and BOAR setting, including the network server and its API key. The knowledge base file stays open and is emptied instead of deleted.
 enum DataPurge {
     @MainActor
     static func eraseAll(services: BoarServices, lock: AppLock?) async {
@@ -25,6 +25,10 @@ enum DataPurge {
         Labs.shared.eraseUserData()
         if let lock, lock.enabled { await lock.eraseChatsAndReset() }
         services.settings.resetPreferences()
+        // The network server's address (a setting outside preferenceKeys) and its API key (Keychain, which also
+        // outlives an uninstall).
+        RemoteConfig.setAddress("", services.settings)
+        RemoteConfig.setApiKey("")
         for key in ["activeModelId", "modelRoleAssignments", "lastLoadedModelId", ModelBackend.settingsKey] {
             services.settings.setJSONValue(nil, forKey: key)
         }
