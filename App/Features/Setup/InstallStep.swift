@@ -20,7 +20,9 @@ struct InstallStep: View {
                     ForEach(flow.downloads) { d in
                         DownloadRow(progress: d)
                     }
+                    .boarRowBackground()
                     IndexRow(flow: flow)
+                        .boarRowBackground()
                 }
                 if flow.stalled {
                     Section {
@@ -28,6 +30,7 @@ struct InstallStep: View {
                     } footer: {
                         Text("Downloads not moving? Restarting keeps the bytes already on the \(Platform.deviceNoun).")
                     }
+                    .boarRowBackground()
                 }
                 if !flow.failed.isEmpty {
                     Section {
@@ -38,6 +41,7 @@ struct InstallStep: View {
                     } footer: {
                         if let error = flow.failed.first?.error { Text(error) }
                     }
+                    .boarRowBackground()
                 }
                 if flow.indexPhase == .error {
                     Section {
@@ -45,10 +49,12 @@ struct InstallStep: View {
                     } footer: {
                         Text(flow.indexError ?? "")
                     }
+                    .boarRowBackground()
                 }
             }
         }
         .groupedListStyle()
+        .boarListBackground()
         .readableWidth()
         // The header is the first row: no extra list margin between it and the navigation bar.
         .contentMargins(.top, 0, for: .scrollContent)

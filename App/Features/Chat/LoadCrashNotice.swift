@@ -16,7 +16,7 @@ struct LoadCrashNotice: View {
                 // parity; a fix starts on Android (PR #1 review).
                 if chat.services.catalog.byId(crash.crashedModelId) != nil {
                     Button("Try Again with Less Memory") { chat.retryWithLessMemory(crash.crashedModelId) }
-                        .buttonStyle(.borderedProminent)
+                        .buttonStyle(.boarProminent)
                 }
                 Button("Choose a Model", action: openModels)
                     .buttonStyle(.bordered)

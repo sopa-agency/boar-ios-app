@@ -15,11 +15,13 @@ struct KnowledgeStep: View {
                 ForEach(flow.plans) { p in
                     PackageRow(plan: p, flow: flow)
                 }
+                .boarRowBackground()
             } footer: {
                 Text("Sizes are the whole download, answer model included.")
             }
         }
         .groupedListStyle()
+        .boarListBackground()
         .readableWidth()
         // The header is the first row: no extra list margin between it and the navigation bar.
         .contentMargins(.top, 0, for: .scrollContent)

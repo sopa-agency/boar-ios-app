@@ -1,3 +1,4 @@
+import BoarCore
 import SwiftUI
 
 /// The top of a setup step: its title in large type and one or two lines on what it is for, above the choices (the
@@ -6,6 +7,7 @@ import SwiftUI
 struct SetupHeader: View {
     let title: LocalizedStringKey
     let message: LocalizedStringKey
+    @Environment(\.palette) private var palette
 
     var body: some View {
         Section {
@@ -19,12 +21,13 @@ struct SetupHeader: View {
     private var content: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(title)
-                .font(.largeTitle.bold())
-                .foregroundStyle(.primary)
+                .font(.boarDisplay(size: 32, relativeTo: .largeTitle))
+                .boarDisplayLines()
+                .foregroundStyle(Color(palette.textHeading))
                 .accessibilityAddTraits(.isHeader)
             Text(message)
-                .font(.body)
-                .foregroundStyle(.secondary)
+                .boarText("ui.body")
+                .foregroundStyle(Color(palette.textSecondary))
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }

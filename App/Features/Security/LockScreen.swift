@@ -23,7 +23,7 @@ struct LockScreen: View {
         } actions: {
             if lock.keyLost {
                 Button("Erase Chats and Files and Turn Off the Lock", role: .destructive, action: askErase)
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.boarProminent)
                     .disabled(lock.busy)
                     .confirmationDialog("Erase your chats and Personal Files?", isPresented: $confirmErase, titleVisibility: .visible) {
                         Button("Erase Chats and Files", role: .destructive, action: erase)
@@ -32,7 +32,7 @@ struct LockScreen: View {
                     }
             } else {
                 Button("Unlock with \(lock.methodName)", systemImage: lock.methodSymbol, action: unlock)
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.boarProminent)
                     .controlSize(.large)
                     .disabled(lock.busy)
             }

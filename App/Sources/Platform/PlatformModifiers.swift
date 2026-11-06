@@ -132,13 +132,9 @@ extension View {
         }
     }
 
-    /// The prominent glass button on iOS 26; the bordered prominent button before.
-    @ViewBuilder func prominentGlassButtonStyle() -> some View {
-        if #available(iOS 26.0, macOS 26.0, *) {
-            buttonStyle(.glassProminent)
-        } else {
-            buttonStyle(.borderedProminent)
-        }
+    /// The prominent glass button on iOS 26; the bordered prominent button before. Both with the theme's inverse text.
+    func prominentGlassButtonStyle() -> some View {
+        buttonStyle(.boarGlassProminent)
     }
 
     /// A bar pinned to the bottom edge: `safeAreaBar` on iOS 26 (the content scrolls under it), `safeAreaInset` before.

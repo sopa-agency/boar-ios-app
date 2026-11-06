@@ -1,3 +1,4 @@
+import BoarCore
 import SwiftUI
 
 /// The step's one full-width primary button, pinned above the bottom safe area.
@@ -15,7 +16,7 @@ struct SetupBottomButton: View {
                 Text(title)
                     .frame(minWidth: 120)
             }
-            .buttonStyle(.borderedProminent)
+            .buttonStyle(.boarProminent)
             .controlSize(.large)
             .keyboardShortcut(.defaultAction)
             .disabled(!enabled)
@@ -25,11 +26,15 @@ struct SetupBottomButton: View {
         .frame(maxWidth: 720)
         .frame(maxWidth: .infinity)
         #else
+        // Android's PrimaryButton (the accent with inverse text, 14 pt corners) as the system's prominent glass button.
         Button(action: action) {
             Text(title)
-                .frame(maxWidth: .infinity)
+                .boarText("ui.title")
+                .frame(maxWidth: .infinity, minHeight: 22)
+                .padding(.vertical, 8)
         }
-        .buttonStyle(.borderedProminent)
+        .buttonStyle(.boarGlassProminent)
+        .buttonBorderShape(.roundedRectangle(radius: 14))
         .controlSize(.large)
         .disabled(!enabled)
         .padding()

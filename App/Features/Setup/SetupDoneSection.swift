@@ -16,5 +16,6 @@ struct SetupDoneSection: View {
                     .monospacedDigit()
             }
         }
+        .boarRowBackground()
     }
 }

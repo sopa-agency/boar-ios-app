@@ -1,4 +1,5 @@
 import BoarAnswer
+import BoarCore
 import BoarModels
 import SwiftUI
 
@@ -21,6 +22,7 @@ struct ChatView: View {
     @State private var voice = VoiceInputController()
     @FocusState private var composerFocused: Bool
     @Environment(\.scenePhase) private var scenePhase
+    @Environment(\.palette) private var palette
 
     /// The mic shows when voice input is on in Settings and this iPhone has the on-device transcriber.
     private var voiceOn: Bool { chat.services.settings.voiceInputEnabled && VoiceInputController.supported }
@@ -48,6 +50,8 @@ struct ChatView: View {
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        // Android's chat background (bgTerminal), under the bars too.
+        .background(Color(palette.bgTerminal).ignoresSafeArea())
         .bottomBar {
             Composer(text: $input, focused: $composerFocused, toneSymbol: chat.currentTone.symbol, toneLabel: chat.currentTone.label,
                      deepResearch: chat.deepResearch, answering: chat.isAnswering, stopping: chat.stopping,

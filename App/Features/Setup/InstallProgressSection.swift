@@ -33,5 +33,6 @@ struct InstallProgressSection: View {
                 }
             }
         }
+        .boarRowBackground()
     }
 }

@@ -1,4 +1,5 @@
 import BoarAnswer
+import BoarCore
 import BoarModels
 import SwiftUI
 
@@ -9,6 +10,10 @@ struct AnswerView: View {
     let chat: ChatController
     let onOpenSource: (ChatSource) -> Void
     @Environment(AppModel.self) private var model
+    @Environment(\.palette) private var palette
+
+    private static let shape = UnevenRoundedRectangle(topLeadingRadius: 20, bottomLeadingRadius: 8,
+                                                      bottomTrailingRadius: 20, topTrailingRadius: 20)
 
     private var streaming: Bool { chat.answeringId == message.id }
     private var split: SplitThinking { AnswerText.splitThinking(message.text) }
@@ -19,6 +24,8 @@ struct AnswerView: View {
 
     /// A Labs plugin's instant answer speaks as that plugin: its art and name, not BOAR's.
     private var speaker: Labs.Speaker? { message.receipt?.tool.flatMap { Labs.shared.speaker(tool: $0) } }
+
+    private var researched: Bool { message.receipt?.path == "deep" }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -66,7 +73,15 @@ struct AnswerView: View {
                 }
             }
         }
+        .foregroundStyle(Color(palette.textPrimary))
+        .padding(.horizontal, 16)
+        .padding(.vertical, 12)
         .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color(palette.bgSurface), in: Self.shape)
+        // A Deep Research answer keeps its mark in the history: 1.5 pt in the mode's color (android Bubble).
+        .overlay {
+            Self.shape.strokeBorder(Color(researched ? palette.frontierBadgeBorder : palette.borderDefault), lineWidth: researched ? 1.5 : 1)
+        }
         // A citation "[n]" in this answer opens this answer's source n.
         .environment(\.openURL, OpenURLAction(handler: openCitation))
     }
@@ -76,10 +91,10 @@ struct AnswerView: View {
                    title: message.failureNoModel ? "No Answer Model" : "BOAR Couldn't Finish This Answer", message: failure) {
             if message.failureNoModel {
                 Button("Open Models", systemImage: Symbols.model, action: openModels)
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.boarProminent)
             } else {
                 Button("Try Again", systemImage: Symbols.retry, action: retry)
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.boarProminent)
                     .disabled(chat.isAnswering)
                 Button("Choose a Model", action: openModels)
                     .buttonStyle(.bordered)
