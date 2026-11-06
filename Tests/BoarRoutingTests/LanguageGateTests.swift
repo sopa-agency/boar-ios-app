@@ -225,19 +225,22 @@ struct LanguageGateTests {
         let long = (0..<50).map { _ in random(2_000) }
         for s in long { _ = LanguageGate.decide(s, sure("fr")) }
         let clock = ContinuousClock()
+        // GitHub's shared macOS VMs run this about twice as slow as a Mac mini (9.8 ms best of four on 2026-11-06),
+        // so CI gets three times the budget; a real slowdown is still caught on the build Mac.
+        let budget = ProcessInfo.processInfo.environment["GITHUB_ACTIONS"] == "true" ? 3.0 : 1.0
         func worstOfLong() -> Duration {
             long.map { s in clock.measure { _ = LanguageGate.decide(s, sure("fr")) } }.max() ?? .zero
         }
         // Over the limit: measured again (up to three more times, keeping the fastest), so a burst of load on a shared
         // machine or a slow CI runner doesn't fail it. A real slowdown stays over the limit every time.
         var worst = worstOfLong()
-        for _ in 0..<3 where worst >= .milliseconds(5) { worst = min(worst, worstOfLong()) }
-        #expect(worst < .milliseconds(5), "worst \(worst)")
+        for _ in 0..<3 where worst >= .milliseconds(5) * budget { worst = min(worst, worstOfLong()) }
+        #expect(worst < .milliseconds(5) * budget, "worst \(worst)")
         // Adversarial: unmatched quotes and backticks everywhere.
         for s in [String(repeating: "«", count: 2_000), String(repeating: "'a", count: 1_000), String(repeating: "`", count: 2_001),
                   String(repeating: "\"x ", count: 700), String(repeating: "{;", count: 1_000), String(repeating: "Ab ", count: 700)] {
             let d = clock.measure { _ = LanguageGate.decide(s, sure("fr")) }
-            #expect(d < .milliseconds(20), "slow on \(s.prefix(6))")
+            #expect(d < .milliseconds(20) * budget, "slow on \(s.prefix(6))")
         }
     }
 }
