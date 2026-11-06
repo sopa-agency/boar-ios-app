@@ -91,10 +91,10 @@ struct AnswerView: View {
                    title: message.failureNoModel ? "No Answer Model" : "BOAR Couldn't Finish This Answer", message: failure) {
             if message.failureNoModel {
                 Button("Open Models", systemImage: Symbols.model, action: openModels)
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.boarProminent)
             } else {
                 Button("Try Again", systemImage: Symbols.retry, action: retry)
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.boarProminent)
                     .disabled(chat.isAnswering)
                 Button("Choose a Model", action: openModels)
                     .buttonStyle(.bordered)

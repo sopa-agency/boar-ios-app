@@ -20,11 +20,6 @@ extension BoarPalette {
         scheme == .dark ? .moonlight : .paper
     }
 
-    /// wash: white on the dark themes, black on a light one, for chips and round buttons.
-    func washColor(_ alpha: Double) -> Color {
-        (light ? Color.black : Color.white).opacity(alpha)
-    }
-
     /// The accent (Android's primary): buttons, toggles, links.
     var accent: Color { Color(emerald500) }
 }
@@ -106,7 +101,74 @@ private struct BoarTextModifier: ViewModifier {
         content
             .font(.boar(name))
             .tracking(CGFloat(style?.letterSpacing ?? 0))
+            .modifier(BoarLineHeight(style: style))
     }
+}
+
+/// Android's line height for a brand style. Lexend's own line is shorter than Android's (1.25× the size against
+/// ui.bodyLg's 22 pt at 18 pt): the difference becomes line spacing. Baloo's is taller (1.6×): iOS/macOS 26 pull it in
+/// with lineHeight and give the block's clipped top and bottom back; earlier systems keep the font's spacing.
+/// The monospaced styles keep the system font's line.
+private struct BoarLineHeight: ViewModifier {
+    let style: BrandType.Style?
+
+    func body(content: Content) -> some View {
+        if let style, let target = style.lineHeight.map(CGFloat.init), style.face != .monospace, target > 0 {
+            let natural = BrandFonts.lineHeight(style.face, size: CGFloat(style.size))
+            let gap = target - natural
+            if gap > 0.5 {
+                content.lineSpacing(gap)
+            } else if gap < -0.5 {
+                if #available(iOS 26.0, macOS 26.0, *) {
+                    content
+                        .lineHeight(.multiple(factor: target / natural))
+                        .padding(.vertical, (-gap / 2).rounded(.up))
+                } else {
+                    content
+                }
+            } else {
+                content
+            }
+        } else {
+            content
+        }
+    }
+}
+
+/// The prominent button with the theme's inverse text on the accent: SwiftUI writes white on the tint, which on
+/// Moonlight's amber is ~1.8:1. The glass style is Liquid Glass on iOS/macOS 26 (the bordered one before).
+struct BoarProminentButtonStyle: PrimitiveButtonStyle {
+    var glass = false
+
+    func makeBody(configuration: Configuration) -> some View {
+        ThemedButton(configuration: configuration, glass: glass)
+    }
+
+    private struct ThemedButton: View {
+        let configuration: Configuration
+        let glass: Bool
+        @Environment(\.palette) private var palette
+        @Environment(\.isEnabled) private var isEnabled
+
+        var body: some View {
+            let button = Button(role: configuration.role, action: configuration.trigger) {
+                configuration.label
+                    .foregroundStyle(isEnabled ? AnyShapeStyle(Color(palette.textInverse)) : AnyShapeStyle(.secondary))
+            }
+            if glass, #available(iOS 26.0, macOS 26.0, *) {
+                button.buttonStyle(.glassProminent)
+            } else {
+                button.buttonStyle(.borderedProminent)
+            }
+        }
+    }
+}
+
+extension PrimitiveButtonStyle where Self == BoarProminentButtonStyle {
+    /// `.borderedProminent` with the theme's inverse text.
+    static var boarProminent: BoarProminentButtonStyle { BoarProminentButtonStyle() }
+    /// `.glassProminent` (iOS/macOS 26; bordered before) with the theme's inverse text.
+    static var boarGlassProminent: BoarProminentButtonStyle { BoarProminentButtonStyle(glass: true) }
 }
 
 extension Font {
@@ -147,6 +209,12 @@ extension Font {
 enum BrandFonts {
     private static let log = Logger(subsystem: "team.sopa.boar", category: "theme")
     @MainActor private static var registered = false
+
+    /// A brand face's own line height (ascent + descent + leading) at a size.
+    static func lineHeight(_ face: BrandType.Face, size: CGFloat) -> CGFloat {
+        let font = CTFontCreateWithName(face.rawValue as CFString, size, nil)
+        return CTFontGetAscent(font) + CTFontGetDescent(font) + CTFontGetLeading(font)
+    }
 
     @MainActor static func register() {
         guard !registered else { return }

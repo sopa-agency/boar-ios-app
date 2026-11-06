@@ -130,7 +130,7 @@ struct DocumentsScreen: View {
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                     Button("Ask About Them", systemImage: "bubble.left.and.text.bubble.right") { model.askAboutFiles() }
-                        .buttonStyle(.borderedProminent)
+                        .buttonStyle(.boarProminent)
                 }
                 .padding(.vertical, 4)
             }

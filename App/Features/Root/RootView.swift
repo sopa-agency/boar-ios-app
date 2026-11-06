@@ -55,7 +55,7 @@ struct RootView: View {
                 Text(message)
             } actions: {
                 Button("Try Again") { Task { await model.start() } }
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.boarProminent)
             }
         case .setup:
             if let setup = model.setup {

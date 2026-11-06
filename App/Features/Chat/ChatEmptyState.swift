@@ -38,7 +38,7 @@ struct ChatEmptyState: View {
                     Text("Download an answer model to start asking questions.")
                 } actions: {
                     Button("Open Models", action: openModels)
-                        .buttonStyle(.borderedProminent)
+                        .buttonStyle(.boarProminent)
                 }
             } else {
                 let topics = HomeTopic.all
