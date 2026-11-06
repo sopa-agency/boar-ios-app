@@ -47,11 +47,8 @@ final class EvalRunner: Sendable {
         self.services = services
         let docs = (try? FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true))
             ?? FileManager.default.temporaryDirectory
-        var eval = docs.appending(path: "eval", directoryHint: .isDirectory)
-        // The runs hold questions and answers: out of iCloud and computer backups, like the chats.
-        try? FileManager.default.createDirectory(at: eval, withIntermediateDirectories: true)
-        AppPaths.excludeFromBackup(&eval)
-        evalDir = eval
+        // The runs hold questions and answers: out of backups, like the chats. Recreated the same way below.
+        evalDir = AppPaths.backupExcludedDirectory(docs.appending(path: "eval", directoryHint: .isDirectory))
         requestsDir = evalDir.appending(path: "requests", directoryHint: .isDirectory)
         appVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "?"
         build = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "?"
@@ -85,6 +82,7 @@ final class EvalRunner: Sendable {
     }
 
     func writeStatus(_ requestId: String, _ fields: [(String, JSONValue?)]) {
+        AppPaths.backupExcludedDirectory(evalDir)
         try? FileManager.default.createDirectory(at: requestsDir, withIntermediateDirectories: true)
         let all: [(String, JSONValue?)] = [("requestId", .string(requestId))] + fields + [("updatedAt", .int(Self.nowMs()))]
         try? Data(Self.object(all).jsonString.utf8).write(to: requestsDir.appending(path: "\(requestId).status.json"), options: .atomic)
@@ -104,7 +102,7 @@ final class EvalRunner: Sendable {
                     onRow: @escaping @Sendable (JSONValue) -> Void) async throws -> RunResult {
         stopRequested.set(false)
         let runId = DeviceEval.newRunId()
-        try FileManager.default.createDirectory(at: evalDir, withIntermediateDirectories: true)
+        AppPaths.backupExcludedDirectory(evalDir)
         let rowsFile = evalDir.appending(path: "\(runId).jsonl")
         let runFile = evalDir.appending(path: "\(runId).run.json")
         var rows: [JSONValue] = []
