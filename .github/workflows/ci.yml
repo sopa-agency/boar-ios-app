@@ -9,8 +9,9 @@ permissions:
   contents: read
 
 concurrency:
-  group: ci-${{ github.ref }}
-  # A newer push cancels a PR's older run; every commit on main keeps its own result.
+  # PRs share a group per branch, so a newer push cancels the older run. Each main commit gets its own
+  # group: GitHub drops a queued run when another joins its group, even without cancel-in-progress.
+  group: ci-${{ github.event_name == 'pull_request' && github.ref || github.sha }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 env:
@@ -54,16 +55,17 @@ jobs:
       - name: Fetch llama.xcframework
         run: bash scripts/fetch-llama.sh
 
-      # Keyed on the sources too, so the cache follows the code; saved even when a test fails.
+      # Keyed on the Xcode and the sources too, so the cache follows the toolchain and the code; saved even
+  # when a test fails.
       - name: Restore SwiftPM build
         id: spm
         uses: actions/cache/restore@v4
         with:
           path: .build/ci
-          key: spm-${{ runner.os }}-${{ hashFiles('Package.swift', 'Package.resolved') }}-${{ hashFiles('Sources/**', 'Tests/**') }}
+          key: spm-${{ runner.os }}-${{ env.DEVELOPER_DIR }}-${{ hashFiles('Package.swift', 'Package.resolved') }}-${{ hashFiles('Sources/**', 'Tests/**') }}
           restore-keys: |
-            spm-${{ runner.os }}-${{ hashFiles('Package.swift', 'Package.resolved') }}-
-            spm-${{ runner.os }}-
+            spm-${{ runner.os }}-${{ env.DEVELOPER_DIR }}-${{ hashFiles('Package.swift', 'Package.resolved') }}-
+            spm-${{ runner.os }}-${{ env.DEVELOPER_DIR }}-
 
       # Model smoke tests skip themselves without BOAR_TEST_GGUF; remote tests without BOAR_REMOTE_URL.
       # On GitHub (GITHUB_ACTIONS=true) the Vision OCR and Apple Intelligence checks skip, and timing limits widen.
@@ -71,7 +73,7 @@ jobs:
         run: swift test --scratch-path .build/ci
 
       - name: Save SwiftPM build
-        if: always() && steps.spm.outputs.cache-hit != 'true'
+        if: always() && steps.spm.outcome == 'success' && steps.spm.outputs.cache-hit != 'true'
         uses: actions/cache/save@v4
         with:
           path: .build/ci
