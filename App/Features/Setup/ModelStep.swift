@@ -35,6 +35,8 @@ struct ModelStep: View {
                         ForEach(others) { m in
                             ModelChoiceRow(model: m, flow: flow)
                         }
+                        // The expanded rows are rows of their own: the group's background doesn't reach them.
+                        .boarRowBackground()
                     } label: {
                         LabeledContent {
                             Text("\(others.count) more")
