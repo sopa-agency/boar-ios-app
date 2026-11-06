@@ -10,7 +10,8 @@ permissions:
 
 concurrency:
   group: ci-${{ github.ref }}
-  cancel-in-progress: true
+  # A newer push cancels a PR's older run; every commit on main keeps its own result.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 env:
   # Same Xcode 27.2 the build Mac uses (AGENTS.md). The xcode-27 image is a GitHub preview label.
@@ -53,21 +54,39 @@ jobs:
       - name: Fetch llama.xcframework
         run: bash scripts/fetch-llama.sh
 
-      - name: Cache SwiftPM build
-        uses: actions/cache@v4
+      # Keyed on the sources too, so the cache follows the code; saved even when a test fails.
+      - name: Restore SwiftPM build
+        id: spm
+        uses: actions/cache/restore@v4
         with:
           path: .build/ci
-          key: spm-${{ runner.os }}-${{ hashFiles('Package.swift', 'Package.resolved') }}
-          restore-keys: spm-${{ runner.os }}-
+          key: spm-${{ runner.os }}-${{ hashFiles('Package.swift', 'Package.resolved') }}-${{ hashFiles('Sources/**', 'Tests/**') }}
+          restore-keys: |
+            spm-${{ runner.os }}-${{ hashFiles('Package.swift', 'Package.resolved') }}-
+            spm-${{ runner.os }}-
 
       # Model smoke tests skip themselves without BOAR_TEST_GGUF; remote tests without BOAR_REMOTE_URL.
+      # On GitHub (GITHUB_ACTIONS=true) the Vision OCR and Apple Intelligence checks skip, and timing limits widen.
       - name: Engine tests
         run: swift test --scratch-path .build/ci
 
+      - name: Save SwiftPM build
+        if: always() && steps.spm.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: .build/ci
+          key: ${{ steps.spm.outputs.cache-primary-key }}
+
+      # XcodeGen pinned to the build Mac's version (checksum of the release zip), so the project doesn't drift.
       - name: Generate Xcode project
+        env:
+          XCODEGEN_VERSION: 2.46.0
+          XCODEGEN_SHA256: 4d9e34b62172d645eed6457cac13fc222569974098ef4ee9c3368bedf0196806
         run: |
-          command -v xcodegen >/dev/null || brew install xcodegen
-          xcodegen generate
+          curl -fsSL -o "$RUNNER_TEMP/xcodegen.zip" "https://github.com/yonaskolb/XcodeGen/releases/download/$XCODEGEN_VERSION/xcodegen.zip"
+          echo "$XCODEGEN_SHA256  $RUNNER_TEMP/xcodegen.zip" | shasum -a 256 -c -
+          unzip -q "$RUNNER_TEMP/xcodegen.zip" -d "$RUNNER_TEMP"
+          "$RUNNER_TEMP/xcodegen/bin/xcodegen" generate
 
       - name: Build iOS app
         run: >
