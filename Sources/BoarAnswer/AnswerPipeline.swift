@@ -136,6 +136,8 @@ public final class AnswerPipeline: Sendable {
         var retrievalMs: Double?
         var before: Int?
         var after: Int?
+        // Same as Android (AnswerPipeline.kt): calculate, translate, code and conversation skip retrieval, Personal Files
+        // style included, so "translate my notes" never reads the files. Kept for parity; a fix starts on Android (PR #1 review).
         let retrieved = !retrievalIrrelevant(task)
         if retrieved {
             emit(.stage(.retrieving))
