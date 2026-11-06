@@ -47,7 +47,11 @@ final class EvalRunner: Sendable {
         self.services = services
         let docs = (try? FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true))
             ?? FileManager.default.temporaryDirectory
-        evalDir = docs.appending(path: "eval", directoryHint: .isDirectory)
+        var eval = docs.appending(path: "eval", directoryHint: .isDirectory)
+        // The runs hold questions and answers: out of iCloud and computer backups, like the chats.
+        try? FileManager.default.createDirectory(at: eval, withIntermediateDirectories: true)
+        AppPaths.excludeFromBackup(&eval)
+        evalDir = eval
         requestsDir = evalDir.appending(path: "requests", directoryHint: .isDirectory)
         appVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "?"
         build = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "?"

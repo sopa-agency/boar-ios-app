@@ -54,10 +54,11 @@
 8. **Lock (section 9).** iOS uses Face ID or the device passcode (LocalAuthentication). With the lock on, chats are
    sealed with AES-256-GCM in the same format as Android (`Sources/BoarModels/TextCipher.swift`), and their titles
    leave Spotlight.
-9. **Backup (section 9): differs today.** Android excludes BOAR's data from cloud backup and device transfer. On
-   iOS only models, knowledge packs and partial downloads are excluded (`AppPaths.swift`). **The chats database,
-   imported documents and settings are included in iCloud and computer backups.** Either the app excludes them
-   too, to match Android, or the policy says so for iOS. This is a decision for the project, not for this draft.
+9. **Backup (section 9).** As on Android, the chats, imported documents, knowledge base, models and packs are kept
+   out of iCloud and computer backups (`AppPaths.swift`, the whole BOAR folder; evaluation runs in `EvalRunner`).
+   Decided on 2026-11-06. **Not yet excluded: the settings** (theme, model choice, Labs state and the network
+   server's address), which live in the app's standard preferences file and still go into backups; the server's
+   API key does not (Keychain, this device only).
 
 ## Terms of Use
 

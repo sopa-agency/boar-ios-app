@@ -3,15 +3,19 @@ import Foundation
 /// Where BOAR keeps its files on the phone (Android `context.filesDir`): Application Support/BOAR.
 ///
 /// Same layout under it as the Android and Expo apps, so the engine's paths need no mapping:
-/// `models/`, `corpus/` (downloaded, excluded from backup), `SQLite/aoair_knowledge.db` (knowledge base and chats),
+/// `models/`, `corpus/` (downloaded), `SQLite/aoair_knowledge.db` (knowledge base and chats),
 /// `integrity.json`, `model-load.marker.json`, `setup_progress.json`, `discovered_models.json`.
 enum AppPaths {
     static let filesDir: URL = {
         let base = (try? FileManager.default.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true))
             ?? URL(filePath: NSTemporaryDirectory())
         // The UI demo wipes what it finds: it gets its own folder, so the real models and chats survive a capture run.
-        let dir = base.appending(path: DebugLaunch.demo ? "BOAR-demo" : "BOAR", directoryHint: .isDirectory)
+        var dir = base.appending(path: DebugLaunch.demo ? "BOAR-demo" : "BOAR", directoryHint: .isDirectory)
         try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+        // Like Android (data_extraction_rules.xml): chats, documents, the knowledge base, models and packs stay on this
+        // device, out of iCloud and computer backups. Excluding the folder excludes everything in it; set on every launch,
+        // so existing installs leave the next backup too.
+        AppPaths.excludeFromBackup(&dir)
         return dir
     }()
 
