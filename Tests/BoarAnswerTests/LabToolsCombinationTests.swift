@@ -116,11 +116,13 @@ enum LabCombos {
     /// Kotlin's time limits are for a warm JVM. A Swift debug build, with every other suite running in parallel, takes about
     /// twice as long on the same regexes (Cohazard on 20,000 characters: 150 ms alone, 250 ms under load), so debug runs
     /// get twice the limit; a release build (`swift test -c release`) gets Kotlin's.
+    /// GitHub's shared macOS runners are about twice as slow again, so CI doubles it.
     #if DEBUG
-    static let timeFactor = 2.0
+    static let timeFactor = 2.0 * ciFactor
     #else
-    static let timeFactor = 1.0
+    static let timeFactor = 1.0 * ciFactor
     #endif
+    static let ciFactor = ProcessInfo.processInfo.environment["GITHUB_ACTIONS"] == "true" ? 2.0 : 1.0
 
     struct Combo { let on: [String]; let guardOn: Bool }
 

@@ -47,6 +47,9 @@ import Testing
     }
 }
 
+/// GitHub's macOS runners are VMs without the Neural Engine: Vision can't compile its text models there (e5rt error 11).
+private let visionUnavailable = ProcessInfo.processInfo.environment["GITHUB_ACTIONS"] == "true"
+
 @Suite struct DocumentTextRecognizerTests {
     /// Black text on white, drawn with Core Text.
     func image(lines: [String]) -> CGImage? {
@@ -67,7 +70,7 @@ import Testing
         return ctx.makeImage()
     }
 
-    @Test func recognizesRenderedText() async throws {
+    @Test(.disabled(if: visionUnavailable, "no Neural Engine on CI runners")) func recognizesRenderedText() async throws {
         let img = try #require(image(lines: ["Offline research assistant", "Boars are wild pigs"]))
         let text = try await DocumentTextRecognizer().recognize(img)
         #expect(text.lowercased().contains("offline research assistant"))
@@ -77,7 +80,7 @@ import Testing
         if let first, let second { #expect(first < second) }
     }
 
-    @Test func blankImageGivesEmptyText() async throws {
+    @Test(.disabled(if: visionUnavailable, "no Neural Engine on CI runners")) func blankImageGivesEmptyText() async throws {
         let img = try #require(image(lines: []))
         #expect(try await DocumentTextRecognizer().recognize(img).isEmpty)
     }
