@@ -6709,12 +6709,12 @@
         }
       }
     },
-    "This article is no longer on the phone: its pack or collection was removed." : {
+    "This article is no longer on this %@: its pack or collection was removed." : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Este artigo não está mais no celular: o pacote ou a coleção foi removido."
+            "value" : "Este artigo não está mais neste %@: o pacote ou a coleção foi removido."
           }
         }
       }

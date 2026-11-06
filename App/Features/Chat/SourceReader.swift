@@ -21,7 +21,7 @@ struct SourceReader: View {
                 ContentUnavailableView {
                     Label("Not on This Device", systemImage: Symbols.sources)
                 } description: {
-                    Text("This article is no longer on the phone: its pack or collection was removed.")
+                    Text("This article is no longer on this \(Platform.deviceNoun): its pack or collection was removed.")
                 }
             }
         }
@@ -46,9 +46,13 @@ private struct SourceReaderBody: View {
     let article: SourceArticle.Article
     let passage: String
 
-    private var split: (before: String, used: String, after: String)? {
-        guard let r = SourceArticle.passageAt(article.text, passage) else { return nil }
-        let ns = article.text as NSString
+    /// Found once: the passage search runs over the whole article, not on every redraw (PR #1 review).
+    @State private var split: (before: String, used: String, after: String)?
+    @State private var splitDone = false
+
+    private static func split(_ text: String, _ passage: String) -> (before: String, used: String, after: String)? {
+        guard let r = SourceArticle.passageAt(text, passage) else { return nil }
+        let ns = text as NSString
         return (ns.substring(to: r.location), ns.substring(with: r), ns.substring(from: r.location + r.length))
     }
 
@@ -62,7 +66,10 @@ private struct SourceReaderBody: View {
                             .foregroundStyle(.secondary)
                             .textSelection(.enabled)
                     }
-                    if let split {
+                    if !splitDone {
+                        ProgressView()
+                            .frame(maxWidth: .infinity)
+                    } else if let split {
                         Label("The part BOAR used is marked.", systemImage: "highlighter")
                             .font(.subheadline)
                             .foregroundStyle(.tint)
@@ -82,6 +89,8 @@ private struct SourceReaderBody: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
             .task {
+                split = Self.split(article.text, passage)
+                splitDone = true
                 guard split != nil else { return }
                 // Once laid out, the marked passage comes into view, a little below the top.
                 try? await Task.sleep(for: .milliseconds(250))
