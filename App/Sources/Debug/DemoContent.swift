@@ -66,9 +66,9 @@ enum DemoContent {
                "Plate tectonics describes the large-scale motion of seven large plates and the movements of a larger number of smaller plates of the Earth's lithosphere."),
     ]
 
-    private static func receipt(total: Double, ttft: Double, rate: Double, tokens: Int, load: Double? = nil) -> Receipt {
+    private static func receipt(total: Double, ttft: Double, rate: Double, tokens: Int, load: Double? = nil, path: String? = nil) -> Receipt {
         Receipt(totalMs: total, ttftMs: ttft, tokPerSec: rate, tokens: tokens, model: model, retrievalMs: 310, prefillMs: ttft - 900,
-                contextTokens: 1180, loadMs: load)
+                contextTokens: 1180, loadMs: load, path: path)
     }
 
     static let sessions: [Session] = [
@@ -87,7 +87,7 @@ enum DemoContent {
 
                 In short: **tilt, not distance**, makes the seasons.
                 """,
-                sources: seasons, receipt: receipt(total: 21_800, ttft: 6_400, rate: 9.1, tokens: 212, load: 3_900), rating: "up"),
+                sources: seasons, receipt: receipt(total: 21_800, ttft: 6_400, rate: 9.1, tokens: 212, load: 3_900, path: "deep"), rating: "up"),
             Exchange(
                 question: "Is Earth closer to the Sun in summer?",
                 answer: """

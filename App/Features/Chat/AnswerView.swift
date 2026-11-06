@@ -25,6 +25,8 @@ struct AnswerView: View {
     /// A Labs plugin's instant answer speaks as that plugin: its art and name, not BOAR's.
     private var speaker: Labs.Speaker? { message.receipt?.tool.flatMap { Labs.shared.speaker(tool: $0) } }
 
+    private var researched: Bool { message.receipt?.path == "deep" }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             if let speaker, !streaming {
@@ -76,9 +78,10 @@ struct AnswerView: View {
         .padding(.vertical, 12)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Color(palette.bgSurface), in: Self.shape)
-        // Android draws a Deep Research answer with a 1.5 pt frontierBadgeBorder (receipt.path == "deep"); iOS's
-        // Receipt doesn't record the path yet.
-        .overlay { Self.shape.strokeBorder(Color(palette.borderDefault)) }
+        // A Deep Research answer keeps its mark in the history: 1.5 pt in the mode's color (android Bubble).
+        .overlay {
+            Self.shape.strokeBorder(Color(researched ? palette.frontierBadgeBorder : palette.borderDefault), lineWidth: researched ? 1.5 : 1)
+        }
         // A citation "[n]" in this answer opens this answer's source n.
         .environment(\.openURL, OpenURLAction(handler: openCitation))
     }

@@ -361,7 +361,8 @@ final class ChatController {
         ).flatMap { !(deep || personal) || PersonalFiles.keepsTool($0.tool) ? $0 : nil }
         let instant = tool?.instantText
         let toolPrompt = AnswerTools.systemPrompt(systemPrompt, tool)
-        // How this answer is written, for the check slot: Deep Research and recaps are not checked.
+        // How this answer is written (android Receipt.path), for the check slot and the receipt: Deep Research and recaps
+        // are not checked, and a Deep Research answer keeps its border in the history.
         let path: String? = switch way {
         case _ where instant != nil: nil
         case .research: "deep"
@@ -530,7 +531,7 @@ final class ChatController {
             // An instant answer generated nothing: its receipt has the time and the tool, no speed.
             receipt = Receipt(totalMs: Self.seconds(startAt.duration(to: clock.now)) * 1000, ttftMs: Self.seconds(startAt.duration(to: firstAt)) * 1000,
                               tokPerSec: 0, tokens: 0, model: nil, retrievalMs: nil, prefillMs: nil, contextTokens: nil, loadMs: nil,
-                              styleNote: nil, tool: toolCodes)
+                              styleNote: nil, tool: toolCodes, path: path)
         } else if let firstAt, tokens > 0 {
             let end = clock.now
             let wallRate = Double(tokens) / max(Self.seconds(firstAt.duration(to: end)), 1e-3)
@@ -539,7 +540,8 @@ final class ChatController {
                 totalMs: Self.seconds(startAt.duration(to: end)) * 1000, ttftMs: Self.seconds(startAt.duration(to: firstAt)) * 1000,
                 tokPerSec: decodeRate > 0 ? decodeRate : wallRate, tokens: (metrics?.generatedTokens ?? 0) > 0 ? metrics!.generatedTokens : tokens,
                 model: modelLabel, retrievalMs: retrievalMs, prefillMs: metrics?.prefillMs, contextTokens: metrics?.promptTokens, loadMs: loadMs,
-                styleNote: shortReason == ShortAnswer.smallTalk ? nil : shortReason, tool: toolCodes.isEmpty ? nil : toolCodes)
+                styleNote: shortReason == ShortAnswer.smallTalk ? nil : shortReason, tool: toolCodes.isEmpty ? nil : toolCodes,
+                path: path)
         }
         let finalText = text
         let meta = (!shown.isEmpty || receipt != nil) ? MessageMeta.encode(shown, receipt) : nil
