@@ -19,6 +19,7 @@
   <img alt="macOS 26 or later" src="https://img.shields.io/badge/macOS-26%2B-FF7A3D" />
   <img alt="Works offline after one download" src="https://img.shields.io/badge/works-offline-17110D" />
   <img alt="Swift 6" src="https://img.shields.io/badge/Swift-6-F05138" />
+  <a href="./LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-blue" /></a>
 </p>
 
 <p align="center">
@@ -116,5 +117,11 @@ A change that should also happen on Android belongs in
 
 Built on [llama.cpp](https://github.com/ggml-org/llama.cpp). The library is Wikipedia article
 introductions; the brand fonts are Baloo 2 and Lexend, under the SIL Open Font License.
+
+## License
+
+MIT, like the Android app: see [LICENSE](LICENSE). Third-party code, models and fonts keep their own
+licenses (llama.cpp is MIT; Baloo 2 and Lexend are SIL OFL 1.1, with their license files next to the
+fonts).
 
 <p align="center"><sub>Born from <a href="https://poidh.xyz/mainnet/bounty/31">poidh bounty #31</a>, "Best Offline AI Research App". Growing in public. 🐗</sub></p>
