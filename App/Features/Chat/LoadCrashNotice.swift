@@ -10,8 +10,16 @@ struct LoadCrashNotice: View {
     var body: some View {
         if let crash = chat.loadCrash {
             NoticeCard(symbol: "memorychip", tint: .orange, title: "Not Enough Memory", message: message(crash)) {
+                // Loads it keeping the file mapped instead of copying its weights into memory (LoadGuard.retryMapped).
+                // Same as Android (ChatScreen.kt LoadNoteBanner): offered even when the load that closed the app was already
+                // mapped, or when Advanced → Repacked weights is set (that tweak wins over the mapped retry). Kept for
+                // parity; a fix starts on Android (PR #1 review).
+                if chat.services.catalog.byId(crash.crashedModelId) != nil {
+                    Button("Try Again with Less Memory") { chat.retryWithLessMemory(crash.crashedModelId) }
+                        .buttonStyle(.borderedProminent)
+                }
                 Button("Choose a Model", action: openModels)
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.bordered)
                 Button("OK", action: dismiss)
                     .buttonStyle(.bordered)
             }

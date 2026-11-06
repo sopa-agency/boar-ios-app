@@ -15,17 +15,20 @@
 #   5. mini: delete ~/boar/kiln/tmp-llama-xcf.
 #   6. local: replace Vendor/llama.xcframework, write Vendor/llama.xcframework.SHA256 (digest of every file, see below).
 #
-# usage: bash scripts/build-llama-xcframework.sh          (needs ssh access to a build Mac; set MINI)
-# env:   MINI=<ssh-host>  SPIKE_MIRROR=boar/spikes/llama-b11010  KEEP_REMOTE=1 (skip step 5)
+# usage: bash scripts/build-host.sh 'bash scripts/build-llama-xcframework.sh'   (builds on the build host itself)
+#        MINI=<ssh-host> bash scripts/build-llama-xcframework.sh         (from another Mac, building on MINI)
+# env:   MINI=<ssh-host, empty = this machine>  SPIKE_MIRROR=boar/spikes/llama-b11010  KEEP_REMOTE=1 (skip step 5)
 set -euo pipefail
 
 TAG=b11010
 COMMIT=4bc272fd729bd094c0422e4b8353da8d2fec91f8
-MINI="${MINI:?set MINI to the ssh host that builds llama.cpp}"
+MINI="${MINI:-}"
+# Empty MINI: the "remote" steps run on this machine (the build host builds for itself).
+remote() { if [ -n "$MINI" ]; then ssh "$MINI" "$@"; else (cd ~ && bash -c "$*"); fi; }
 SPIKE_MIRROR="${SPIKE_MIRROR:-boar/spikes/llama-b11010}"
 REMOTE_DIR='boar/kiln/tmp-llama-xcf'
 MIN_FREE_GIB=25
-export DEVELOPER_DIR="${DEVELOPER_DIR:-/Applications/Xcode-27.0.0.app/Contents/Developer}"
+export DEVELOPER_DIR="${DEVELOPER_DIR:-/Applications/Xcode-27.2.0.app/Contents/Developer}"
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 VENDOR="$ROOT/Vendor"
@@ -37,7 +40,7 @@ trap 'rm -rf "$WORK"' EXIT
 if [ -d "$VENDOR/llama.xcframework/ios-arm64_x86_64-simulator" ]; then echo "simulator slice already present"; exit 0; fi
 
 echo "== mini: build ios-sim ($TAG)"
-ssh "$MINI" bash -s -- "$TAG" "$COMMIT" "$REMOTE_DIR" "$SPIKE_MIRROR" "$MIN_FREE_GIB" "$DEVELOPER_DIR" "${KEEP_REMOTE:-0}" <<'REMOTE'
+remote bash -s -- "$TAG" "$COMMIT" "$REMOTE_DIR" "$SPIKE_MIRROR" "$MIN_FREE_GIB" "$DEVELOPER_DIR" "${KEEP_REMOTE:-0}" <<'REMOTE'
 set -euo pipefail
 export PATH=/opt/homebrew/bin:/usr/local/bin:$PATH   # non-login ssh shell: cmake lives in Homebrew
 TAG=$1; COMMIT=$2; DIR=$HOME/$3; MIRROR=$HOME/$4; MIN_FREE=$5; export DEVELOPER_DIR=$6; KEEP=$7
@@ -64,8 +67,8 @@ cp ../sim-slice.tar "$HOME/.llama-sim-slice.tar"
 REMOTE
 
 echo "== copy back"
-scp -q "$MINI:.llama-sim-slice.tar" "$WORK/sim-slice.tar"
-ssh -n "$MINI" 'rm -f ~/.llama-sim-slice.tar'
+if [ -n "$MINI" ]; then scp -q "$MINI:.llama-sim-slice.tar" "$WORK/sim-slice.tar"; else cp ~/.llama-sim-slice.tar "$WORK/sim-slice.tar"; fi
+remote 'rm -f ~/.llama-sim-slice.tar' </dev/null
 mkdir -p "$WORK/sim" && tar -C "$WORK/sim" -xf "$WORK/sim-slice.tar"
 [ -f "$WORK/sim/framework/llama.framework/llama" ] || { echo "simulator framework missing" >&2; exit 1; }
 

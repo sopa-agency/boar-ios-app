@@ -10,6 +10,8 @@ struct ChatView: View {
 
     @State private var input = ""
     @State private var showingTones = false
+    /// A lab's page opened from its toolbar badge.
+    @State private var openLab: OpenLab?
     @State private var openSource: ChatSource?
     #if os(macOS)
     /// The Mac shows sources in a trailing inspector beside the answer instead of a sheet.
@@ -55,6 +57,13 @@ struct ChatView: View {
         .navigationSubtitleIfAvailable(Text(subtitle))
         .inlineNavigationTitle()
         .toolbar {
+            // The switched-on labs' badges (android HeaderBadge): Boar Press's 📎 n opens its page over the chat.
+            let badges = Labs.shared.active.compactMap { lab in lab.headerBadge(open: { openLab = OpenLab(id: lab.id) }).map { (lab.id, $0) } }
+            if !badges.isEmpty {
+                ToolbarItem(placement: .primaryAction) {
+                    HStack(spacing: 6) { ForEach(badges, id: \.0) { $0.1 } }
+                }
+            }
             #if os(macOS)
             // New Chat sits at the top of the sidebar (⌘N); the chat's own toolbar holds the sources inspector.
             ToolbarItem(placement: .primaryAction) {
@@ -68,6 +77,16 @@ struct ChatView: View {
             #endif
         }
         .sheet(isPresented: $showingTones) { ToneSheet(chat: chat) }
+        .sheet(item: $openLab) { open in
+            if let lab = Labs.shared.byId(open.id) {
+                NavigationStack {
+                    LabPage(lab: lab)
+                        .toolbar {
+                            ToolbarItem(placement: .confirmationAction) { Button("Done") { openLab = nil } }
+                        }
+                }
+            }
+        }
         #if os(macOS)
         .inspector(isPresented: $showingSources) {
             SourceInspector(sources: inspectedSources, selected: $inspectedSource, technicalDetails: chat.technicalDetails)
@@ -163,4 +182,9 @@ struct ChatView: View {
         // The answer gets the whole screen: the keyboard closes on send.
         composerFocused = false
     }
+}
+
+/// A lab page shown over the chat, from its toolbar badge.
+private struct OpenLab: Identifiable {
+    let id: String
 }

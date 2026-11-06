@@ -50,14 +50,18 @@ final class DocumentsController {
                 defer { if scoped { url.stopAccessingSecurityScopedResource() } }
                 let fileName = url.lastPathComponent
                 let size = Int64((try? url.resourceValues(forKeys: [.fileSizeKey]).fileSize) ?? 0)
+                // Only what BOAR can read, and nothing so big its text could crowd out the model (android DocumentReader).
+                guard DocumentImport.readable(fileName) else {
+                    throw ImportError(String(localized: "BOAR can't read \(fileName): it imports .txt, .md, .csv, .json and .pdf. Save the page as one of those (a browser can save it as PDF) and import it again."))
+                }
+                if DocumentImport.tooLargeToRead(size) { throw Self.tooLarge(fileName) }
                 let text: String
                 if url.pathExtension.lowercased() == "pdf" {
                     text = try await Self.pdfText(url, fileName: fileName, recognizer: recognizer) { done, total in
                         Task { @MainActor in controller.stage = .recognizing(done: done, total: total) }
                     }
                 } else {
-                    guard let data = try? Data(contentsOf: url) else { throw ImportError(String(localized: "Couldn't read \"\(fileName)\".")) }
-                    text = String(decoding: data, as: UTF8.self)
+                    text = try Self.readCapped(url, fileName: fileName)
                 }
                 files.append(DocumentImport.File(name: fileName, sizeBytes: size > 0 ? size : Int64(text.utf8.count), text: text))
             }
@@ -164,12 +168,38 @@ final class DocumentsController {
         var errorDescription: String? { message }
     }
 
-    /// The PDF's selectable text (PDFKit); a scanned PDF, with none, goes through OCR page by page.
+    nonisolated private static func tooLarge(_ fileName: String) -> ImportError {
+        ImportError(String(localized: "Too large: \(fileName) (over \(DocumentImport.readLimit / 1_000_000) MB)."))
+    }
+
+    /// The file's bytes as text, at most `DocumentImport.readLimit` of them: a file whose size the system didn't report
+    /// is turned away as soon as it's longer.
+    nonisolated private static func readCapped(_ url: URL, fileName: String) throws -> String {
+        guard let handle = try? FileHandle(forReadingFrom: url) else { throw ImportError(String(localized: "Couldn't read \"\(fileName)\".")) }
+        defer { try? handle.close() }
+        var data = Data()
+        while let chunk = try handle.read(upToCount: 64 * 1024), !chunk.isEmpty {
+            if Int64(data.count + chunk.count) > DocumentImport.readLimit { throw tooLarge(fileName) }
+            data.append(chunk)
+        }
+        return String(decoding: data, as: UTF8.self)
+    }
+
+    /// The PDF's selectable text (PDFKit), a page at a time and capped at `DocumentImport.readLimit`, so a large PDF
+    /// doesn't fill the memory a loaded model needs; a scanned PDF, with none, goes through OCR page by page.
     nonisolated private static func pdfText(_ url: URL, fileName: String, recognizer: DocumentTextRecognizer,
                                             progress: @escaping @Sendable (Int, Int) -> Void) async throws -> String {
         guard let doc = PDFDocument(url: url) else { throw ImportError(String(localized: "Couldn't read \"\(fileName)\".")) }
         if doc.isLocked { throw ImportError(String(localized: "\"\(fileName)\" is password-protected. Password-protected PDFs aren't supported.")) }
-        let text = doc.string ?? ""
+        var text = ""
+        for i in 0..<doc.pageCount {
+            try autoreleasepool {
+                guard let page = doc.page(at: i)?.string, !page.isEmpty else { return }
+                if !text.isEmpty { text += "\n" }
+                text += page
+                if Int64(text.utf8.count) > DocumentImport.readLimit { throw tooLarge(fileName) }
+            }
+        }
         if !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty { return text }
         progress(0, doc.pageCount)
         let recognized = try await recognizer.recognize(fileURL: url)

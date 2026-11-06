@@ -10,6 +10,7 @@ struct ReceiptDetails: View {
             List {
                 Section {
                     if let model = receipt.model { ReceiptRow(label: "Model", symbol: Symbols.model, value: model) }
+                    if let tool = receipt.tool { ReceiptRow(label: "Tool", symbol: "flask", value: tool) }
                     ReceiptRow(label: "Total", symbol: "clock", value: Receipt.seconds(receipt.totalMs))
                     ReceiptRow(label: "Time to first word", symbol: "timer", value: Receipt.seconds(receipt.ttftMs))
                     ReceiptRow(label: "Speed", symbol: Symbols.performance,

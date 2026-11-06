@@ -121,6 +121,17 @@ enum DemoContent {
         ]),
     ]
 
+    /// `-uiBasket YES`: Boar Press's basket holds the demo chats' answers, as if added from each chat's More menu.
+    static func writeBasket() {
+        let pairs = sessions.flatMap { s in s.exchanges.map { (s.title, $0) } }
+        let items = pairs.enumerated().map { n, pair in
+            Basket.Item(id: "demo-basket-\(n)", chatTitle: pair.0, question: pair.1.question, text: pair.1.answer,
+                        sources: pair.1.sources.map { Basket.Source(title: $0.title, source: $0.source) },
+                        addedAt: 1_793_000_000_000 + Int64(n), model: model, tokPerSec: pair.1.receipt.tokPerSec)
+        }
+        try? Basket.save(items, to: AppPaths.filesDir.appending(path: "labs/basket.json"))
+    }
+
     /// The question and the text so far of the answer shown in progress.
     static let liveQuestion = "What is the difference between a pandemic and an epidemic?"
     static let liveText = "An **epidemic** is a sudden rise in the number of cases of a disease in one community or region. A **pandemic** is an epidemic that has spread across several countries or continents, so it affects a very large number of people. The word"

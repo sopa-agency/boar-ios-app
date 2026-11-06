@@ -4,7 +4,7 @@ import SwiftUI
 /// `-uiScreen <name>`: puts the running app on that screen once it is ready, without a tap.
 ///
 /// setup, setup-model, setup-knowledge, setup-install, setup-index, chat-empty, chat-error, chat-no-model, chat-load-crash, chat, chat-top, chat-streaming, chat-retrieving, chat-research,
-/// sidebar, citation-sheet, receipt, tone-sheet, models, model-detail, models-downloading, models-browse, documents,
+/// sidebar, citation-sheet, source-reader, receipt, tone-sheet, models, model-detail, models-downloading, models-browse, documents,
 /// settings, settings-advanced, settings-engine, device-info, evaluation, about, lock.
 @MainActor
 enum DebugRouter {
@@ -12,6 +12,11 @@ enum DebugRouter {
         if let file = DebugLaunch.importFile, await waitReady(model) {
             model.selection = .screen(.documents)
             model.documents?.importFiles([URL(filePath: file)], name: "Test Import")
+        }
+        if let style = DebugLaunch.style, await waitReady(model) { model.chat?.setTone(style) }
+        if !DebugLaunch.questions.isEmpty, await waitReady(model) {
+            await ask(DebugLaunch.questions, model)
+            return
         }
         guard let screen = DebugLaunch.screen else { return }
         if screen.hasPrefix("setup") {
@@ -22,7 +27,7 @@ enum DebugRouter {
         // The split view has to be on screen before a selection change reaches `onChange`.
         try? await Task.sleep(for: .milliseconds(700))
         switch screen {
-        case "chat", "chat-top", "citation-sheet", "receipt", "tone-sheet":
+        case "chat", "chat-top", "citation-sheet", "source-reader", "receipt", "tone-sheet":
             await openFirstSession(model)
         case "chat-streaming":
             await openFirstSession(model)
@@ -49,6 +54,7 @@ enum DebugRouter {
         case "settings", "settings-engine", "settings-advanced", "device-info": model.selection = .screen(.settings)
         case "evaluation": model.selection = .screen(.evaluation)
         case "about": model.selection = .screen(.about)
+        case "labs", _ where screen.hasPrefix("lab-"): model.selection = .screen(.labs)
         default: break
         }
         if let scroll = DebugLaunch.scroll {
@@ -73,6 +79,23 @@ enum DebugRouter {
         }
         let steps = screen == "setup-model" ? 1 : screen == "setup-knowledge" ? 2 : 0
         for _ in 0..<steps { model.setup?.next() }
+    }
+
+    /// `-uiAsk`: once an import is done, one new chat gets the questions, each after the previous answer.
+    private static func ask(_ questions: [String], _ model: AppModel) async {
+        // An import started above runs in the background: wait for it (up to 5 minutes for a long PDF).
+        try? await Task.sleep(for: .milliseconds(500))
+        for _ in 0..<3000 where model.documents?.busy == true { try? await Task.sleep(for: .milliseconds(100)) }
+        model.selection = .newChat
+        try? await Task.sleep(for: .milliseconds(700))
+        guard let chat = model.chat else { return }
+        for q in questions {
+            chat.send(q)
+            try? await Task.sleep(for: .milliseconds(300))
+            // Up to 10 minutes per answer: a first load plus a long answer on the simulator's CPU.
+            for _ in 0..<6000 where chat.isAnswering { try? await Task.sleep(for: .milliseconds(100)) }
+            try? await Task.sleep(for: .seconds(1))
+        }
     }
 
     private static func openFirstSession(_ model: AppModel) async {

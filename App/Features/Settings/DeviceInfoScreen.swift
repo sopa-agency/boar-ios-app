@@ -1,4 +1,5 @@
 import BoarCore
+import BoarModels
 import SwiftUI
 
 /// Settings → Advanced → iPhone & Storage (android TelemetrySection / UsageStatsContent): this iPhone, what BOAR uses
@@ -9,6 +10,8 @@ struct DeviceInfoScreen: View {
     @State private var storage: Int64?
     @State private var free: Int64?
     @State private var footprint: Int64 = 0
+    /// What BOAR can still allocate before iOS ends it (nil on the Mac).
+    @State private var available: Int64?
     @State private var evals: (count: Int, last: Date?) = (0, nil)
 
     var body: some View {
@@ -33,11 +36,20 @@ struct DeviceInfoScreen: View {
             }
 
             Section {
+                // Memory against what iOS lets BOAR use before it ends the app (android shows BOAR and the other apps
+                // against the phone's RAM; iOS doesn't tell an app what the others use). The Mac has no such limit.
                 if footprint > 0 {
-                    ValueRow(label: "Memory in Use", value: footprint.formatted(.byteCount(style: .file)))
+                    if let available {
+                        UsageBar(title: "Memory", used: footprint, total: footprint + available,
+                                 caption: String(localized: "BOAR \(footprint.formatted(.byteCount(style: .memory))) · \(available.formatted(.byteCount(style: .memory))) more before \(Platform.systemName) closes it"))
+                    } else {
+                        UsageBar(title: "Memory", used: footprint, total: DeviceStorage.physicalMemoryBytes,
+                                 caption: String(localized: "BOAR \(footprint.formatted(.byteCount(style: .memory))) of this \(Platform.deviceNoun)'s memory"))
+                    }
                 }
                 if let storage {
-                    ValueRow(label: "Storage Used", value: storage.formatted(.byteCount(style: .file)))
+                    UsageBar(title: "Storage", used: storage, total: services.catalog.storageBudgetBytes,
+                             caption: String(localized: "BOAR's storage limit, not the \(Platform.deviceNoun)'s"), style: .file)
                 }
                 ValueRow(label: "Saved Chats", value: model.sessions.count.formatted())
                 ValueRow(label: "Benchmark Runs", value: evals.count.formatted())
@@ -53,11 +65,16 @@ struct DeviceInfoScreen: View {
         .navigationTitle("\(Platform.deviceNoun) & Storage")
         .inlineNavigationTitle()
         .task {
-            footprint = AppMemory.footprintBytes()
             free = (try? await services.background { _ in DeviceStorage.availableBytes() }) ?? nil
-            storage = try? await services.background { $0.storageUsedBytes() }
             if let runner = model.evaluation?.runner {
                 evals = await Task.detached { Self.lastEval(runner) }.value
+            }
+            // Read every 5 s while the screen is open, like Android's.
+            while !Task.isCancelled {
+                footprint = AppMemory.footprintBytes()
+                available = DeviceMemory.availableBytes
+                storage = try? await services.background { $0.storageUsedBytes() }
+                try? await Task.sleep(for: .seconds(5))
             }
         }
     }

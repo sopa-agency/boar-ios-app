@@ -8,6 +8,7 @@ struct AdvancedSettingsScreen: View {
     @Environment(AppModel.self) private var model
     let services: BoarServices
     let bridge: SettingsBridge
+    @State private var labs = Labs.shared
 
     var body: some View {
         @Bindable var model = model
@@ -125,6 +126,17 @@ struct AdvancedSettingsScreen: View {
                 Text(technical
                      ? "Timings and speed show under each answer. Adaptive Routing picks the best installed model for each question."
                      : "Shows timings under each answer, plus the engine settings and the benchmark.")
+            }
+
+            // At the very bottom, the switch builders find (android LabHooks.SettingsRow).
+            if LabsBuild.experimental {
+                Section {
+                    Toggle(isOn: Binding(get: { labs.labsOn }, set: { labs.labsOn = $0 })) {
+                        SettingsLabel("Boar Labs", symbol: "flask.fill", color: .green)
+                    }
+                } footer: {
+                    Text("Unfinished experiments in the menu and under answers. They may be slow, rough or change without notice.")
+                }
             }
         }
         .navigationTitle("Advanced")

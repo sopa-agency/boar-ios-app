@@ -15,7 +15,9 @@ public enum Calculators {
         }
     }
 
-    private static let num = #"(\d{1,3}(?:[.\s]\d{3})+(?:,\d+)?|\d+(?:[.,]\d+)?)"#
+    // Starts only where a run of digits starts: from every digit inside a long run, \d+ backtracked over the rest of it,
+    // so 4,000 digits took 5 s and 20,000 over two minutes (the TypeScript has the same pattern).
+    private static let num = #"(?<!\d)(\d{1,3}(?:[.\s]\d{3})+(?:,\d+)?|\d+(?:[.,]\d+)?)"#
 
     private static let wsAny = JsRegex(#"\s"#)
     private static let comma3End = JsRegex(#",\d{3}$"#)
@@ -192,7 +194,7 @@ public enum Calculators {
 
     // from context.ts; replace with the shared port when context.ts lands
     private static let temperatureRe = JsRegex(
-        #"(-?\d+(?:[.,]\d+)?)\s*(?:°|º|degrees?|graus?)?\s*(c|celsius|centigrade|f|fahrenheit)\b[^?]*?\b(?:in|to|into|em|para)\s+(?:degrees?\s+|graus?\s+)?(celsius|centigrade|fahrenheit|c|f)\b"#,
+        #"(?<!\d)(-?\d+(?:[.,]\d+)?)\s*(?:°|º|degrees?|graus?)?\s*(c|celsius|centigrade|f|fahrenheit)\b[^?]*?\b(?:in|to|into|em|para)\s+(?:degrees?\s+|graus?\s+)?(celsius|centigrade|fahrenheit|c|f)\b"#,
         flags: "i"
     )
 

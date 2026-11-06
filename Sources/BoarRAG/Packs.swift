@@ -67,30 +67,33 @@ public enum Packs {
         public var semantic: [Chunk]
     }
 
-    /// Lexical and semantic candidates from one format-1 pack, scored like the built-in knowledge base's.
+    /// Lexical and semantic candidates from one format-1 pack, scored like the built-in knowledge base's; `minSimilarity`
+    /// floors the semantic ones.
     public static func searchFormat1(
-        _ db: any SqlDatabase, packId: String, query: String, queryVec: [Float], limit: Int, explain: Bool? = nil
+        _ db: any SqlDatabase, packId: String, query: String, queryVec: [Float], limit: Int, explain: Bool? = nil,
+        minSimilarity: Double = RagPure.minSemanticSimilarity
     ) throws -> Found {
         guard let lq = RagPure.buildLexicalQuery(query) else { return Found(lexical: [], semantic: []) }
-        struct Row { var id: Int64; var title: String; var body: String; var vec: Data; var rank: Double }
+        struct Row { var id: Int64; var title: String; var body: String; var vec: Data; var rank: Double; var source: String? }
         let rows = try db.query(
             """
-            SELECT c.id, c.title, c.body, c.vec, bm25(chunks_fts) AS rank
+            SELECT c.id, c.title, c.body, c.vec, bm25(chunks_fts) AS rank, c.source
             FROM chunks_fts f JOIN chunks c ON c.id = f.rowid
             WHERE chunks_fts MATCH ? ORDER BY rank LIMIT ?
             """,
             args: [.text(lq.match), .integer(Int64(packCandidates))]
-        ) { Row(id: $0.long(0), title: $0.string(1)!, body: $0.string(2)!, vec: $0.blob(3)!, rank: $0.double(4)) }
+        ) { Row(id: $0.long(0), title: $0.string(1)!, body: $0.string(2)!, vec: $0.blob(3)!, rank: $0.double(4), source: $0.string(5).flatMap { $0.allSatisfy(\.isWhitespace) ? nil : $0 }) }
         func chunk(_ r: Row, _ score: Double, _ type: MatchType) -> Chunk {
             Chunk(
                 chunkId: "pack:\(packId):\(r.id)", docId: "pack:\(packId):\(r.title)", title: r.title, body: r.body,
-                score: score, matchType: type, similarity: RagPure.cosineInt8(queryVec, r.vec)
+                // The pack records each article's origin ("Wikipedia — https://en.wikipedia.org/wiki/Nosebleed").
+                source: r.source, score: score, matchType: type, similarity: RagPure.cosineInt8(queryVec, r.vec)
             )
         }
         var lex = Array(RagPure.filterByTermCoverage(rows.map { chunk($0, -$0.rank, .lexical) }, lq.terms).prefix(max(0, limit)))
         var sem = Array(
             rows.map { chunk($0, RagPure.cosineInt8(queryVec, $0.vec), .semantic) }
-                .stableSorted { $0.score > $1.score }.filter { $0.score >= RagPure.minSemanticSimilarity }.prefix(max(0, limit))
+                .stableSorted { $0.score > $1.score }.filter { $0.score >= minSimilarity }.prefix(max(0, limit))
         )
         if explain ?? Explain.hasExplainIntent(query) {
             lex = Explain.explainingFirst(lex, lq.terms)

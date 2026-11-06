@@ -4,10 +4,13 @@ import BoarCore
 import BoarModels
 import Foundation
 import Observation
+#if canImport(UIKit)
+import UIKit
+#endif
 
 /// The screens reachable from the sidebar besides the chat (`DestinationScreen`).
 enum AppScreen: String, Hashable, CaseIterable, Identifiable {
-    case documents, models, settings, evaluation, about
+    case documents, models, settings, evaluation, about, labs
     var id: String { rawValue }
 
     /// The sidebar's Library rows. Settings is the sidebar's top-left button; About is inside Settings and the
@@ -16,11 +19,12 @@ enum AppScreen: String, Hashable, CaseIterable, Identifiable {
 
     var title: String {
         switch self {
-        case .documents: String(localized: "Documents")
+        case .documents: String(localized: "Knowledge")
         case .models: String(localized: "Models")
         case .settings: String(localized: "Settings")
         case .evaluation: String(localized: "Evaluation")
         case .about: String(localized: "About")
+        case .labs: String(localized: "Boar Labs")
         }
     }
 
@@ -31,6 +35,7 @@ enum AppScreen: String, Hashable, CaseIterable, Identifiable {
         case .settings: "gearshape"
         case .evaluation: Symbols.benchmark
         case .about: "info.circle"
+        case .labs: "flask"
         }
     }
 }
@@ -72,6 +77,9 @@ final class AppModel {
     private(set) var evaluation: EvaluationController?
     private(set) var lock: AppLock?
     @ObservationIgnored private let spotlight = SpotlightDonor()
+    /// Settings → Free memory when I leave BOAR: the release waiting to happen while BOAR is in the background.
+    @ObservationIgnored private var memoryRelease: Task<Void, Never>?
+    @ObservationIgnored private var inForeground = true
     var selection: SidebarItem? = .newChat
     /// System / Light / Dark (Settings → Display); persisted on every change.
     var appearance: AppAppearance = .system {
@@ -169,6 +177,17 @@ final class AppModel {
             self.reloadSessions()
             self.drainInbox()
         }
+        // Erasing after a lost key: answers stop first (up to 15 s), then the chat on screen starts over.
+        lock.stopAnswers = { [weak self] in
+            guard let chat = self?.chat else { return }
+            chat.stopForBackground()
+            for _ in 0..<150 where chat.usesModel { try? await Task.sleep(for: .milliseconds(100)) }
+        }
+        lock.onErased = { [weak self] in
+            guard let self else { return }
+            self.newChat()
+            Task { await self.documents?.refresh() }
+        }
         self.models = models
         self.evaluation = evaluation
         self.documents = DocumentsController(services: services)
@@ -247,11 +266,20 @@ final class AppModel {
         case .session(let id): chat.openSession(id)
         case .screen, .none: break
         }
+        // Leaving Boar Labs covers the leaked teasers again; moving between its labs keeps them.
+        if item != .screen(.labs) { Labs.shared.coverAll() }
     }
 
     func newChat() {
         chat?.newChat()
         selection = .newChat
+    }
+
+    /// After an import, "Ask about them": a new chat in the Personal Files style, which answers only from the files.
+    func askAboutFiles() {
+        documents?.imported = nil
+        chat?.setTone("personal")
+        newChat()
     }
 
     func deleteSession(_ id: String) async {
@@ -296,14 +324,81 @@ final class AppModel {
     /// The app went to the background: Metal work is not allowed there on iPhone, so a running answer stops (its text is
     /// kept). A Mac keeps answering behind other windows and while minimized.
     func didEnterBackground() {
+        inForeground = false
+        // A kill from now on is iOS reclaiming a background app, not the model's load (LoadGuard).
+        services?.host.settleResident()
         #if !os(macOS)
-        chat?.stop()
+        chat?.stopForBackground()
+        scheduleMemoryRelease()
         #endif
         lock?.lockOnBackground()
     }
 
+    #if !os(macOS)
+    /// Settings → Free memory when I leave BOAR (android `BoarServices.onBackground`): after the chosen delay (Auto: at
+    /// once) the model is unloaded, so iOS doesn't end BOAR to get its memory back. A stopped answer, title or load is
+    /// waited for; coming back first cancels it. The chat stays as it is and the next question loads the model again.
+    /// iOS gives a backgrounded app about 30 s: a longer pick only takes effect if BOAR is still running then.
+    private func scheduleMemoryRelease() {
+        memoryRelease?.cancel()
+        memoryRelease = nil
+        guard let services, services.settings.freeMemoryInBackground else { return }
+        let settings = services.settings
+        let wait = FreeMemory.delayMs(settings.freeMemoryAfterMinutes)
+        #if canImport(UIKit)
+        // The grant ends exactly once: when the release is done, or when iOS says the background time is up. Without the
+        // expiration handler a 5 or 30 min pick outlived the grant and the watchdog ended BOAR instead (PR #1 review).
+        let grant = BackgroundGrant()
+        grant.id = UIApplication.shared.beginBackgroundTask(withName: "BOAR free memory") { [weak self] in
+            MainActor.assumeIsolated {
+                self?.memoryRelease?.cancel()
+                self?.memoryRelease = nil
+                grant.end()
+            }
+        }
+        #endif
+        memoryRelease = Task { @MainActor [weak self] in
+            #if canImport(UIKit)
+            defer { grant.end() }
+            #endif
+            try? await Task.sleep(for: .milliseconds(wait))
+            while !Task.isCancelled, let self {
+                let busy = self.chat?.usesModel ?? false
+                switch FreeMemory.decide(enabled: settings.freeMemoryInBackground, inForeground: self.inForeground,
+                                         loaded: services.host.current != nil, busy: busy) {
+                case .skip:
+                    return
+                case .wait:
+                    try? await Task.sleep(for: .milliseconds(FreeMemory.busyPollMs))
+                case .unload:
+                    await services.host.unload()
+                    BoarPerf.event("model.unloaded", "\(wait / 1000) s in the background")
+                    return
+                }
+            }
+        }
+    }
+    #endif
+
     func didBecomeActive() {
+        inForeground = true
+        memoryRelease?.cancel()
+        memoryRelease = nil
         setup?.onForeground()
         drainInbox()
     }
 }
+
+#if canImport(UIKit)
+/// A background task identifier that ends once, whichever of the release or the expiration handler comes first.
+@MainActor
+private final class BackgroundGrant {
+    var id: UIBackgroundTaskIdentifier = .invalid
+
+    func end() {
+        guard id != .invalid else { return }
+        UIApplication.shared.endBackgroundTask(id)
+        id = .invalid
+    }
+}
+#endif

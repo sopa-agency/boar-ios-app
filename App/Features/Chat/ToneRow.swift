@@ -7,19 +7,17 @@ struct ToneRow: View {
     let selected: Bool
     let onSelect: (String) -> Void
 
-    /// The native app's wording where it differs from the shared catalog.
     private var detail: String { Self.detail(for: tone) }
 
-    static func detail(for tone: Personality) -> String {
-        tone.id == "succinct" ? String(localized: "Fastest. A few short paragraphs, straight to the point.") : tone.description
-    }
+    /// Android's wording since rc2 (Succinct no longer says "Default for mobile"), so no native override is left.
+    static func detail(for tone: Personality) -> String { tone.displayDescription }
 
     var body: some View {
         Button(action: select) {
             HStack {
                 Label {
                     VStack(alignment: .leading) {
-                        Text(tone.label)
+                        Text(tone.displayLabel)
                         Text(detail).font(.subheadline).foregroundStyle(.secondary)
                     }
                 } icon: {

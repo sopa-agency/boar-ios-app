@@ -32,6 +32,10 @@ final class AppLock {
     @ObservationIgnored private let keychain = ChatKeyStore()
     /// After a successful unlock: the sidebar reloads its titles, a pending Siri question runs.
     @ObservationIgnored var onUnlocked: (@MainActor () -> Void)?
+    /// Before an erase: stops any answer and waits for it, so nothing writes a chat while they're deleted.
+    @ObservationIgnored var stopAnswers: (@MainActor () async -> Void)?
+    /// After an erase: the chat on screen starts over, the Knowledge list reloads.
+    @ObservationIgnored var onErased: (@MainActor () -> Void)?
     /// The data key was read in this process (re-locking after the background keeps it in memory).
     @ObservationIgnored private var keyLoaded = false
 
@@ -151,14 +155,32 @@ final class AppLock {
         }
     }
 
-    /// The key is lost: the sealed chats can't be read, so they're erased with it and the lock turns off.
+    /// The key is lost: the sealed chats can't be read, so they're erased with it and the lock turns off. Personal Files
+    /// go too (android Forgot PIN, 2e0dafc0): only the chats are sealed, and the files would stay readable to whoever
+    /// opened BOAR without the owner's passcode. Models and knowledge packs stay. A failed erase keeps the lock on.
     func eraseChatsAndReset() async {
-        _ = try? await services.background { try $0.chats.clearAll() }
+        guard !busy else { return }
+        busy = true
+        defer { busy = false }
+        await stopAnswers?()
+        do {
+            try await services.background { s in
+                try s.knowledgeBase.eraseAllCollections()
+                try s.chats.clearAll()
+            }
+        } catch {
+            Self.log.error("erase failed: \(String(describing: error), privacy: .public)")
+            self.error = String(localized: "Couldn't erase everything. The lock stays on: try again.")
+            return
+        }
+        Labs.shared.eraseUserData()
         services.chats.cipher = PlainCipher()
         keychain.delete()
         keyLoaded = false
         keyLost = false
+        error = nil
         setFlag(false)
+        onErased?()
         onUnlocked?()
     }
 

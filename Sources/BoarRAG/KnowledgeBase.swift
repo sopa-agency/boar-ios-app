@@ -36,6 +36,9 @@ public final class KnowledgeBase: Sendable {
         if !columns.contains("collection_id") {
             try db.exec("ALTER TABLE chunks ADD COLUMN collection_id TEXT REFERENCES custom_collections(id)")
         }
+        // A file's parts and a collection's chunks are looked up by these (the files' cards, a source read whole, a
+        // collection removed): without an index each is a scan of every chunk. After the ALTER, which adds the column.
+        try db.exec("CREATE INDEX IF NOT EXISTS idx_chunks_doc ON chunks(doc_id); CREATE INDEX IF NOT EXISTS idx_chunks_collection ON chunks(collection_id);")
     }
 
     public func insertChunk(_ chunk: Chunk, embedding: [Float]) throws {
@@ -105,6 +108,17 @@ public final class KnowledgeBase: Sendable {
         }
     }
 
+    /// The built-in library's articles, `limit` of them drawn by `seed` (android seedArticles, the same draw for the same
+    /// seed through KotlinRandom): title and opening, never the user's files. The Daily Quiz's pool.
+    public func seedArticles(seed: Int64, limit: Int) throws -> [(title: String, body: String)] {
+        // Only the opening: the quiz shows an article's first sentence, and a few thousand bodies would be megabytes.
+        let rows = try db.query(
+            "SELECT title, substr(body, 1, 600) AS head FROM chunks WHERE collection_id IS NULL AND title IS NOT NULL ORDER BY chunk_id"
+        ) { (title: try $0.string("title") ?? "", body: try $0.string("head") ?? "") }
+        var rnd = KotlinRandom(seed: seed)
+        return Array(rnd.shuffled(rows.filter { !$0.title.unicodeScalars.allSatisfy(\.properties.isWhitespace) }).prefix(limit))
+    }
+
     public func createCollection(
         id: String, name: String, sourceFilename: String?, docCount: Int64, chunkCount: Int64, sizeBytes: Int64,
         now: Int64 = Int64(Date().timeIntervalSince1970 * 1000)
@@ -115,15 +129,57 @@ public final class KnowledgeBase: Sendable {
         )
     }
 
-    /// getCollectionDocs: each distinct passage of a collection, in chunk order.
+    /// getCollectionDocs: each distinct passage of a collection, in chunk order. Cards (OwnFiles.card) stay out: they're
+    /// BOAR's index of a file, and a re-imported export would turn them into the user's text.
     public func collectionDocs(_ id: String) throws -> [CollectionDoc] {
-        try db.query("SELECT DISTINCT title, body, source FROM chunks WHERE collection_id = ? ORDER BY chunk_id", args: [.text(id)]) { r in
+        try db.query(
+            "SELECT DISTINCT title, body, source FROM chunks WHERE collection_id = ? AND chunk_id NOT LIKE '%\(OwnFiles.cardSuffix)' ORDER BY chunk_id",
+            args: [.text(id)]
+        ) { r in
             CollectionDoc(title: try r.string("title")!, source: try r.string("source") ?? "", body: try r.string("body")!)
+        }
+    }
+
+    /// One document's parts (the built-in library's, or a file in Personal Files), for reading it whole (SourceArticle).
+    public func docParts(_ docId: String) throws -> [Chunk] {
+        // Not the file's card (OwnFiles.card): it describes the file, it isn't part of its text.
+        try db.query(
+            "SELECT chunk_id, doc_id, title, body, source, collection_id FROM chunks WHERE doc_id = ? AND chunk_id NOT LIKE '%\(OwnFiles.cardSuffix)'",
+            args: [.text(docId)]
+        ) { r in
+            Chunk(chunkId: r.string(0)!, docId: r.string(1)!, title: r.string(2) ?? "", body: r.string(3) ?? "", source: r.string(4), collectionId: r.string(5))
         }
     }
 
     public func setCollectionActive(_ id: String, _ active: Bool) throws {
         try db.execute("UPDATE custom_collections SET active = ? WHERE id = ?", args: [.integer(active ? 1 : 0), .text(id)])
+    }
+
+    public struct EraseError: Error, CustomStringConvertible {
+        public var description: String { "the write-ahead log couldn't be emptied: a reader holds it" }
+    }
+
+    /// Every Personal Files collection erased so its text can't be read back from the database file (Forgot PIN): pages
+    /// freed are overwritten (secure_delete), the search index is merged so the deleted words leave its segments, and the
+    /// write-ahead log is emptied.
+    public func eraseAllCollections() throws {
+        try db.exec("PRAGMA secure_delete = ON")
+        do {
+            for c in try collections() { try deleteCollection(c.id) }
+            try db.exec("INSERT INTO chunks_fts(chunks_fts) VALUES('optimize')")
+        } catch {
+            try? db.exec("PRAGMA secure_delete = OFF")
+            throw error
+        }
+        try db.exec("PRAGMA secure_delete = OFF")
+        // The log must really be emptied: a checkpoint blocked by a reader reports busy (its first column) instead of
+        // failing. Retried for a moment; still busy, the erase fails, and Forgot PIN keeps the PIN.
+        for _ in 0..<30 {
+            let busy = try db.query("PRAGMA wal_checkpoint(TRUNCATE)") { $0.long(0) }.first ?? 0
+            if busy == 0 { return }
+            usleep(100_000)
+        }
+        throw EraseError()
     }
 
     public func deleteCollection(_ id: String) throws {
@@ -137,47 +193,102 @@ public final class KnowledgeBase: Sendable {
     }
 
     /// BM25 keyword search over the question's content words, gated by term coverage (no numeric bm25 floor:
-    /// its scale depends on the corpus). Hits carry their real similarity when they have an embedding.
-    public func lexicalSearch(_ query: String, queryVec: [Float], limit: Int) throws -> [Chunk] {
+    /// its scale depends on the corpus). Hits carry their real similarity when they have an embedding. `ownOnly`: the
+    /// user's collections only.
+    public func lexicalSearch(_ query: String, queryVec: [Float], limit: Int, ownOnly: Bool = false) throws -> [Chunk] {
         guard let lq = RagPure.buildLexicalQuery(query) else { return [] }
         let rows = try db.query(
             """
-            SELECT f.chunk_id, f.doc_id, f.title, f.body, bm25(chunks_fts) AS rank, e.embedding
+            SELECT f.chunk_id, f.doc_id, f.title, f.body, bm25(chunks_fts) AS rank, e.embedding, c.collection_id
             FROM chunks_fts f
             JOIN chunks c ON c.chunk_id = f.chunk_id
             LEFT JOIN chunk_embeddings e ON e.chunk_id = f.chunk_id
             LEFT JOIN custom_collections cc ON cc.id = c.collection_id
-            WHERE chunks_fts MATCH ? AND (c.collection_id IS NULL OR cc.active = 1)
+            WHERE chunks_fts MATCH ? AND (c.collection_id IS NULL OR cc.active = 1)\(ownOnly ? Self.ownOnlyClause : "")
             ORDER BY rank LIMIT ?
             """,
             args: [.text(lq.match), .integer(Int64(limit * Self.lexicalCandidateMultiplier))]
         ) { r in
             Chunk(
                 chunkId: r.string(0)!, docId: r.string(1)!, title: r.string(2) ?? "", body: r.string(3) ?? "",
-                score: -r.double(4), matchType: .lexical,
+                collectionId: r.string(6), score: -r.double(4), matchType: .lexical,
                 similarity: r.blob(5).map { RagPure.cosine(queryVec, Self.fromBlob($0)) }
             )
         }
         return Array(RagPure.filterByTermCoverage(rows, lq.terms).prefix(max(0, limit)))
     }
 
-    /// Brute-force cosine search over the stored embeddings, with the MIN_SEMANTIC_SIMILARITY floor.
-    public func semanticSearch(_ queryVec: [Float], limit: Int) throws -> [Chunk] {
+    /// Brute-force cosine search over the stored embeddings, with a similarity floor (minSemanticSimilarity by default).
+    /// `ownOnly`: the user's collections only.
+    public func semanticSearch(
+        _ queryVec: [Float], limit: Int, minSimilarity: Double = RagPure.minSemanticSimilarity, ownOnly: Bool = false
+    ) throws -> [Chunk] {
         let scored = try db.query(
             """
             SELECT c.chunk_id, c.doc_id, c.title, c.body, e.embedding
             FROM chunk_embeddings e
             JOIN chunks c ON c.chunk_id = e.chunk_id
             LEFT JOIN custom_collections cc ON cc.id = c.collection_id
-            WHERE c.collection_id IS NULL OR cc.active = 1
+            WHERE (c.collection_id IS NULL OR cc.active = 1)\(ownOnly ? Self.ownOnlyClause : "")
             """,
             args: []
         ) { r in
             let sim = RagPure.cosine(queryVec, Self.fromBlob(r.blob(4)!))
             return Chunk(chunkId: r.string(0)!, docId: r.string(1)!, title: r.string(2) ?? "", body: r.string(3) ?? "", score: sim, matchType: .semantic, similarity: sim)
         }
-        return Array(scored.stableSorted { $0.score > $1.score }.filter { $0.score >= RagPure.minSemanticSimilarity }.prefix(max(0, limit)))
+        return Array(scored.stableSorted { $0.score > $1.score }.filter { $0.score >= minSimilarity }.prefix(max(0, limit)))
     }
+
+    /// The documents of the switched-on collections, oldest collection first, with their file's name (the part's source)
+    /// and their part count, cards left out (OwnFiles).
+    public func ownFiles() throws -> [OwnFiles.File] {
+        try db.query(
+            """
+            SELECT c.doc_id, MIN(c.source) AS name, SUM(CASE WHEN c.chunk_id LIKE '%\(OwnFiles.cardSuffix)' THEN 0 ELSE 1 END) AS parts
+            FROM chunks c JOIN custom_collections cc ON cc.id = c.collection_id
+            WHERE cc.active = 1
+            GROUP BY c.doc_id ORDER BY MIN(cc.created_at), c.doc_id
+            """,
+            args: []
+        ) { r in OwnFiles.File(docId: r.string(0)!, name: r.string(1) ?? r.string(0)!, parts: Int(r.long(2))) }
+    }
+
+    /// Each document's opening part ("<doc>-c0"), in `docIds`' order.
+    public func openingParts(_ docIds: [String]) throws -> [Chunk] {
+        if docIds.isEmpty { return [] }
+        let ids = docIds.map { "\($0)-c0" }
+        let rows = try db.query(
+            "SELECT chunk_id, doc_id, title, body, source, collection_id FROM chunks WHERE chunk_id IN (\(ids.map { _ in "?" }.joined(separator: ", ")))",
+            args: ids.map { .text($0) }
+        ) { r in Chunk(chunkId: r.string(0)!, docId: r.string(1)!, title: r.string(2) ?? "", body: r.string(3) ?? "", source: r.string(4), collectionId: r.string(5)) }
+        var byId: [String: Chunk] = [:]
+        for c in rows { byId[c.chunkId] = c }
+        return ids.compactMap { byId[$0] }
+    }
+
+    /// The parts of `docIds` (one file's documents), closest to `queryVec` first, with no similarity floor: the question
+    /// named the file.
+    public func rankWithin(_ docIds: [String], queryVec: [Float], limit: Int) throws -> [Chunk] {
+        if docIds.isEmpty { return [] }
+        let scored = try db.query(
+            """
+            SELECT c.chunk_id, c.doc_id, c.title, c.body, c.source, c.collection_id, e.embedding
+            FROM chunks c JOIN chunk_embeddings e ON e.chunk_id = c.chunk_id
+            WHERE c.doc_id IN (\(docIds.map { _ in "?" }.joined(separator: ", "))) AND c.chunk_id NOT LIKE '%\(OwnFiles.cardSuffix)'
+            """,
+            args: docIds.map { .text($0) }
+        ) { r in
+            let sim = RagPure.cosine(queryVec, Self.fromBlob(r.blob(6)!))
+            return Chunk(
+                chunkId: r.string(0)!, docId: r.string(1)!, title: r.string(2) ?? "", body: r.string(3) ?? "", source: r.string(4), collectionId: r.string(5),
+                score: sim, matchType: .semantic, similarity: sim
+            )
+        }
+        return Array(scored.stableSorted { $0.score > $1.score }.prefix(max(0, limit)))
+    }
+
+    /// Keeps a search to the user's own collections (the active ones, as the rest of the WHERE says).
+    private static let ownOnlyClause = " AND c.collection_id IS NOT NULL"
 
     /// Extra BM25 candidates so the coverage gate has something to choose from.
     public static let lexicalCandidateMultiplier = 4

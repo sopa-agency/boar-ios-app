@@ -158,12 +158,13 @@ public enum RagPure {
     }
 
     /// Weighted-sum fusion of two scored result sets, each normalized to its own max; at most `maxChunksPerArticle`
-    /// per title. A relative re-ranking, not a relevance gate.
+    /// per title. A relative re-ranking, not a relevance gate. A set weighted 0 is left out, not added at score 0 where it
+    /// would still fill the remaining places.
     public static func fuse(_ lexical: [Chunk], _ semantic: [Chunk], topK: Int, lexicalWeight: Double = 0.5, semanticWeight: Double = 0.5) -> [Chunk] {
         var byId: [String: Chunk] = [:]
         var order: [String] = []
         func add(_ chunks: [Chunk], _ weight: Double) {
-            if chunks.isEmpty { return }
+            if chunks.isEmpty || weight <= 0.0 { return }
             let max = Swift.max(chunks.map(\.score).max()!, 1e-9)
             for c in chunks {
                 let norm = (c.score / max) * weight
@@ -201,9 +202,19 @@ public enum RagPure {
 
     private static let contextInstruction =
         " Use the context below when relevant, and cite a source you used by its number, like [1] or [2]. "
-        + "If the context doesn't cover the question, say so and answer from general knowledge."
+        + "If the context doesn't cover it, say so, then answer briefly from general knowledge, without specific figures or names you're unsure of."
 
-    private static let groundingInstruction =
+    /// The Personal Files style's context instruction: the user's own files only, quoted as written, and a fixed line when
+    /// they don't hold the answer, never an answer from general knowledge.
+    public static let filesOnlyInstruction =
+        " Use only the context below, from the user's own files, and cite it by its number, like [1]. "
+        + "Quote numbers, names and dates exactly as the file writes them. "
+        + "If the context doesn't contain the answer, say exactly: I couldn't find this in your Personal Files."
+
+    private static func contextInstruction(_ filesOnly: Bool) -> String { filesOnly ? filesOnlyInstruction : contextInstruction }
+
+    /// Who BOAR is and what it can't do; every answer gets it, Deep Research's write-up included.
+    public static let groundingInstruction =
         "You are BOAR, an offline AI research app running on this phone; \"Boar\" is the app's name, never the animal, so never describe yourself as one. "
         + "You have no ability to control real-world devices or take physical actions \u{2014} no alarms, "
         + "lights, thermostats, timers, or any other device or system. You can only respond with text. "
@@ -232,9 +243,16 @@ public enum RagPure {
         return t.isEmpty ? nil : t
     }
 
-    /// The completion-style prompt ("Question: …\n\nAnswer:").
+    /// Personal Files' list of the user's files (OwnFiles.note), right before the context it explains.
+    private static func filesSection(_ filesNote: String?, _ sep: String) -> String {
+        nonEmptyTrimmed(filesNote).map { "\($0)\(sep)" } ?? ""
+    }
+
+    /// The completion-style prompt ("Question: …\n\nAnswer:"). `filesOnly`: the Personal Files instruction; `filesNote`: its
+    /// list of the user's files.
     public static func assemblePrompt(
-        _ userQuery: String, _ chunks: [Chunk], systemPrompt: String? = nil, history: ConversationHistory? = nil, styleReminder: String? = nil
+        _ userQuery: String, _ chunks: [Chunk], systemPrompt: String? = nil, history: ConversationHistory? = nil, styleReminder: String? = nil,
+        filesOnly: Bool = false, filesNote: String? = nil
     ) -> String {
         let instruction = instructionOf(systemPrompt)
         let summary = nonEmptyTrimmed(history?.summary).map { "Summary of earlier conversation:\n\($0)\n\n" } ?? ""
@@ -244,28 +262,32 @@ public enum RagPure {
             turns = "Recent conversation:\n\(lines)\n\n"
         }
         let hasContext = !chunks.isEmpty
-        let ctxInstr = hasContext ? contextInstruction : ""
+        let ctxInstr = hasContext ? contextInstruction(filesOnly) : ""
         let ctx = hasContext ? "Context:\n\(contextOf(chunks))\n\n" : ""
-        return "\(instruction)\(ctxInstr) \(groundingInstruction)\n\n\(summary)\(turns)\(ctx)Question: \(userQuery)\(styleSection(styleReminder))\n\nAnswer:"
+        return "\(instruction)\(ctxInstr) \(groundingInstruction)\n\n\(summary)\(turns)\(filesSection(filesNote, "\n\n"))\(ctx)Question: \(userQuery)\(styleSection(styleReminder))\n\nAnswer:"
     }
 
     /// The fixed start of every sourced answer prompt for a tone, kept prefilled in the KV cache.
-    public static func answerPromptPrefix(systemPrompt: String? = nil, withContext: Bool = true) -> (system: String, prompt: String) {
+    public static func answerPromptPrefix(systemPrompt: String? = nil, withContext: Bool = true, filesOnly: Bool = false) -> (system: String, prompt: String) {
         // Without sources the prompt has no context instruction, so the two start differently right after the tone.
-        let head = "\(instructionOf(systemPrompt))\(withContext ? contextInstruction : "") \(groundingInstruction)"
+        let head = "\(instructionOf(systemPrompt))\(withContext ? contextInstruction(filesOnly) : "") \(groundingInstruction)"
         return (head, "\(head)\n\n")
     }
 
     /// The same content as role-separated messages, for the model's own chat template.
     public static func assembleChatMessages(
-        _ userQuery: String, _ chunks: [Chunk], systemPrompt: String? = nil, history: ConversationHistory? = nil, styleReminder: String? = nil
+        _ userQuery: String, _ chunks: [Chunk], systemPrompt: String? = nil, history: ConversationHistory? = nil, styleReminder: String? = nil,
+        filesOnly: Bool = false, filesNote: String? = nil
     ) -> [PromptMessage] {
         let instruction = instructionOf(systemPrompt)
         let hasContext = !chunks.isEmpty
-        let ctxInstr = hasContext ? contextInstruction : ""
+        let ctxInstr = hasContext ? contextInstruction(filesOnly) : ""
         let ctx = hasContext ? "\n\nContext:\n\(contextOf(chunks))" : ""
         let summary = nonEmptyTrimmed(history?.summary).map { "\n\nSummary of earlier conversation:\n\($0)" } ?? ""
-        let system = PromptMessage(role: "system", content: "\(instruction)\(ctxInstr) \(groundingInstruction)\(summary)\(ctx)")
+        // After the fixed start (kept prefilled), so the list costs only its own tokens.
+        let filesRaw = filesSection(filesNote, "")
+        let files = filesRaw.isEmpty ? "" : "\n\n\(filesRaw)"
+        let system = PromptMessage(role: "system", content: "\(instruction)\(ctxInstr) \(groundingInstruction)\(summary)\(files)\(ctx)")
         let past = (history?.turns ?? []).map { PromptMessage(role: $0.role, content: $0.text) }
         return [system] + past + [PromptMessage(role: "user", content: userQuery + styleSection(styleReminder))]
     }

@@ -12,6 +12,8 @@ enum Symbols {
     static let active = "checkmark.circle.fill"
     static let fits = "checkmark.circle"
     static let caution = "exclamationmark.triangle"
+    /// A Detailed pick answered short (ShortAnswer: health, seed phrases).
+    static let shortAnswer = "text.append"
     static let tooBig = "xmark.circle"
     static let error = "exclamationmark.circle.fill"
     static let retry = "arrow.clockwise"
@@ -39,7 +41,7 @@ extension Personality {
         switch id {
         case "succinct": "bolt"
         case "detailed": "text.alignleft"
-        case "summary": "list.bullet.clipboard"
+        case "personal": "folder"
         case "custom": "slider.horizontal.3"
         default: "text.alignleft"
         }

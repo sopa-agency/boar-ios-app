@@ -14,7 +14,7 @@ struct ToneMenu: View {
                     Button {
                     } label: {
                         Label {
-                            Text(tone.label)
+                            Text(tone.displayLabel)
                             Text(ToneRow.detail(for: tone))
                         } icon: {
                             Image(systemName: tone.symbol)

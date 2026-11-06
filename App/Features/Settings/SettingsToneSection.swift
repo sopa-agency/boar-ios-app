@@ -14,12 +14,12 @@ struct SettingsToneSection: View {
         Section {
             Picker(selection: bridge.binding({ $0.personalityId ?? personalities.defaultId }, { $0.personalityId = $1 })) {
                 ForEach(personalities.personalities, id: \.id) { p in
-                    Label(p.label, systemImage: p.symbol).tag(p.id)
+                    Label(p.displayLabel, systemImage: p.symbol).tag(p.id)
                 }
             } label: {
                 SettingsLabel("Answer Style", symbol: "text.bubble.fill", color: .blue)
             } currentValueLabel: {
-                Text(verbatim: personalities.get(id).label)
+                Text(verbatim: personalities.get(id).displayLabel)
             }
             .drillDownPickerStyle()
             if id == "custom" {
@@ -33,7 +33,7 @@ struct SettingsToneSection: View {
             Text("Answers")
         } footer: {
             VStack(alignment: .leading) {
-                Text("\(personalities.get(id).description) Deep Research splits your question into parts. Slower.")
+                Text("\(personalities.get(id).displayDescription) Deep Research splits your question into parts. Slower.")
                 if let missing = missingSearchModel {
                     Label("The search model (\(missing)) isn't on this \(Platform.deviceNoun), so answers can't use your library. Run Setup Again in Advanced.", systemImage: Symbols.caution)
                         .foregroundStyle(.orange)

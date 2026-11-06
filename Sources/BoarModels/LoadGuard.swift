@@ -3,11 +3,13 @@ import Foundation
 
 /// CR-2 (src/inference/loadMarker.ts) plus #73's mapped retry (port of `LoadGuard.kt`). A model load that gets the app
 /// killed (low memory: on iOS a jetsam kill) leaves no error behind, so a marker is written right before the load and
-/// cleared after it returns. A marker found on the next start means that load killed the app:
-/// - it had repacked weights (llama.cpp copies them into app memory for its fast ARM kernels, which can only be swapped):
-///   the next load of that model keeps the mapped file instead, once (`mappedNext`);
-/// - otherwise it's a crash: the model isn't loaded again on its own (`isBlocked`) until the user picks it again
-///   (`confirm`) or it loads fine; the chat says so once (`consume`).
+/// kept until the model has stayed loaded (`settled`). A marker found on the next start means that load killed the app,
+/// with repacked weights or the mapped file alike: the model isn't loaded again on its own (`isBlocked`), so a model too
+/// big for the phone closes the app once, not on every start. The chat says so once (`consume`) and lets the user choose:
+/// - "Try again with less memory" (`retryMapped`): unblocked, and loaded keeping the mapped file instead of repacking it
+///   (llama.cpp copies repacked weights into app memory for its fast ARM kernels);
+/// - picking it again in Models (`confirm`).
+/// A mapped load that works stays mapped (`mappedNext`), so it doesn't go back to the repacked load that closed the app.
 public final class LoadGuard: @unchecked Sendable {
     public struct Meta: Codable, Sendable, Equatable {
         public var filename: String
@@ -84,6 +86,10 @@ public final class LoadGuard: @unchecked Sendable {
     private let lock = NSRecursiveLock()
     private var checked = false
 
+    /// True when the last process is known to have ended for a reason that isn't a load kill (Android reads its exit
+    /// record; iOS has none per launch, so every leftover marker counts). Given the marker's time.
+    public var exitWasNotLoadKill: @Sendable (_ markerAt: Int64) -> Bool = { _ in false }
+
     public init(store: MarkerStore, ledger: Ledger, now: @escaping @Sendable () -> Int64 = { Int64(Date().timeIntervalSince1970 * 1000) }) {
         self.store = store
         self.ledger = ledger
@@ -96,20 +102,17 @@ public final class LoadGuard: @unchecked Sendable {
         if checked { return }
         checked = true
         guard let raw = store.read() else { return }
-        if let m = try? Self.decoder.decode(Marker.self, from: Data(raw.utf8)) {
+        if let m = try? Self.decoder.decode(Marker.self, from: Data(raw.utf8)), !exitWasNotLoadKill(m.at) {
             let id = m.modelId ?? m.filename
-            if m.repacked {
-                ledger.mappedIds = Self.distinct(ledger.mappedIds + [id])
-            } else {
-                ledger.crashedIds = Self.distinct(ledger.crashedIds + [id])
-                ledger.mappedIds = ledger.mappedIds.filter { $0 != id }
-                ledger.pendingCrash = Self.toCrash(m)
-            }
+            // Repacked or mapped, the load closed the app: never again on its own (one kill, not two).
+            ledger.crashedIds = Self.distinct(ledger.crashedIds + [id])
+            if !m.repacked { ledger.mappedIds = ledger.mappedIds.filter { $0 != id } }
+            ledger.pendingCrash = Self.toCrash(m)
         }
         store.clear()
     }
 
-    /// True when the next load of `modelId` should keep the mapped file (its last repacked load was killed).
+    /// True when the next load of `modelId` should keep the mapped file (the user chose "Try again with less memory").
     public func mappedNext(_ modelId: String) -> Bool { ensureChecked(); return ledger.mappedIds.contains(modelId) }
 
     /// A model whose load killed the app: not loaded again on its own.
@@ -121,14 +124,35 @@ public final class LoadGuard: @unchecked Sendable {
         if let data = try? Self.encoder.encode(marker), let s = String(data: data, encoding: .utf8) { store.write(s) }
     }
 
-    /// After the load returned. A model that loaded is unblocked, and goes back to repacked weights on its next load.
+    /// After the load returned. A load that failed clears the marker. One that loaded keeps it until `settled`: the system
+    /// kills the app when the model's memory fills, which can come seconds after the load returned (Android F3, LFM2.5 8B,
+    /// Oct 18: killed 4 s after llama.cpp finished loading). A kill in that window still counts as a load kill.
     public func end(_ meta: Meta, loaded: Bool) {
-        store.clear()
-        guard let id = meta.modelId else { return }
-        if loaded {
-            if ledger.crashedIds.contains(id) { ledger.crashedIds = ledger.crashedIds.filter { $0 != id } }
-            if ledger.mappedIds.contains(id) { ledger.mappedIds = ledger.mappedIds.filter { $0 != id } }
+        if !loaded { store.clear() }
+    }
+
+    /// `modelId` has stayed loaded long enough (its first answer finished, a minute passed, or BOAR left the screen): the
+    /// marker goes, and a model blocked before is unblocked. One the user retried with the mapped file keeps it.
+    public func settled(_ modelId: String) {
+        lock.lock(); defer { lock.unlock() }
+        if let raw = store.read(), let m = try? Self.decoder.decode(Marker.self, from: Data(raw.utf8)), (m.modelId ?? m.filename) == modelId {
+            store.clear()
         }
+        if ledger.crashedIds.contains(modelId) { ledger.crashedIds = ledger.crashedIds.filter { $0 != modelId } }
+    }
+
+    /// The app is quitting on its own (⌘Q on the Mac): a quit is not a load kill, so any open marker goes, also one
+    /// written by a load still in flight. iOS has no such moment (apps are killed, not quit), so this is Mac-only.
+    public func quitting() {
+        lock.lock(); defer { lock.unlock() }
+        store.clear()
+    }
+
+    /// "Try again with less memory": the user's call to load `modelId` again now, keeping the mapped file.
+    public func retryMapped(_ modelId: String) {
+        ensureChecked()
+        if ledger.crashedIds.contains(modelId) { ledger.crashedIds = ledger.crashedIds.filter { $0 != modelId } }
+        if !ledger.mappedIds.contains(modelId) { ledger.mappedIds = ledger.mappedIds + [modelId] }
     }
 
     /// The user picked the model again: let it load (CR-2's confirmation).

@@ -38,8 +38,31 @@ public final class Retriever: Sendable {
         self.init(kb: kb, packs: packs, embed: { try await embedder.embed($0) }, lexicon: lexicon)
     }
 
-    public func retrieve(_ query: String, topK: Int = 6, queryVec: [Float]? = nil, includeWikiPacks: Bool = true) async throws -> [Chunk] {
-        let main = try await retrieveOne(query, topK, queryVec, includeWikiPacks, nil, nil, nil)
+    /// `params`: fusion weights and similarity floors; the default is the retrieval the golden tests pin.
+    public func retrieve(
+        _ query: String, topK: Int = 6, queryVec: [Float]? = nil, includeWikiPacks: Bool = true, params: RetrievalParams = .default
+    ) async throws -> [Chunk] {
+        if !params.ownOnly { return OwnFiles.dropCoveredCards(try await retrieveAll(query, topK, queryVec, includeWikiPacks, params)) }
+        // Personal Files: a file the question names is searched alone; a question about all the files brings each one's
+        // opening part after what the search found, since no single passage is close to "summarize my files".
+        let files = try kb.ownFiles()
+        let vec: [Float]
+        if let queryVec { vec = queryVec } else { vec = try await embed(query) }
+        if let f = OwnFiles.named(query, files) {
+            return Array(OwnFiles.dropCoveredCards(try kb.rankWithin(OwnFiles.docsOf(f, files), queryVec: vec, limit: topK + 1)).prefix(max(0, topK)))
+        }
+        let found = OwnFiles.dropCoveredCards(try await retrieveAll(query, topK, vec, includeWikiPacks, params))
+        if !OwnFiles.aboutTheFiles(query) { return found }
+        return OwnFiles.withOpenings(found, try kb.openingParts(files.map(\.docId)), hits: topK, limit: max(topK, OwnFiles.overviewMaxFiles))
+    }
+
+    /// The user's switched-on files, for the prompt's list of them (OwnFiles.note).
+    public func ownFiles() throws -> [OwnFiles.File] { try kb.ownFiles() }
+
+    private func retrieveAll(
+        _ query: String, _ topK: Int, _ queryVec: [Float]?, _ includeWikiPacks: Bool, _ params: RetrievalParams
+    ) async throws -> [Chunk] {
+        let main = try await retrieveOne(query, topK, queryVec, includeWikiPacks, nil, nil, nil, params)
         // A Portuguese question against English sources: search again with the English names it mentions and put
         // those results first. The English embedder and keyword index barely match Portuguese words.
         if !PtLexicon.looksPortuguese(query) { return main }
@@ -48,7 +71,7 @@ public final class Retriever: Sendable {
         let names = ids + PtLexicon.englishNamesIn(query, lexicon()).filter { !ids.contains($0) }
         if names.isEmpty { return main }
         let action = WikiPackText.hasActionIntent(query)
-        let found = try await retrieveOne(names.joined(separator: " "), topK, nil, includeWikiPacks, names, action, Explain.hasExplainIntent(query))
+        let found = try await retrieveOne(names.joined(separator: " "), topK, nil, includeWikiPacks, names, action, Explain.hasExplainIntent(query), params)
         let named = Set(names.map { $0.lowercased() })
         // What-to-do sections first in an action question, then articles named exactly; disambiguation lists never.
         func rank(_ c: Chunk) -> Int { action && c.action ? 0 : (named.contains(c.title.lowercased()) ? 1 : 2) }
@@ -62,20 +85,24 @@ public final class Retriever: Sendable {
     }
 
     private func retrieveOne(
-        _ query: String, _ topK: Int, _ queryVec: [Float]?, _ includeWikiPacks: Bool, _ titles: [String]?, _ action: Bool?, _ explain: Bool?
+        _ query: String, _ topK: Int, _ queryVec: [Float]?, _ includeWikiPacks: Bool, _ titles: [String]?, _ action: Bool?, _ explain: Bool?,
+        _ params: RetrievalParams
     ) async throws -> [Chunk] {
+        // A later step could skip the embedding when params.semanticWeight is 0 (keyword): lexical hits still read their
+        // similarity from it for the relevance gate, so that needs a decision first.
         let vec: [Float]
         if let queryVec { vec = queryVec } else { vec = try await embed(query) }
-        let lexical = try kb.lexicalSearch(query, queryVec: vec, limit: topK * 2)
-        let semantic = try kb.semanticSearch(vec, limit: topK * 2)
-        let installed = packs()
+        let lexical = try kb.lexicalSearch(query, queryVec: vec, limit: topK * 2, ownOnly: params.ownOnly)
+        let semantic = try kb.semanticSearch(vec, limit: topK * 2, minSimilarity: params.minSemanticSimilarity, ownOnly: params.ownOnly)
+        // Personal Files: the user's own files only, never the packs.
+        let installed = params.ownOnly ? [] : packs()
         // A failing pack is skipped, never fatal.
         var f1: [Packs.Found] = []
         var wiki: [(String, [PackHit])] = []
         for p in installed {
             switch p {
             case .format1(let id, let db):
-                if let r = try? Packs.searchFormat1(db, packId: id, query: query, queryVec: vec, limit: topK * 2, explain: explain) { f1.append(r) }
+                if let r = try? Packs.searchFormat1(db, packId: id, query: query, queryVec: vec, limit: topK * 2, explain: explain, minSimilarity: params.minSemanticSimilarity) { f1.append(r) }
             case .format2(let id, let pack):
                 guard includeWikiPacks else { continue }
                 let opts = PackSearchOptions(titles: titles ?? [], k: topK, action: action, explain: explain, queryVec: vec)
@@ -92,10 +119,24 @@ public final class Retriever: Sendable {
         let wikiLexical = chunks { $0.via != "title" }
         // The knowledge base and format-1 packs pass the relevance gate first; large-pack hits have their own
         // ranking and no similarity, so they aren't gated here.
+        // With keyword weight 0 (meaning) the large-pack hits still compete at the meaning weight: they are the library's
+        // only results here (the pack ranks them with the question's embedding too), not keyword-only ones.
+        let keywordOff = params.lexicalWeight <= 0.0
+        // The user's own documents (a collection they imported): a keyword hit that already covers the question's key
+        // words reaches the model without the similarity floor. Their parts are long and mixed, so a short question scored
+        // under the floor against the very post it names (X6, Oct 21). The library and the packs keep the floor.
+        let own = lexical.filter { $0.collectionId != nil }
+        let shared = lexical.filter { $0.collectionId == nil }
         let fused = RagPure.fuse(
-            RagPure.gateByRelevance(lexical + f1.flatMap(\.lexical)) + wikiLexical,
-            RagPure.gateByRelevance(semantic + f1.flatMap(\.semantic)),
-            topK: topK
+            (keywordOff ? [] : own + RagPure.gateByRelevance(shared + f1.flatMap(\.lexical), minSimilarity: params.answerMinSimilarity)) + wikiLexical,
+            // Only the user's files can come back in Personal Files, so their meaning hits pass at the search floor (0.55):
+            // a lower floor can't pull in the library there.
+            RagPure.gateByRelevance(
+                semantic + f1.flatMap(\.semantic), minSimilarity: params.ownOnly ? params.minSemanticSimilarity : params.answerMinSimilarity
+            ),
+            topK: topK,
+            lexicalWeight: keywordOff ? params.semanticWeight : params.lexicalWeight,
+            semanticWeight: params.semanticWeight
         )
         // A what-to-do question: up to three pack sections that say what to do, right after the named articles.
         let isAction = action ?? WikiPackText.hasActionIntent(query)

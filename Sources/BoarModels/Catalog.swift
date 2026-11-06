@@ -85,12 +85,19 @@ public struct CatalogAsset: Codable, Sendable, Equatable, Identifiable {
     public var requires: [String]
     /// Curated capabilities (manifest.ts); nil = not yet assessed, never an assumed capability set.
     public var capabilities: CatalogCapabilities?
+    /// The GGUF general.architecture ("qwen3moe") when known before the file is on the device: from the Hugging Face
+    /// listing for a discovered model. nil when unknown (catalog.json, models added earlier).
+    public var architecture: String?
+    /// A second suggestion at setup, with its own badge ("fast"), on devices that run it well (SetupModel.picked).
+    public var pick: String?
 
     public init(
         id: String, kind: AssetKind, label: String, displayName: String? = nil, filename: String, sizeBytes: Int64, sha256: String,
         sourceUrl: String, license: String, description: String, required: Bool, answerTier: AnswerTier? = nil, hidden: Bool = false,
-        bundled: Bool = false, format: String? = nil, requires: [String] = [], capabilities: CatalogCapabilities? = nil
+        bundled: Bool = false, format: String? = nil, requires: [String] = [], capabilities: CatalogCapabilities? = nil,
+        architecture: String? = nil, pick: String? = nil
     ) {
+        self.architecture = architecture; self.pick = pick
         self.id = id; self.kind = kind; self.label = label; self.displayName = displayName; self.filename = filename
         self.sizeBytes = sizeBytes; self.sha256 = sha256; self.sourceUrl = sourceUrl; self.license = license
         self.description = description; self.required = required; self.answerTier = answerTier; self.hidden = hidden
@@ -102,7 +109,7 @@ public struct CatalogAsset: Codable, Sendable, Equatable, Identifiable {
 
     private enum CodingKeys: String, CodingKey {
         case id, kind, label, displayName, filename, sizeBytes, sha256, sourceUrl, license, description, required
-        case answerTier, hidden, bundled, format, requires, capabilities
+        case answerTier, hidden, bundled, format, requires, capabilities, architecture, pick
     }
 
     public init(from decoder: Decoder) throws {
@@ -124,6 +131,8 @@ public struct CatalogAsset: Codable, Sendable, Equatable, Identifiable {
         format = try c.decodeIfPresent(String.self, forKey: .format)
         requires = try c.decodeIfPresent([String].self, forKey: .requires) ?? []
         capabilities = try c.decodeIfPresent(CatalogCapabilities.self, forKey: .capabilities)
+        architecture = try c.decodeIfPresent(String.self, forKey: .architecture)
+        pick = try c.decodeIfPresent(String.self, forKey: .pick)
     }
 }
 

@@ -26,6 +26,12 @@ actor SessionHost: ModelHost {
     private let loadTime = OSAllocatedUnfairLock<Double?>(initialState: nil)
     /// Models that stalled with repacked weights in this process: mapped from storage until the app restarts (#73).
     private let keepMapped = OSAllocatedUnfairLock<Set<String>>(initialState: [])
+    /// The GGUF loaded last whose load guard marker is still open (LoadGuard.settled), and that load's number: a timer
+    /// from an earlier load of the same model doesn't settle a newer one.
+    private let unsettled = OSAllocatedUnfairLock<(id: String, load: Int)?>(initialState: nil)
+    private var loadCount = 0
+    /// A model loaded this long without the app being killed fits (android LOAD_SETTLE_MS).
+    static let loadSettleSeconds = 60
 
     private var llama: LlamaSession?
     private var apple: (any TextModelSession)?
@@ -56,6 +62,27 @@ actor SessionHost: ModelHost {
     nonisolated var lastLoadMs: Double? { loadTime.withLock { $0 } }
     /// Stops the generation in flight (the stream still ends with `.done`, stopReason "cancelled").
     nonisolated func cancel() { current?.cancel() }
+
+    /// The resident model's load is known not to have killed the app (LoadGuard.settled): its first answer finished, a
+    /// minute passed, it's being closed, or BOAR left the screen (a kill from then on is iOS reclaiming a background app).
+    nonisolated func settleResident() { settle(load: nil) }
+
+    /// ⌘Q on the Mac: settles the resident model and also drops the marker of a load still in flight, which
+    /// `settleResident` can't reach (it isn't resident yet), or the next launch would block that model.
+    nonisolated func appWillQuit() {
+        settle(load: nil)
+        loadGuard.quitting()
+    }
+
+    /// `load`: only that load (a timer's), nil for whatever is resident.
+    private nonisolated func settle(load: Int?) {
+        let open = unsettled.withLock { u -> String? in
+            guard let current = u, load == nil || current.load == load else { return nil }
+            u = nil
+            return current.id
+        }
+        if let open { loadGuard.settled(open) }
+    }
 
     // MARK: ModelHost
 
@@ -95,7 +122,9 @@ actor SessionHost: ModelHost {
             loadTime.withLock { $0 = nil }
             return current
         }
-        let previousMeta = (residentId ?? settings.lastLoadedModelId).flatMap(cat.byId).map { LoadGuard.Meta(filename: $0.filename, modelId: $0.id, label: $0.label) }
+        // The model answers fall back to if this load kills the app; never the model being loaded itself.
+        let previousMeta = (residentId ?? settings.lastLoadedModelId).flatMap(cat.byId).flatMap { $0.id != asset.id ? $0 : nil }
+            .map { LoadGuard.Meta(filename: $0.filename, modelId: $0.id, label: $0.label) }
         await closeAll()
 
         let meta = LoadGuard.Meta(filename: asset.filename, modelId: asset.id, label: asset.label)
@@ -116,6 +145,14 @@ actor SessionHost: ModelHost {
             return nil
         }
         loadGuard.end(meta, loaded: true)
+        // The marker stays until the model proves it fits: its first answer, a minute loaded, or leaving the screen.
+        loadCount += 1
+        let thisLoad = loadCount
+        unsettled.withLock { $0 = (asset.id, thisLoad) }
+        Task { [weak self] in
+            try? await Task.sleep(for: .seconds(Self.loadSettleSeconds))
+            self?.settle(load: thisLoad)
+        }
         let elapsed = start.duration(to: .now)
         loadTime.withLock { $0 = Double(elapsed.components.seconds) * 1000 + Double(elapsed.components.attoseconds) / 1e15 }
 
@@ -126,18 +163,15 @@ actor SessionHost: ModelHost {
         let nCtx = params.nCtx
         context.withLock { $0 = nCtx }
         settings.lastLoadedModelId = asset.id
-        let session: any TextModelSession
-        if repack {
-            let id = asset.id
-            let keep = keepMapped
-            session = MetricsObservingSession(loaded) { m in
-                if LoadGuard.isDecodeStall(generatedTokens: m.generatedTokens, decodeMs: m.decodeMs) {
-                    let added = keep.withLock { $0.insert(id).inserted }
-                    if added { Self.log.warning("\(id, privacy: .public) stalled with repacked weights: mapped from the next answer") }
-                }
+        let id = asset.id
+        let keep = keepMapped
+        // A finished answer proves the model fits: the load guard's marker can go.
+        let session: any TextModelSession = MetricsObservingSession(loaded) { [weak self] m in
+            self?.settle(load: thisLoad)
+            if repack, LoadGuard.isDecodeStall(generatedTokens: m.generatedTokens, decodeMs: m.decodeMs) {
+                let added = keep.withLock { $0.insert(id).inserted }
+                if added { Self.log.warning("\(id, privacy: .public) stalled with repacked weights: mapped from the next answer") }
             }
-        } else {
-            session = loaded
         }
         resident.withLock { $0 = session }
         return session
@@ -190,6 +224,8 @@ actor SessionHost: ModelHost {
     }
 
     private func closeAll() async {
+        // Switching or freeing models: the one going out didn't kill the app.
+        settleResident()
         resident.withLock { $0 = nil }
         context.withLock { $0 = nil }
         if let llama { await llama.close() }

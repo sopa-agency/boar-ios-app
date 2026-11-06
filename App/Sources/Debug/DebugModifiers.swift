@@ -41,6 +41,10 @@ extension View {
 }
 
 #if DEBUG
+/// The screens `-uiScreen` already pushed: once per launch, so going back doesn't push it again every time the parent
+/// reappears (on the iPhone, leaving iPhone & Storage bounced straight back into it).
+@MainActor private var pushedScreens: Set<String> = []
+
 private struct DebugPush<Destination: View>: ViewModifier {
     let screen: String
     let destination: () -> Destination
@@ -50,7 +54,8 @@ private struct DebugPush<Destination: View>: ViewModifier {
         content
             .navigationDestination(isPresented: $pushed, destination: destination)
             .task {
-                guard DebugLaunch.isScreen(screen) else { return }
+                guard DebugLaunch.isScreen(screen), !pushedScreens.contains(screen) else { return }
+                pushedScreens.insert(screen)
                 try? await Task.sleep(for: .milliseconds(700))
                 pushed = true
             }
@@ -80,7 +85,7 @@ private struct DebugChatSheets: ViewModifier {
     func body(content: Content) -> some View {
         content.task(id: chat.messages.count) {
             guard chat.messages.count >= 2 else { return }
-            if DebugLaunch.isScreen("citation-sheet"), source == nil,
+            if DebugLaunch.isScreen("citation-sheet") || DebugLaunch.isScreen("source-reader"), source == nil,
                let first = chat.messages.last(where: { !$0.isUser })?.sources.first {
                 try? await Task.sleep(for: .milliseconds(600))
                 source = first

@@ -10,7 +10,12 @@ public final class AppSettings: @unchecked Sendable {
     public let store: KeyValueStore
     private let writeLock = NSLock()
 
-    public init(store: KeyValueStore) { self.store = store }
+    public init(store: KeyValueStore) {
+        self.store = store
+        // Executive Summary became Personal Files (rc1): a saved Summary opens in Detailed, the default, not in a style
+        // that answers only from the user's files.
+        if str("personalityId") == Self.retiredSummaryStyle { set("personalityId", .string("detailed")) }
+    }
 
     // MARK: typed access
 
@@ -74,10 +79,15 @@ public final class AppSettings: @unchecked Sendable {
         "themeId", "fontScale", "personalityId", "maxTokens", "deepResearchMode", "researchBannerHidden",
         "adaptiveRoutingEnabled", "routingPreset", "engineTweaks", "showLiveStats", "voiceInputEnabled", "hapticsEnabled",
         "hidePromptIdeas", "autoSummarize", "historyTurnThreshold", "maxSavedSessions", "autoGenerateTitles",
+        "freeMemoryInBackground", "freeMemoryAfterMinutes", "confirmChatDelete",
     ]
     public static let defaultMaxTokens = 512
     /// Detailed answers ran past 512 tokens and stopped mid-sentence.
     public static let detailedMaxTokens = 1024
+    /// Personal Files: the fact first, then two to four sentences; between Succinct's and Detailed's lengths.
+    public static let personalMaxTokens = 768
+    /// The retired Executive Summary style's id, moved to Detailed when settings load.
+    public static let retiredSummaryStyle = "summary"
     /// A Deep Research write-up, any style; the largest choice in Settings.
     public static let researchMaxTokens = 2048
     /// Context kept for the prompt (instructions, sources, history) when Auto sizes the answer.
@@ -93,8 +103,9 @@ public final class AppSettings: @unchecked Sendable {
         return min(cap, max(minAutoTokens, openedContext - promptReserve))
     }
 
-    /// No style set means Detailed, the app's default.
+    /// No style set means Detailed, the app's default. Personal Files comes first: Deep Research steps aside in that style.
     public static func autoMaxTokens(personalityId: String?, deepResearch: Bool = false) -> Int {
+        if personalityId == "personal" { return personalMaxTokens }
         if deepResearch { return researchMaxTokens }
         if (personalityId ?? "detailed") == "detailed" { return detailedMaxTokens }
         return defaultMaxTokens
@@ -113,6 +124,14 @@ public final class AppSettings: @unchecked Sendable {
     public var languageId: String? { get { str("languageId") } set { set("languageId", newValue.map(JSONValue.string)) } }
     public var voiceInputEnabled: Bool { get { bool("voiceInputEnabled") ?? true } set { set("voiceInputEnabled", .bool(newValue)) } }
     public var hapticsEnabled: Bool { get { bool("hapticsEnabled") ?? true } set { set("hapticsEnabled", .bool(newValue)) } }
+    /// Settings → "Ask before deleting a chat": on by default; off, one tap deletes it.
+    public var confirmChatDelete: Bool { get { bool("confirmChatDelete") ?? true } set { set("confirmChatDelete", .bool(newValue)) } }
+    /// The Fastest preset's heat and battery warning was shown and accepted once (android `runPresetWarned`).
+    public var runPresetWarned: Bool { get { bool("runPresetWarned") ?? false } set { set("runPresetWarned", .bool(newValue)) } }
+    /// Settings → "Free memory when I leave BOAR" (FreeMemory): on by default.
+    public var freeMemoryInBackground: Bool { get { bool("freeMemoryInBackground") ?? true } set { set("freeMemoryInBackground", .bool(newValue)) } }
+    /// Advanced → "Free memory after", in minutes; nil is Auto (at once).
+    public var freeMemoryAfterMinutes: Int? { get { int("freeMemoryAfterMinutes") } set { set("freeMemoryAfterMinutes", newValue.map { JSONValue($0) }) } }
     public var hidePromptIdeas: Bool { get { bool("hidePromptIdeas") ?? false } set { set("hidePromptIdeas", .bool(newValue)) } }
     /// Advanced tweaks → Show technical details. On by default: the bounty's judges and early users want the numbers.
     public var showLiveStats: Bool { get { bool("showLiveStats") ?? true } set { set("showLiveStats", .bool(newValue)) } }

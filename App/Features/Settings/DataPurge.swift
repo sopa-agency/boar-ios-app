@@ -22,6 +22,7 @@ enum DataPurge {
             }
             return ()
         }
+        Labs.shared.eraseUserData()
         if let lock, lock.enabled { await lock.eraseChatsAndReset() }
         services.settings.resetPreferences()
         for key in ["activeModelId", "modelRoleAssignments", "lastLoadedModelId", ModelBackend.settingsKey] {

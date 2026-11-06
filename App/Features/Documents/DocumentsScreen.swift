@@ -3,9 +3,9 @@ import PhotosUI
 import SwiftUI
 import UniformTypeIdentifiers
 
-/// Knowledge (android DocumentsScreen.kt + the knowledge packs, KnowledgeScreen.tsx's order): your own collections first,
-/// added from Files or from photos of pages with the toolbar's Add menu, then the library BOAR searches (Essentials, Extended,
-/// Wikipedia).
+/// Knowledge (android DocumentsScreen.kt, Oct 24): BOAR Knowledge, the library everyone has (Essentials, Extended,
+/// Wikipedia), first; then Personal Files, the user's own collections, added from Files or from photos of pages with the
+/// toolbar's Add menu, which the Personal Files style answers from.
 struct DocumentsScreen: View {
     @Environment(AppModel.self) private var model
     let documents: DocumentsController
@@ -107,6 +107,35 @@ struct DocumentsScreen: View {
             }
         }
 
+        if !models.knowledgePacks.isEmpty {
+            Section {
+                ForEach(models.knowledgePacks) { pack in
+                    PackRow(pack: pack, controller: models)
+                        #if os(macOS)
+                        .tag(DocumentsSelection.pack(pack.id))
+                        #endif
+                }
+            } header: {
+                Text("BOAR Knowledge")
+            } footer: {
+                Text("What BOAR searches offline, besides your Personal Files. Wikipedia text is CC BY-SA 4.0.")
+            }
+        }
+
+        // After an import: the default styles answer from everything, so point to the style that answers from the files.
+        if documents.stage == nil, let imported = documents.imported {
+            Section {
+                VStack(alignment: .leading, spacing: 10) {
+                    Text("Imported into \"\(imported)\". To ask about these files, switch the answer style to Personal Files: it answers only from your files.")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                    Button("Ask About Them", systemImage: "bubble.left.and.text.bubble.right") { model.askAboutFiles() }
+                        .buttonStyle(.borderedProminent)
+                }
+                .padding(.vertical, 4)
+            }
+        }
+
         Section {
             if documents.collections.isEmpty {
                 ContentUnavailableView {
@@ -140,27 +169,13 @@ struct DocumentsScreen: View {
                     }
             }
         } header: {
-            Text("Your Collections")
+            Text("Personal Files")
         } footer: {
             if !documents.collections.isEmpty {
-                Text("Turned-off collections are not used in answers.")
+                Text("Ask about them with the Personal Files style. Turned-off collections are not used in answers.")
             }
         }
 
-        if !models.knowledgePacks.isEmpty {
-            Section {
-                ForEach(models.knowledgePacks) { pack in
-                    PackRow(pack: pack, controller: models)
-                        #if os(macOS)
-                        .tag(DocumentsSelection.pack(pack.id))
-                        #endif
-                }
-            } header: {
-                Text("Library")
-            } footer: {
-                Text("What BOAR searches offline, besides your collections. Wikipedia text is CC BY-SA 4.0.")
-            }
-        }
         }
 
     #if os(macOS)

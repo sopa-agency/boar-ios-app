@@ -12,13 +12,23 @@ public struct AnswerRequest: Sendable {
     public var history: ConversationHistory?
     /// Advanced tweak; off by default (`EngineTweaks.thinking`).
     public var enableThinking: Bool
+    /// The Personal Files style (`PersonalFiles.request`): whole parts, the files-only instruction, `notFoundText`.
+    public var filesOnly: Bool
+    /// The context the model was opened with (n_ctx), which whole parts must fit next to the prompt and the answer.
+    public var contextSize: Int?
+    /// `filesOnly`'s answer when the search found nothing: written as is, without the model.
+    public var notFoundText: String
+    /// `filesOnly`'s list of the user's switched-on files (OwnFiles.note), so "which files do I have?" has an answer.
+    public var filesNote: String?
 
     public init(
         query: String, systemPrompt: String?, styleReminder: String? = nil, maxTokens: Int = 512, history: ConversationHistory? = nil,
-        enableThinking: Bool = false
+        enableThinking: Bool = false, filesOnly: Bool = false, contextSize: Int? = nil, notFoundText: String = PersonalFiles.notFound,
+        filesNote: String? = nil
     ) {
         self.query = query; self.systemPrompt = systemPrompt; self.styleReminder = styleReminder
         self.maxTokens = maxTokens; self.history = history; self.enableThinking = enableThinking
+        self.filesOnly = filesOnly; self.contextSize = contextSize; self.notFoundText = notFoundText; self.filesNote = filesNote
     }
 }
 
@@ -37,13 +47,16 @@ public struct AnswerResult: Sendable {
     /// "chat-template" or "plain".
     public var promptFormat: String
     public var metrics: GenerationMetrics?
+    /// Personal Files found nothing: the answer is the fixed line, and no model ran.
+    public var notFound: Bool
 
     public init(
         text: String, sources: [Chunk], taskType: String, retrieved: Bool, retrievalMs: Double?, tokensBefore: Int?, tokensAfter: Int?,
-        promptFormat: String, metrics: GenerationMetrics?
+        promptFormat: String, metrics: GenerationMetrics?, notFound: Bool = false
     ) {
         self.text = text; self.sources = sources; self.taskType = taskType; self.retrieved = retrieved; self.retrievalMs = retrievalMs
         self.tokensBefore = tokensBefore; self.tokensAfter = tokensAfter; self.promptFormat = promptFormat; self.metrics = metrics
+        self.notFound = notFound
     }
 }
 
@@ -64,6 +77,8 @@ public final class AnswerPipeline: Sendable {
     public static let answerContextChunks = RagPure.answerContextChunks
     /// Turn ends for the hand-built prompt only (src/inference/LlamaEngine.ts DEFAULT_STOP_SEQUENCES).
     public static let defaultStopSequences = AnswerStopSequences.plain
+    /// The smallest context BOAR opens (EngineTweaks.contextSizeForRam), for a model that doesn't say its own.
+    public static let fallbackContext = 2048
 
     private let session: any TextModelSession
     private let retrieve: @Sendable (String, Int) async throws -> [Chunk]
@@ -84,10 +99,13 @@ public final class AnswerPipeline: Sendable {
         self.retrievalIrrelevant = retrievalIrrelevant; self.clock = clock
     }
 
-    /// The pipeline with BoarRouting's classifier and a `Retriever`.
-    public convenience init(session: any TextModelSession, retriever: Retriever, clock: @escaping @Sendable () -> Double = monotonicMillis) {
+    /// The pipeline with BoarRouting's classifier and a `Retriever`; `params`: its ranking (Personal Files keeps it to the
+    /// user's own files).
+    public convenience init(
+        session: any TextModelSession, retriever: Retriever, params: RetrievalParams = .default, clock: @escaping @Sendable () -> Double = monotonicMillis
+    ) {
         self.init(
-            session: session, retrieve: { q, k in try await retriever.retrieve(q, topK: k) },
+            session: session, retrieve: { q, k in try await retriever.retrieve(q, topK: k, params: params) },
             classify: { Classify.classifyTask($0).value }, retrievalIrrelevant: { name in TaskType(rawValue: name).map(Classify.isRetrievalIrrelevant) ?? false },
             clock: clock
         )
@@ -118,6 +136,8 @@ public final class AnswerPipeline: Sendable {
         var retrievalMs: Double?
         var before: Int?
         var after: Int?
+        // Same as Android (AnswerPipeline.kt): calculate, translate, code and conversation skip retrieval, Personal Files
+        // style included, so "translate my notes" never reads the files. Kept for parity; a fix starts on Android (PR #1 review).
         let retrieved = !retrievalIrrelevant(task)
         if retrieved {
             emit(.stage(.retrieving))
@@ -126,24 +146,45 @@ public final class AnswerPipeline: Sendable {
             let found = try await FollowUp.search(req.query, history: req.history, textOf: { (c: Chunk) in "\(c.title) \(c.body)" }) {
                 try await retrieve($0, Self.answerContextChunks)
             }
-            // Only the sentences that answer: a shorter prompt brings the first word sooner.
-            let c = Compress.forAnswer(found.searchedFor, found.chunks, taskType: task)
+            // Only the sentences that answer: a shorter prompt brings the first word sooner. Personal Files sends the user's
+            // parts whole while they fit (WholePassages).
+            let c = req.filesOnly
+                ? WholePassages.fit(
+                    found.searchedFor, found.chunks, contextSize: req.contextSize ?? Self.fallbackContext, promptTokens: Self.promptTokens(req),
+                    maxTokens: req.maxTokens
+                )
+                : Compress.forAnswer(found.searchedFor, found.chunks, taskType: task)
             let ms = clock() - t0
             retrievalMs = ms
             sources = c.chunks
             before = c.tokensBefore
             after = c.tokensAfter
             emit(.sources(chunks: sources, retrievalMs: ms, tokensBefore: c.tokensBefore, tokensAfter: c.tokensAfter))
+            // Nothing in the user's files: the fixed line, never an answer from memory.
+            if req.filesOnly && sources.isEmpty {
+                emit(.piece(req.notFoundText))
+                emit(.done(AnswerResult(
+                    text: req.notFoundText, sources: sources, taskType: task, retrieved: true, retrievalMs: ms, tokensBefore: before,
+                    tokensAfter: after, promptFormat: "none", metrics: nil, notFound: true
+                )))
+                return
+            }
         }
         emit(.stage(.thinking))
         let useTemplate = session.capabilities.hasChatTemplate
         let input: GenerationRequest.Input
         if useTemplate {
-            let messages = RagPure.assembleChatMessages(req.query, sources, systemPrompt: req.systemPrompt, history: req.history, styleReminder: req.styleReminder)
+            let messages = RagPure.assembleChatMessages(
+                req.query, sources, systemPrompt: req.systemPrompt, history: req.history, styleReminder: req.styleReminder,
+                filesOnly: req.filesOnly, filesNote: req.filesNote
+            )
                 .map { ChatMessage(role: $0.role, content: $0.content) }
             input = .messages(messages)
         } else {
-            input = .prompt(RagPure.assemblePrompt(req.query, sources, systemPrompt: req.systemPrompt, history: req.history, styleReminder: req.styleReminder))
+            input = .prompt(RagPure.assemblePrompt(
+                req.query, sources, systemPrompt: req.systemPrompt, history: req.history, styleReminder: req.styleReminder,
+                filesOnly: req.filesOnly, filesNote: req.filesNote
+            ))
         }
         // llama.rn left enable_thinking at the template's default (on); here it's the user's tweak, off by default,
         // so a thinking model doesn't spend the answer's token cap reasoning.
@@ -168,5 +209,13 @@ public final class AnswerPipeline: Sendable {
             text: text, sources: sources, taskType: task, retrieved: retrieved, retrievalMs: retrievalMs, tokensBefore: before,
             tokensAfter: after, promptFormat: useTemplate ? "chat-template" : "plain", metrics: metrics
         )))
+    }
+
+    /// The prompt without its passages, estimated as the plain prompt plus the files-only instruction and its heading.
+    static func promptTokens(_ req: AnswerRequest) -> Int {
+        Compress.approxTokens(
+            RagPure.assemblePrompt(req.query, [], systemPrompt: req.systemPrompt, history: req.history, styleReminder: req.styleReminder, filesNote: req.filesNote)
+                + RagPure.filesOnlyInstruction + "Context:\n\n"
+        )
     }
 }

@@ -2,12 +2,12 @@
 # UI audit capture: builds the app (DEBUG), installs it on the "BOAR Audit iPhone 13" simulator and saves one light and one
 # dark screenshot per screen, each launched straight onto the screen with -uiDemo -uiScreen (no taps, no model).
 #
-#   [MODES=dark] scripts/ui-capture.sh <out-dir> [--no-build] [--only name,name] [--wait seconds]
+#   [MODES=dark] [UI_LANG=pt] scripts/ui-capture.sh <out-dir> [--no-build] [--only name,name] [--wait seconds]
 #
 # Output: <out-dir>/<screen>-light.png and -dark.png. DerivedData: the shared .build/DerivedData.
 # The simulator keeps existing afterwards (shut down), so reruns reuse it.
 set -u
-export DEVELOPER_DIR=/Applications/Xcode-27.0.0.app/Contents/Developer
+export DEVELOPER_DIR=/Applications/Xcode-27.2.0.app/Contents/Developer
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 OUT="${1:?usage: ui-capture.sh <out-dir> [--no-build] [--only a,b] [--wait N]}"; shift
 BUILD=1; ONLY=""; WAIT=9
@@ -26,8 +26,10 @@ APP="$DD/Build/Products/Debug-iphonesimulator/Boar.app"
 
 UDID=$(xcrun simctl list devices | grep -F "$NAME (" | head -1 | sed -E 's/.*\(([0-9A-F-]{36})\).*/\1/')
 if [ -z "$UDID" ]; then
+  # The newest plain iOS runtime installed (iOS 27.2 on the build host since 2026-11-04).
+  RUNTIME=$(xcrun simctl list runtimes | grep -o 'com.apple.CoreSimulator.SimRuntime.iOS-[0-9-]*$' | tail -1)
   for TYPE in "iPhone 13" "iPhone 17"; do
-    UDID=$(xcrun simctl create "$NAME" "$TYPE" com.apple.CoreSimulator.SimRuntime.iOS-26-1 2>/dev/null) && break
+    UDID=$(xcrun simctl create "$NAME" "$TYPE" "$RUNTIME" 2>/dev/null) && break
   done
 fi
 [ -n "$UDID" ] || { echo "no simulator"; exit 1; }
@@ -83,6 +85,8 @@ evaluation|evaluation|
 about|about|
 about-2|about|end
 lock|lock|
+labs|labs|
+labs-2|labs|end
 "
 
 for MODE in ${MODES:-light dark}; do
@@ -94,7 +98,8 @@ for MODE in ${MODES:-light dark}; do
     [ -n "$FILE" ] || continue
     if [ -n "$ONLY" ] && ! echo ",$ONLY," | grep -q ",$FILE,"; then continue; fi
     xcrun simctl terminate "$UDID" "$BUNDLE" >/dev/null 2>&1
-    ARGS=(-uiDemo -uiScreen "$SCREEN" -AppleLanguages "(en)" -AppleLocale en_US)
+    case "${UI_LANG:-en}" in pt) LOCALE=pt_BR ;; *) LOCALE=en_US ;; esac
+    ARGS=(-uiDemo -uiScreen "$SCREEN" -AppleLanguages "(${UI_LANG:-en})" -AppleLocale "$LOCALE")
     [ -n "$SCROLL" ] && ARGS+=(-uiScroll "$SCROLL")
     xcrun simctl launch "$UDID" "$BUNDLE" "${ARGS[@]}" >/dev/null
     EXTRA=0; [ -n "$SCROLL" ] && EXTRA=4
