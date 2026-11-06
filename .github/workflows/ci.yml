@@ -1,0 +1,85 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # Same Xcode 27.2 the build Mac uses (AGENTS.md). The xcode-27 image is a GitHub preview label.
+  DEVELOPER_DIR: /Applications/Xcode_27.2.0.app/Contents/Developer
+
+jobs:
+  test-and-build:
+    runs-on: xcode-27
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Xcode version
+        run: xcodebuild -version
+
+      # The engine tests read the Android app's bundled assets (corpus, PT lexicon) from Fixtures/assets,
+      # at the Android commit the golden fixtures were made from.
+      - name: Android reference commit
+        id: ref
+        run: echo "sha=$(tr -d '[:space:]' < Fixtures/SOURCE_SHA)" >> "$GITHUB_OUTPUT"
+
+      - name: Check out Android assets
+        uses: actions/checkout@v4
+        with:
+          repository: rferrari/boar-app
+          ref: ${{ steps.ref.outputs.sha }}
+          path: .ref/boar-app
+          sparse-checkout: assets
+          persist-credentials: false
+
+      - name: Link Android assets
+        run: ln -s ../.ref/boar-app/assets Fixtures/assets
+
+      - name: Cache llama.xcframework
+        uses: actions/cache@v4
+        with:
+          path: Vendor/llama.xcframework
+          key: llama-${{ hashFiles('scripts/fetch-llama.sh') }}
+
+      - name: Fetch llama.xcframework
+        run: bash scripts/fetch-llama.sh
+
+      - name: Cache SwiftPM build
+        uses: actions/cache@v4
+        with:
+          path: .build/ci
+          key: spm-${{ runner.os }}-${{ hashFiles('Package.swift', 'Package.resolved') }}
+          restore-keys: spm-${{ runner.os }}-
+
+      # Model smoke tests skip themselves without BOAR_TEST_GGUF; remote tests without BOAR_REMOTE_URL.
+      - name: Engine tests
+        run: swift test --scratch-path .build/ci
+
+      - name: Generate Xcode project
+        run: |
+          command -v xcodegen >/dev/null || brew install xcodegen
+          xcodegen generate
+
+      - name: Build iOS app
+        run: >
+          xcodebuild -project Boar.xcodeproj -scheme Boar
+          -destination 'generic/platform=iOS'
+          -derivedDataPath .build/DerivedData
+          CODE_SIGNING_ALLOWED=NO build
+
+      - name: Build Mac app
+        run: >
+          xcodebuild -project Boar.xcodeproj -scheme BoarMac
+          -destination 'platform=macOS'
+          -derivedDataPath .build/DerivedData
+          CODE_SIGN_STYLE=Manual CODE_SIGN_IDENTITY=- DEVELOPMENT_TEAM=
+          build
