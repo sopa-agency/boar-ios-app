@@ -346,11 +346,20 @@ final class AppModel {
         let settings = services.settings
         let wait = FreeMemory.delayMs(settings.freeMemoryAfterMinutes)
         #if canImport(UIKit)
-        let grant = UIApplication.shared.beginBackgroundTask(withName: "BOAR free memory")
+        // The grant ends exactly once: when the release is done, or when iOS says the background time is up. Without the
+        // expiration handler a 5 or 30 min pick outlived the grant and the watchdog ended BOAR instead (PR #1 review).
+        let grant = BackgroundGrant()
+        grant.id = UIApplication.shared.beginBackgroundTask(withName: "BOAR free memory") { [weak self] in
+            MainActor.assumeIsolated {
+                self?.memoryRelease?.cancel()
+                self?.memoryRelease = nil
+                grant.end()
+            }
+        }
         #endif
         memoryRelease = Task { @MainActor [weak self] in
             #if canImport(UIKit)
-            defer { UIApplication.shared.endBackgroundTask(grant) }
+            defer { grant.end() }
             #endif
             try? await Task.sleep(for: .milliseconds(wait))
             while !Task.isCancelled, let self {
@@ -379,3 +388,17 @@ final class AppModel {
         drainInbox()
     }
 }
+
+#if canImport(UIKit)
+/// A background task identifier that ends once, whichever of the release or the expiration handler comes first.
+@MainActor
+private final class BackgroundGrant {
+    var id: UIBackgroundTaskIdentifier = .invalid
+
+    func end() {
+        guard id != .invalid else { return }
+        UIApplication.shared.endBackgroundTask(id)
+        id = .invalid
+    }
+}
+#endif
