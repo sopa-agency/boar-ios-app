@@ -51,7 +51,7 @@ struct LabToolsCompoundTests {
                 if let win, ["facts", "distance"].contains(C.owner(win)) { bad.append("\(C.name(c)): \(win.tool) on a seed-phrase compound: \(q)") }
             }
         }
-        bad.forEach { print($0) }
+        bad.forEach { LabCombos.report($0) }
         #expect(bad.isEmpty, "\(bad.first ?? "")")
     }
 
@@ -69,8 +69,8 @@ struct LabToolsCompoundTests {
                 if win != expected { bad.append("\(C.name(c)): \(win?.tool ?? "nil") instead of \(expected?.tool ?? "nil"): \(q)") }
             }
         }
-        print(table)
-        bad.forEach { print($0) }
+        LabCombos.report(table)
+        bad.forEach { LabCombos.report($0) }
         #expect(bad.isEmpty, "\(bad.first ?? "")")
     }
 
@@ -135,7 +135,7 @@ struct LabToolsCompoundTests {
                 if !more.isEmpty { bad.append("guard adds \(more): \(q) / \(a)") }
             }
         }
-        bad.forEach { print($0) }
+        bad.forEach { LabCombos.report($0) }
         #expect(bad.isEmpty, "\(bad.first ?? "")")
     }
 
@@ -235,8 +235,8 @@ struct LabToolsCompoundTests {
                 if t >= 10 { out += "\(pad(label, 24)) \(pad(entry, 36)) \(String(format: "%.1f", t))\n" }
             }
         }
-        print(out)
-        bad.forEach { print($0) }
+        LabCombos.report(out)
+        bad.forEach { LabCombos.report($0) }
         #expect(bad.isEmpty, "\(bad.joined(separator: "\n"))")
     }
 }

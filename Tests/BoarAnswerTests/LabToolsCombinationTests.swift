@@ -12,6 +12,12 @@ import Testing
 /// sound and idempotent, (f) each tool decides fast, (g) no leaked placeholders, type names or non-finite numbers.
 /// Failures are collected and printed before the test fails, so one run shows every broken combination.
 enum LabCombos {
+    /// The suites' reports (Kotlin prints them to the test log): only with BOAR_TEST_REPORT set, so a normal
+    /// `swift test` stays quiet. Failures carry their own lines in the #expect message.
+    static func report(_ text: String) {
+        if ProcessInfo.processInfo.environment["BOAR_TEST_REPORT"] != nil { print(text) }
+    }
+
     static let distanceTable: TravelDistance = {
         // swiftlint:disable:next force_try
         try! TravelDistance(json: Data(contentsOf: Fixtures.root.appending(path: "App/Resources/Data/lab_distance_world_cities_v1.json")))
@@ -182,8 +188,8 @@ enum LabCombos {
             for k in order where !LabCombos.combos.contains(where: { LabCombos.name($0) == k }) {
                 sb += k.padding(toLength: 30, withPad: " ", startingAt: 0) + "\(byCombo[k]!)\n"
             }
-            print(sb)
-            lines.forEach { print($0) }
+            LabCombos.report(sb)
+            lines.forEach { LabCombos.report($0) }
         }
     }
 }
@@ -323,8 +329,8 @@ struct LabToolsCombinationTests {
         let wouldTouch = C.corpus.reduce(0) { n, item in
             n + C.tools.compactMap { C.run($0, item.1) }.filter { LabTools.guard(question: item.1, answer: $0.text) != nil }.count
         }
-        print("guard: \(questions.count) questions x \(answers.count) answers, \(repaired) repaired; tool answers it would change if it read them: \(wouldTouch)")
-        f.lines.forEach { print($0) }
+        LabCombos.report("guard: \(questions.count) questions x \(answers.count) answers, \(repaired) repaired; tool answers it would change if it read them: \(wouldTouch)")
+        f.lines.forEach { LabCombos.report($0) }
         #expect(f.lines.isEmpty, "\(f.lines.first ?? "")")
     }
 
@@ -352,8 +358,8 @@ struct LabToolsCombinationTests {
                 slow.append("\(id) \(String(format: "%.1f", t)) ms on \(q.utf16.count) chars: \(C.short(q))")
             }
         }
-        print(report)
-        slow.forEach { print($0) }
+        LabCombos.report(report)
+        slow.forEach { LabCombos.report($0) }
         #expect(slow.isEmpty, "\(slow.joined(separator: "\n"))")
     }
 
