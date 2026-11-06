@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# One-time, run by Biel in Terminal on cx's own screen (asks for the Mac password and an "Allow"):
+# One-time, run by Biel in Terminal on the build host's own screen (asks for the Mac password and an "Allow"):
 #   bash ~/Dev/boar-ios-app/scripts/build-keychain.sh
 # Creates boar-build.keychain-db holding only the Apple Development identity, its password in
 # ~/.config/boar/build-keychain.pw (0600), so scripts/device.sh can sign over SSH without a prompt.
-# Whoever controls the bielcx account can sign with that (free) certificate; nothing else is exposed.
+# Whoever controls that macOS account can sign with that (free) certificate; nothing else is exposed.
 set -euo pipefail
 umask 077
 LOGIN=~/Library/Keychains/login.keychain-db
@@ -21,8 +21,8 @@ security set-keychain-settings "$K"   # no auto-lock
 curl -fsSLo /tmp/AppleWWDRCAG3.cer https://www.apple.com/certificateauthority/AppleWWDRCAG3.cer
 security add-certificates -k "$K" /tmp/AppleWWDRCAG3.cer 2>/dev/null || true
 
-# macOS only exports a private key after a GUI confirmation ("Allow"), so run this in Terminal on cx's
-# own screen, not over SSH. The temporary .p12 is deleted right after the import.
+# macOS only exports a private key after a GUI confirmation ("Allow"), so run this in Terminal on the build
+# host's own screen, not over SSH. The temporary .p12 is deleted right after the import.
 P12=$(mktemp -u /tmp/boar-id.XXXXXX).p12
 T=$(openssl rand -hex 16)
 trap 'rm -f "$P12"' EXIT

@@ -30,7 +30,7 @@ Differences from Android, on purpose:
 - **Daily Quiz:** Android's right answers unlock Boar Avatars (engine `vault/Vault.kt`). The iOS app has no Vault yet, so
   the quiz counts nothing and its copy doesn't promise avatars. The draw goes through `KotlinRandom` (Kotlin's
   XorWowRandom, `nextInt`, `shuffle`) so both phones get the same quiz for the same date and library; written from the
-  Kotlin stdlib sources, not yet checked against a JVM run (cx has no Java).
+  Kotlin stdlib sources, not yet checked against a JVM run (the build host has no Java).
 - **Polyglot:** the note leaves out Android's "without the phone's detector (Android 10+)" sentence: NaturalLanguage is
   always there.
 - **Nomad:** Core Motion device motion in the `.xMagneticNorthZVertical` frame (fused, no permission prompt) instead of

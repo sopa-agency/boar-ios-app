@@ -15,7 +15,7 @@
 #   5. mini: delete ~/boar/kiln/tmp-llama-xcf.
 #   6. local: replace Vendor/llama.xcframework, write Vendor/llama.xcframework.SHA256 (digest of every file, see below).
 #
-# usage: bash scripts/cx.sh 'bash scripts/build-llama-xcframework.sh'   (builds on cx itself)
+# usage: bash scripts/build-host.sh 'bash scripts/build-llama-xcframework.sh'   (builds on the build host itself)
 #        MINI=<ssh-host> bash scripts/build-llama-xcframework.sh         (from another Mac, building on MINI)
 # env:   MINI=<ssh-host, empty = this machine>  SPIKE_MIRROR=boar/spikes/llama-b11010  KEEP_REMOTE=1 (skip step 5)
 set -euo pipefail
@@ -23,7 +23,7 @@ set -euo pipefail
 TAG=b11010
 COMMIT=4bc272fd729bd094c0422e4b8353da8d2fec91f8
 MINI="${MINI:-}"
-# Empty MINI: the "remote" steps run on this machine (cx builds for itself).
+# Empty MINI: the "remote" steps run on this machine (the build host builds for itself).
 remote() { if [ -n "$MINI" ]; then ssh "$MINI" "$@"; else (cd ~ && bash -c "$*"); fi; }
 SPIKE_MIRROR="${SPIKE_MIRROR:-boar/spikes/llama-b11010}"
 REMOTE_DIR='boar/kiln/tmp-llama-xcf'

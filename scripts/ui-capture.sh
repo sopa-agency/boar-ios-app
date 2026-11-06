@@ -26,7 +26,7 @@ APP="$DD/Build/Products/Debug-iphonesimulator/Boar.app"
 
 UDID=$(xcrun simctl list devices | grep -F "$NAME (" | head -1 | sed -E 's/.*\(([0-9A-F-]{36})\).*/\1/')
 if [ -z "$UDID" ]; then
-  # The newest plain iOS runtime installed (iOS 27.2 on cx since 2026-11-04).
+  # The newest plain iOS runtime installed (iOS 27.2 on the build host since 2026-11-04).
   RUNTIME=$(xcrun simctl list runtimes | grep -o 'com.apple.CoreSimulator.SimRuntime.iOS-[0-9-]*$' | tail -1)
   for TYPE in "iPhone 13" "iPhone 17"; do
     UDID=$(xcrun simctl create "$NAME" "$TYPE" "$RUNTIME" 2>/dev/null) && break

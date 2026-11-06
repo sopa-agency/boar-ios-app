@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Build, sign and install the iOS app on a device, from cx. Run through cx.sh:
-#   bash scripts/cx.sh 'bash scripts/device.sh'            (DEVICE from ~/.config/boar/local.env)
+# Build, sign and install the iOS app on a device, from the build host. Run through build-host.sh:
+#   bash scripts/build-host.sh 'bash scripts/device.sh'            (DEVICE from ~/.config/boar/local.env)
 # Needs scripts/build-keychain.sh once. Env: DEVICE (UDID), BUNDLE_ID (personal-team id until phase 0 picks the final one).
 # ponytail: no -allowProvisioningUpdates (the Xcode account lives in the locked login keychain); the free-team
 # profile lasts 7 days, renew it with one build from an unlocked session (Xcode, or ssh -t + unlock-keychain).
