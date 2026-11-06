@@ -14,7 +14,8 @@ private let modelAvailable = AppleModelAvailability.current.isAvailable
         #expect(!m.capabilities.supportsThinking)
         #expect(m.capabilities.supportsPrewarm)
         #expect(m.capabilities.contextTokens == m.contextSize)
-        #expect(m.contextSize > 0)
+        // The system model reports its context size only where Apple Intelligence runs (not on CI runners).
+        if modelAvailable { #expect(m.contextSize > 0) }
         #expect(m.info.backend == "apple-foundation-models")
         #expect(m.info.trainingContextTokens == m.contextSize)
     }
