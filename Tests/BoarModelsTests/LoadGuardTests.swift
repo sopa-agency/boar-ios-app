@@ -51,6 +51,17 @@ import Testing
         #expect(next.consume()?.crashedModelId == "qwen3-4b")
     }
 
+    @Test func quittingDuringALoadIsNotALoadKill() {
+        let store = Mem(), ledger = L()
+        let g = LoadGuard(store: store, ledger: ledger)
+        g.begin(big, previous: nil, repacked: true)
+        // ⌘Q before the load returned: nothing is resident yet, the marker still goes.
+        g.quitting()
+        let next = LoadGuard(store: store, ledger: ledger)
+        #expect(!next.isBlocked("qwen3-4b"))
+        #expect(next.consume() == nil)
+    }
+
     @Test func settlingAnotherModelLeavesTheMarker() {
         let store = Mem(), ledger = L()
         let g = LoadGuard(store: store, ledger: ledger)

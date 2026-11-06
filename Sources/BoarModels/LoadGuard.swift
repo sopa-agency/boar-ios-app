@@ -141,6 +141,13 @@ public final class LoadGuard: @unchecked Sendable {
         if ledger.crashedIds.contains(modelId) { ledger.crashedIds = ledger.crashedIds.filter { $0 != modelId } }
     }
 
+    /// The app is quitting on its own (⌘Q on the Mac): a quit is not a load kill, so any open marker goes, also one
+    /// written by a load still in flight. iOS has no such moment (apps are killed, not quit), so this is Mac-only.
+    public func quitting() {
+        lock.lock(); defer { lock.unlock() }
+        store.clear()
+    }
+
     /// "Try again with less memory": the user's call to load `modelId` again now, keeping the mapped file.
     public func retryMapped(_ modelId: String) {
         ensureChecked()

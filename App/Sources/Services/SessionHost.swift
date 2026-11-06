@@ -67,6 +67,13 @@ actor SessionHost: ModelHost {
     /// minute passed, it's being closed, or BOAR left the screen (a kill from then on is iOS reclaiming a background app).
     nonisolated func settleResident() { settle(load: nil) }
 
+    /// ⌘Q on the Mac: settles the resident model and also drops the marker of a load still in flight, which
+    /// `settleResident` can't reach (it isn't resident yet), or the next launch would block that model.
+    nonisolated func appWillQuit() {
+        settle(load: nil)
+        loadGuard.quitting()
+    }
+
     /// `load`: only that load (a timer's), nil for whatever is resident.
     private nonisolated func settle(load: Int?) {
         let open = unsettled.withLock { u -> String? in

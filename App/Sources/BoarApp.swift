@@ -64,10 +64,10 @@ struct BoarApp: App {
             // A chat tapped in Spotlight.
             .onContinueUserActivity(CSSearchableItemActionType) { IntentInbox.shared.open($0) }
             #if os(macOS)
-            // ⌘Q right after a load is a quit, not a load kill: settle the LoadGuard marker before the process ends, or
-            // the next launch blocks the model (a Mac app never goes to the background the way an iPhone app does).
+            // ⌘Q during or right after a load is a quit, not a load kill: drop the LoadGuard marker before the process
+            // ends, or the next launch blocks the model (a Mac app never goes to the background the way an iPhone app does).
             .onReceive(NotificationCenter.default.publisher(for: NSApplication.willTerminateNotification)) { _ in
-                model.services?.host.settleResident()
+                model.services?.host.appWillQuit()
             }
             #endif
     }
