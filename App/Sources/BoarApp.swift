@@ -8,9 +8,12 @@ struct BoarApp: App {
     @State private var model = AppModel()
     @Environment(\.scenePhase) private var scenePhase
 
-    #if DEBUG && os(macOS)
-    init() { DebugSnapshot.probeWindows() }
-    #endif
+    init() {
+        BrandFonts.register()
+        #if DEBUG && os(macOS)
+        DebugSnapshot.probeWindows()
+        #endif
+    }
 
     var body: some Scene {
         #if os(macOS)
@@ -34,12 +37,14 @@ struct BoarApp: App {
             MacSettingsView()
                 .environment(model)
                 .preferredColorScheme(model.appearance.colorScheme)
+                .boarTheme()
         }
 
         Window("About BOAR", id: "about") {
             AboutScreen()
                 .frame(width: 440, height: 600)
                 .preferredColorScheme(model.appearance.colorScheme)
+                .boarTheme()
         }
         .windowResizability(.contentSize)
         .restorationBehavior(.disabled)
@@ -60,6 +65,7 @@ struct BoarApp: App {
         RootView()
             .environment(model)
             .preferredColorScheme(model.appearance.colorScheme)
+            .boarTheme()
             .task { await model.start() }
             // A chat tapped in Spotlight.
             .onContinueUserActivity(CSSearchableItemActionType) { IntentInbox.shared.open($0) }

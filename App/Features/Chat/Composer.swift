@@ -48,7 +48,7 @@ struct Composer: View {
 
             trailing
         }
-        .font(.body)
+        .font(.boar("ui.body"))
         .padding(.leading)
         .padding(4)
         .glassOrMaterial(in: .rect(cornerRadius: 22), interactive: true)

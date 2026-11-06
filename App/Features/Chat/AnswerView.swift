@@ -1,4 +1,5 @@
 import BoarAnswer
+import BoarCore
 import BoarModels
 import SwiftUI
 
@@ -9,6 +10,10 @@ struct AnswerView: View {
     let chat: ChatController
     let onOpenSource: (ChatSource) -> Void
     @Environment(AppModel.self) private var model
+    @Environment(\.palette) private var palette
+
+    private static let shape = UnevenRoundedRectangle(topLeadingRadius: 20, bottomLeadingRadius: 8,
+                                                      bottomTrailingRadius: 20, topTrailingRadius: 20)
 
     private var streaming: Bool { chat.answeringId == message.id }
     private var split: SplitThinking { AnswerText.splitThinking(message.text) }
@@ -66,7 +71,14 @@ struct AnswerView: View {
                 }
             }
         }
+        .foregroundStyle(Color(palette.textPrimary))
+        .padding(.horizontal, 16)
+        .padding(.vertical, 12)
         .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color(palette.bgSurface), in: Self.shape)
+        // Android draws a Deep Research answer with a 1.5 pt frontierBadgeBorder (receipt.path == "deep"); iOS's
+        // Receipt doesn't record the path yet.
+        .overlay { Self.shape.strokeBorder(Color(palette.borderDefault)) }
         // A citation "[n]" in this answer opens this answer's source n.
         .environment(\.openURL, OpenURLAction(handler: openCitation))
     }
