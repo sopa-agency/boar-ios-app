@@ -16,6 +16,7 @@ enum DemoFiles {
         UserDefaults.standard.removePersistentDomain(forName: "team.sopa.boar.native.demo")
         try? fm.removeItem(at: AppPaths.filesDir)
         try? fm.createDirectory(at: AppPaths.filesDir, withIntermediateDirectories: true)
+        AppPaths.markFilesDir(AppPaths.filesDir)
         if UserDefaults.standard.bool(forKey: "uiBasket") { DemoContent.writeBasket() }
         // The setup screens need an empty phone; every other screen needs a ready one.
         if DebugLaunch.screen?.hasPrefix("setup") == true { return }

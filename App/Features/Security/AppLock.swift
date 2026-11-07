@@ -41,7 +41,14 @@ final class AppLock {
 
     init(services: BoarServices) {
         self.services = services
-        let on = services.settings.jsonValue(forKey: Self.settingsKey)?.boolValue ?? false
+        var on = services.settings.jsonValue(forKey: Self.settingsKey)?.boolValue ?? false
+        // A backup restored on another device brings the settings, but not the key (this device only) nor the chats
+        // (out of backups): nothing is sealed, so the lock starts off instead of reporting a lost key.
+        if on, !ChatKeyStore().exists(), (try? services.chats.listSessions().isEmpty) == true {
+            Self.log.info("lock flag without a key or chats (restored backup): lock off")
+            services.settings.setJSONValue(nil, forKey: Self.settingsKey)
+            on = false
+        }
         enabled = on
         locked = on
     }
@@ -257,5 +264,16 @@ struct ChatKeyStore: Sendable {
 
     func delete() {
         SecItemDelete(base as CFDictionary)
+    }
+
+    /// Whether the key is on this device, without a Face ID prompt (an item behind user presence that can't be shown
+    /// without one still counts as there).
+    func exists() -> Bool {
+        let context = LAContext()
+        context.interactionNotAllowed = true
+        var query = base
+        query[kSecMatchLimit] = kSecMatchLimitOne
+        query[kSecUseAuthenticationContext] = context
+        return SecItemCopyMatching(query as CFDictionary, nil) != errSecItemNotFound
     }
 }
