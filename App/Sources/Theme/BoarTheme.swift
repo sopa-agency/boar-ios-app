@@ -75,6 +75,76 @@ extension View {
     }
 }
 
+/// A settings-style Form in Android's look (BoarSection: cards on the screen background, Lexend text), keeping the
+/// system rows, toggles and pickers. Section titles read in Lexend at the body size, as Android's section titles stand
+/// out from their rows; put each footer in a `BoarFooter`.
+struct BoarForm<Content: View>: View {
+    @ViewBuilder let content: Content
+    @Environment(\.palette) private var palette
+
+    var body: some View {
+        Form {
+            Group { content }
+                .listRowBackground(Color(palette.bgCard))
+                .listRowSeparatorTint(Color(palette.borderSubtle))
+        }
+        .boarListBackground()
+        .font(.boar("ui.body"))
+    }
+}
+
+/// A theme color by its role, resolved from the palette in the environment, so a view can say
+/// `.foregroundStyle(.boar(.danger))` where it used `.red`.
+struct BoarStyle: ShapeStyle {
+    enum Role: Sendable {
+        /// Android's crimson400: errors and destructive actions.
+        case danger
+        /// amber400: warnings ("almost full", a missing model).
+        case warning
+        /// textAccentEmerald: success and "on" states.
+        case success
+        /// textAccentCyan: links and secondary actions (Android's LinkButton).
+        case link
+        /// emerald500, Android's primary: progress, toggles.
+        case accent
+        case heading, primary, secondary, muted
+    }
+
+    let role: Role
+
+    func resolve(in environment: EnvironmentValues) -> Color {
+        let p = environment.palette
+        return switch role {
+        case .danger: Color(p.crimson400)
+        case .warning: Color(p.amber400)
+        case .success: Color(p.textAccentEmerald)
+        case .link: Color(p.textAccentCyan)
+        case .accent: Color(p.emerald500)
+        case .heading: Color(p.textHeading)
+        case .primary: Color(p.textPrimary)
+        case .secondary: Color(p.textSecondary)
+        case .muted: Color(p.textMuted)
+        }
+    }
+}
+
+extension ShapeStyle where Self == BoarStyle {
+    /// A theme color by role (`.boar(.danger)`).
+    static func boar(_ role: BoarStyle.Role) -> BoarStyle { BoarStyle(role: role) }
+}
+
+/// A Form section's footer as Android's notes under a setting: ui.subtext in the muted text color.
+struct BoarFooter<Content: View>: View {
+    @ViewBuilder let content: Content
+    @Environment(\.palette) private var palette
+
+    var body: some View {
+        content
+            .font(.boar("ui.subtext"))
+            .foregroundStyle(Color(palette.textMuted))
+    }
+}
+
 private struct BoarListBackground: ViewModifier {
     @Environment(\.palette) private var palette
 

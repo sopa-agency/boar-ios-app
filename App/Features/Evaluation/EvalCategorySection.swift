@@ -60,7 +60,9 @@ struct EvalCategorySection: View {
         } header: {
             Text("By Topic")
         } footer: {
-            Text("Facts checked per topic. “computer” marks topics the phone can't grade: venue lists, first aid and open-ended answers go to the judge.")
+            BoarFooter {
+                Text("Facts checked per topic. “computer” marks topics the phone can't grade: venue lists, first aid and open-ended answers go to the judge.")
+            }
         }
     }
 }

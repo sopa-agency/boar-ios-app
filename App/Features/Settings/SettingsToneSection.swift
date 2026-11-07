@@ -17,7 +17,7 @@ struct SettingsToneSection: View {
                     Label(p.displayLabel, systemImage: p.symbol).tag(p.id)
                 }
             } label: {
-                SettingsLabel("Answer Style", symbol: "text.bubble.fill", color: .blue)
+                SettingsLabel("Answer Style", symbol: "text.bubble.fill")
             } currentValueLabel: {
                 Text(verbatim: personalities.get(id).displayLabel)
             }
@@ -27,16 +27,18 @@ struct SettingsToneSection: View {
                     .lineLimit(3...8)
             }
             Toggle(isOn: bridge.binding({ $0.deepResearchMode }, { $0.deepResearchMode = $1 })) {
-                SettingsLabel("Deep Research", symbol: "flask.fill", color: .indigo)
+                SettingsLabel("Deep Research", symbol: "flask.fill")
             }
         } header: {
             Text("Answers")
         } footer: {
-            VStack(alignment: .leading) {
-                Text("\(personalities.get(id).displayDescription) Deep Research splits your question into parts. Slower.")
-                if let missing = missingSearchModel {
-                    Label("The search model (\(missing)) isn't on this \(Platform.deviceNoun), so answers can't use your library. Run Setup Again in Advanced.", systemImage: Symbols.caution)
-                        .foregroundStyle(.orange)
+            BoarFooter {
+                VStack(alignment: .leading) {
+                    Text("\(personalities.get(id).displayDescription) Deep Research splits your question into parts. Slower.")
+                    if let missing = missingSearchModel {
+                        Label("The search model (\(missing)) isn't on this \(Platform.deviceNoun), so answers can't use your library. Run Setup Again in Advanced.", systemImage: Symbols.caution)
+                            .foregroundStyle(.boar(.warning))
+                    }
                 }
             }
         }

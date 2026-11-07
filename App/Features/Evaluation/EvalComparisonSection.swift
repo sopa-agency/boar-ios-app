@@ -62,7 +62,9 @@ struct EvalComparisonSection: View {
         } header: {
             Text(summary.configs.count > 1 ? "Comparison" : "Summary")
         } footer: {
-            Text("Facts checked looks for each question's expected facts and known wrong claims by keyword. It agrees with hand grading about 88% of the time and is not the bounty score: share the traces for the judge and score them on a computer.")
+            BoarFooter {
+                Text("Facts checked looks for each question's expected facts and known wrong claims by keyword. It agrees with hand grading about 88% of the time and is not the bounty score: share the traces for the judge and score them on a computer.")
+            }
         }
     }
 }

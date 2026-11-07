@@ -20,7 +20,7 @@ struct SettingsRecoverySection: View {
                 confirmClear = true
             } label: {
                 Label(cleared ? "Chat History Cleared" : "Clear Chat History", systemImage: cleared ? "checkmark" : Symbols.delete)
-                    .foregroundStyle(.red)
+                    .foregroundStyle(.boar(.danger))
                     .contentTransition(.symbolEffect(.replace))
             }
             .disabled(cleared || answering)
@@ -28,17 +28,19 @@ struct SettingsRecoverySection: View {
                 confirmReset = true
             } label: {
                 Label("Reset Settings", systemImage: "arrow.uturn.backward")
-                    .foregroundStyle(.red)
+                    .foregroundStyle(.boar(.danger))
             }
             Button(role: .destructive) {
                 confirmPurge = true
             } label: {
                 Label(purging ? "Erasing…" : "Erase All Data", systemImage: "xmark.bin")
-                    .foregroundStyle(.red)
+                    .foregroundStyle(.boar(.danger))
             }
             .disabled(purging || answering)
         } footer: {
-            Text("Reset Settings and Erase All Data reopen setup.")
+            BoarFooter {
+                Text("Reset Settings and Erase All Data reopen setup.")
+            }
         }
         .sensoryFeedback(.success, trigger: cleared) { _, new in new }
         .onAppear { cleared = false }

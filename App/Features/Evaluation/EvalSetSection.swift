@@ -17,8 +17,10 @@ struct EvalSetSection: View {
         } header: {
             Text("Questions")
         } footer: {
-            if let set = controller.questionSet {
-                Text(set.kind.detail(count: set.queries.count, checked: set.checkedOnDevice))
+            BoarFooter {
+                if let set = controller.questionSet {
+                    Text(set.kind.detail(count: set.queries.count, checked: set.checkedOnDevice))
+                }
             }
         }
     }

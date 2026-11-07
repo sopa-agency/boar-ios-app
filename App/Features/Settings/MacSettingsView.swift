@@ -33,7 +33,7 @@ private struct MacSettingsTabs: View {
     var body: some View {
         TabView {
             Tab("General", systemImage: "gearshape") {
-                Form {
+                BoarForm {
                     SettingsToneSection(services: services, bridge: bridge)
                     SettingsMemorySection(bridge: bridge)
                     SettingsDisplaySection(bridge: bridge)
@@ -43,7 +43,7 @@ private struct MacSettingsTabs: View {
                 .frame(width: 600, height: 620)
             }
             Tab("Privacy", systemImage: "hand.raised") {
-                Form {
+                BoarForm {
                     if let lock = model.lock { SettingsSecuritySection(lock: lock) }
                     SettingsRecoverySection(services: services, bridge: bridge)
                 }

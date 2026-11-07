@@ -56,7 +56,9 @@ struct AboutScreen: View {
             } header: {
                 Text("Open Source")
             } footer: {
-                Text("Source code, model lists and the scripts that build the offline library.")
+                BoarFooter {
+                    Text("Source code, model lists and the scripts that build the offline library.")
+                }
             }
 
             Section {
@@ -65,7 +67,9 @@ struct AboutScreen: View {
             } header: {
                 Text("Engine")
             } footer: {
-                Text("Answers are AI-generated from the sources BOAR finds on this \(Platform.deviceNoun). They are not reviewed by clinicians or experts.")
+                BoarFooter {
+                    Text("Answers are AI-generated from the sources BOAR finds on this \(Platform.deviceNoun). They are not reviewed by clinicians or experts.")
+                }
             }
         }
         .navigationTitle(AppScreen.about.title)

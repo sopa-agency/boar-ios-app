@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// A usage bar with its numbers and a caption (android `UsageBar`/`UsageCaption`, Settings' Hardware section): how much
-/// of `total` is used, orange past 80 % and red past 95 %.
+/// of `total` is used, amber past 80 % and crimson past 95 %.
 struct UsageBar: View {
     let title: LocalizedStringKey
     let used: Int64
@@ -11,7 +11,7 @@ struct UsageBar: View {
     var style: ByteCountFormatStyle.Style = .memory
 
     private var fraction: Double { total > 0 ? min(Double(used) / Double(total), 1) : 0 }
-    private var tint: Color { fraction > 0.95 ? .red : fraction > 0.8 ? .orange : .accentColor }
+    private var tint: BoarStyle { .boar(fraction > 0.95 ? .danger : fraction > 0.8 ? .warning : .accent) }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
@@ -25,8 +25,8 @@ struct UsageBar: View {
             ProgressView(value: fraction)
                 .tint(tint)
             Text(verbatim: caption)
-                .font(.footnote)
-                .foregroundStyle(.secondary)
+                .font(.boar("ui.subtext"))
+                .foregroundStyle(.boar(.muted))
         }
         .padding(.vertical, 4)
         .accessibilityElement(children: .combine)

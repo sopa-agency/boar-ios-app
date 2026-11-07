@@ -15,33 +15,35 @@ struct SettingsLibrarySection: View {
             LabeledContent {
                 Text(model.chat?.modelName ?? services.answerModel()?.friendlyName ?? String(localized: "None"))
             } label: {
-                SettingsLabel("Answering With", symbol: Symbols.model, color: .indigo)
+                SettingsLabel("Answering With", symbol: Symbols.model)
             }
             Button {
                 model.selection = .screen(.models)
             } label: {
-                SettingsLabel("Open Models", symbol: "square.stack.3d.up.fill", color: .indigo)
+                SettingsLabel("Open Models", symbol: "square.stack.3d.up.fill")
             }
             LabeledContent {
                 Text(packs.isEmpty ? String(localized: "None") : packs.formatted(.list(type: .and)))
                     .multilineTextAlignment(.trailing)
             } label: {
-                SettingsLabel("BOAR Knowledge", symbol: "books.vertical.fill", color: .brown)
+                SettingsLabel("BOAR Knowledge", symbol: "books.vertical.fill")
             }
             LabeledContent {
                 Text("^[\(collections) collection](inflect: true)")
             } label: {
-                SettingsLabel("Personal Files", symbol: "folder.fill", color: .blue)
+                SettingsLabel("Personal Files", symbol: "folder.fill")
             }
             Button {
                 model.selection = .screen(.documents)
             } label: {
-                SettingsLabel("Open Knowledge", symbol: "books.vertical.fill", color: .brown)
+                SettingsLabel("Open Knowledge", symbol: "books.vertical.fill")
             }
         } header: {
             Text("Models and Knowledge")
         } footer: {
-            Text("What BOAR answers with and searches, all on this \(Platform.deviceNoun).")
+            BoarFooter {
+                Text("What BOAR answers with and searches, all on this \(Platform.deviceNoun).")
+            }
         }
         .task { await model.documents?.refresh() }
     }

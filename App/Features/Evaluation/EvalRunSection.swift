@@ -23,7 +23,7 @@ struct EvalRunSection: View {
                 Label {
                     Text("The benchmark failed: \(error)")
                 } icon: {
-                    Image(systemName: Symbols.error).foregroundStyle(.red)
+                    Image(systemName: Symbols.error).foregroundStyle(.boar(.danger))
                 }
             }
             if let path = controller.savedPath {
@@ -32,16 +32,18 @@ struct EvalRunSection: View {
                         .foregroundStyle(.secondary)
                 } icon: {
                     Image(systemName: controller.stopped ? Symbols.caution : Symbols.active)
-                        .foregroundStyle(controller.stopped ? Color.orange : Color.green)
+                        .foregroundStyle(.boar(controller.stopped ? .warning : .success))
                 }
             }
         } footer: {
-            let n = controller.queries.count
-            let c = controller.chosen.count
-            if chatBusy {
-                Text("Wait for the current answer to finish before running the benchmark.")
-            } else {
-                Text("^[\(n) question](inflect: true) × ^[\(c) model](inflect: true) = ^[\(n * c) answer](inflect: true). \(Self.awakeNote)")
+            BoarFooter {
+                let n = controller.queries.count
+                let c = controller.chosen.count
+                if chatBusy {
+                    Text("Wait for the current answer to finish before running the benchmark.")
+                } else {
+                    Text("^[\(n) question](inflect: true) × ^[\(c) model](inflect: true) = ^[\(n * c) answer](inflect: true). \(Self.awakeNote)")
+                }
             }
         }
     }

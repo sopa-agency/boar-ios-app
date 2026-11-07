@@ -18,7 +18,7 @@ struct DeviceInfoScreen: View {
         let topology = services.topology
         let fastest = topology.cores.map(\.maxKhz).max()
         let performance = topology.cores.filter { $0.maxKhz == fastest }.count
-        Form {
+        BoarForm {
             Section {
                 if let name = DeviceName.current {
                     ValueRow(label: "Model", value: name)
@@ -59,7 +59,9 @@ struct DeviceInfoScreen: View {
             } header: {
                 Text("BOAR")
             } footer: {
-                Text("Nothing here leaves your \(Platform.deviceNoun).")
+                BoarFooter {
+                    Text("Nothing here leaves your \(Platform.deviceNoun).")
+                }
             }
         }
         .navigationTitle("\(Platform.deviceNoun) & Storage")

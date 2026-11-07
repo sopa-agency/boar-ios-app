@@ -46,7 +46,9 @@ struct EvalConfigsSection: View {
         } header: {
             Text("Models to Test")
         } footer: {
-            Text("BOAR \(controller.appVersion). Each model answers every question with the default answer style; one model is in memory at a time.")
+            BoarFooter {
+                Text("BOAR \(controller.appVersion). Each model answers every question with the default answer style; one model is in memory at a time.")
+            }
         }
     }
 }
