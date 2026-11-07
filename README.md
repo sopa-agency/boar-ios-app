@@ -103,7 +103,7 @@ To run it on your own iPhone, sign it with your own Apple team:
 1. Put your team in a `Local.xcconfig` at the repo root (git-ignored): `DEVELOPMENT_TEAM = ABCDE12345`.
    Don't pick the team in Xcode: `Boar.xcodeproj` is generated, so the next `xcodegen generate` drops it.
 2. Your team can't sign BOAR's bundle ID, so change `team.sopa.boar.native` in `project.yml` to one of
-   yours, such as `com.example.boar`, and don't commit that change.
+   yours, such as `com.example.boar`, in both places (the iPhone and the Mac target). Don't commit that change.
 3. Run `xcodegen generate`, open `Boar.xcodeproj` and press Run.
 
 Every pull request runs the same tests and both builds on GitHub Actions.
