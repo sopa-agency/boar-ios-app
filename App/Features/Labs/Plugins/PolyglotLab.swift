@@ -74,7 +74,9 @@ struct PolyglotLab: LabPlugin {
             } header: {
                 Text("Try")
             } footer: {
-                Text("Short messages, thanks and greetings, names, quotes, code and links go to the model as usual, and so does a question with English in it (What does 'merci' mean?). A short follow-up in a chat already going goes to the model too. The answer's details say Tool: language.")
+                BoarFooter {
+                    Text("Short messages, thanks and greetings, names, quotes, code and links go to the model as usual, and so does a question with English in it (What does 'merci' mean?). A short follow-up in a chat already going goes to the model too. The answer's details say Tool: language.")
+                }
             }
         })
     }

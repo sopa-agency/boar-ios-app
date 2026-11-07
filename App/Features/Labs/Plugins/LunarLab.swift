@@ -63,10 +63,10 @@ private struct LunarSections: View {
                         .font(.system(size: 96))
                         .accessibilityHidden(true)
                     Text(LunarLab.phaseName(MoonPhase.nameKey(m)))
-                        .font(.title2.weight(.semibold))
+                        .font(.boar("ui.titleLg"))
                     Text("\(Int((m.illumination * 100).rounded()))% lit · day \(m.ageDays.formatted(.number.precision(.fractionLength(1)))) of the cycle")
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
+                        .font(.boar("ui.caption"))
+                        .foregroundStyle(.boar(.muted))
                 }
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 8)
@@ -96,7 +96,9 @@ private struct LunarSections: View {
             Section {
                 LunarMonth(now: now, offset: monthOffset, south: south) { monthOffset += $0 }
             } footer: {
-                Text("Worked out from the date on this \(Platform.deviceNoun), no internet and no location. The hemisphere only changes which side of the moon is lit. Moonrise and moonset need your location, so they are not shown.")
+                BoarFooter {
+                    Text("Worked out from the date on this \(Platform.deviceNoun), no internet and no location. The hemisphere only changes which side of the moon is lit. Moonrise and moonset need your location, so they are not shown.")
+                }
             }
         }
     }
@@ -109,8 +111,8 @@ private struct LunarSections: View {
         var body: some View {
             VStack(alignment: .leading, spacing: 4) {
                 Text(label)
-                    .font(.caption.monospaced().bold())
-                    .foregroundStyle(.secondary)
+                    .font(.boar("mono.xs").bold())
+                    .foregroundStyle(.boar(.muted))
                     .textCase(.uppercase)
                 Text(verbatim: value)
             }
@@ -143,7 +145,7 @@ private struct LunarMonth: View {
                 Button("Previous month", systemImage: "chevron.left") { move(-1) }
                     .labelStyle(.iconOnly)
                 Text(verbatim: title.prefix(1).uppercased() + title.dropFirst())
-                    .font(.headline)
+                    .font(.boar("ui.titleSm"))
                     .frame(maxWidth: .infinity)
                 Button("Next month", systemImage: "chevron.right") { move(1) }
                     .labelStyle(.iconOnly)
@@ -160,8 +162,8 @@ private struct LunarMonth: View {
                         VStack(spacing: 2) {
                             Text(verbatim: MoonPhase.emoji(MoonPhase.at(noon), south: south)).font(.system(size: 16))
                             Text(verbatim: "\(d)")
-                                .font(.caption2.monospacedDigit())
-                                .foregroundStyle(today ? AnyShapeStyle(.tint) : AnyShapeStyle(.secondary))
+                                .font(.boar("mono.xs"))
+                                .foregroundStyle(today ? AnyShapeStyle(.tint) : AnyShapeStyle(.boar(.muted)))
                         }
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 4)

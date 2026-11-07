@@ -131,6 +131,8 @@ struct BoarStyle: ShapeStyle {
         case heading, primary, secondary, muted
         /// textDim: the quietest line (sizes, file names).
         case dim
+        /// borderDefault: rings and baselines drawn in a Canvas.
+        case border
     }
 
     let role: Role
@@ -148,6 +150,7 @@ struct BoarStyle: ShapeStyle {
         case .secondary: Color(p.textSecondary)
         case .muted: Color(p.textMuted)
         case .dim: Color(p.textDim)
+        case .border: Color(p.borderDefault)
         }
     }
 }

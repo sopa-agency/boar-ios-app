@@ -36,18 +36,18 @@ private struct DailyQuizSections: View {
         Group {
             if let q = quiz {
                 if q.isEmpty {
-                    Section { Text("The library isn't ready yet: finish setup, then come back.").foregroundStyle(.secondary) }
+                    Section { Text("The library isn't ready yet: finish setup, then come back.").foregroundStyle(.boar(.muted)) }
                 } else if showing == nil && picks.count >= q.count {
                     let right = q.indices.filter { $0 < picks.count && picks[$0] == q[$0].answer }.count
                     Section {
-                        Text("\(right) of \(q.count) right today.").font(.title3.weight(.semibold))
-                        Text("A new quiz tomorrow.").foregroundStyle(.secondary)
+                        Text("\(right) of \(q.count) right today.").font(.boar("ui.title"))
+                        Text("A new quiz tomorrow.").foregroundStyle(.boar(.muted))
                     }
                 } else {
                     question(q, showing ?? picks.count)
                 }
             } else {
-                Section { Text("Picking today's questions…").foregroundStyle(.secondary) }
+                Section { Text("Picking today's questions…").foregroundStyle(.boar(.muted)) }
             }
         }
         // Again once the engine is open: a page shown before that would stay on "not ready".
@@ -61,8 +61,8 @@ private struct DailyQuizSections: View {
             Text(verbatim: question.clue)
         } header: {
             VStack(alignment: .leading, spacing: 4) {
-                Text("Question \(i + 1) of \(q.count)").font(.caption.monospaced().bold()).foregroundStyle(.tint)
-                Text("Which article does this come from?").font(.headline).foregroundStyle(.primary).textCase(nil)
+                Text("Question \(i + 1) of \(q.count)").font(.boar("mono.xs").bold()).foregroundStyle(.boar(.success))
+                Text("Which article does this come from?").font(.boar("ui.titleSm")).foregroundStyle(.boar(.heading)).textCase(nil)
             }
         }
         Section {
@@ -71,23 +71,25 @@ private struct DailyQuizSections: View {
                     pick(o, at: i, right: o == question.answer)
                 } label: {
                     HStack {
-                        Text(verbatim: question.options[o]).foregroundStyle(.primary)
+                        Text(verbatim: question.options[o]).foregroundStyle(.boar(.primary))
                         Spacer()
                         if picked != nil && o == question.answer {
-                            Image(systemName: "checkmark.circle.fill").foregroundStyle(.green)
+                            Image(systemName: "checkmark.circle.fill").foregroundStyle(.boar(.success))
                         } else if picked == o {
-                            Image(systemName: "xmark.circle.fill").foregroundStyle(.red)
+                            Image(systemName: "xmark.circle.fill").foregroundStyle(.boar(.danger))
                         }
                     }
                 }
                 .disabled(picked != nil)
             }
         } footer: {
-            if let picked {
-                if picked == question.answer {
-                    Text("Right!")
-                } else {
-                    Text("Not this time: it was \(question.options[question.answer]).")
+            BoarFooter {
+                if let picked {
+                    if picked == question.answer {
+                        Text("Right!")
+                    } else {
+                        Text("Not this time: it was \(question.options[question.answer]).")
+                    }
                 }
             }
         }

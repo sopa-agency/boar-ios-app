@@ -50,7 +50,9 @@ struct FactsLab: LabPlugin {
             } header: {
                 Text("Try")
             } footer: {
-                Text("It answers only when the question names something in the table and asks for exactly one of these; every answer ends with its source and the table's date (Wikidata, CC0, October 2026), and an older population figure says how old it is. Two properties at once, an overview, a why or how question, a name it can't tell apart (Georgia), or a chat about health goes to the model as usual. Questions in English only. Ported from r4to's offline facts (BOAR R&D).")
+                BoarFooter {
+                    Text("It answers only when the question names something in the table and asks for exactly one of these; every answer ends with its source and the table's date (Wikidata, CC0, October 2026), and an older population figure says how old it is. Two properties at once, an overview, a why or how question, a name it can't tell apart (Georgia), or a chat about health goes to the model as usual. Questions in English only. Ported from r4to's offline facts (BOAR R&D).")
+                }
             }
         })
     }

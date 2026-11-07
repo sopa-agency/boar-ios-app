@@ -85,21 +85,22 @@ private final class CompassReader {
 private struct CompassSections: View {
     @State private var reader = CompassReader()
     @State private var shownDeg = 0
+    @Environment(\.palette) private var palette
 
     var body: some View {
         Group {
             if !reader.available {
                 Section {
-                    Text("This \(Platform.deviceNoun) has no magnetometer, so it can't show a compass.").foregroundStyle(.secondary)
+                    Text("This \(Platform.deviceNoun) has no magnetometer, so it can't show a compass.").foregroundStyle(.boar(.muted))
                 }
             } else {
                 Section {
                     VStack(spacing: 8) {
                         if reader.seen {
                             Text("\(shownDeg)° \(Text(CompassLab.direction(CompassMath.cardinal(shownDeg))))")
-                                .font(.largeTitle.weight(.heavy).monospacedDigit())
+                                .font(.boar("ui.headline").monospacedDigit())
                         } else {
-                            Text(verbatim: "—").font(.largeTitle.weight(.heavy))
+                            Text(verbatim: "—").font(.boar("ui.headline"))
                         }
                         CompassRose(heading: reader.heading)
                             .frame(maxWidth: 320)
@@ -113,13 +114,16 @@ private struct CompassSections: View {
                     Section {
                         Label("Low accuracy: move the \(Platform.deviceNoun) in a figure 8 a few times, away from metal and magnets.",
                               systemImage: "exclamationmark.triangle.fill")
-                            .foregroundStyle(.orange)
+                            .foregroundStyle(.boar(.warning))
+                            .listRowBackground(Color(palette.amberBgSubtle))
                     }
                 }
             }
             Section {
             } footer: {
-                Text("Points to magnetic north, worked out on this \(Platform.deviceNoun) with no internet. True north differs by a few degrees depending on where you are; it would need your location, which BOAR doesn't ask for. Hold the \(Platform.deviceNoun) flat.")
+                BoarFooter {
+                    Text("Points to magnetic north, worked out on this \(Platform.deviceNoun) with no internet. True north differs by a few degrees depending on where you are; it would need your location, which BOAR doesn't ask for. Hold the \(Platform.deviceNoun) flat.")
+                }
             }
         }
         .onAppear { reader.start() }
@@ -137,7 +141,7 @@ private struct CompassRose: View {
             let r = min(size.width, size.height) / 2
             let c = CGPoint(x: size.width / 2, y: size.height / 2)
             ctx.stroke(Path(ellipseIn: CGRect(x: c.x - r + 2, y: c.y - r + 2, width: 2 * r - 4, height: 2 * r - 4)),
-                       with: .style(.separator), lineWidth: 1.5)
+                       with: .style(BoarStyle(role: .border)), lineWidth: 1.5)
             var dial = ctx
             dial.translateBy(x: c.x, y: c.y)
             dial.rotate(by: .degrees(-heading))
@@ -149,9 +153,9 @@ private struct CompassRose: View {
                 var tick = Path()
                 tick.move(to: inner)
                 tick.addLine(to: outer)
-                dial.stroke(tick, with: i == 0 ? .color(.red) : .style(.secondary), lineWidth: i % 18 == 0 ? 2.5 : 1)
+                dial.stroke(tick, with: .style(BoarStyle(role: i == 0 ? .danger : .muted)), lineWidth: i % 18 == 0 ? 2.5 : 1)
             }
-            // The needle: red to the north, plain to the south.
+            // The needle: crimson to the north, plain to the south.
             var north = Path()
             north.move(to: CGPoint(x: 0, y: -r * 0.62))
             north.addLine(to: CGPoint(x: -r * 0.07, y: 0))
@@ -162,16 +166,16 @@ private struct CompassRose: View {
             south.addLine(to: CGPoint(x: -r * 0.07, y: 0))
             south.addLine(to: CGPoint(x: r * 0.07, y: 0))
             south.closeSubpath()
-            dial.fill(north, with: .color(.red))
-            dial.fill(south, with: .style(.secondary))
+            dial.fill(north, with: .style(BoarStyle(role: .danger)))
+            dial.fill(south, with: .style(BoarStyle(role: .muted)))
             // Where the device points.
             var top = Path()
             top.move(to: CGPoint(x: c.x, y: 0))
             top.addLine(to: CGPoint(x: c.x - r * 0.06, y: r * 0.1))
             top.addLine(to: CGPoint(x: c.x + r * 0.06, y: r * 0.1))
             top.closeSubpath()
-            ctx.fill(top, with: .style(.tint))
-            ctx.fill(Path(ellipseIn: CGRect(x: c.x - r * 0.04, y: c.y - r * 0.04, width: r * 0.08, height: r * 0.08)), with: .style(.tint))
+            ctx.fill(top, with: .style(BoarStyle(role: .success)))
+            ctx.fill(Path(ellipseIn: CGRect(x: c.x - r * 0.04, y: c.y - r * 0.04, width: r * 0.08, height: r * 0.08)), with: .style(BoarStyle(role: .success)))
         }
     }
 }
