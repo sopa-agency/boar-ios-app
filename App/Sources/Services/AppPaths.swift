@@ -23,32 +23,34 @@ enum AppPaths {
     /// Like Android (data_extraction_rules.xml), on iPhone and iPad the whole folder (chats, documents, the knowledge
     /// base, models, packs) stays out of iCloud and computer backups. Excluding the folder excludes everything in it;
     /// set on every launch, so existing installs leave the next backup too. On the Mac it would also leave Time Machine,
-    /// the user's own backup, so there only the downloads (models, packs, partial files) are excluded.
+    /// the user's own backup, so there only the download folders are excluded: `models/` and `corpus/` (where
+    /// `AssetStore` writes each asset's `filename`, partial files included) and `.resume/`.
     static func markFilesDir(_ dir: URL) {
         #if os(iOS)
         var url = dir
         excludeFromBackup(&url)
+        #else
+        for name in downloadDirs { backupExcludedDirectory(dir.appending(path: name, directoryHint: .isDirectory)) }
         #endif
     }
+
+    /// The folders that hold downloads, which Erase All Data deletes and `markFilesDir` marks again.
+    static let downloadDirs = ["models", "corpus", ".resume"]
 
     /// Where the settings live: the app's defaults, or a separate suite for the UI demo (it resets them every launch).
     nonisolated(unsafe) static let defaults: UserDefaults =
         DebugLaunch.demo ? UserDefaults(suiteName: "team.sopa.boar.native.demo") ?? .standard : .standard
 
     static var knowledgeBase: URL { directory("SQLite").appending(path: "aoair_knowledge.db") }
-    // Downloads are excluded on their own too: the Mac keeps the rest of the folder in Time Machine.
-    static var corpusDir: URL { directory("corpus", excludedFromBackup: true) }
-    static var modelsDir: URL { directory("models", excludedFromBackup: true) }
     static var loadMarker: URL { filesDir.appending(path: "model-load.marker.json") }
     static var setupProgress: URL { filesDir.appending(path: "setup_progress.json") }
     static var discoveredModels: URL { filesDir.appending(path: "discovered_models.json") }
     /// Resume data of interrupted background downloads, one file per asset id.
-    static var resumeDir: URL { directory(".resume", excludedFromBackup: true) }
+    static var resumeDir: URL { directory(".resume") }
 
     /// A subdirectory of `filesDir`, created on first use.
-    static func directory(_ name: String, excludedFromBackup: Bool = false) -> URL {
-        let url = filesDir.appending(path: name, directoryHint: .isDirectory)
-        return excludedFromBackup ? backupExcludedDirectory(url) : created(url)
+    static func directory(_ name: String) -> URL {
+        created(filesDir.appending(path: name, directoryHint: .isDirectory))
     }
 
     /// A folder, created on first use and kept out of iCloud, computer and Time Machine backups.

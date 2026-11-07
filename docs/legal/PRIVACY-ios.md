@@ -57,7 +57,9 @@
 9. **Backup (section 9).** On iPhone and iPad, as on Android, the chats, imported documents, knowledge base, models
    and packs are kept out of iCloud and computer backups (`AppPaths.swift`, the whole BOAR folder; evaluation runs in
    `EvalRunner`). Decided on 2026-11-06. **On the Mac**, chats and documents stay in Time Machine, the user's own
-   backup, so a failed disk doesn't lose them; only the downloads (models, packs, partial files) are excluded. **Not yet excluded: the settings** (theme, model choice, Labs state and the network
+   backup, so a failed disk doesn't lose them; only the downloads (models, packs, partial files) and the evaluation
+   runs are excluded. With the lock on, the chats in that copy are sealed with a key kept in this Mac's Keychain only,
+   so that copy can't be opened on another Mac (nor, likely, after the disk is replaced). **Not yet excluded: the settings** (theme, model choice, Labs state and the network
    server's address), which live in the app's standard preferences file and still go into backups; the server's
    API key does not (Keychain, this device only).
 
