@@ -1,7 +1,8 @@
 import BoarModels
 import SwiftUI
 
-/// A download's one secondary line: "1.0 GB of 2.3 GB · about 3 min left" (speed only with technical details on).
+/// A download's one secondary line in Android's mono progress type: "1.0 GB of 2.3 GB · about 3 min left" (speed only
+/// with technical details on).
 struct CatalogDownloadProgress: View {
     let asset: CatalogAsset
     let row: ModelsController.Row
@@ -17,8 +18,7 @@ struct CatalogDownloadProgress: View {
 
     var body: some View {
         Text(verbatim: line)
-            .font(.subheadline)
-            .monospacedDigit()
-            .foregroundStyle(.secondary)
+            .font(.boar("mono.sm"))
+            .foregroundStyle(.boar(.link))
     }
 }

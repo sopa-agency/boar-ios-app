@@ -10,13 +10,14 @@ struct RepoDetail: View {
 
     var body: some View {
         if let repo {
-            Form {
+            BoarForm {
                 Section {
                     VStack(alignment: .leading, spacing: 2) {
                         Text(verbatim: RepoDetail.name(repo.id))
-                            .font(.title2.bold())
+                            .font(.boar("ui.titleLg"))
+                            .foregroundStyle(.boar(.heading))
                         Text(verbatim: repo.id.split(separator: "/").first.map(String.init) ?? "")
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(.boar(.secondary))
                     }
                     .padding(.vertical, 4)
                 }
@@ -41,9 +42,12 @@ struct RepoDetail: View {
                         Link(destination: url) {
                             Label("Model Page", systemImage: "safari")
                         }
+                        .tint(BoarStyle(role: .link))
                     }
                 } footer: {
-                    Text("Not checked by BOAR. Look at the model's page for its license before you use it.")
+                    BoarFooter {
+                        Text("Not checked by BOAR. Look at the model's page for its license before you use it.")
+                    }
                 }
 
                 Section {
@@ -52,14 +56,16 @@ struct RepoDetail: View {
                             .frame(maxWidth: .infinity)
                     } else if controller.hfFiles.isEmpty {
                         Text("No files BOAR can use in this model.")
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(.boar(.muted))
                     }
                     GgufFileList(repo: repo.id, controller: controller)
                         .id(repo.id)
                 } header: {
                     Text("Versions")
                 } footer: {
-                    Text("The same model at different sizes: smaller versions are faster and lighter, larger ones answer a little better. Downloads also appear in Models.")
+                    BoarFooter {
+                        Text("The same model at different sizes: smaller versions are faster and lighter, larger ones answer a little better. Downloads also appear in Models.")
+                    }
                 }
             }
         } else {

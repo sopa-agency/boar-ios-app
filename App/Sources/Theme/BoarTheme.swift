@@ -73,6 +73,27 @@ extension View {
     func boarRowBackground() -> some View {
         modifier(BoarRowBackground())
     }
+
+    /// A List in Android's look on iPhone: the screen background and Lexend text; put its sections in `boarListRows()`.
+    /// The Mac keeps its system list (a selectable sidebar beside the details).
+    @ViewBuilder func boarList() -> some View {
+        #if os(macOS)
+        self
+        #else
+        boarListBackground()
+            .font(.boar("ui.body"))
+        #endif
+    }
+
+    /// A List's sections on Android's cards, with the subtle border as separator (iPhone; on the Mac custom row
+    /// backgrounds would hide the selection).
+    @ViewBuilder func boarListRows() -> some View {
+        #if os(macOS)
+        self
+        #else
+        modifier(BoarListRows())
+        #endif
+    }
 }
 
 /// A settings-style Form in Android's look (BoarSection: cards on the screen background, Lexend text), keeping the
@@ -108,6 +129,8 @@ struct BoarStyle: ShapeStyle {
         /// emerald500, Android's primary: progress, toggles.
         case accent
         case heading, primary, secondary, muted
+        /// textDim: the quietest line (sizes, file names).
+        case dim
     }
 
     let role: Role
@@ -124,6 +147,7 @@ struct BoarStyle: ShapeStyle {
         case .primary: Color(p.textPrimary)
         case .secondary: Color(p.textSecondary)
         case .muted: Color(p.textMuted)
+        case .dim: Color(p.textDim)
         }
     }
 }
@@ -152,6 +176,16 @@ private struct BoarListBackground: ViewModifier {
         content
             .scrollContentBackground(.hidden)
             .background(Color(palette.bgTerminal).ignoresSafeArea())
+    }
+}
+
+private struct BoarListRows: ViewModifier {
+    @Environment(\.palette) private var palette
+
+    func body(content: Content) -> some View {
+        content
+            .listRowBackground(Color(palette.bgCard))
+            .listRowSeparatorTint(Color(palette.borderSubtle))
     }
 }
 

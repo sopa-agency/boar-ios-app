@@ -24,7 +24,8 @@ struct GgufFileList: View {
         }
         if hidden > 0 {
             Button("Other Versions (\(hidden))", systemImage: "chevron.down") { showAll = true }
-                .font(.subheadline)
+                .font(.boar("ui.subtext"))
+                .tint(BoarStyle(role: .link))
         }
     }
 }
@@ -53,12 +54,10 @@ struct GgufFileRow: View {
             VStack(alignment: .leading, spacing: 2) {
                 HStack {
                     Text(verbatim: title)
-                        .font(.subheadline.weight(.semibold))
-                        .monospaced()
+                        .font(.boar("mono.md"))
+                        .foregroundStyle(.boar(.primary))
                     if recommended {
-                        Text("\(Image(systemName: Symbols.recommended)) Recommended")
-                            .font(.footnote.weight(.semibold))
-                            .foregroundStyle(.tint)
+                        ModelBadge(text: "Recommended", tone: .accent)
                     }
                 }
                 status
@@ -75,8 +74,8 @@ struct GgufFileRow: View {
             CatalogDownloadProgress(asset: asset, row: row, showSpeed: controller.services.settings.showLiveStats)
         } else if row.error != nil {
             Text("Download failed")
-                .font(.footnote)
-                .foregroundStyle(.red)
+                .font(.boar("ui.caption"))
+                .foregroundStyle(.boar(.danger))
         } else {
             HStack(spacing: 4) {
                 if let level = quant.flatMap(HfQuery.quantLevel) {
@@ -86,8 +85,8 @@ struct GgufFileRow: View {
                 Text(file.sizeBytes, format: .byteCount(style: .file))
                     .monospacedDigit()
             }
-            .font(.footnote)
-            .foregroundStyle(.secondary)
+            .font(.boar("ui.caption"))
+            .foregroundStyle(.boar(.secondary))
         }
     }
 

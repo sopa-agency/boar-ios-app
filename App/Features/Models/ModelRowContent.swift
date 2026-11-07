@@ -1,9 +1,11 @@
+import BoarCore
 import BoarModels
 import SwiftUI
 
-/// A model's row, the same in setup and in Models: a tinted icon tile, the plain name with at most one small badge
-/// (Recommended, or the fit verdict when it is tight), what the model is for, and one quiet line with the real model
-/// and its size. Three short lines, each with one job, so a list of models reads at a glance.
+/// A model's row, the same in setup and in Models, in the type of Android's catalog card (the name in titleSm, subtext,
+/// the size in mono): a tinted icon tile, the plain name with at most one small badge (Recommended, or the fit verdict
+/// when it is tight), what the model is for, and one quiet line with the real model and its size. Three short lines,
+/// each with one job, so a list of models reads at a glance.
 struct ModelRowContent<Status: View>: View {
     let asset: CatalogAsset
     let fit: Compatibility
@@ -19,22 +21,21 @@ struct ModelRowContent<Status: View>: View {
             VStack(alignment: .leading, spacing: 3) {
                 HStack(alignment: .firstTextBaseline, spacing: 8) {
                     Text(verbatim: asset.friendlyName)
-                        .font(.headline)
-                        .foregroundStyle(dimmed ? .secondary : .primary)
+                        .font(.boar("ui.titleSm"))
+                        .foregroundStyle(.boar(dimmed ? .muted : .heading))
                     badge
                 }
                 if Status.self == EmptyView.self {
                     Text(verbatim: asset.plainPurpose)
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
+                        .font(.boar("ui.subtext"))
+                        .foregroundStyle(.boar(.secondary))
                 } else {
                     status()
-                        .font(.subheadline)
+                        .font(.boar("ui.subtext"))
                 }
                 Text(verbatim: meta)
-                    .font(.footnote)
-                    .monospacedDigit()
-                    .foregroundStyle(.secondary)
+                    .font(.boar("mono.xs"))
+                    .foregroundStyle(.boar(.dim))
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }
@@ -50,9 +51,9 @@ struct ModelRowContent<Status: View>: View {
 
     @ViewBuilder private var badge: some View {
         if fit == .yellow || fit == .red, let label = fit.plainShortLabel {
-            ModelBadge(text: label, color: fit.color)
+            ModelBadge(text: label, tone: fit.tone, dot: true)
         } else if recommended {
-            ModelBadge(text: "Recommended", color: .accentColor)
+            ModelBadge(text: "Recommended", tone: .accent)
         }
     }
 }
@@ -63,34 +64,72 @@ extension ModelRowContent where Status == EmptyView {
     }
 }
 
-/// A small tinted capsule next to a model's name ("Recommended", "May be slow").
+/// A small badge next to a model's name ("Recommended", "May be slow"), as Android's StatusBadge and RamBadge draw it:
+/// bold mono text on the tone's subtle wash inside its border, with a status dot for a verdict.
 struct ModelBadge: View {
+    enum Tone: Sendable {
+        /// Emerald: recommended, in use.
+        case accent
+        /// Amber: may be slow.
+        case warning
+        /// Crimson: too big.
+        case danger
+        /// Cyan: informational.
+        case link
+    }
+
     let text: LocalizedStringKey
-    let color: Color
+    let tone: Tone
+    var dot = false
+    @Environment(\.palette) private var palette
+
+    private var colors: (fg: ARGB, bg: ARGB, border: ARGB) {
+        switch tone {
+        case .accent: (palette.textAccentEmerald, palette.emeraldBgSubtle, palette.emeraldBorder)
+        case .warning: (palette.textAccentAmber, palette.amberBgSubtle, palette.amberBorder)
+        case .danger: (palette.crimson400, palette.crimsonBgSubtle, palette.crimsonBorder)
+        case .link: (palette.textAccentCyan, palette.cyanBgSubtle, palette.cyanBorder)
+        }
+    }
 
     var body: some View {
-        Text(text)
-            .font(.caption.bold())
-            .foregroundStyle(color)
-            .padding(.horizontal, 8)
-            .padding(.vertical, 2)
-            .background(color.opacity(0.14), in: .capsule)
-            .lineLimit(1)
+        let c = colors
+        let shape = RoundedRectangle(cornerRadius: Radii.sm)
+        HStack(spacing: 5) {
+            if dot {
+                Circle()
+                    .fill(Color(c.fg))
+                    .frame(width: 6, height: 6)
+                    .accessibilityHidden(true)
+            }
+            Text(text)
+                .font(.boar("mono.xs").bold())
+        }
+        .foregroundStyle(Color(c.fg))
+        .padding(.horizontal, 7)
+        .padding(.vertical, 2)
+        .background(Color(c.bg), in: shape)
+        .overlay(shape.strokeBorder(Color(c.border), lineWidth: 1))
+        .lineLimit(1)
     }
 }
 
-/// A model's symbol on a tinted rounded tile (grey when the model can't run here).
+/// A model's symbol on a rounded tile in the accent's subtle wash and border (Android's emerald accents on a card); a
+/// quiet tile when the model can't run here.
 struct ModelIconTile: View {
     let symbol: String
     var dimmed = false
     @ScaledMetric(relativeTo: .title3) private var side = 44
+    @Environment(\.palette) private var palette
 
     var body: some View {
+        let shape = RoundedRectangle(cornerRadius: side * 0.27)
         Image(systemName: symbol)
             .font(.title3)
-            .foregroundStyle(dimmed ? AnyShapeStyle(.secondary) : AnyShapeStyle(.tint))
+            .foregroundStyle(Color(dimmed ? palette.textDim : palette.textAccentEmerald))
             .frame(width: side, height: side)
-            .background(dimmed ? AnyShapeStyle(.fill.tertiary) : AnyShapeStyle(.tint.quaternary), in: .rect(cornerRadius: side * 0.27))
+            .background(Color(dimmed ? palette.bgSubtle : palette.emeraldBgSubtle), in: shape)
+            .overlay(shape.strokeBorder(Color(dimmed ? palette.borderSubtle : palette.emeraldBorder), lineWidth: 1))
             .accessibilityHidden(true)
     }
 }

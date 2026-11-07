@@ -76,8 +76,9 @@ struct ModelsScreen: View {
         #if os(macOS)
         List(selection: $detail) { listContent }
         #else
-        List { listContent }
+        List { listContent.boarListRows() }
             .groupedListStyle()
+            .boarList()
         #endif
     }
 
@@ -142,7 +143,9 @@ struct ModelsScreen: View {
     #endif
 
     private var listFooter: some View {
-        Text("Models run on this \(Platform.deviceNoun). BOAR uses one at a time.")
+        BoarFooter {
+            Text("Models run on this \(Platform.deviceNoun). BOAR uses one at a time.")
+        }
     }
 
     private func row(_ asset: CatalogAsset) -> some View {
