@@ -88,7 +88,9 @@ struct EngineTweaksScreen: View {
                         ForEach(1...max(n, 1), id: \.self) { Text(verbatim: "\($0)").tag(Optional($0)) }
                     }
                 } header: {
-                    Text("CPU")
+                    BoarHeader {
+                        Text("CPU")
+                    }
                 } footer: {
                     BoarFooter {
                         Text("More threads than performance cores is usually slower. On iPhone, answers run on the CPU.")
@@ -118,7 +120,9 @@ struct EngineTweaksScreen: View {
                         Text("Off").tag(FlashAttn.off)
                     }
                 } header: {
-                    Text("Memory")
+                    BoarHeader {
+                        Text("Memory")
+                    }
                 } footer: {
                     BoarFooter {
                         Text("Q8_0 and Q4_0 use less memory for the KV cache; on some phones Q8_0 with flash attention generates slower.")
@@ -142,7 +146,9 @@ struct EngineTweaksScreen: View {
                         Text("On").tag(Optional(LazyMode.on))
                     }
                 } header: {
-                    Text("Loading")
+                    BoarHeader {
+                        Text("Loading")
+                    }
                 } footer: {
                     BoarFooter {
                         Text("Auto maps the model from storage. Repacking reads prompts about 2× faster. After a load that ran out of memory, the next one keeps the weights mapped.")
@@ -162,7 +168,9 @@ struct EngineTweaksScreen: View {
                         Text("No Limit").tag(Optional(0))
                     }
                 } header: {
-                    Text("Answers")
+                    BoarHeader {
+                        Text("Answers")
+                    }
                 } footer: {
                     BoarFooter {
                         Text("Thinking lets a reasoning model think before it answers; Auto keeps it off so the answer isn't cut short. The Auto time limit grows with the answer length; an answer that hits it keeps what it wrote.")

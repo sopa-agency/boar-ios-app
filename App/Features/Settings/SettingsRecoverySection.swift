@@ -19,8 +19,9 @@ struct SettingsRecoverySection: View {
             Button(role: .destructive) {
                 confirmClear = true
             } label: {
+                // Android's LinkButton: danger until it's done, then the link color (SettingsScreen.kt ClearChats).
                 Label(cleared ? "Chat History Cleared" : "Clear Chat History", systemImage: cleared ? "checkmark" : Symbols.delete)
-                    .foregroundStyle(.boar(.danger))
+                    .foregroundStyle(.boar(cleared ? .link : .danger))
                     .contentTransition(.symbolEffect(.replace))
             }
             .disabled(cleared || answering)
@@ -28,7 +29,7 @@ struct SettingsRecoverySection: View {
                 confirmReset = true
             } label: {
                 Label("Reset Settings", systemImage: "arrow.uturn.backward")
-                    .foregroundStyle(.boar(.danger))
+                    .foregroundStyle(.boar(.link))
             }
             Button(role: .destructive) {
                 confirmPurge = true

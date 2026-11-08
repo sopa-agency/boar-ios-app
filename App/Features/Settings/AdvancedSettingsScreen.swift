@@ -36,7 +36,9 @@ struct AdvancedSettingsScreen: View {
                 }
                 .drillDownPickerStyle()
             } header: {
-                Text("Answers")
+                BoarHeader {
+                    Text("Answers")
+                }
             } footer: {
                 BoarFooter {
                     VStack(alignment: .leading) {
@@ -64,7 +66,9 @@ struct AdvancedSettingsScreen: View {
                 }
                 .disabled(!summarize)
             } header: {
-                Text("Chat Memory")
+                BoarHeader {
+                    Text("Chat Memory")
+                }
             } footer: {
                 BoarFooter {
                     Text("Long chats keep their context: older turns are condensed and the most recent ones stay word for word.")
@@ -82,8 +86,8 @@ struct AdvancedSettingsScreen: View {
                 #endif
                 Button(action: model.reopenSetup) {
                     SettingsLabel("Run Setup Again", symbol: "arrow.clockwise")
+                        .foregroundStyle(.boar(.link))
                 }
-                .tint(.primary)
                 #if os(macOS)
                 .buttonStyle(.plain)
                 #endif
@@ -127,7 +131,9 @@ struct AdvancedSettingsScreen: View {
                     #endif
                 }
             } header: {
-                Text("For Developers")
+                BoarHeader {
+                    Text("For Developers")
+                }
             } footer: {
                 BoarFooter {
                     Text(technical

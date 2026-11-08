@@ -11,7 +11,7 @@ struct AboutFeatureRow: View {
             VStack(alignment: .leading) {
                 Text(title)
                 Text(text)
-                    .font(.subheadline)
+                    .font(.boar("ui.subtext"))
                     .foregroundStyle(.secondary)
             }
         } icon: {

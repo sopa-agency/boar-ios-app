@@ -26,7 +26,9 @@ struct SettingsFreeMemorySection: View {
                 .pickerStyle(.menu)
             }
         } header: {
-            Text("Memory")
+            BoarHeader {
+                Text("Memory")
+            }
         } footer: {
             BoarFooter {
                 Text("Shortly after you leave, when nothing is being answered, BOAR unloads the model, so the phone doesn't close BOAR to get its memory back. The next answer takes a few seconds longer to start.")
