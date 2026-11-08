@@ -23,7 +23,9 @@ struct SettingsDisplaySection: View {
             }
             #endif
         } header: {
-            Text("Display")
+            BoarHeader {
+                Text("Display")
+            }
         } footer: {
             BoarFooter {
                 Text("System follows your \(Platform.deviceNoun)'s appearance: Moonlight when dark, Paper when light.")

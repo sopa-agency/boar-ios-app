@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// A screen of sections (facts, choices, results) in the theme (`BoarForm`'s cards and text): the grouped list on
+/// A screen of sections (facts, choices, results) in the theme (`BoarForm`'s cards, text colors and fonts): the grouped list on
 /// iPhone, a grouped form on the Mac, where an inset list stretched across a wide window reads as one flat table.
 struct GroupedList<Content: View>: View {
     @ViewBuilder var content: Content
@@ -11,12 +11,12 @@ struct GroupedList<Content: View>: View {
         Form { rows }
             .formStyle(.grouped)
             .boarListBackground()
-            .font(.boar("ui.body"))
+            .boarFormText()
         #else
         List { rows }
             .groupedListStyle()
             .boarListBackground()
-            .font(.boar("ui.body"))
+            .boarFormText()
         #endif
     }
 

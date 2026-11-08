@@ -61,6 +61,12 @@ extension View {
         }
     }
 
+    /// A form's text in the theme: Lexend at the body size, and the hierarchical styles (`.primary`, `.secondary`,
+    /// `.tertiary`) in textPrimary, textSecondary and textDim, as Android's rows (BoarSection) are.
+    func boarFormText() -> some View {
+        modifier(BoarFormText())
+    }
+
     /// A List on Android's screen background (bgTerminal) instead of the grouped system gray.
     func boarListBackground() -> some View {
         modifier(BoarListBackground())
@@ -94,8 +100,9 @@ extension View {
 }
 
 /// A settings-style Form in Android's look (BoarSection: cards on the screen background, Lexend text), keeping the
-/// system rows, toggles and pickers. Section titles read in Lexend at the body size, as Android's section titles stand
-/// out from their rows; put each footer in a `BoarFooter`.
+/// system rows, toggles and pickers. Rows read in the theme's text colors (`.primary`, `.secondary` and `.tertiary`
+/// become textPrimary, textSecondary and textDim); put each section title in a `BoarHeader` and each footer in a
+/// `BoarFooter`.
 struct BoarForm<Content: View>: View {
     @ViewBuilder let content: Content
     @Environment(\.palette) private var palette
@@ -107,18 +114,22 @@ struct BoarForm<Content: View>: View {
                 .listRowSeparatorTint(Color(palette.borderSubtle))
         }
         .boarListBackground()
-        .font(.boar("ui.body"))
+        .boarFormText()
     }
 }
 
 /// A theme color by its role, resolved from the palette in the environment, so a view can say
-/// `.foregroundStyle(.boar(.danger))` where it used `.red`.
+/// `.foregroundStyle(.boar(.danger))` where it used `.red`. On a prominent background (a selected row in the Mac's
+/// sidebar lists, drawn in the system accent) text goes back to the system's `.primary` and `.secondary`, which turn
+/// white there; a theme color would sink into the highlight.
 struct BoarStyle: ShapeStyle {
     enum Role: Sendable {
         /// Android's crimson400: errors and destructive actions.
         case danger
         /// amber400: warnings ("almost full", a missing model).
         case warning
+        /// textAccentAmber: time left on a download.
+        case amber
         /// textAccentEmerald: success and "on" states.
         case success
         /// textAccentCyan: links and secondary actions (Android's LinkButton).
@@ -134,11 +145,21 @@ struct BoarStyle: ShapeStyle {
 
     let role: Role
 
-    func resolve(in environment: EnvironmentValues) -> Color {
-        let p = environment.palette
-        return switch role {
+    func resolve(in environment: EnvironmentValues) -> AnyShapeStyle {
+        if environment.backgroundProminence == .increased {
+            return switch role {
+            case .heading, .primary: AnyShapeStyle(.primary)
+            default: AnyShapeStyle(.secondary)
+            }
+        }
+        return AnyShapeStyle(color(environment.palette))
+    }
+
+    private func color(_ p: BoarPalette) -> Color {
+        switch role {
         case .danger: Color(p.crimson400)
         case .warning: Color(p.amber400)
+        case .amber: Color(p.textAccentAmber)
         case .success: Color(p.textAccentEmerald)
         case .link: Color(p.textAccentCyan)
         case .accent: Color(p.emerald500)
@@ -157,15 +178,56 @@ extension ShapeStyle where Self == BoarStyle {
     static func boar(_ role: BoarStyle.Role) -> BoarStyle { BoarStyle(role: role) }
 }
 
+/// A Form section's title as Android's BoarSection writes it (BoarSection.kt): ui.title in the heading color, as
+/// written (no small capitals).
+struct BoarHeader<Content: View>: View {
+    @ViewBuilder let content: Content
+
+    var body: some View {
+        content
+            .font(.boar("ui.title"))
+            .foregroundStyle(.boar(.heading))
+            .textCase(nil)
+    }
+}
+
 /// A Form section's footer as Android's notes under a setting: ui.subtext in the muted text color.
 struct BoarFooter<Content: View>: View {
     @ViewBuilder let content: Content
-    @Environment(\.palette) private var palette
 
     var body: some View {
         content
             .font(.boar("ui.subtext"))
-            .foregroundStyle(Color(palette.textMuted))
+            .foregroundStyle(.boar(.muted))
+    }
+}
+
+private struct BoarFormText: ViewModifier {
+    @Environment(\.palette) private var palette
+
+    func body(content: Content) -> some View {
+        content
+            .font(.boar("ui.body"))
+            .foregroundStyle(Color(palette.textPrimary), Color(palette.textSecondary), Color(palette.textDim))
+            #if os(iOS)
+            .buttonStyle(BoarFormButtonStyle())
+            #endif
+    }
+}
+
+/// An iPhone form's row buttons as the system draws them, in the tint (or crimson400 when destructive): the form's text
+/// colors would otherwise win over the tint, and a row button would read like a row title. A label's own style still
+/// wins. The Mac's push buttons keep their own look.
+private struct BoarFormButtonStyle: PrimitiveButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        Button(role: configuration.role, action: configuration.trigger) {
+            if configuration.role == .destructive {
+                configuration.label.foregroundStyle(.boar(.danger))
+            } else {
+                configuration.label.foregroundStyle(.tint)
+            }
+        }
+        .buttonStyle(.automatic)
     }
 }
 
@@ -286,6 +348,16 @@ extension Font {
             ? .system(size: size, design: .monospaced)
             : .custom(style.face.rawValue, size: size, relativeTo: relative)
         return style.tabular ? font.monospacedDigit() : font
+    }
+
+    /// A brand style's face at a fixed size, as Android's `Boar.type["mono.xs"].copy(fontSize = 9.sp)` (the Labs' status
+    /// tags): Lexend for the mono styles, with fixed-width digits. It doesn't grow with Dynamic Type, so a tag keeps
+    /// fitting its tile.
+    static func boar(_ name: String, size: CGFloat) -> Font {
+        let style = BrandType.style(name, scale: "standard")
+        let face = style?.face ?? .lexend400
+        let font: Font = face == .monospace ? .system(size: size, design: .monospaced) : .custom(face.rawValue, fixedSize: size)
+        return style?.tabular == true ? font.monospacedDigit() : font
     }
 
     /// Baloo 2 ExtraBold at an iOS title size (the editorial setup titles, larger than Android's 24 pt headline).

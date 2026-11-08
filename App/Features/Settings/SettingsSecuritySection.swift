@@ -12,7 +12,9 @@ struct SettingsSecuritySection: View {
             }
                 .disabled(lock.busy || !canLock)
         } header: {
-            Text("Privacy")
+            BoarHeader {
+                Text("Privacy")
+            }
         } footer: {
             BoarFooter {
                 VStack(alignment: .leading) {

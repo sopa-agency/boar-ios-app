@@ -2,7 +2,7 @@
 import SwiftUI
 
 /// The Mac's Settings window (⌘,): the iPhone's Settings page split into General, Privacy and Advanced tabs, each a
-/// grouped form in the System Settings look. Changes reach the open chat at once.
+/// grouped form in the theme (`BoarForm`'s cards, text colors and fonts). Changes reach the open chat at once.
 struct MacSettingsView: View {
     @Environment(AppModel.self) private var model
 

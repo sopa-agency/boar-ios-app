@@ -52,14 +52,10 @@ struct GgufFileRow: View {
     var body: some View {
         HStack {
             VStack(alignment: .leading, spacing: 2) {
-                HStack {
-                    Text(verbatim: title)
-                        .font(.boar("mono.md"))
-                        .foregroundStyle(.boar(.primary))
-                    if recommended {
-                        ModelBadge(text: "Recommended", tone: .accent)
-                    }
-                }
+                // Android's file row (BrowseScreen.kt): the name in subtext textPrimary, the facts under it in micro.
+                Text(verbatim: title)
+                    .font(.boar("ui.subtext"))
+                    .foregroundStyle(.boar(.primary))
                 status
                 CompatibilityLabel(fit: fit)
             }
@@ -84,9 +80,13 @@ struct GgufFileRow: View {
                 }
                 Text(file.sizeBytes, format: .byteCount(style: .file))
                     .monospacedDigit()
+                if recommended {
+                    Text(verbatim: "·")
+                    Text("Recommended")
+                }
             }
-            .font(.boar("ui.caption"))
-            .foregroundStyle(.boar(.secondary))
+            .font(.boar("ui.micro"))
+            .foregroundStyle(.boar(recommended ? .success : .dim))
         }
     }
 

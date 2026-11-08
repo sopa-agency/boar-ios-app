@@ -31,7 +31,7 @@ struct AppleModelRow: View {
                         .font(.boar("ui.subtext"))
                         .foregroundStyle(.boar(loading ? .success : .secondary))
                         Text("Apple's on-device model · built in")
-                            .font(.boar("mono.xs"))
+                            .boarText("mono.xs")
                             .foregroundStyle(.boar(.dim))
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)

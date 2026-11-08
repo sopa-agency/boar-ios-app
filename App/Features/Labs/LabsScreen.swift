@@ -200,7 +200,7 @@ struct LabTile: View {
                     if lab.shownArt != nil {
                         Text(verbatim: "?").font(.boar("ui.titleLg")).foregroundStyle(.boar(.dim))
                     } else {
-                        Image(systemName: "lock.fill").font(.title2).foregroundStyle(.boar(.dim))
+                        Image(systemName: "lock.fill").font(.system(size: 24)).foregroundStyle(.boar(.dim))
                     }
                 }
                 Color(palette.crimson500).opacity(red)
@@ -215,10 +215,10 @@ struct LabTile: View {
                 // A revealed classified lab can't be switched on, so OFF would only confuse: it has LEAKED instead.
                 if !locked && lab.status != .classified && !labs.enabled(lab.id) {
                     Text("OFF")
-                        .font(.system(size: 9, weight: .heavy, design: .monospaced))
+                        .font(.boar("mono.xs", size: 9).bold())
                         .foregroundStyle(.boar(.dim))
                         .padding(.horizontal, 6).padding(.vertical, 2)
-                        .background(palette.light ? Color.white.opacity(0.7) : Color.black.opacity(0.4), in: .rect(cornerRadius: 4))
+                        .background(LabStatusTag.base(palette, darkOpacity: 0.4), in: .rect(cornerRadius: 4))
                         .padding(8)
                 }
             }
@@ -268,7 +268,7 @@ struct LabStatusTag: View {
     var body: some View {
         if leaked {
             Text("LEAKED")
-                .font(.system(size: 10, weight: .heavy).monospaced())
+                .font(.boar("mono.xs", size: 10).bold())
                 .foregroundStyle(.white)
                 .padding(.horizontal, 7).padding(.vertical, 2)
                 .background(Color(palette.crimson500), in: .rect(cornerRadius: 4))
@@ -277,7 +277,7 @@ struct LabStatusTag: View {
             let review = status == .review
             let c = colors
             Text(status.label)
-                .font(.system(size: review ? 11 : 9, weight: .heavy, design: .monospaced))
+                .font(.boar("mono.xs", size: review ? 11 : 9).bold())
                 .foregroundStyle(c.fg)
                 .padding(.horizontal, review ? 8 : 6).padding(.vertical, review ? 3 : 2)
                 // A base under the tint keeps the tag readable over a tile's art: dark as on Android, light on Paper,
@@ -287,9 +287,10 @@ struct LabStatusTag: View {
         }
     }
 
-    /// The plate under a tag on a tile's art.
-    static func base(_ palette: BoarPalette) -> Color {
-        palette.light ? Color.white.opacity(0.85) : Color.black.opacity(0.7)
+    /// The plate under a tag on a tile's art: Android's black at `darkOpacity` (0.7 under a status tag, 0.4 under OFF);
+    /// on Paper, whose accents are dark text, the same light plate under both.
+    static func base(_ palette: BoarPalette, darkOpacity: Double = 0.7) -> Color {
+        palette.light ? Color.white.opacity(0.85) : Color.black.opacity(darkOpacity)
     }
 
     /// Android's StatusChip: each status's accent text on its subtle wash.

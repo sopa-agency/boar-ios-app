@@ -19,7 +19,7 @@ struct SettingsVoiceSection: View {
                     VStack(alignment: .leading) {
                         Text("English Speech Model")
                         Text(installing == nil && state == .downloadable ? "Needed once for dictation" : "Downloading…")
-                            .font(.subheadline)
+                            .font(.boar("ui.subtext"))
                             .foregroundStyle(.secondary)
                     }
                     Spacer()
@@ -38,7 +38,9 @@ struct SettingsVoiceSection: View {
                 }
             }
         } header: {
-            Text("Voice")
+            BoarHeader {
+                Text("Voice")
+            }
         } footer: {
             BoarFooter {
                 VStack(alignment: .leading) {

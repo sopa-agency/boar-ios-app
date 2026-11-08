@@ -19,7 +19,6 @@ enum Symbols {
     static let retry = "arrow.clockwise"
     static let download = "arrow.down.circle"
     static let delete = "trash"
-    static let recommended = "star.fill"
     static let library = "books.vertical"
     static let pack = "book.closed"
     static let collection = "folder"
