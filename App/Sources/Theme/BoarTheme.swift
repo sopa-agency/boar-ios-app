@@ -64,6 +64,12 @@ extension View {
         }
     }
 
+    /// A form's text in the theme: Lexend at the body size, and the hierarchical styles (`.primary`, `.secondary`,
+    /// `.tertiary`) in textPrimary, textSecondary and textDim, as Android's rows (BoarSection) are.
+    func boarFormText() -> some View {
+        modifier(BoarFormText())
+    }
+
     /// A List on Android's screen background (bgTerminal) instead of the grouped system gray.
     func boarListBackground() -> some View {
         modifier(BoarListBackground())
@@ -97,8 +103,9 @@ extension View {
 }
 
 /// A settings-style Form in Android's look (BoarSection: cards on the screen background, Lexend text), keeping the
-/// system rows, toggles and pickers. Section titles read in Lexend at the body size, as Android's section titles stand
-/// out from their rows; put each footer in a `BoarFooter`.
+/// system rows, toggles and pickers. Rows read in the theme's text colors (`.primary`, `.secondary` and `.tertiary`
+/// become textPrimary, textSecondary and textDim); put each section title in a `BoarHeader` and each footer in a
+/// `BoarFooter`.
 struct BoarForm<Content: View>: View {
     @ViewBuilder let content: Content
     @Environment(\.palette) private var palette
@@ -110,7 +117,7 @@ struct BoarForm<Content: View>: View {
                 .listRowSeparatorTint(Color(palette.borderSubtle))
         }
         .boarListBackground()
-        .font(.boar("ui.body"))
+        .boarFormText()
     }
 }
 
@@ -157,15 +164,56 @@ extension ShapeStyle where Self == BoarStyle {
     static func boar(_ role: BoarStyle.Role) -> BoarStyle { BoarStyle(role: role) }
 }
 
+/// A Form section's title as Android's BoarSection writes it (BoarSection.kt): ui.title in the heading color, as
+/// written (no small capitals).
+struct BoarHeader<Content: View>: View {
+    @ViewBuilder let content: Content
+
+    var body: some View {
+        content
+            .font(.boar("ui.title"))
+            .foregroundStyle(.boar(.heading))
+            .textCase(nil)
+    }
+}
+
 /// A Form section's footer as Android's notes under a setting: ui.subtext in the muted text color.
 struct BoarFooter<Content: View>: View {
     @ViewBuilder let content: Content
-    @Environment(\.palette) private var palette
 
     var body: some View {
         content
             .font(.boar("ui.subtext"))
-            .foregroundStyle(Color(palette.textMuted))
+            .foregroundStyle(.boar(.muted))
+    }
+}
+
+private struct BoarFormText: ViewModifier {
+    @Environment(\.palette) private var palette
+
+    func body(content: Content) -> some View {
+        content
+            .font(.boar("ui.body"))
+            .foregroundStyle(Color(palette.textPrimary), Color(palette.textSecondary), Color(palette.textDim))
+            #if os(iOS)
+            .buttonStyle(BoarFormButtonStyle())
+            #endif
+    }
+}
+
+/// An iPhone form's row buttons as the system draws them, in the tint (or crimson400 when destructive): the form's text
+/// colors would otherwise win over the tint, and a row button would read like a row title. A label's own style still
+/// wins. The Mac's push buttons keep their own look.
+private struct BoarFormButtonStyle: PrimitiveButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        Button(role: configuration.role, action: configuration.trigger) {
+            if configuration.role == .destructive {
+                configuration.label.foregroundStyle(.boar(.danger))
+            } else {
+                configuration.label.foregroundStyle(.tint)
+            }
+        }
+        .buttonStyle(.automatic)
     }
 }
 

@@ -20,7 +20,9 @@ struct SettingsMemorySection: View {
                 SettingsLabel("Ask Before Deleting a Chat", symbol: "trash.fill")
             }
         } header: {
-            Text("Chats")
+            BoarHeader {
+                Text("Chats")
+            }
         } footer: {
             BoarFooter {
                 Text("New chats are named from your first message. Older chats are removed past the limit. Off, one tap deletes a chat.")

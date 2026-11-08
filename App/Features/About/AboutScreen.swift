@@ -15,20 +15,19 @@ struct AboutScreen: View {
                         .scaledToFit()
                         .frame(width: 72, height: 72)
                     Text(verbatim: "BOAR")
-                        .font(.largeTitle.bold())
+                        .font(.boarDisplay(size: 34, relativeTo: .largeTitle))
+                        .foregroundStyle(.boar(.heading))
                     Text("Knowledge that travels with you")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
+                        .font(.boar("ui.titleSm"))
+                        .foregroundStyle(.boar(.secondary))
                     #if DEBUG
                     Text("Version \(version) (\(build)) · Development build")
-                        .font(.footnote)
-                        .monospacedDigit()
-                        .foregroundStyle(.secondary)
+                        .boarText("mono.xs")
+                        .foregroundStyle(.boar(.secondary))
                     #else
                     Text("Version \(version) (\(build)) · Release build")
-                        .font(.footnote)
-                        .monospacedDigit()
-                        .foregroundStyle(.secondary)
+                        .boarText("mono.xs")
+                        .foregroundStyle(.boar(.secondary))
                     #endif
                 }
                 .frame(maxWidth: .infinity)
@@ -54,7 +53,9 @@ struct AboutScreen: View {
                     }
                 }
             } header: {
-                Text("Open Source")
+                BoarHeader {
+                    Text("Open Source")
+                }
             } footer: {
                 BoarFooter {
                     Text("Source code, model lists and the scripts that build the offline library.")
@@ -65,7 +66,9 @@ struct AboutScreen: View {
                 ValueRow(label: "Engine", value: Self.engine)
                 ValueRow(label: "Retrieval", value: "SQLite \(sqliteVersion) · FTS5")
             } header: {
-                Text("Engine")
+                BoarHeader {
+                    Text("Engine")
+                }
             } footer: {
                 BoarFooter {
                     Text("Answers are AI-generated from the sources BOAR finds on this \(Platform.deviceNoun). They are not reviewed by clinicians or experts.")

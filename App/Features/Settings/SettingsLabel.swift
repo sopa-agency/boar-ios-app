@@ -7,6 +7,7 @@ struct SettingsLabel: View {
     let title: LocalizedStringKey
     let symbol: String
     @ScaledMetric(relativeTo: .body) private var side = 24
+    @Environment(\.isEnabled) private var isEnabled
 
     init(_ title: LocalizedStringKey, symbol: String) {
         self.title = title
@@ -21,6 +22,7 @@ struct SettingsLabel: View {
                 .resizable()
                 .scaledToFit()
                 .foregroundStyle(.boar(.heading))
+                .opacity(isEnabled ? 1 : 0.4)
                 .frame(width: side * 0.9, height: side * 0.9)
                 .frame(width: side, height: side)
                 .accessibilityHidden(true)

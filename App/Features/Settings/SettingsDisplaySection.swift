@@ -22,7 +22,9 @@ struct SettingsDisplaySection: View {
             }
             #endif
         } header: {
-            Text("Display")
+            BoarHeader {
+                Text("Display")
+            }
         } footer: {
             BoarFooter {
                 #if !os(macOS)

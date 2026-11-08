@@ -32,7 +32,9 @@ struct DeviceInfoScreen: View {
                     ValueRow(label: "Free Storage", value: free.formatted(.byteCount(style: .file)))
                 }
             } header: {
-                Text(verbatim: Platform.deviceNoun)
+                BoarHeader {
+                    Text(verbatim: Platform.deviceNoun)
+                }
             }
 
             Section {
@@ -49,7 +51,7 @@ struct DeviceInfoScreen: View {
                 }
                 if let storage {
                     UsageBar(title: "Storage", used: storage, total: services.catalog.storageBudgetBytes,
-                             caption: String(localized: "BOAR's storage limit, not the \(Platform.deviceNoun)'s"), style: .file)
+                             caption: String(localized: "BOAR's storage limit, not the \(Platform.deviceNoun)'s"), kind: .storage)
                 }
                 ValueRow(label: "Saved Chats", value: model.sessions.count.formatted())
                 ValueRow(label: "Benchmark Runs", value: evals.count.formatted())
@@ -57,7 +59,9 @@ struct DeviceInfoScreen: View {
                     ValueRow(label: "Last Benchmark", value: last.formatted(date: .abbreviated, time: .omitted))
                 }
             } header: {
-                Text("BOAR")
+                BoarHeader {
+                    Text("BOAR")
+                }
             } footer: {
                 BoarFooter {
                     Text("Nothing here leaves your \(Platform.deviceNoun).")

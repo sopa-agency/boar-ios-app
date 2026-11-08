@@ -38,7 +38,7 @@ struct EvalComparisonSection: View {
                         .gridCellUnsizedAxes([.horizontal, .vertical])
                     ForEach(summary.configs) { config in
                         Text(verbatim: controller.name(configId: config.configId, label: config.label).plain)
-                            .font(.subheadline.weight(.semibold))
+                            .font(.boar("ui.subtext").weight(.semibold))
                             .gridColumnAlignment(.trailing)
                     }
                 }
@@ -47,11 +47,11 @@ struct EvalComparisonSection: View {
                         .gridCellUnsizedAxes(.horizontal)
                     GridRow {
                         Text(metric.title)
-                            .font(.subheadline)
+                            .font(.boar("ui.subtext"))
                             .frame(maxWidth: .infinity, alignment: .leading)
                         ForEach(summary.configs) { config in
                             Text(verbatim: metric.value(config.overall))
-                                .font(.subheadline)
+                                .font(.boar("ui.subtext"))
                                 .monospacedDigit()
                         }
                     }
@@ -60,7 +60,9 @@ struct EvalComparisonSection: View {
             }
             .padding(.vertical, 4)
         } header: {
-            Text(summary.configs.count > 1 ? "Comparison" : "Summary")
+            BoarHeader {
+                Text(summary.configs.count > 1 ? "Comparison" : "Summary")
+            }
         } footer: {
             BoarFooter {
                 Text("Facts checked looks for each question's expected facts and known wrong claims by keyword. It agrees with hand grading about 88% of the time and is not the bounty score: share the traces for the judge and score them on a computer.")

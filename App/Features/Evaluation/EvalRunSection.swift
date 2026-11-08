@@ -29,6 +29,7 @@ struct EvalRunSection: View {
             if let path = controller.savedPath {
                 Label {
                     Text(controller.stopped ? "Stopped early. Partial results saved to \(path)." : "Saved to \(path).")
+                        .font(.boar("ui.subtext"))
                         .foregroundStyle(.secondary)
                 } icon: {
                     Image(systemName: controller.stopped ? Symbols.caution : Symbols.active)
