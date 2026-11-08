@@ -7,9 +7,8 @@ struct SettingsDisplaySection: View {
     let bridge: SettingsBridge
 
     var body: some View {
-        @Bindable var model = model
         Section {
-            Picker(selection: $model.theme) {
+            Picker(selection: Binding(get: { model.theme }, set: { model.setTheme($0) })) {
                 ForEach(ThemeChoice.choices(current: model.theme)) { choice in
                     choice.title.tag(choice)
                 }

@@ -8,6 +8,7 @@ import UniformTypeIdentifiers
 /// toolbar's Add menu, which the Personal Files style answers from.
 struct DocumentsScreen: View {
     @Environment(AppModel.self) private var model
+    @Environment(\.palette) private var palette
     let documents: DocumentsController
     let models: ModelsController
 
@@ -159,7 +160,7 @@ struct DocumentsScreen: View {
                         ShareLink(item: documents.exportFile(c), preview: SharePreview(c.name)) {
                             Label("Export", systemImage: "square.and.arrow.up")
                         }
-                        .tint(.accentColor)
+                        .tint(palette.accent)
                     }
                     .contextMenu {
                         ShareLink(item: documents.exportFile(c), preview: SharePreview(c.name)) {

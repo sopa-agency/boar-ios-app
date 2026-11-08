@@ -81,9 +81,20 @@ final class AppModel {
     @ObservationIgnored private var memoryRelease: Task<Void, Never>?
     @ObservationIgnored private var inForeground = true
     var selection: SidebarItem? = .newChat
-    /// System or one of Android's themes (Settings → Display); persisted on every change.
-    var theme: ThemeChoice = .system {
-        didSet { services?.settings.themeId = theme.storedId }
+    /// System or one of Android's themes (Settings → Display), as read from `themeId`. Only `setTheme` writes it back:
+    /// reading never rewrites the stored id, so a Vault theme set on Android (shown here as Moonlight) or an unset id
+    /// stays as it was until someone picks a theme.
+    private(set) var theme: ThemeChoice = .system
+
+    /// The theme picked in Settings → Display, saved under Android's id (or "system").
+    func setTheme(_ choice: ThemeChoice) {
+        theme = choice
+        services?.settings.themeId = choice.storedId
+    }
+
+    /// Settings were reset or erased: the theme goes back to System with nothing stored.
+    func themeWasReset() {
+        theme = .system
     }
     let connectivity = Connectivity()
     /// Set by a menu command, cleared by the sidebar once it acts on it.
@@ -118,9 +129,12 @@ final class AppModel {
                 services.backend = .remote
                 RemoteConfig.setAddress(remote, services.settings)
             }
-            if let id = DebugLaunch.theme { services.settings.themeId = id }
             #endif
             theme = ThemeChoice(storedId: services.settings.themeId)
+            #if DEBUG
+            // For this run only: -uiTheme doesn't touch the stored choice.
+            if let id = DebugLaunch.theme { theme = ThemeChoice(storedId: id) }
+            #endif
             let chat = ChatController(services: services)
             chat.onSessionsChanged = { [weak self] in self?.reloadSessions() }
             self.chat = chat

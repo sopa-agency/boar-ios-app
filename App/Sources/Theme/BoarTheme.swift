@@ -35,6 +35,13 @@ private struct BoarThemeModifier: ViewModifier {
             .environment(\.palette, palette)
             .tint(palette.accent)
             .preferredColorScheme(choice.colorScheme)
+            #if os(iOS)
+            // Alerts and confirmation dialogs are UIKit's and don't follow SwiftUI's tint: they would keep the asset's
+            // AccentColor (Moonlight's amber) under Campfire.
+            .onChange(of: palette.id, initial: true) {
+                UIView.appearance(whenContainedInInstancesOf: [UIAlertController.self]).tintColor = UIColor(palette.accent)
+            }
+            #endif
     }
 }
 
