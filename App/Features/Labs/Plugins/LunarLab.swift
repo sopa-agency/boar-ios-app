@@ -63,7 +63,7 @@ private struct LunarSections: View {
                         .font(.system(size: 96))
                         .accessibilityHidden(true)
                     Text(LunarLab.phaseName(MoonPhase.nameKey(m)))
-                        .font(.boar("ui.titleLg"))
+                        .font(.boar("ui.title"))
                     Text("\(Int((m.illumination * 100).rounded()))% lit · day \(m.ageDays.formatted(.number.precision(.fractionLength(1)))) of the cycle")
                         .font(.boar("ui.caption"))
                         .foregroundStyle(.boar(.muted))

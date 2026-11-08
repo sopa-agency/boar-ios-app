@@ -35,6 +35,7 @@ private struct VitalsSample {
 
 private struct VitalsSections: View {
     @Environment(AppModel.self) private var model
+    @Environment(\.palette) private var palette
     @State private var now: VitalsSample?
     /// The thermal level (0 nominal … 3 critical) of the last `history` seconds.
     @State private var levels: [Int] = []
@@ -48,7 +49,7 @@ private struct VitalsSections: View {
                 Section {
                     Text(VitalsSections.thermalLabel(s.thermal))
                         .font(.boar("ui.headline"))
-                        .foregroundStyle(.boar(VitalsSections.thermalRole(s.thermal)))
+                        .foregroundStyle(Color(palette[keyPath: VitalsSections.thermalColor(s.thermal)]))
                     ThermalSpark(levels: levels, history: VitalsSections.history)
                         .frame(height: 56)
                         .accessibilityHidden(true)
@@ -65,7 +66,7 @@ private struct VitalsSections: View {
                 Section {
                     ForEach(Array(s.coreLoad.enumerated()), id: \.offset) { i, load in
                         VitalsMeter(label: "cpu\(i)", value: load.map { "\(Int(($0 * 100).rounded())) %" } ?? "—",
-                                    fraction: load ?? 0, tint: .link)
+                                    fraction: load ?? 0, tint: \.cyan400)
                     }
                 } header: {
                     Text("Cores")
@@ -78,12 +79,12 @@ private struct VitalsSections: View {
                     let ram = DeviceMemory.totalBytes
                     if let available = s.available {
                         VitalsMeter(label: "BOAR", value: VitalsSections.bytes(s.footprint),
-                                    fraction: Double(s.footprint) / Double(max(s.footprint + available, 1)), tint: .success)
+                                    fraction: Double(s.footprint) / Double(max(s.footprint + available, 1)), tint: \.textAccentEmerald)
                         VitalsLine(label: String(localized: "limit"),
                                    value: String(localized: "\(VitalsSections.bytes(available)) more before \(Platform.systemName) closes it"))
                     } else {
                         VitalsMeter(label: "BOAR", value: VitalsSections.bytes(s.footprint),
-                                    fraction: Double(s.footprint) / Double(max(ram, 1)), tint: .success)
+                                    fraction: Double(s.footprint) / Double(max(ram, 1)), tint: \.textAccentEmerald)
                     }
                     VitalsLine(label: Platform.deviceNoun, value: VitalsSections.bytes(ram))
                 } header: {
@@ -170,12 +171,13 @@ private struct VitalsSections: View {
         }
     }
 
-    /// Android's heat colors: emerald while cool, amber while warm, crimson once the system slows the device down.
-    static func thermalRole(_ s: ProcessInfo.ThermalState) -> BoarStyle.Role {
+    /// Android's heat colors (DevicePulseLab.kt heatColor): emerald while cool, amber while warm, crimson500 from the
+    /// moment the system may slow the device down (serious and critical alike, as Android's top band).
+    static func thermalColor(_ s: ProcessInfo.ThermalState) -> KeyPath<BoarPalette, ARGB> {
         switch s {
-        case .nominal: .success
-        case .fair: .warning
-        default: .danger
+        case .nominal: \.textAccentEmerald
+        case .fair: \.amber400
+        default: \.crimson500
         }
     }
 
@@ -214,12 +216,22 @@ private struct VitalsMeter: View {
     let label: String
     let value: String
     let fraction: Double
-    let tint: BoarStyle.Role
+    let tint: KeyPath<BoarPalette, ARGB>
+    @Environment(\.palette) private var palette
 
     var body: some View {
         HStack(spacing: 8) {
             Text(verbatim: label).font(.boar("mono.xs")).foregroundStyle(.boar(.muted)).frame(width: 52, alignment: .leading)
-            ProgressView(value: min(max(fraction, 0), 1)).tint(BoarStyle(role: tint))
+            // Android's Meter: a 6 pt bar on the theme's track (track(0.4)), not the system's gray one.
+            GeometryReader { g in
+                ZStack(alignment: .leading) {
+                    Color.black.opacity(palette.trackAlpha(0.4))
+                    Color(palette[keyPath: tint])
+                        .frame(width: g.size.width * min(max(fraction, 0), 1))
+                }
+            }
+            .frame(height: 6)
+            .clipShape(.rect(cornerRadius: 3))
             Text(verbatim: value).font(.boar("mono.xs")).monospacedDigit().foregroundStyle(.boar(.secondary)).frame(width: 72, alignment: .trailing)
         }
         .accessibilityElement(children: .combine)
@@ -245,6 +257,8 @@ private struct VitalsLine: View {
 private struct ThermalSpark: View {
     let levels: [Int]
     let history: Int
+    @Environment(\.palette) private var palette
+    @Environment(\.displayScale) private var displayScale
 
     var body: some View {
         Canvas { ctx, size in
@@ -262,7 +276,8 @@ private struct ThermalSpark: View {
                     line.addLine(to: CGPoint(x: x, y: y(l)))
                 }
             }
-            ctx.stroke(line, with: .style(BoarStyle(role: .success)), lineWidth: 2)
+            // Android's Spark: emerald400, 3 px.
+            ctx.stroke(line, with: .color(Color(palette.emerald400)), lineWidth: 3 / displayScale)
         }
     }
 }

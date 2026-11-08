@@ -62,7 +62,7 @@ private struct DailyQuizSections: View {
         } header: {
             VStack(alignment: .leading, spacing: 4) {
                 Text("Question \(i + 1) of \(q.count)").font(.boar("mono.xs").bold()).foregroundStyle(.boar(.success))
-                Text("Which article does this come from?").font(.boar("ui.titleSm")).foregroundStyle(.boar(.heading)).textCase(nil)
+                Text("Which article does this come from?").font(.boar("ui.title")).foregroundStyle(.boar(.heading)).textCase(nil)
             }
         }
         Section {
@@ -84,11 +84,12 @@ private struct DailyQuizSections: View {
             }
         } footer: {
             BoarFooter {
+                // Android: a right pick in textAccentEmerald, a wrong one in textSecondary (DailyQuizLab.kt).
                 if let picked {
                     if picked == question.answer {
-                        Text("Right!")
+                        Text("Right!").foregroundStyle(.boar(.success))
                     } else {
-                        Text("Not this time: it was \(question.options[question.answer]).")
+                        Text("Not this time: it was \(question.options[question.answer]).").foregroundStyle(.boar(.secondary))
                     }
                 }
             }

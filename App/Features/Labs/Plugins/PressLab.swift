@@ -249,8 +249,11 @@ private struct PressSections: View {
             HStack {
                 Text(basket.items.count == 1 ? String(localized: "1 item") : String(localized: "\(basket.items.count) items"))
                 Spacer()
+                // Android's Clear (PrinterLab.kt): crimson400 in mono.xs.
                 Button("Clear", role: .destructive) { basket.clear() }
-                    .font(.boar("ui.caption").weight(.semibold))
+                    .boarText("mono.xs")
+                    .bold()
+                    .foregroundStyle(.boar(.danger))
             }
         } footer: {
             BoarFooter {

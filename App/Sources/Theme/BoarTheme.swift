@@ -353,6 +353,16 @@ extension Font {
         return style.tabular ? font.monospacedDigit() : font
     }
 
+    /// A brand style's face at a fixed size, as Android's `Boar.type["mono.xs"].copy(fontSize = 9.sp)` (the Labs' status
+    /// tags): Lexend for the mono styles, with fixed-width digits. It doesn't grow with Dynamic Type, so a tag keeps
+    /// fitting its tile.
+    static func boar(_ name: String, size: CGFloat) -> Font {
+        let style = BrandType.style(name, scale: "standard")
+        let face = style?.face ?? .lexend400
+        let font: Font = face == .monospace ? .system(size: size, design: .monospaced) : .custom(face.rawValue, fixedSize: size)
+        return style?.tabular == true ? font.monospacedDigit() : font
+    }
+
     /// Baloo 2 ExtraBold at an iOS title size (the editorial setup titles, larger than Android's 24 pt headline).
     static func boarDisplay(size: CGFloat, relativeTo style: Font.TextStyle) -> Font {
         .custom(BrandType.Face.baloo800.rawValue, size: size, relativeTo: style)
