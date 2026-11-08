@@ -15,7 +15,7 @@ struct ModelChoiceRow: View {
             HStack {
                 Image(systemName: selected ? "checkmark.circle.fill" : "circle")
                     .font(.title2)
-                    .foregroundStyle(selected ? AnyShapeStyle(.tint) : AnyShapeStyle(.tertiary))
+                    .foregroundStyle(selected ? AnyShapeStyle(.tint) : AnyShapeStyle(.boar(.dim)))
                     .accessibilityHidden(true)
                 ModelRowContent(asset: model, fit: fit, recommended: flow.recommendedId == model.id)
             }

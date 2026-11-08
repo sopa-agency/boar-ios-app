@@ -15,7 +15,9 @@ struct EvalSetSection: View {
             }
             .disabled(controller.running)
         } header: {
-            Text("Questions")
+            BoarHeader {
+                Text("Questions")
+            }
         } footer: {
             BoarFooter {
                 if let set = controller.questionSet {

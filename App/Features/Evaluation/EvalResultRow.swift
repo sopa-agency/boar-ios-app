@@ -72,8 +72,7 @@ struct EvalResultRow: View {
                         Text(verbatim: row["query"]?.stringValue ?? row["queryId"]?.stringValue ?? "")
                             .lineLimit(open ? nil : 2)
                         Text(verbatim: summary)
-                            .font(.subheadline)
-                            .monospacedDigit()
+                            .boarText("mono.xs")
                             .foregroundStyle(.secondary)
                             .lineLimit(1)
                     }
@@ -85,15 +84,14 @@ struct EvalResultRow: View {
                 if open {
                     if let finding {
                         Text(finding)
-                            .font(.subheadline)
+                            .font(.boar("ui.subtext"))
                             .foregroundStyle(status.color)
                     }
                     Text(verbatim: facts)
-                        .font(.footnote)
-                        .monospacedDigit()
+                        .boarText("mono.xs")
                         .foregroundStyle(.secondary)
                     Text(verbatim: answer)
-                        .font(.subheadline)
+                        .font(.boar("ui.subtext"))
                 }
             }
             .contentShape(.rect)

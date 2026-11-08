@@ -19,7 +19,6 @@ struct DownloadProgressButton: View {
 struct DownloadRing: View {
     let fraction: Double
     var showsStop = false
-    @Environment(\.palette) private var palette
 
     var body: some View {
         // A circular ProgressView is always indeterminate on iOS; the capacity gauge draws the determinate ring.
@@ -33,7 +32,6 @@ struct DownloadRing: View {
             }
         }
         .gaugeStyle(.accessoryCircularCapacity)
-        .tint(palette.accent)
         .scaleEffect(0.55)
         .frame(width: 32, height: 32)
     }

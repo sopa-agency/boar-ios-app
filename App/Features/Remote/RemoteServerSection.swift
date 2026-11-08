@@ -50,7 +50,9 @@ struct RemoteServerSection: View {
                 }
             }
         } header: {
-            Text("Mac on Your Network")
+            BoarHeader {
+                Text("Mac on Your Network")
+            }
         } footer: {
             BoarFooter {
                 Text("Answers are written by llama-server on that Mac; search, your library and your chats stay on this \(Platform.deviceNoun). Both need the same Wi-Fi network.")

@@ -30,7 +30,9 @@ struct SettingsToneSection: View {
                 SettingsLabel("Deep Research", symbol: "flask.fill")
             }
         } header: {
-            Text("Answers")
+            BoarHeader {
+                Text("Answers")
+            }
         } footer: {
             BoarFooter {
                 VStack(alignment: .leading) {

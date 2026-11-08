@@ -39,7 +39,9 @@ struct SettingsLibrarySection: View {
                 SettingsLabel("Open Knowledge", symbol: "books.vertical.fill")
             }
         } header: {
-            Text("Models and Knowledge")
+            BoarHeader {
+                Text("Models and Knowledge")
+            }
         } footer: {
             BoarFooter {
                 Text("What BOAR answers with and searches, all on this \(Platform.deviceNoun).")
