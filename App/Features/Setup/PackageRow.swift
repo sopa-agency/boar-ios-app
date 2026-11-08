@@ -19,7 +19,7 @@ struct PackageRow: View {
             HStack {
                 Image(systemName: selected ? "checkmark.circle.fill" : "circle")
                     .font(.title2)
-                    .foregroundStyle(selected ? AnyShapeStyle(.tint) : AnyShapeStyle(.tertiary))
+                    .foregroundStyle(selected ? AnyShapeStyle(.tint) : AnyShapeStyle(.boar(.dim)))
                     .accessibilityHidden(true)
                 HStack(spacing: 12) {
                     ModelIconTile(symbol: plan.package == .essential ? Symbols.pack : Symbols.library)
@@ -31,7 +31,7 @@ struct PackageRow: View {
                             if plan.shortfallBytes > 0 {
                                 ModelBadge(text: "Too big", tone: .danger, dot: true)
                             } else if flow.recommendedPackage == plan.package {
-                                ModelBadge(text: "Recommended", tone: .accent)
+                                ModelBadge.recommended
                             }
                         }
                         Text(verbatim: plan.package.body)
@@ -40,8 +40,8 @@ struct PackageRow: View {
                         Text(verbatim: plan.shortfallBytes > 0
                              ? String(localized: "\(size) · needs \(FeatureFormat.megabytes(plan.shortfallBytes)) more free space")
                              : size)
-                            .font(.boar("mono.xs"))
-                            .foregroundStyle(.boar(plan.shortfallBytes > 0 ? .danger : .dim))
+                            .boarText("mono.sm")
+                            .foregroundStyle(.boar(plan.shortfallBytes > 0 ? .danger : .secondary))
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                 }

@@ -106,8 +106,13 @@ struct ModelDetailScreen: View {
                     Text(verbatim: asset.friendlyName)
                         .font(.boar("ui.titleLg"))
                         .foregroundStyle(.boar(.heading))
-                    Text(active ? "In use" : present ? "On this \(Platform.deviceNoun)" : "Not downloaded")
-                        .foregroundStyle(.boar(active ? .success : .secondary))
+                    if active {
+                        // Android's StatusBadge for the active model (ModelsScreen.kt).
+                        ModelBadge(text: "In use", tone: .accent, dot: true)
+                    } else {
+                        Text(present ? "On this \(Platform.deviceNoun)" : "Not downloaded")
+                            .foregroundStyle(.boar(.secondary))
+                    }
                 }
             }
             .padding(.vertical, 4)

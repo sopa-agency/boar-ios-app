@@ -34,7 +34,7 @@ struct ModelRowContent<Status: View>: View {
                         .font(.boar("ui.subtext"))
                 }
                 Text(verbatim: meta)
-                    .font(.boar("mono.xs"))
+                    .boarText("mono.xs")
                     .foregroundStyle(.boar(.dim))
             }
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -53,7 +53,7 @@ struct ModelRowContent<Status: View>: View {
         if fit == .yellow || fit == .red, let label = fit.plainShortLabel {
             ModelBadge(text: label, tone: fit.tone, dot: true)
         } else if recommended {
-            ModelBadge(text: "Recommended", tone: .accent)
+            ModelBadge.recommended
         }
     }
 }
@@ -92,6 +92,9 @@ struct ModelBadge: View {
         }
     }
 
+    /// Setup's pick, as Android's setup Badge (SetupScreen.kt): micro capitals in textInverse on solid emerald500.
+    static var recommended: some View { SolidBadge(text: "Recommended") }
+
     var body: some View {
         let c = colors
         let shape = RoundedRectangle(cornerRadius: Radii.sm)
@@ -111,6 +114,23 @@ struct ModelBadge: View {
         .background(Color(c.bg), in: shape)
         .overlay(shape.strokeBorder(Color(c.border), lineWidth: 1))
         .lineLimit(1)
+    }
+}
+
+/// A solid accent badge: micro capitals in textInverse on emerald500 (Android's setup Badge).
+private struct SolidBadge: View {
+    let text: LocalizedStringKey
+    @Environment(\.palette) private var palette
+
+    var body: some View {
+        Text(text)
+            .textCase(.uppercase)
+            .font(.boar("ui.micro").bold())
+            .foregroundStyle(Color(palette.textInverse))
+            .padding(.horizontal, 6)
+            .padding(.vertical, 2)
+            .background(Color(palette.emerald500), in: RoundedRectangle(cornerRadius: Radii.sm))
+            .lineLimit(1)
     }
 }
 

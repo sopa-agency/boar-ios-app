@@ -122,13 +122,17 @@ struct BoarForm<Content: View>: View {
 }
 
 /// A theme color by its role, resolved from the palette in the environment, so a view can say
-/// `.foregroundStyle(.boar(.danger))` where it used `.red`.
+/// `.foregroundStyle(.boar(.danger))` where it used `.red`. On a prominent background (a selected row in the Mac's
+/// sidebar lists, drawn in the system accent) text goes back to the system's `.primary` and `.secondary`, which turn
+/// white there; a theme color would sink into the highlight.
 struct BoarStyle: ShapeStyle {
     enum Role: Sendable {
         /// Android's crimson400: errors and destructive actions.
         case danger
         /// amber400: warnings ("almost full", a missing model).
         case warning
+        /// textAccentAmber: time left on a download.
+        case amber
         /// textAccentEmerald: success and "on" states.
         case success
         /// textAccentCyan: links and secondary actions (Android's LinkButton).
@@ -142,11 +146,21 @@ struct BoarStyle: ShapeStyle {
 
     let role: Role
 
-    func resolve(in environment: EnvironmentValues) -> Color {
-        let p = environment.palette
-        return switch role {
+    func resolve(in environment: EnvironmentValues) -> AnyShapeStyle {
+        if environment.backgroundProminence == .increased {
+            return switch role {
+            case .heading, .primary: AnyShapeStyle(.primary)
+            default: AnyShapeStyle(.secondary)
+            }
+        }
+        return AnyShapeStyle(color(environment.palette))
+    }
+
+    private func color(_ p: BoarPalette) -> Color {
+        switch role {
         case .danger: Color(p.crimson400)
         case .warning: Color(p.amber400)
+        case .amber: Color(p.textAccentAmber)
         case .success: Color(p.textAccentEmerald)
         case .link: Color(p.textAccentCyan)
         case .accent: Color(p.emerald500)
