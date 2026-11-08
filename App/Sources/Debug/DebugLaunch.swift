@@ -8,6 +8,7 @@ import Foundation
 ///     -uiScroll <pts|end> scroll the main list that far once the screen is up
 ///     -uiBasket YES      with -uiDemo, Boar Press's basket starts with the demo chats' answers
 ///     -uiStyle <id>      pick that answer style (succinct, detailed, personal, custom) on launch
+///     -uiTheme <id>      pick that theme (system, campfire, moonlight, paper) on launch
 ///     -uiAsk "<q1> || <q2>"  after any -uiImport, ask the questions in one new chat, each after the previous answer
 enum DebugLaunch {
     #if DEBUG
@@ -22,6 +23,8 @@ enum DebugLaunch {
     static let importFile: String? = UserDefaults.standard.string(forKey: "uiImport")
     /// `-uiStyle <id>`: the answer style to pick on launch.
     static let style: String? = UserDefaults.standard.string(forKey: "uiStyle")
+    /// `-uiTheme <id>`: the theme to pick on launch.
+    static let theme: String? = UserDefaults.standard.string(forKey: "uiTheme")
     /// `-uiAsk "<q1> || <q2>"`: questions asked in a new chat on launch, each after the previous answer ends.
     static let questions: [String] = (UserDefaults.standard.string(forKey: "uiAsk") ?? "")
         .components(separatedBy: " || ").map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }.filter { !$0.isEmpty }

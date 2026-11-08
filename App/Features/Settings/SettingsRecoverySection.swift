@@ -79,7 +79,7 @@ struct SettingsRecoverySection: View {
     private func resetSettings() {
         services.settings.resetPreferences()
         services.backend = .llama
-        model.appearance = .system
+        model.theme = .system
         bridge.touch()
         Task {
             await services.host.unload()
@@ -93,7 +93,7 @@ struct SettingsRecoverySection: View {
         Task {
             await DataPurge.eraseAll(services: services, lock: model.lock)
             purging = false
-            model.appearance = .system
+            model.theme = .system
             model.reloadSessions()
             await model.chat?.refreshSettings()
             model.reopenSetup()

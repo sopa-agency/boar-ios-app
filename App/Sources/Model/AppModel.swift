@@ -81,9 +81,9 @@ final class AppModel {
     @ObservationIgnored private var memoryRelease: Task<Void, Never>?
     @ObservationIgnored private var inForeground = true
     var selection: SidebarItem? = .newChat
-    /// System / Light / Dark (Settings → Display); persisted on every change.
-    var appearance: AppAppearance = .system {
-        didSet { services?.settings.themeId = appearance.rawValue }
+    /// System or one of Android's themes (Settings → Display); persisted on every change.
+    var theme: ThemeChoice = .system {
+        didSet { services?.settings.themeId = theme.storedId }
     }
     let connectivity = Connectivity()
     /// Set by a menu command, cleared by the sidebar once it acts on it.
@@ -118,8 +118,9 @@ final class AppModel {
                 services.backend = .remote
                 RemoteConfig.setAddress(remote, services.settings)
             }
+            if let id = DebugLaunch.theme { services.settings.themeId = id }
             #endif
-            appearance = AppAppearance(storedId: services.settings.themeId)
+            theme = ThemeChoice(storedId: services.settings.themeId)
             let chat = ChatController(services: services)
             chat.onSessionsChanged = { [weak self] in self?.reloadSessions() }
             self.chat = chat

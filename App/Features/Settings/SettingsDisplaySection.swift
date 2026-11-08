@@ -1,6 +1,7 @@
+import BoarCore
 import SwiftUI
 
-/// Appearance (System / Light / Dark) and haptics.
+/// The theme (System, Campfire, Moonlight; Android's picker plus System) and haptics.
 struct SettingsDisplaySection: View {
     @Environment(AppModel.self) private var model
     let bridge: SettingsBridge
@@ -8,9 +9,9 @@ struct SettingsDisplaySection: View {
     var body: some View {
         @Bindable var model = model
         Section {
-            Picker(selection: $model.appearance) {
-                ForEach(AppAppearance.allCases) { appearance in
-                    Text(appearance.title).tag(appearance)
+            Picker(selection: $model.theme) {
+                ForEach(ThemeChoice.choices(current: model.theme)) { choice in
+                    choice.title.tag(choice)
                 }
             } label: {
                 SettingsLabel("Theme", symbol: "circle.lefthalf.filled")
@@ -25,6 +26,7 @@ struct SettingsDisplaySection: View {
             Text("Display")
         } footer: {
             BoarFooter {
+                Text("System follows your \(Platform.deviceNoun)'s appearance: Moonlight when dark, Paper when light.")
                 #if !os(macOS)
                 Text("Text size follows your \(Platform.deviceNoun)'s Dynamic Type setting.")
                 #endif
