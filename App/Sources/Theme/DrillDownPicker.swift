@@ -5,6 +5,9 @@ struct DrillDownOption<Value: Hashable> {
     let value: Value
     let title: Text
     var symbol: String?
+    /// A line under the title on the iPhone page (what an answer style does, as Android's StyleRow); the Mac menu shows
+    /// the title only.
+    var detail: Text?
     /// Shown but not selectable (Apple Intelligence on a device without it).
     var disabled = false
 }
@@ -50,51 +53,76 @@ struct DrillDownPicker<Value: Hashable, Label: View, Current: View>: View {
 
 private struct DrillDownOptionLabel<Value: Hashable>: View {
     let option: DrillDownOption<Value>
+    var showsDetail = false
 
     var body: some View {
         if let symbol = option.symbol {
-            // The icon in the tint, as on the system's picker page (a Mac menu draws its own).
-            Label { option.title } icon: { Image(systemName: symbol).foregroundStyle(.tint) }
+            // The icon in the tint, as on the system's picker page (a Mac menu draws its own), dim when disabled.
+            Label { text } icon: {
+                Image(systemName: symbol)
+                    .foregroundStyle(option.disabled ? AnyShapeStyle(.boar(.dim)) : AnyShapeStyle(.tint))
+            }
+        } else {
+            text
+        }
+    }
+
+    @ViewBuilder private var text: some View {
+        if showsDetail, let detail = option.detail {
+            // Android's StyleRow: the name in body textHeading semibold, what it does in subtext textSecondary.
+            VStack(alignment: .leading, spacing: 2) {
+                option.title
+                    .fontWeight(.semibold)
+                    .foregroundStyle(option.disabled ? AnyShapeStyle(.boar(.dim)) : AnyShapeStyle(.boar(.heading)))
+                detail
+                    .font(.boar("ui.subtext"))
+                    .foregroundStyle(option.disabled ? AnyShapeStyle(.boar(.dim)) : AnyShapeStyle(.boar(.secondary)))
+            }
         } else {
             option.title
+                .foregroundStyle(option.disabled ? AnyShapeStyle(.boar(.dim)) : AnyShapeStyle(.boar(.primary)))
         }
     }
 }
 
 #if os(iOS)
 /// The choices as rows (icon in the tint, a checkmark on the current one), like the system's picker page; choosing one
-/// goes back, as there.
+/// goes back, as there. The current row is marked as Android marks the chosen answer style: emeraldBgSubtle behind,
+/// the check in textAccentEmerald.
 private struct DrillDownPage<Value: Hashable>: View {
     let title: LocalizedStringKey
     @Binding var selection: Value
     let options: [DrillDownOption<Value>]
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.palette) private var palette
 
     var body: some View {
         BoarForm {
             Section {
                 ForEach(options.indices, id: \.self) { i in
                     let option = options[i]
+                    let selected = option.value == selection
                     Button {
                         selection = option.value
                         dismiss()
                     } label: {
                         HStack {
-                            DrillDownOptionLabel(option: option)
-                                .foregroundStyle(option.disabled ? AnyShapeStyle(.boar(.dim)) : AnyShapeStyle(.primary))
+                            DrillDownOptionLabel(option: option, showsDetail: true)
                             Spacer()
-                            if option.value == selection {
+                            if selected {
                                 Image(systemName: "checkmark")
                                     .fontWeight(.semibold)
-                                    .foregroundStyle(.tint)
+                                    .foregroundStyle(.boar(.success))
                                     .accessibilityHidden(true)
                             }
                         }
                         .contentShape(.rect)
                     }
-                    .buttonStyle(.plain)
+                    // The system row button (it lights up on touch); the label sets its own colors.
+                    .buttonStyle(.automatic)
                     .disabled(option.disabled)
-                    .accessibilityAddTraits(option.value == selection ? .isSelected : [])
+                    .accessibilityAddTraits(selected ? .isSelected : [])
+                    .listRowBackground(Color(selected ? palette.emeraldBgSubtle : palette.bgCard))
                 }
             }
         }

@@ -16,7 +16,8 @@ struct SettingsToneSection: View {
                 title: "Answer Style",
                 selection: bridge.binding({ $0.personalityId ?? personalities.defaultId }, { $0.personalityId = $1 }),
                 options: personalities.personalities.map { p in
-                    DrillDownOption(value: p.id, title: Text(verbatim: p.displayLabel), symbol: p.symbol)
+                    DrillDownOption(value: p.id, title: Text(verbatim: p.displayLabel), symbol: p.symbol,
+                                    detail: Text(verbatim: p.displayDescription))
                 }
             ) {
                 SettingsLabel("Answer Style", symbol: "text.bubble.fill")
