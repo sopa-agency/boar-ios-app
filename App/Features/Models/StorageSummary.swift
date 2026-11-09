@@ -10,11 +10,12 @@ struct StorageSummary: View {
         VStack(alignment: .leading, spacing: 10) {
             HStack(alignment: .firstTextBaseline) {
                 Text(usedBytes.map(Self.format) ?? "—")
-                    .font(.title2.bold())
+                    .font(.boar("ui.titleLg"))
                     .monospacedDigit()
+                    .foregroundStyle(.boar(.heading))
                     .contentTransition(.numericText())
                 Text("used by BOAR")
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(.boar(.secondary))
             }
             if let usedBytes, let freeBytes, usedBytes + freeBytes > 0 {
                 Gauge(value: Double(usedBytes), in: 0...Double(usedBytes + freeBytes)) {
@@ -29,8 +30,8 @@ struct StorageSummary: View {
             } icon: {
                 Image(systemName: Symbols.storage)
             }
-            .font(.subheadline)
-            .foregroundStyle(.secondary)
+            .font(.boar("ui.subtext"))
+            .foregroundStyle(.boar(.muted))
         }
         .padding(.vertical, 4)
         .accessibilityElement(children: .combine)

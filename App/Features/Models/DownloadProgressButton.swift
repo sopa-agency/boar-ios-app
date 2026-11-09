@@ -32,7 +32,6 @@ struct DownloadRing: View {
             }
         }
         .gaugeStyle(.accessoryCircularCapacity)
-        .tint(.accentColor)
         .scaleEffect(0.55)
         .frame(width: 32, height: 32)
     }

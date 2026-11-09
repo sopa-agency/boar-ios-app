@@ -26,7 +26,7 @@ struct ModelDetailScreen: View {
     }
 
     var body: some View {
-        Form {
+        BoarForm {
             if embedded {
                 header
             }
@@ -35,10 +35,12 @@ struct ModelDetailScreen: View {
                     Text(verbatim: asset.plainPurpose)
                 } icon: {
                     Image(systemName: asset.symbol)
-                        .foregroundStyle(.tint)
+                        .foregroundStyle(.boar(.success))
                 }
             } footer: {
-                if technicalDetails { Text(verbatim: asset.description) }
+                if technicalDetails {
+                    BoarFooter { Text(verbatim: asset.description) }
+                }
             }
 
             Section {
@@ -46,7 +48,7 @@ struct ModelDetailScreen: View {
                     // Inline symbol: a Label as LabeledContent's value lays the row out several hundred points tall.
                     LabeledContent("Memory") {
                         Text("\(Image(systemName: symbol)) \(Text(label))")
-                            .foregroundStyle(fit.color)
+                            .foregroundStyle(fit.style)
                     }
                 }
                 LabeledContent("Model", value: asset.modelName ?? asset.label)
@@ -72,6 +74,7 @@ struct ModelDetailScreen: View {
                     Link(destination: modelPage) {
                         Label("Model Page", systemImage: "safari")
                     }
+                    .tint(BoarStyle(role: .link))
                 }
             }
 
@@ -79,7 +82,7 @@ struct ModelDetailScreen: View {
                 Section {
                     Button(role: .destructive, action: askRemove) {
                         Label("Delete Model", systemImage: Symbols.delete)
-                            .foregroundStyle(.red)
+                            .foregroundStyle(.boar(.danger))
                     }
                     .disabled(controller.activating != nil)
                 }
@@ -101,9 +104,15 @@ struct ModelDetailScreen: View {
                 ModelIconTile(symbol: asset.symbol, dimmed: fit == .red)
                 VStack(alignment: .leading, spacing: 2) {
                     Text(verbatim: asset.friendlyName)
-                        .font(.title2.bold())
-                    Text(active ? "In use" : present ? "On this \(Platform.deviceNoun)" : "Not downloaded")
-                        .foregroundStyle(active ? AnyShapeStyle(.tint) : AnyShapeStyle(.secondary))
+                        .font(.boar("ui.titleLg"))
+                        .foregroundStyle(.boar(.heading))
+                    if active {
+                        // Android's StatusBadge for the active model (ModelsScreen.kt).
+                        ModelBadge(text: "In use", tone: .accent, dot: true)
+                    } else {
+                        Text(present ? "On this \(Platform.deviceNoun)" : "Not downloaded")
+                            .foregroundStyle(.boar(.secondary))
+                    }
                 }
             }
             .padding(.vertical, 4)

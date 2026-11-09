@@ -6,7 +6,8 @@ extension View {
         overlay(alignment: .bottom) {
             if let message = controller.toast {
                 Text(message)
-                    .font(.subheadline)
+                    .font(.boar("ui.subtext"))
+                    .foregroundStyle(.boar(.primary))
                     .padding()
                     .glassOrMaterial(in: .capsule)
                     .padding(.bottom)

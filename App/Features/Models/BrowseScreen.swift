@@ -23,8 +23,9 @@ struct BrowseScreen: View {
                 RepoDetail(repo: controller.hfResults.first { $0.id == controller.hfOpenRepo }, controller: controller)
             }
             #else
-            List { listContent }
+            List { listContent.boarListRows() }
                 .groupedListStyle()
+                .boarList()
                 .overlay { if noResults { ContentUnavailableView.search } }
             #endif
         }
@@ -40,21 +41,21 @@ struct BrowseScreen: View {
         if !model.connectivity.online {
             Section {
                 Label("You're offline. Connect to the internet to search for models.", systemImage: Symbols.offline)
-                    .foregroundStyle(.orange)
+                    .foregroundStyle(.boar(.warning))
             }
         }
 
         if let added = controller.hfAdded {
             Section {
                 Label("Added \(added) to Models.", systemImage: Symbols.active)
-                    .foregroundStyle(.tint)
+                    .foregroundStyle(.boar(.success))
             }
         }
 
         if let error = controller.hfError {
             Section {
                 Label(error, systemImage: Symbols.error)
-                    .foregroundStyle(.red)
+                    .foregroundStyle(.boar(.danger))
             }
         }
 
@@ -71,7 +72,9 @@ struct BrowseScreen: View {
                 Text("Newest").tag(HfQuery.Sort.newest)
             }
         } footer: {
-            Text("Bigger models can answer better but need more memory.")
+            BoarFooter {
+                Text("Bigger models can answer better but need more memory.")
+            }
         }
 
         Section {
@@ -91,10 +94,12 @@ struct BrowseScreen: View {
             if !controller.hfResults.isEmpty { Text("Hugging Face") }
         } footer: {
             if !controller.hfResults.isEmpty {
-                Text("Not checked by BOAR. Look at the model's page for its license before you use it.")
+                BoarFooter {
+                    Text("Not checked by BOAR. Look at the model's page for its license before you use it.")
+                }
             }
         }
-        }
+    }
 
     #if os(macOS)
     /// The list selection is the open repo: selecting one loads its files beside the list.

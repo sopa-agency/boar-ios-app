@@ -17,8 +17,8 @@ struct AppleModelRow: View {
                     ModelIconTile(symbol: "apple.intelligence", dimmed: !availability.isAvailable)
                     VStack(alignment: .leading, spacing: 3) {
                         Text("Apple Intelligence")
-                            .font(.headline)
-                            .foregroundStyle(availability.isAvailable ? .primary : .secondary)
+                            .font(.boar("ui.titleSm"))
+                            .foregroundStyle(.boar(availability.isAvailable ? .heading : .muted))
                         Group {
                             if loading {
                                 Text("Loading…")
@@ -28,11 +28,11 @@ struct AppleModelRow: View {
                                 Text("Needs Apple Intelligence")
                             }
                         }
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
+                        .font(.boar("ui.subtext"))
+                        .foregroundStyle(.boar(loading ? .success : .secondary))
                         Text("Apple's on-device model · built in")
-                            .font(.footnote)
-                            .foregroundStyle(.secondary)
+                            .boarText("mono.xs")
+                            .foregroundStyle(.boar(.dim))
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                 }

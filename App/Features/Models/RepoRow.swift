@@ -31,8 +31,8 @@ struct RepoRow: View {
                         .frame(maxWidth: .infinity)
                 } else if controller.hfFiles.isEmpty {
                     Text("No files BOAR can use in this model.")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
+                        .font(.boar("ui.subtext"))
+                        .foregroundStyle(.boar(.muted))
                 }
                 GgufFileList(repo: repo.id, controller: controller)
             }
@@ -42,13 +42,16 @@ struct RepoRow: View {
         #endif
     }
 
+    /// Android's result row: the name in the heading color, the facts under it in subtext.
     private var label: some View {
-        VStack(alignment: .leading) {
+        VStack(alignment: .leading, spacing: 2) {
             Text(verbatim: name)
+                .font(.boar("ui.body").weight(.semibold))
+                .foregroundStyle(.boar(.heading))
             Text("\(owner) · \((repo.downloads ?? 0).formatted(.number.notation(.compactName))) downloads")
-                .font(.footnote)
+                .font(.boar("ui.subtext"))
                 .monospacedDigit()
-                .foregroundStyle(.secondary)
+                .foregroundStyle(.boar(.secondary))
         }
     }
 }

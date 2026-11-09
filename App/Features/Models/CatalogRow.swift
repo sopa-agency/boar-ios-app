@@ -79,13 +79,13 @@ struct CatalogRow: View {
             CatalogDownloadProgress(asset: asset, row: row, showSpeed: controller.services.settings.showLiveStats)
         } else if row.error != nil {
             Text("Download failed")
-                .foregroundStyle(.red)
+                .foregroundStyle(.boar(.danger))
         } else if loading {
             Text("Loading…")
-                .foregroundStyle(.secondary)
+                .foregroundStyle(.boar(.success))
         } else {
             Text(verbatim: asset.plainPurpose)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(.boar(.secondary))
         }
     }
 

@@ -8,8 +8,8 @@ struct CompatibilityLabel: View {
     var body: some View {
         if let text = fit.plainLabel, let symbol = fit.symbol {
             Label(text, systemImage: symbol)
-                .font(.footnote)
-                .foregroundStyle(fit.color)
+                .font(.boar("ui.caption"))
+                .foregroundStyle(fit.style)
         }
     }
 }

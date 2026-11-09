@@ -19,29 +19,29 @@ struct PackageRow: View {
             HStack {
                 Image(systemName: selected ? "checkmark.circle.fill" : "circle")
                     .font(.title2)
-                    .foregroundStyle(selected ? AnyShapeStyle(.tint) : AnyShapeStyle(.tertiary))
+                    .foregroundStyle(selected ? AnyShapeStyle(.tint) : AnyShapeStyle(.boar(.dim)))
                     .accessibilityHidden(true)
                 HStack(spacing: 12) {
                     ModelIconTile(symbol: plan.package == .essential ? Symbols.pack : Symbols.library)
                     VStack(alignment: .leading, spacing: 3) {
                         HStack(alignment: .firstTextBaseline, spacing: 8) {
                             Text(plan.package.title)
-                                .font(.headline)
+                                .font(.boar("ui.titleSm"))
+                                .foregroundStyle(.boar(.heading))
                             if plan.shortfallBytes > 0 {
-                                ModelBadge(text: "Too big", color: .red)
+                                ModelBadge(text: "Too big", tone: .danger, dot: true)
                             } else if flow.recommendedPackage == plan.package {
-                                ModelBadge(text: "Recommended", color: .accentColor)
+                                ModelBadge.recommended
                             }
                         }
                         Text(verbatim: plan.package.body)
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
+                            .font(.boar("ui.subtext"))
+                            .foregroundStyle(.boar(.secondary))
                         Text(verbatim: plan.shortfallBytes > 0
                              ? String(localized: "\(size) · needs \(FeatureFormat.megabytes(plan.shortfallBytes)) more free space")
                              : size)
-                            .font(.footnote)
-                            .monospacedDigit()
-                            .foregroundStyle(plan.shortfallBytes > 0 ? AnyShapeStyle(.red) : AnyShapeStyle(.secondary))
+                            .boarText("mono.sm")
+                            .foregroundStyle(.boar(plan.shortfallBytes > 0 ? .danger : .secondary))
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                 }

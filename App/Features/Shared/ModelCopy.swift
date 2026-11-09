@@ -95,13 +95,22 @@ extension Compatibility {
         }
     }
 
-    /// The verdict's status color.
-    var color: Color {
+    /// The verdict's status color, from the theme (Android's RamBadge: emerald, amber, crimson).
+    var style: BoarStyle {
         switch self {
-        case .green: .green
-        case .yellow: .orange
-        case .red: .red
-        case .unknown: .secondary
+        case .green: .boar(.success)
+        case .yellow: .boar(.warning)
+        case .red: .boar(.danger)
+        case .unknown: .boar(.secondary)
+        }
+    }
+
+    /// The verdict's badge tone (Android's RamBadge colors).
+    var tone: ModelBadge.Tone {
+        switch self {
+        case .green, .unknown: .accent
+        case .yellow: .warning
+        case .red: .danger
         }
     }
 }
