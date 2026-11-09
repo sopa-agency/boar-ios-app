@@ -26,15 +26,11 @@ struct AdvancedSettingsScreen: View {
                     SettingsLabel("Answer Length", symbol: "text.alignleft")
                 }
                 .pickerStyle(.menu)
-                Picker(selection: $model.backendChoice) {
-                    Text("Downloaded Model").tag(ModelBackend.llama)
-                    Text("Apple Intelligence").tag(ModelBackend.apple)
-                        .selectionDisabled(!apple.isAvailable)
-                    Text("Mac on Your Network").tag(ModelBackend.remote)
-                } label: {
+                DrillDownPicker(title: "Engine", selection: $model.backendChoice, options: Self.engines(apple: apple.isAvailable)) {
                     SettingsLabel("Engine", symbol: "cpu.fill")
+                } current: {
+                    Self.engineName(model.backendChoice)
                 }
-                .drillDownPickerStyle()
             } header: {
                 BoarHeader {
                     Text("Answers")
@@ -167,4 +163,17 @@ struct AdvancedSettingsScreen: View {
         openWindow(id: "main")
     }
     #endif
+
+    /// The engine choices; Apple Intelligence stays listed but can't be picked where it isn't available.
+    private static func engines(apple: Bool) -> [DrillDownOption<ModelBackend>] {
+        ModelBackend.allCases.map { DrillDownOption(value: $0, title: engineName($0), disabled: $0 == .apple && !apple) }
+    }
+
+    private static func engineName(_ backend: ModelBackend) -> Text {
+        switch backend {
+        case .llama: Text("Downloaded Model")
+        case .apple: Text("Apple Intelligence")
+        case .remote: Text("Mac on Your Network")
+        }
+    }
 }
