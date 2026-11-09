@@ -36,8 +36,16 @@ struct UsageBar: View {
                     .boarText("mono.xs")
                     .foregroundStyle(.boar(.muted))
             }
-            ProgressView(value: fraction)
-                .tint(tint)
+            // Android's bar (UsageBar, large): 9 pt on the theme's track(0.5), a borderDefault outline, 3 pt corners.
+            GeometryReader { g in
+                ZStack(alignment: .leading) {
+                    Color.black.opacity(palette.trackAlpha(0.5))
+                    tint.frame(width: g.size.width * fraction)
+                }
+            }
+            .frame(height: 9)
+            .clipShape(.rect(cornerRadius: 3))
+            .overlay(RoundedRectangle(cornerRadius: 3).strokeBorder(Color(palette.borderDefault), lineWidth: 1))
             Text(verbatim: caption)
                 .font(.boar("ui.subtext"))
                 .foregroundStyle(.boar(.dim))
