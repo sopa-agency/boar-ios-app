@@ -20,15 +20,6 @@ extension View {
         #endif
     }
 
-    /// A picker that opens its own page on iPhone and a pop-up menu on the Mac.
-    func drillDownPickerStyle() -> some View {
-        #if os(iOS)
-        pickerStyle(.navigationLink)
-        #else
-        pickerStyle(.menu)
-        #endif
-    }
-
     /// Grouped forms everywhere: the iPhone look on iOS, the System Settings look on the Mac (instead of label columns).
     func groupedFormStyle() -> some View {
         formStyle(.grouped)

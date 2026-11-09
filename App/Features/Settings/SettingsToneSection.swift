@@ -12,16 +12,18 @@ struct SettingsToneSection: View {
         let personalities = services.personalities
         let id = bridge.read { $0.personalityId } ?? personalities.defaultId
         Section {
-            Picker(selection: bridge.binding({ $0.personalityId ?? personalities.defaultId }, { $0.personalityId = $1 })) {
-                ForEach(personalities.personalities, id: \.id) { p in
-                    Label(p.displayLabel, systemImage: p.symbol).tag(p.id)
+            DrillDownPicker(
+                title: "Answer Style",
+                selection: bridge.binding({ $0.personalityId ?? personalities.defaultId }, { $0.personalityId = $1 }),
+                options: personalities.personalities.map { p in
+                    DrillDownOption(value: p.id, title: Text(verbatim: p.displayLabel), symbol: p.symbol,
+                                    detail: Text(verbatim: p.displayDescription))
                 }
-            } label: {
+            ) {
                 SettingsLabel("Answer Style", symbol: "text.bubble.fill")
-            } currentValueLabel: {
+            } current: {
                 Text(verbatim: personalities.get(id).displayLabel)
             }
-            .drillDownPickerStyle()
             if id == "custom" {
                 TextField("Write your own instructions…", text: bridge.binding({ $0.customSystemPrompt ?? "" }, { $0.customSystemPrompt = $1 }), axis: .vertical)
                     .lineLimit(3...8)

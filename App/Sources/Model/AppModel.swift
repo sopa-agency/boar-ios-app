@@ -83,8 +83,9 @@ final class AppModel {
     var selection: SidebarItem? = .newChat
     /// System or one of Android's themes (Settings → Display), as read from `themeId`. Only `setTheme` writes it back:
     /// reading never rewrites the stored id, so a Vault theme set on Android (shown here as Moonlight) or an unset id
-    /// stays as it was until someone picks a theme.
-    private(set) var theme: ThemeChoice = .system
+    /// stays as it was until someone picks a theme. Read from the settings' defaults when the app starts, before the
+    /// services open, so the first frames are already in the chosen theme instead of System's.
+    private(set) var theme: ThemeChoice = AppModel.launchTheme()
 
     /// The theme picked in Settings → Display, saved under Android's id (or "system").
     func setTheme(_ choice: ThemeChoice) {
@@ -96,6 +97,17 @@ final class AppModel {
     func themeWasReset() {
         theme = .system
     }
+
+    private static func launchTheme() -> ThemeChoice {
+        #if DEBUG
+        if let id = DebugLaunch.theme { return ThemeChoice(storedId: id) }
+        // The demo's defaults still hold the last demo run here (start() resets them): System until then.
+        if DebugLaunch.demo { return .system }
+        #endif
+        // The same store BoarServices opens (UserDefaults): one key, read synchronously.
+        return ThemeChoice(storedId: AppSettings(store: UserDefaultsKeyValueStore(defaults: AppPaths.defaults)).themeId)
+    }
+
     let connectivity = Connectivity()
     /// Set by a menu command, cleared by the sidebar once it acts on it.
     var sidebarRequest: SidebarRequest?

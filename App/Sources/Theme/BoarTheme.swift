@@ -129,6 +129,9 @@ struct BoarForm<Content: View>: View {
 /// `.foregroundStyle(.boar(.danger))` where it used `.red`. On a prominent background (a selected row in the Mac's
 /// sidebar lists, drawn in the system accent) text goes back to the system's `.primary` and `.secondary`, which turn
 /// white there; a theme color would sink into the highlight.
+///
+/// Keep selectable lists (`List(selection:)`: the Mac's Models, Browse and Documents) outside `BoarForm` and
+/// `GroupedList`: those redefine `.primary` and `.secondary` as theme colors, so this fallback would land on them.
 struct BoarStyle: ShapeStyle {
     enum Role: Sendable {
         /// Android's crimson400: errors and destructive actions.
@@ -222,19 +225,30 @@ private struct BoarFormText: ViewModifier {
     }
 }
 
-/// An iPhone form's row buttons as the system draws them, in the tint (or crimson400 when destructive): the form's text
-/// colors would otherwise win over the tint, and a row button would read like a row title. A label's own style still
-/// wins. The Mac's push buttons keep their own look.
+/// An iPhone form's row buttons as the system draws them, in the tint (or crimson400 when destructive), and in textDim
+/// when disabled: the form's text colors would otherwise win over the tint, and a row button would read like a row
+/// title. The color is set on the label, so it also has to say "disabled" (the system only fades it, and a faded amber
+/// still reads as a live button). A label's own style still wins. The Mac's push buttons keep their own look.
 private struct BoarFormButtonStyle: PrimitiveButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
-        Button(role: configuration.role, action: configuration.trigger) {
-            if configuration.role == .destructive {
-                configuration.label.foregroundStyle(.boar(.danger))
-            } else {
-                configuration.label.foregroundStyle(.tint)
+        FormButton(configuration: configuration)
+    }
+
+    private struct FormButton: View {
+        let configuration: Configuration
+        @Environment(\.isEnabled) private var isEnabled
+
+        var body: some View {
+            Button(role: configuration.role, action: configuration.trigger) {
+                configuration.label.foregroundStyle(style)
             }
+            .buttonStyle(.automatic)
         }
-        .buttonStyle(.automatic)
+
+        private var style: AnyShapeStyle {
+            if !isEnabled { return AnyShapeStyle(.boar(.dim)) }
+            return configuration.role == .destructive ? AnyShapeStyle(.boar(.danger)) : AnyShapeStyle(.tint)
+        }
     }
 }
 

@@ -320,12 +320,17 @@ private struct PressItemEditor: View {
 
     var body: some View {
         NavigationStack {
-            Form {
-                Section("Heading") {
+            BoarForm {
+                Section {
                     TextField(text: $heading) { Text("Heading") }
+                } header: {
+                    BoarHeader {
+                        Text("Heading")
+                    }
                 }
                 Section {
                     TextEditor(text: $text)
+                        .scrollContentBackground(.hidden)
                         .frame(minHeight: 240)
                 }
             }

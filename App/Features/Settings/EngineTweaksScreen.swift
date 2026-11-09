@@ -50,17 +50,17 @@ struct EngineTweaksScreen: View {
         let preset = TweakPreset.of(tw)
         BoarForm {
             Section {
-                Picker(selection: Binding(get: { preset }, set: { p in if let p { choose(p, tw) } })) {
-                    ForEach(TweakPreset.allCases, id: \.self) { p in
-                        Label(Self.presetName(p), systemImage: p.symbol).tag(Optional(p))
-                    }
-                    if preset == nil { Label("Custom", systemImage: "slider.horizontal.3").tag(TweakPreset?.none) }
-                } label: {
+                DrillDownPicker(
+                    title: "Preset",
+                    selection: Binding(get: { preset }, set: { p in if let p { choose(p, tw) } }),
+                    options: TweakPreset.allCases.map { p in
+                        DrillDownOption(value: Optional(p), title: Text(verbatim: Self.presetName(p)), symbol: p.symbol)
+                    } + (preset == nil ? [DrillDownOption(value: nil, title: Text("Custom"), symbol: "slider.horizontal.3")] : [])
+                ) {
                     Text("Preset")
-                } currentValueLabel: {
+                } current: {
                     Text(preset.map(Self.presetName) ?? String(localized: "Custom"))
                 }
-                .drillDownPickerStyle()
             } footer: {
                 BoarFooter {
                     Text(preset.map(Self.presetNote) ?? String(localized: "Custom: your own settings below. Pick a preset to start over from it."))
