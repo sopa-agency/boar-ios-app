@@ -142,6 +142,8 @@ struct BoarStyle: ShapeStyle {
         case heading, primary, secondary, muted
         /// textDim: the quietest line (sizes, file names).
         case dim
+        /// borderDefault: rings and baselines drawn in a Canvas.
+        case border
     }
 
     let role: Role
@@ -169,6 +171,7 @@ struct BoarStyle: ShapeStyle {
         case .secondary: Color(p.textSecondary)
         case .muted: Color(p.textMuted)
         case .dim: Color(p.textDim)
+        case .border: Color(p.borderDefault)
         }
     }
 }
@@ -348,6 +351,16 @@ extension Font {
             ? .system(size: size, design: .monospaced)
             : .custom(style.face.rawValue, size: size, relativeTo: relative)
         return style.tabular ? font.monospacedDigit() : font
+    }
+
+    /// A brand style's face at a fixed size, as Android's `Boar.type["mono.xs"].copy(fontSize = 9.sp)` (the Labs' status
+    /// tags): Lexend for the mono styles, with fixed-width digits. It doesn't grow with Dynamic Type, so a tag keeps
+    /// fitting its tile.
+    static func boar(_ name: String, size: CGFloat) -> Font {
+        let style = BrandType.style(name, scale: "standard")
+        let face = style?.face ?? .lexend400
+        let font: Font = face == .monospace ? .system(size: size, design: .monospaced) : .custom(face.rawValue, fixedSize: size)
+        return style?.tabular == true ? font.monospacedDigit() : font
     }
 
     /// Baloo 2 ExtraBold at an iOS title size (the editorial setup titles, larger than Android's 24 pt headline).

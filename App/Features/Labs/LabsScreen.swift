@@ -1,9 +1,11 @@
+import BoarCore
 import SwiftUI
 
 /// Boar Labs (android LabsScreen.kt): a terminal-style hero, then the experiments two per row, each with what it is
 /// underneath; the ones under review and the classified teasers in their own groups.
 struct LabsScreen: View {
     @State private var labs = Labs.shared
+    @Environment(\.palette) private var palette
     /// The tile whose note shows under the grid (a classified one that was tapped).
     @State private var note: String?
     @State private var taps: [String: Int] = [:]
@@ -29,8 +31,8 @@ struct LabsScreen: View {
                     if !group.1.isEmpty {
                         if let title = group.0 {
                             Text(title)
-                                .font(.caption.monospaced().bold())
-                                .foregroundStyle(.secondary)
+                                .font(.boar("mono.xs").bold())
+                                .foregroundStyle(.boar(.dim))
                                 .padding(.top, 8)
                         }
                         LazyVGrid(columns: columns, alignment: .leading, spacing: 16) {
@@ -40,13 +42,14 @@ struct LabsScreen: View {
                 }
                 if let note {
                     Text(noteText(note))
-                        .font(.footnote)
-                        .foregroundStyle(.green)
+                        .font(.boar("ui.caption"))
+                        .foregroundStyle(.boar(.success))
                 }
             }
             .padding()
             .readableWidth()
         }
+        .background(Color(palette.bgSurface).ignoresSafeArea())
         .navigationTitle("Boar Labs")
         .inlineNavigationTitle()
         .navigationDestination(for: LabRoute.self) { route in
@@ -109,6 +112,7 @@ private struct LabsHero: View {
     @State private var shown = 0
     @State private var cursorOn = true
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.palette) private var palette
 
     private var lines: String {
         [
@@ -127,9 +131,8 @@ private struct LabsHero: View {
         }
         .padding(14)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color.black.opacity(0.85), in: .rect(cornerRadius: 12))
-        .overlay(RoundedRectangle(cornerRadius: 12).strokeBorder(.green.opacity(0.4)))
-        .environment(\.colorScheme, .dark)
+        .background(Color(palette.bgTerminal), in: .rect(cornerRadius: 12))
+        .overlay(RoundedRectangle(cornerRadius: 12).strokeBorder(Color(palette.emeraldBorder)))
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text(verbatim: "Boar Labs. " + full.replacingOccurrences(of: "> ", with: "")))
         .task {
@@ -151,16 +154,16 @@ private struct LabsHero: View {
     private func console(_ text: String, cursor: Bool) -> some View {
         VStack(alignment: .leading, spacing: 6) {
             Text(verbatim: "BOAR LABS")
-                .font(.title2.monospaced().weight(.heavy))
+                .font(.boar("ui.headline"))
                 .tracking(3)
-                .foregroundStyle(.green)
+                .foregroundStyle(.boar(.success))
             Text(verbatim: text)
-                .font(.caption.monospaced())
-                .lineSpacing(4)
-                .foregroundStyle(.white.opacity(0.85))
+                .font(.boar("mono.xs"))
+                .lineSpacing(5)
+                .foregroundStyle(.boar(.secondary))
             Text(verbatim: "█")
-                .font(.caption.monospaced())
-                .foregroundStyle(.green)
+                .font(.boar("mono.xs"))
+                .foregroundStyle(.boar(.success))
                 .opacity(cursor ? 1 : 0)
         }
     }
@@ -173,6 +176,7 @@ struct LabTile: View {
     let flash: Bool
     @State private var labs = Labs.shared
     @State private var red = 0.0
+    @Environment(\.palette) private var palette
 
     var body: some View {
         let leaked = lab.status == .classified && (labs.revealed(lab.id) || labs.unlocked(lab.id))
@@ -180,7 +184,7 @@ struct LabTile: View {
         VStack(alignment: .leading, spacing: 4) {
             ZStack {
                 RoundedRectangle(cornerRadius: 12)
-                    .fill(locked ? AnyShapeStyle(.quaternary) : AnyShapeStyle(Color.green.opacity(0.12)))
+                    .fill(Color(locked ? palette.bgCard : palette.emeraldBgSubtle))
                 if let art = lab.shownArt {
                     Image(art)
                         .resizable()
@@ -194,16 +198,16 @@ struct LabTile: View {
                 }
                 if locked {
                     if lab.shownArt != nil {
-                        Text(verbatim: "?").font(.largeTitle.bold()).foregroundStyle(.secondary)
+                        Text(verbatim: "?").font(.boar("ui.titleLg")).foregroundStyle(.boar(.dim))
                     } else {
-                        Image(systemName: "lock.fill").font(.title2).foregroundStyle(.secondary)
+                        Image(systemName: "lock.fill").font(.system(size: 24)).foregroundStyle(.boar(.dim))
                     }
                 }
-                Color.red.opacity(red)
+                Color(palette.crimson500).opacity(red)
             }
             .aspectRatio(1, contentMode: .fit)
             .clipShape(.rect(cornerRadius: 12))
-            .overlay(RoundedRectangle(cornerRadius: 12).strokeBorder(locked ? AnyShapeStyle(.separator) : AnyShapeStyle(Color.green.opacity(0.4))))
+            .overlay(RoundedRectangle(cornerRadius: 12).strokeBorder(Color(locked ? palette.borderSubtle : palette.emeraldBorder)))
             .overlay(alignment: .topTrailing) {
                 LabStatusTag(status: lab.status, leaked: leaked).padding(8)
             }
@@ -211,25 +215,25 @@ struct LabTile: View {
                 // A revealed classified lab can't be switched on, so OFF would only confuse: it has LEAKED instead.
                 if !locked && lab.status != .classified && !labs.enabled(lab.id) {
                     Text("OFF")
-                        .font(.system(size: 9, weight: .heavy).monospaced())
-                        .foregroundStyle(.white.opacity(0.7))
+                        .font(.boar("mono.xs", size: 9).bold())
+                        .foregroundStyle(.boar(.dim))
                         .padding(.horizontal, 6).padding(.vertical, 2)
-                        .background(.black.opacity(0.4), in: .rect(cornerRadius: 4))
+                        .background(LabStatusTag.base(palette, darkOpacity: 0.4), in: .rect(cornerRadius: 4))
                         .padding(8)
                 }
             }
             Text(verbatim: locked ? Self.redact(lab.title) : lab.title)
-                .font(.headline)
-                .foregroundStyle(locked ? .secondary : .primary)
+                .font(.boar("ui.titleSm"))
+                .foregroundStyle(.boar(locked ? .secondary : .heading))
                 .padding(.top, 4)
             if lab.status == .review, let short = lab.reviewShort {
                 Label(short, systemImage: "exclamationmark.triangle.fill")
-                    .font(.caption.monospaced().bold())
-                    .foregroundStyle(.orange)
+                    .font(.boar("mono.xs").bold())
+                    .foregroundStyle(.boar(.warning))
             }
             Text(verbatim: locked ? Self.redactAll(lab.body) : lab.body)
-                .font(.footnote)
-                .foregroundStyle(locked ? .tertiary : .secondary)
+                .font(.boar("ui.caption"))
+                .foregroundStyle(.boar(locked ? .dim : .muted))
                 .fixedSize(horizontal: false, vertical: true)
         }
         .contentShape(.rect)
@@ -259,34 +263,45 @@ struct LabTile: View {
 struct LabStatusTag: View {
     let status: LabStatus
     var leaked = false
+    @Environment(\.palette) private var palette
 
     var body: some View {
         if leaked {
             Text("LEAKED")
-                .font(.system(size: 10, weight: .heavy).monospaced())
+                .font(.boar("mono.xs", size: 10).bold())
                 .foregroundStyle(.white)
                 .padding(.horizontal, 7).padding(.vertical, 2)
-                .background(.red, in: .rect(cornerRadius: 4))
+                .background(Color(palette.crimson500), in: .rect(cornerRadius: 4))
         } else {
             // UNDER REVIEW reads as a warning: red and a size up from the other tags.
             let review = status == .review
+            let c = colors
             Text(status.label)
-                .font(.system(size: review ? 11 : 9, weight: .heavy).monospaced())
-                .foregroundStyle(color)
+                .font(.boar("mono.xs", size: review ? 11 : 9).bold())
+                .foregroundStyle(c.fg)
                 .padding(.horizontal, review ? 8 : 6).padding(.vertical, review ? 3 : 2)
-                // A dark base under the tint keeps the tag readable over a tile's art.
-                .background(color.opacity(0.18), in: .rect(cornerRadius: 4))
-                .background(.black.opacity(0.7), in: .rect(cornerRadius: 4))
+                // A base under the tint keeps the tag readable over a tile's art: dark as on Android, light on Paper,
+                // whose accents are dark text.
+                .background(c.bg, in: .rect(cornerRadius: 4))
+                .background(LabStatusTag.base(palette), in: .rect(cornerRadius: 4))
         }
     }
 
-    private var color: Color {
+    /// The plate under a tag on a tile's art: Android's black at `darkOpacity` (0.7 under a status tag, 0.4 under OFF);
+    /// on Paper, whose accents are dark text, the same light plate under both.
+    static func base(_ palette: BoarPalette, darkOpacity: Double = 0.7) -> Color {
+        palette.light ? Color.white.opacity(0.85) : Color.black.opacity(darkOpacity)
+    }
+
+    /// Android's StatusChip: each status's accent text on its subtle wash.
+    private var colors: (fg: Color, bg: Color) {
         switch status {
-        case .live: .green
-        case .beta: .cyan
-        case .alpha: .orange
-        case .review: .red
-        case .classified: .gray
+        case .live: (Color(palette.textAccentEmerald), Color(palette.emeraldBgSubtle))
+        case .beta: (Color(palette.textAccentCyan), Color(palette.cyanBgSubtle))
+        case .alpha: (Color(palette.amber400), Color(palette.amberBgSubtle))
+        case .review: (Color(palette.crimson400), Color(palette.crimsonBgSubtle))
+        case .classified:
+            (Color(palette.textDim), Color(white: palette.wash(0.06).white, opacity: palette.wash(0.06).alpha))
         }
     }
 }

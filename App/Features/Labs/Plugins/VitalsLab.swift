@@ -35,6 +35,7 @@ private struct VitalsSample {
 
 private struct VitalsSections: View {
     @Environment(AppModel.self) private var model
+    @Environment(\.palette) private var palette
     @State private var now: VitalsSample?
     /// The thermal level (0 nominal … 3 critical) of the last `history` seconds.
     @State private var levels: [Int] = []
@@ -47,39 +48,43 @@ private struct VitalsSections: View {
             if let s = now {
                 Section {
                     Text(VitalsSections.thermalLabel(s.thermal))
-                        .font(.title2.weight(.heavy))
-                        .foregroundStyle(VitalsSections.thermalColor(s.thermal))
+                        .font(.boar("ui.headline"))
+                        .foregroundStyle(Color(palette[keyPath: VitalsSections.thermalColor(s.thermal)]))
                     ThermalSpark(levels: levels, history: VitalsSections.history)
                         .frame(height: 56)
                         .accessibilityHidden(true)
                     Text("last \(levels.count) s · hottest: \(VitalsSections.thermalLabel(VitalsSections.state(levels.max() ?? 0)))")
-                        .font(.caption.monospaced())
-                        .foregroundStyle(.secondary)
+                        .font(.boar("mono.xs"))
+                        .foregroundStyle(.boar(.dim))
                 } header: {
                     Text("Heat")
                 } footer: {
-                    Text("\(Platform.systemName) doesn't give apps the battery temperature: this is its own heat level, the one that makes it slow the \(Platform.deviceNoun) down.")
+                    BoarFooter {
+                        Text("\(Platform.systemName) doesn't give apps the battery temperature: this is its own heat level, the one that makes it slow the \(Platform.deviceNoun) down.")
+                    }
                 }
                 Section {
                     ForEach(Array(s.coreLoad.enumerated()), id: \.offset) { i, load in
                         VitalsMeter(label: "cpu\(i)", value: load.map { "\(Int(($0 * 100).rounded())) %" } ?? "—",
-                                    fraction: load ?? 0, tint: .cyan)
+                                    fraction: load ?? 0, tint: \.cyan400)
                     }
                 } header: {
                     Text("Cores")
                 } footer: {
-                    Text("How busy each core is. \(Platform.systemName) doesn't give apps the clock speed.")
+                    BoarFooter {
+                        Text("How busy each core is. \(Platform.systemName) doesn't give apps the clock speed.")
+                    }
                 }
                 Section {
                     let ram = DeviceMemory.totalBytes
                     if let available = s.available {
                         VitalsMeter(label: "BOAR", value: VitalsSections.bytes(s.footprint),
-                                    fraction: Double(s.footprint) / Double(max(s.footprint + available, 1)), tint: .green)
+                                    fraction: Double(s.footprint) / Double(max(s.footprint + available, 1)), tint: \.textAccentEmerald)
                         VitalsLine(label: String(localized: "limit"),
                                    value: String(localized: "\(VitalsSections.bytes(available)) more before \(Platform.systemName) closes it"))
                     } else {
                         VitalsMeter(label: "BOAR", value: VitalsSections.bytes(s.footprint),
-                                    fraction: Double(s.footprint) / Double(max(ram, 1)), tint: .green)
+                                    fraction: Double(s.footprint) / Double(max(ram, 1)), tint: \.textAccentEmerald)
                     }
                     VitalsLine(label: Platform.deviceNoun, value: VitalsSections.bytes(ram))
                 } header: {
@@ -94,7 +99,9 @@ private struct VitalsSections: View {
                 } header: {
                     Text("Chip")
                 } footer: {
-                    Text("Leave this open, ask BOAR something, then come back to see what it cost.")
+                    BoarFooter {
+                        Text("Leave this open, ask BOAR something, then come back to see what it cost.")
+                    }
                 }
             } else {
                 // Something on screen before the first sample: an empty Group in a Form never runs its .task.
@@ -164,12 +171,13 @@ private struct VitalsSections: View {
         }
     }
 
-    static func thermalColor(_ s: ProcessInfo.ThermalState) -> Color {
+    /// Android's heat colors (DevicePulseLab.kt heatColor): emerald while cool, amber while warm, crimson500 from the
+    /// moment the system may slow the device down (serious and critical alike, as Android's top band).
+    static func thermalColor(_ s: ProcessInfo.ThermalState) -> KeyPath<BoarPalette, ARGB> {
         switch s {
-        case .nominal: .green
-        case .fair: .yellow
-        case .serious: .orange
-        default: .red
+        case .nominal: \.textAccentEmerald
+        case .fair: \.amber400
+        default: \.crimson500
         }
     }
 
@@ -208,13 +216,23 @@ private struct VitalsMeter: View {
     let label: String
     let value: String
     let fraction: Double
-    let tint: Color
+    let tint: KeyPath<BoarPalette, ARGB>
+    @Environment(\.palette) private var palette
 
     var body: some View {
         HStack(spacing: 8) {
-            Text(verbatim: label).font(.caption.monospaced()).foregroundStyle(.secondary).frame(width: 52, alignment: .leading)
-            ProgressView(value: min(max(fraction, 0), 1)).tint(tint)
-            Text(verbatim: value).font(.caption.monospaced()).monospacedDigit().frame(width: 72, alignment: .trailing)
+            Text(verbatim: label).font(.boar("mono.xs")).foregroundStyle(.boar(.muted)).frame(width: 52, alignment: .leading)
+            // Android's Meter: a 6 pt bar on the theme's track (track(0.4)), not the system's gray one.
+            GeometryReader { g in
+                ZStack(alignment: .leading) {
+                    Color.black.opacity(palette.trackAlpha(0.4))
+                    Color(palette[keyPath: tint])
+                        .frame(width: g.size.width * min(max(fraction, 0), 1))
+                }
+            }
+            .frame(height: 6)
+            .clipShape(.rect(cornerRadius: 3))
+            Text(verbatim: value).font(.boar("mono.xs")).monospacedDigit().foregroundStyle(.boar(.secondary)).frame(width: 72, alignment: .trailing)
         }
         .accessibilityElement(children: .combine)
     }
@@ -227,8 +245,8 @@ private struct VitalsLine: View {
 
     var body: some View {
         HStack(alignment: .firstTextBaseline, spacing: 8) {
-            Text(verbatim: label).font(.caption.monospaced()).foregroundStyle(.secondary).frame(width: 72, alignment: .leading)
-            Text(verbatim: value).font(.caption.monospaced())
+            Text(verbatim: label).font(.boar("mono.xs")).foregroundStyle(.boar(.muted)).frame(width: 72, alignment: .leading)
+            Text(verbatim: value).font(.boar("mono.xs")).foregroundStyle(.boar(.secondary))
         }
         .accessibilityElement(children: .combine)
     }
@@ -239,13 +257,15 @@ private struct VitalsLine: View {
 private struct ThermalSpark: View {
     let levels: [Int]
     let history: Int
+    @Environment(\.palette) private var palette
+    @Environment(\.displayScale) private var displayScale
 
     var body: some View {
         Canvas { ctx, size in
             var base = Path()
             base.move(to: CGPoint(x: 0, y: size.height))
             base.addLine(to: CGPoint(x: size.width, y: size.height))
-            ctx.stroke(base, with: .style(.separator), lineWidth: 1)
+            ctx.stroke(base, with: .style(BoarStyle(role: .border)), lineWidth: 1)
             guard levels.count >= 2 else { return }
             func y(_ l: Int) -> CGFloat { size.height - 2 - (size.height - 4) * CGFloat(l) / 3 }
             var line = Path()
@@ -256,7 +276,8 @@ private struct ThermalSpark: View {
                     line.addLine(to: CGPoint(x: x, y: y(l)))
                 }
             }
-            ctx.stroke(line, with: .color(.green), lineWidth: 2)
+            // Android's Spark: emerald400, 3 px.
+            ctx.stroke(line, with: .color(Color(palette.emerald400)), lineWidth: 3 / displayScale)
         }
     }
 }

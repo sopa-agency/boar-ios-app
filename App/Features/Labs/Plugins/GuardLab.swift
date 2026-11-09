@@ -37,7 +37,9 @@ struct GuardLab: LabPlugin {
             } header: {
                 Text("Try")
             } footer: {
-                Text("It only reads the finished answer, so you see the model's text while it is written and the fixed one when it ends. The facts stay and the wrong verdict is rewritten from them, with the model's own corrections and restatements removed; nothing is generated again. It leaves the answer alone when it isn't sure: mixed units, overlapping ranges, a number that may belong to something else. Never on health questions, instant answers or Deep Research. The answer's details say Tool when it changed something. English only. Ported from r4to's verdict guard (BOAR R&D).")
+                BoarFooter {
+                    Text("It only reads the finished answer, so you see the model's text while it is written and the fixed one when it ends. The facts stay and the wrong verdict is rewritten from them, with the model's own corrections and restatements removed; nothing is generated again. It leaves the answer alone when it isn't sure: mixed units, overlapping ranges, a number that may belong to something else. Never on health questions, instant answers or Deep Research. The answer's details say Tool when it changed something. English only. Ported from r4to's verdict guard (BOAR R&D).")
+                }
             }
         })
     }

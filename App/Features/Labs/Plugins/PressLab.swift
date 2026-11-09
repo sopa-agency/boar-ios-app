@@ -155,7 +155,7 @@ private struct PressBadge: View {
             Button(action: open) {
                 // Never wider than "9+".
                 Text(verbatim: "📎 " + (n > 9 ? "9+" : "\(n)"))
-                    .font(.caption.monospaced().weight(.heavy))
+                    .font(.boar("mono.xs").weight(.heavy))
                     .lineLimit(1)
             }
             .accessibilityLabel(Text("Boar Press: \(n) answers in the basket"))
@@ -182,7 +182,9 @@ private struct PressSections: View {
                 Section {
                     Text("The basket is empty.")
                 } footer: {
-                    Text("Under any answer in a chat, open More (…) and add it to the basket. Collect from as many chats as you like, then come back to arrange and compile.")
+                    BoarFooter {
+                        Text("Under any answer in a chat, open More (…) and add it to the basket. Collect from as many chats as you like, then come back to arrange and compile.")
+                    }
                 }
             } else {
                 Section("Document title") {
@@ -247,11 +249,16 @@ private struct PressSections: View {
             HStack {
                 Text(basket.items.count == 1 ? String(localized: "1 item") : String(localized: "\(basket.items.count) items"))
                 Spacer()
+                // Android's Clear (PrinterLab.kt): crimson400 in mono.xs.
                 Button("Clear", role: .destructive) { basket.clear() }
-                    .font(.footnote.weight(.semibold))
+                    .boarText("mono.xs")
+                    .bold()
+                    .foregroundStyle(.boar(.danger))
             }
         } footer: {
-            if basket.items.count > 1 { Text("Touch and hold an answer, then drag it to change the order.") }
+            BoarFooter {
+                if basket.items.count > 1 { Text("Touch and hold an answer, then drag it to change the order.") }
+            }
         }
     }
 
@@ -282,20 +289,20 @@ private struct PressItemRow: View {
     var body: some View {
         HStack(alignment: .firstTextBaseline, spacing: 10) {
             Text(verbatim: "\(number)")
-                .font(.caption.monospaced().weight(.heavy))
+                .font(.boar("mono.xs").weight(.heavy))
                 .foregroundStyle(.tint)
             VStack(alignment: .leading, spacing: 4) {
                 Text(verbatim: Press.heading(item))
-                    .font(.subheadline.weight(.semibold))
+                    .font(.boar("ui.titleSm"))
                     .lineLimit(2)
                 Text(verbatim: Press.plain(item.text))
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .font(.boar("ui.caption"))
+                    .foregroundStyle(.boar(.muted))
                     .lineLimit(3)
                 if !item.sources.isEmpty {
                     Text(item.sources.count == 1 ? String(localized: "1 source") : String(localized: "\(item.sources.count) sources"))
-                        .font(.caption2.monospaced())
-                        .foregroundStyle(.tertiary)
+                        .font(.boar("mono.xs"))
+                        .foregroundStyle(.boar(.dim))
                 }
             }
             Spacer(minLength: 0)

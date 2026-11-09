@@ -38,7 +38,9 @@ struct CalcLab: LabPlugin {
             } header: {
                 Text("Try")
             } footer: {
-                Text("It works out the answer from the numbers in your question and shows the formula. Anything else goes to the model as usual. A message about health, an injury, danger or a person (or a chat that was) never gets a calculator answer. The answer's details say Tool when the calculator wrote it. Word problems are English only. Ported from r4to's calculator (BOAR R&D).")
+                BoarFooter {
+                    Text("It works out the answer from the numbers in your question and shows the formula. Anything else goes to the model as usual. A message about health, an injury, danger or a person (or a chat that was) never gets a calculator answer. The answer's details say Tool when the calculator wrote it. Word problems are English only. Ported from r4to's calculator (BOAR R&D).")
+                }
             }
         })
     }
@@ -52,8 +54,8 @@ struct LabExample: View {
 
     var body: some View {
         Text(verbatim: "“\(String(localized: text))”")
-            .font(.callout)
-            .foregroundStyle(.secondary)
+            .font(.boar("ui.subtext"))
+            .foregroundStyle(.boar(.muted))
             .textSelection(.enabled)
     }
 }

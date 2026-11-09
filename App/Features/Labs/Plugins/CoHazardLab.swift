@@ -38,7 +38,9 @@ struct CoHazardLab: LabPlugin {
             } header: {
                 Text("Try")
             } footer: {
-                Text("The answer is always the same reviewed text, with its sources (CDC, US CPSC, NHS) and an emergency number line; it starts with No. only when you ask whether you can do it. Small models told people a generator in a garage was fine with the door open. Electric heaters, installed and vented appliances and a propane stove in a kitchen are left to the model. A message about headaches, dizziness or an alarm going off is a health question and goes to the model as one. Ported from r4to's CO hazard check (BOAR R&D).")
+                BoarFooter {
+                    Text("The answer is always the same reviewed text, with its sources (CDC, US CPSC, NHS) and an emergency number line; it starts with No. only when you ask whether you can do it. Small models told people a generator in a garage was fine with the door open. Electric heaters, installed and vented appliances and a propane stove in a kitchen are left to the model. A message about headaches, dizziness or an alarm going off is a health question and goes to the model as one. Ported from r4to's CO hazard check (BOAR R&D).")
+                }
             }
         })
     }

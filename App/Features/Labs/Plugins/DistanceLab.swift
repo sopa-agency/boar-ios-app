@@ -51,7 +51,9 @@ struct DistanceLab: LabPlugin {
             } header: {
                 Text("Try")
             } footer: {
-                Text("It knows the 6,000 largest cities (GeoNames, CC BY 4.0) and works from their coordinates, so every answer is an estimate, not a mapped route: it can't know roads, borders, ferries or closures. A place that isn't one of those cities (a hotel, a beach, a small town) goes to the model as usual, and so does a chat about health, an injury or danger. Questions in English only. Ported from r4to's travel distance (BOAR R&D).")
+                BoarFooter {
+                    Text("It knows the 6,000 largest cities (GeoNames, CC BY 4.0) and works from their coordinates, so every answer is an estimate, not a mapped route: it can't know roads, borders, ferries or closures. A place that isn't one of those cities (a hotel, a beach, a small town) goes to the model as usual, and so does a chat about health, an injury or danger. Questions in English only. Ported from r4to's travel distance (BOAR R&D).")
+                }
             }
         })
     }
