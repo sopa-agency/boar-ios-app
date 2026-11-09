@@ -42,6 +42,32 @@ struct ThemeTokensTests {
         #expect(ThemeTokens.open.map(\.id) == ["campfire", "moonlight"])
     }
 
+    @Test func themeChoice() {
+        // Unset and "system" follow the device; Android's ids round-trip.
+        #expect(ThemeChoice(storedId: nil) == .system)
+        #expect(ThemeChoice(storedId: "system") == .system)
+        #expect(ThemeChoice.system.storedId == "system")
+        for id in ["campfire", "moonlight", "paper"] {
+            #expect(ThemeChoice(storedId: id) == .theme(id))
+            #expect(ThemeChoice(storedId: id).storedId == id)
+        }
+        // Older iOS builds stored the appearance.
+        #expect(ThemeChoice(storedId: "light") == .theme("paper"))
+        #expect(ThemeChoice(storedId: "dark") == .theme("moonlight"))
+        // A Vault theme without a palette here: Moonlight, like Android's lookup.
+        #expect(ThemeChoice(storedId: "tactical_red") == .theme("moonlight"))
+        // "system" is unknown to Android, which falls back to its default.
+        #expect(ThemeTokens.byId(ThemeChoice.system.storedId).id == ThemeTokens.defaultId)
+
+        #expect(ThemeChoice.system.palette(dark: true).id == "moonlight")
+        #expect(ThemeChoice.system.palette(dark: false).id == "paper")
+        #expect(ThemeChoice.theme("campfire").palette(dark: false).id == "campfire")
+
+        #expect(ThemeChoice.choices(current: .system) == [.system, .theme("campfire"), .theme("moonlight")])
+        #expect(ThemeChoice.choices(current: .theme("campfire")).count == 3)
+        #expect(ThemeChoice.choices(current: .theme("paper")).last == .theme("paper"))
+    }
+
     @Test func spacingAndRadii() throws {
         let spacing = try #require(Self.fixture["spacing"] as? [String: Int])
         let ours: [String: Double] = ["xxs": Spacing.xxs, "xs": Spacing.xs, "sm": Spacing.sm, "md": Spacing.md,

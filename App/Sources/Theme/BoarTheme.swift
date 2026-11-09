@@ -14,37 +14,41 @@ extension Color {
 }
 
 extension BoarPalette {
-    /// The palette for the system's (or Settings') appearance: Moonlight, Android's default, when dark; Paper, Android's
-    /// light theme, when light. Campfire and the Vault's themes come with a theme picker.
-    static func forScheme(_ scheme: ColorScheme) -> BoarPalette {
-        scheme == .dark ? .moonlight : .paper
-    }
-
     /// The accent (Android's primary): buttons, toggles, links.
     var accent: Color { Color(emerald500) }
 }
 
 extension EnvironmentValues {
-    /// The current theme palette; set by `.boarTheme()` at the root.
+    /// The current theme palette; set by `.boarTheme(_:)` at the root.
     @Entry var palette: BoarPalette = .moonlight
 }
 
-/// Puts the palette for the current color scheme in the environment and tints with its accent.
+/// Puts the chosen theme's palette in the environment, tints with its accent and sets the matching system appearance
+/// (System: the device's, with Moonlight when dark and Paper when light).
 private struct BoarThemeModifier: ViewModifier {
+    let choice: ThemeChoice
     @Environment(\.colorScheme) private var scheme
 
     func body(content: Content) -> some View {
-        let palette = BoarPalette.forScheme(scheme)
+        let palette = choice.palette(dark: scheme == .dark)
         content
             .environment(\.palette, palette)
             .tint(palette.accent)
+            .preferredColorScheme(choice.colorScheme)
+            #if os(iOS)
+            // Alerts and confirmation dialogs are UIKit's and don't follow SwiftUI's tint: they would keep the asset's
+            // AccentColor (Moonlight's amber) under Campfire.
+            .onChange(of: palette.id, initial: true) {
+                UIView.appearance(whenContainedInInstancesOf: [UIAlertController.self]).tintColor = UIColor(palette.accent)
+            }
+            #endif
     }
 }
 
 extension View {
     /// The BOAR theme for this hierarchy (the root view, and each separate window or scene on the Mac).
-    func boarTheme() -> some View {
-        modifier(BoarThemeModifier())
+    func boarTheme(_ choice: ThemeChoice) -> some View {
+        modifier(BoarThemeModifier(choice: choice))
     }
 
     /// A brand text style by its Android name ("ui.body", "ui.titleLg", "mono.xs"): font, tracking and tabular digits.

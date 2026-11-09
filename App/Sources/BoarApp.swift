@@ -36,15 +36,13 @@ struct BoarApp: App {
         Settings {
             MacSettingsView()
                 .environment(model)
-                .preferredColorScheme(model.appearance.colorScheme)
-                .boarTheme()
+                .boarTheme(model.theme)
         }
 
         Window("About BOAR", id: "about") {
             AboutScreen()
                 .frame(width: 440, height: 600)
-                .preferredColorScheme(model.appearance.colorScheme)
-                .boarTheme()
+                .boarTheme(model.theme)
         }
         .windowResizability(.contentSize)
         .restorationBehavior(.disabled)
@@ -64,8 +62,7 @@ struct BoarApp: App {
     private var root: some View {
         RootView()
             .environment(model)
-            .preferredColorScheme(model.appearance.colorScheme)
-            .boarTheme()
+            .boarTheme(model.theme)
             .task { await model.start() }
             // A chat tapped in Spotlight.
             .onContinueUserActivity(CSSearchableItemActionType) { IntentInbox.shared.open($0) }

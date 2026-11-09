@@ -6459,6 +6459,16 @@
         }
       }
     },
+    "System follows your %@'s appearance: Moonlight when dark, Paper when light." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sistema segue a aparência do seu %@: Moonlight no escuro, Paper no claro."
+          }
+        }
+      }
+    },
     "Text read" : {
       "localizations" : {
         "pt" : {

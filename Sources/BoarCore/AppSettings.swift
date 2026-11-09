@@ -118,7 +118,7 @@ public final class AppSettings: @unchecked Sendable {
     public var researchBannerHidden: Bool { get { bool("researchBannerHidden") ?? false } set { set("researchBannerHidden", .bool(newValue)) } }
     public var adaptiveRoutingEnabled: Bool { get { bool("adaptiveRoutingEnabled") ?? false } set { set("adaptiveRoutingEnabled", .bool(newValue)) } }
     public var routingPreset: String? { get { str("routingPreset") } set { set("routingPreset", newValue.map(JSONValue.string)) } }
-    /// "campfire" or "moonlight"; the theme's default when unset.
+    /// "campfire" or "moonlight" (Android's ids), or "system" on iOS; see `ThemeChoice`.
     public var themeId: String? { get { str("themeId") } set { set("themeId", newValue.map(JSONValue.string)) } }
     public var fontScale: String { get { str("fontScale") ?? "standard" } set { set("fontScale", .string(newValue)) } }
     public var languageId: String? { get { str("languageId") } set { set("languageId", newValue.map(JSONValue.string)) } }

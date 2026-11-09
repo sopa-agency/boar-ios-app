@@ -2,7 +2,10 @@
 # UI audit capture: builds the app (DEBUG), installs it on the "BOAR Audit iPhone 13" simulator and saves one light and one
 # dark screenshot per screen, each launched straight onto the screen with -uiDemo -uiScreen (no taps, no model).
 #
-#   [MODES=dark] [UI_LANG=pt] scripts/ui-capture.sh <out-dir> [--no-build] [--only name,name] [--wait seconds]
+#   [MODES=dark] [UI_LANG=pt] [THEME=campfire] scripts/ui-capture.sh <out-dir> [--no-build] [--only name,name] [--wait seconds]
+#
+# THEME shows the app in that theme (-uiTheme, this run only); a theme other than System looks the same in both modes,
+# so it is captured once (light) unless MODES says otherwise.
 #
 # Output: <out-dir>/<screen>-light.png and -dark.png. DerivedData: the shared .build/DerivedData.
 # The simulator keeps existing afterwards (shut down), so reruns reuse it.
@@ -89,6 +92,7 @@ labs|labs|
 labs-2|labs|end
 "
 
+if [ -n "${THEME:-}" ] && [ "$THEME" != system ]; then MODES="${MODES:-light}"; fi
 for MODE in ${MODES:-light dark}; do
   xcrun simctl ui "$UDID" appearance "$MODE" >/dev/null
   # Switching the appearance can drop the status bar override: set it again for every mode.
@@ -101,6 +105,7 @@ for MODE in ${MODES:-light dark}; do
     case "${UI_LANG:-en}" in pt) LOCALE=pt_BR ;; *) LOCALE=en_US ;; esac
     ARGS=(-uiDemo -uiScreen "$SCREEN" -AppleLanguages "(${UI_LANG:-en})" -AppleLocale "$LOCALE")
     [ -n "$SCROLL" ] && ARGS+=(-uiScroll "$SCROLL")
+    [ -n "${THEME:-}" ] && ARGS+=(-uiTheme "$THEME")
     xcrun simctl launch "$UDID" "$BUNDLE" "${ARGS[@]}" >/dev/null
     EXTRA=0; [ -n "$SCROLL" ] && EXTRA=4
     sleep $((WAIT + EXTRA))
