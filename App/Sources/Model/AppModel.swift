@@ -101,6 +101,8 @@ final class AppModel {
     private static func launchTheme() -> ThemeChoice {
         #if DEBUG
         if let id = DebugLaunch.theme { return ThemeChoice(storedId: id) }
+        // The demo's defaults still hold the last demo run here (start() resets them): System until then.
+        if DebugLaunch.demo { return .system }
         #endif
         // The same store BoarServices opens (UserDefaults): one key, read synchronously.
         return ThemeChoice(storedId: AppSettings(store: UserDefaultsKeyValueStore(defaults: AppPaths.defaults)).themeId)

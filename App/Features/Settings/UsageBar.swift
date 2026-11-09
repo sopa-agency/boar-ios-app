@@ -52,5 +52,7 @@ struct UsageBar: View {
         }
         .padding(.vertical, 4)
         .accessibilityElement(children: .combine)
+        // The percentage the system ProgressView used to speak, on top of the numbers.
+        .accessibilityValue(Text(fraction, format: .percent.precision(.fractionLength(0))))
     }
 }
