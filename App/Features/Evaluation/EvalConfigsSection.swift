@@ -22,7 +22,7 @@ struct EvalConfigsSection: View {
                                 Text(verbatim: name.plain)
                                 if let model = name.model {
                                     Text(verbatim: model)
-                                        .font(.subheadline)
+                                        .font(.boar("ui.subtext"))
                                         .foregroundStyle(.secondary)
                                 }
                             }
@@ -30,13 +30,13 @@ struct EvalConfigsSection: View {
                             if on {
                                 Image(systemName: "checkmark")
                                     .fontWeight(.semibold)
-                                    .foregroundStyle(Color.accentColor)
+                                    .foregroundStyle(.boar(.accent))
                                     .accessibilityHidden(true)
                             }
                         }
                         .contentShape(.rect)
+                        .foregroundStyle(.boar(.primary), .boar(.secondary))
                     }
-                    .tint(.primary)
                     .disabled(controller.running)
                     .accessibilityAddTraits(on ? .isSelected : [])
                 }
@@ -44,9 +44,13 @@ struct EvalConfigsSection: View {
                 ProgressView()
             }
         } header: {
-            Text("Models to Test")
+            BoarHeader {
+                Text("Models to Test")
+            }
         } footer: {
-            Text("BOAR \(controller.appVersion). Each model answers every question with the default answer style; one model is in memory at a time.")
+            BoarFooter {
+                Text("BOAR \(controller.appVersion). Each model answers every question with the default answer style; one model is in memory at a time.")
+            }
         }
     }
 }

@@ -48,7 +48,7 @@ struct EngineTweaksScreen: View {
         let resolved = tw.resolve(services.topology, totalRamBytes: services.totalRamBytes)
         let n = services.topology.cores.count
         let preset = TweakPreset.of(tw)
-        Form {
+        BoarForm {
             Section {
                 Picker(selection: Binding(get: { preset }, set: { p in if let p { choose(p, tw) } })) {
                     ForEach(TweakPreset.allCases, id: \.self) { p in
@@ -62,14 +62,18 @@ struct EngineTweaksScreen: View {
                 }
                 .drillDownPickerStyle()
             } footer: {
-                Text(preset.map(Self.presetNote) ?? String(localized: "Custom: your own settings below. Pick a preset to start over from it."))
+                BoarFooter {
+                    Text(preset.map(Self.presetNote) ?? String(localized: "Custom: your own settings below. Pick a preset to start over from it."))
+                }
             }
 
             if preset != nil {
                 Section {
                     Toggle("Show Every Setting", isOn: $showsEverySetting)
                 } footer: {
-                    Text("Threads, memory, loading and answer limits, one by one. The preset is enough for most people.")
+                    BoarFooter {
+                        Text("Threads, memory, loading and answer limits, one by one. The preset is enough for most people.")
+                    }
                 }
             }
 
@@ -84,9 +88,13 @@ struct EngineTweaksScreen: View {
                         ForEach(1...max(n, 1), id: \.self) { Text(verbatim: "\($0)").tag(Optional($0)) }
                     }
                 } header: {
-                    Text("CPU")
+                    BoarHeader {
+                        Text("CPU")
+                    }
                 } footer: {
-                    Text("More threads than performance cores is usually slower. On iPhone, answers run on the CPU.")
+                    BoarFooter {
+                        Text("More threads than performance cores is usually slower. On iPhone, answers run on the CPU.")
+                    }
                 }
 
                 Section {
@@ -112,9 +120,13 @@ struct EngineTweaksScreen: View {
                         Text("Off").tag(FlashAttn.off)
                     }
                 } header: {
-                    Text("Memory")
+                    BoarHeader {
+                        Text("Memory")
+                    }
                 } footer: {
-                    Text("Q8_0 and Q4_0 use less memory for the KV cache; on some phones Q8_0 with flash attention generates slower.")
+                    BoarFooter {
+                        Text("Q8_0 and Q4_0 use less memory for the KV cache; on some phones Q8_0 with flash attention generates slower.")
+                    }
                 }
 
                 Section {
@@ -134,9 +146,13 @@ struct EngineTweaksScreen: View {
                         Text("On").tag(Optional(LazyMode.on))
                     }
                 } header: {
-                    Text("Loading")
+                    BoarHeader {
+                        Text("Loading")
+                    }
                 } footer: {
-                    Text("Auto maps the model from storage. Repacking reads prompts about 2× faster. After a load that ran out of memory, the next one keeps the weights mapped.")
+                    BoarFooter {
+                        Text("Auto maps the model from storage. Repacking reads prompts about 2× faster. After a load that ran out of memory, the next one keeps the weights mapped.")
+                    }
                 }
 
                 Section {
@@ -152,9 +168,13 @@ struct EngineTweaksScreen: View {
                         Text("No Limit").tag(Optional(0))
                     }
                 } header: {
-                    Text("Answers")
+                    BoarHeader {
+                        Text("Answers")
+                    }
                 } footer: {
-                    Text("Thinking lets a reasoning model think before it answers; Auto keeps it off so the answer isn't cut short. The Auto time limit grows with the answer length; an answer that hits it keeps what it wrote.")
+                    BoarFooter {
+                        Text("Thinking lets a reasoning model think before it answers; Auto keeps it off so the answer isn't cut short. The Auto time limit grows with the answer length; an answer that hits it keeps what it wrote.")
+                    }
                 }
             }
 
@@ -162,11 +182,13 @@ struct EngineTweaksScreen: View {
                 Button("Reset All to Auto", systemImage: "arrow.uturn.backward") { save(EngineTweaks()) }
                     .disabled(tw.isAuto)
             } footer: {
-                VStack(alignment: .leading) {
-                    if !resolved.notes.isEmpty {
-                        Text("Adjusted for this \(Platform.deviceNoun): \(resolved.notes.joined(separator: "; ")).")
+                BoarFooter {
+                    VStack(alignment: .leading) {
+                        if !resolved.notes.isEmpty {
+                            Text("Adjusted for this \(Platform.deviceNoun): \(resolved.notes.joined(separator: "; ")).")
+                        }
+                        Text("Auto is what we measured best on real phones; anything you set wins. Changes apply from the next answer.")
                     }
-                    Text("Auto is what we measured best on real phones; anything you set wins. Changes apply from the next answer.")
                 }
             }
         }

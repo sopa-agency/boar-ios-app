@@ -11,7 +11,7 @@ struct SettingsFreeMemorySection: View {
         let on = bridge.binding({ $0.freeMemoryInBackground }, { $0.freeMemoryInBackground = $1 })
         Section {
             Toggle(isOn: on) {
-                SettingsLabel("Free Memory When I Leave BOAR", symbol: "memorychip", color: .teal)
+                SettingsLabel("Free Memory When I Leave BOAR", symbol: "memorychip")
             }
             if on.wrappedValue {
                 Picker(selection: bridge.binding({ $0.freeMemoryAfterMinutes }, { $0.freeMemoryAfterMinutes = $1 })) {
@@ -21,14 +21,18 @@ struct SettingsFreeMemorySection: View {
                         Text("\(m) min").tag(Int?.some(m))
                     }
                 } label: {
-                    SettingsLabel("Free Memory After", symbol: "timer", color: .gray)
+                    SettingsLabel("Free Memory After", symbol: "timer")
                 }
                 .pickerStyle(.menu)
             }
         } header: {
-            Text("Memory")
+            BoarHeader {
+                Text("Memory")
+            }
         } footer: {
-            Text("Shortly after you leave, when nothing is being answered, BOAR unloads the model, so the phone doesn't close BOAR to get its memory back. The next answer takes a few seconds longer to start.")
+            BoarFooter {
+                Text("Shortly after you leave, when nothing is being answered, BOAR unloads the model, so the phone doesn't close BOAR to get its memory back. The next answer takes a few seconds longer to start.")
+            }
         }
     }
 }

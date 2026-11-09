@@ -13,20 +13,24 @@ struct SettingsDisplaySection: View {
                     Text(appearance.title).tag(appearance)
                 }
             } label: {
-                SettingsLabel("Theme", symbol: "circle.lefthalf.filled", color: .gray)
+                SettingsLabel("Theme", symbol: "circle.lefthalf.filled")
             }
             .pickerStyle(.menu)
             #if !os(macOS)
             Toggle(isOn: bridge.binding({ $0.hapticsEnabled }, { $0.hapticsEnabled = $1 })) {
-                SettingsLabel("Haptics", symbol: "hand.tap.fill", color: .pink)
+                SettingsLabel("Haptics", symbol: "hand.tap.fill")
             }
             #endif
         } header: {
-            Text("Display")
+            BoarHeader {
+                Text("Display")
+            }
         } footer: {
-            #if !os(macOS)
-            Text("Text size follows your \(Platform.deviceNoun)'s Dynamic Type setting.")
-            #endif
+            BoarFooter {
+                #if !os(macOS)
+                Text("Text size follows your \(Platform.deviceNoun)'s Dynamic Type setting.")
+                #endif
+            }
         }
     }
 }

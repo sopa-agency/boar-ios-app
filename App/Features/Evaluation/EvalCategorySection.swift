@@ -30,7 +30,7 @@ struct EvalCategorySection: View {
                             .gridCellUnsizedAxes([.horizontal, .vertical])
                         ForEach(summary.configs) { config in
                             Text(verbatim: controller.name(configId: config.configId, label: config.label).plain)
-                                .font(.subheadline.weight(.semibold))
+                                .font(.boar("ui.subtext").weight(.semibold))
                                 .gridColumnAlignment(.trailing)
                         }
                     }
@@ -42,12 +42,12 @@ struct EvalCategorySection: View {
                     }
                     GridRow {
                         Text(verbatim: EvalFormat.category(category))
-                            .font(.subheadline)
+                            .font(.boar("ui.subtext"))
                             .frame(maxWidth: .infinity, alignment: .leading)
                         ForEach(summary.configs) { config in
                             let value = cell(config, category)
                             Text(verbatim: value ?? String(localized: "computer"))
-                                .font(.subheadline)
+                                .font(.boar("ui.subtext"))
                                 .monospacedDigit()
                                 .foregroundStyle(value == nil ? .secondary : .primary)
                                 .gridColumnAlignment(.trailing)
@@ -58,9 +58,13 @@ struct EvalCategorySection: View {
             }
             .padding(.vertical, 4)
         } header: {
-            Text("By Topic")
+            BoarHeader {
+                Text("By Topic")
+            }
         } footer: {
-            Text("Facts checked per topic. “computer” marks topics the phone can't grade: venue lists, first aid and open-ended answers go to the judge.")
+            BoarFooter {
+                Text("Facts checked per topic. “computer” marks topics the phone can't grade: venue lists, first aid and open-ended answers go to the judge.")
+            }
         }
     }
 }

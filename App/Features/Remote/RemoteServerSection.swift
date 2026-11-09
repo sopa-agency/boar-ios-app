@@ -38,21 +38,25 @@ struct RemoteServerSection: View {
                     Label {
                         Text(verbatim: s.contextTokens.map { "\(s.modelName) · \($0.formatted()) tokens" } ?? s.modelName)
                     } icon: {
-                        Image(systemName: "checkmark.circle.fill").foregroundStyle(.green)
+                        Image(systemName: "checkmark.circle.fill").foregroundStyle(.boar(.success))
                     }
                 case .failure(let e):
                     Label {
                         Text(verbatim: e.description)
                     } icon: {
-                        Image(systemName: Symbols.error).foregroundStyle(.red)
+                        Image(systemName: Symbols.error).foregroundStyle(.boar(.danger))
                     }
                     .foregroundStyle(.secondary)
                 }
             }
         } header: {
-            Text("Mac on Your Network")
+            BoarHeader {
+                Text("Mac on Your Network")
+            }
         } footer: {
-            Text("Answers are written by llama-server on that Mac; search, your library and your chats stay on this \(Platform.deviceNoun). Both need the same Wi-Fi network.")
+            BoarFooter {
+                Text("Answers are written by llama-server on that Mac; search, your library and your chats stay on this \(Platform.deviceNoun). Both need the same Wi-Fi network.")
+            }
         }
         .onAppear {
             address = RemoteConfig.address(settings)

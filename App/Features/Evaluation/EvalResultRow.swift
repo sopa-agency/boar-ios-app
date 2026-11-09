@@ -14,16 +14,16 @@ struct EvalResultRow: View {
     private var check: String? { row["check"]?.stringValue }
     private var why: String { row["checkWhy"]?.stringValue ?? "" }
 
-    private var status: (name: String, color: Color, label: LocalizedStringKey) {
-        if outcome == "cancelled" { return (Symbols.caution, .orange, "Stopped") }
-        if outcome == "failure" { return (Symbols.error, .red, "Failed") }
+    private var status: (name: String, color: BoarStyle, label: LocalizedStringKey) {
+        if outcome == "cancelled" { return (Symbols.caution, .boar(.warning), "Stopped") }
+        if outcome == "failure" { return (Symbols.error, .boar(.danger), "Failed") }
         switch check {
-        case "pass": return (Symbols.fits, .green, "Facts found")
-        case "refused": return why == "ok" ? (Symbols.fits, .green, "Declined, which is allowed here") : ("hand.raised", .secondary, "Declined")
-        case "confident-wrong": return ("xmark.octagon", .red, "Wrong claim")
-        case "fail-missing": return ("minus.circle", .orange, "Facts missing")
-        case "empty": return (Symbols.error, .red, "No answer")
-        default: return ("desktopcomputer", .secondary, "Judged on a computer")
+        case "pass": return (Symbols.fits, .boar(.success), "Facts found")
+        case "refused": return why == "ok" ? (Symbols.fits, .boar(.success), "Declined, which is allowed here") : ("hand.raised", .boar(.secondary), "Declined")
+        case "confident-wrong": return ("xmark.octagon", .boar(.danger), "Wrong claim")
+        case "fail-missing": return ("minus.circle", .boar(.warning), "Facts missing")
+        case "empty": return (Symbols.error, .boar(.danger), "No answer")
+        default: return ("desktopcomputer", .boar(.secondary), "Judged on a computer")
         }
     }
 
@@ -72,8 +72,7 @@ struct EvalResultRow: View {
                         Text(verbatim: row["query"]?.stringValue ?? row["queryId"]?.stringValue ?? "")
                             .lineLimit(open ? nil : 2)
                         Text(verbatim: summary)
-                            .font(.subheadline)
-                            .monospacedDigit()
+                            .boarText("mono.xs")
                             .foregroundStyle(.secondary)
                             .lineLimit(1)
                     }
@@ -85,15 +84,14 @@ struct EvalResultRow: View {
                 if open {
                     if let finding {
                         Text(finding)
-                            .font(.subheadline)
+                            .font(.boar("ui.subtext"))
                             .foregroundStyle(status.color)
                     }
                     Text(verbatim: facts)
-                        .font(.footnote)
-                        .monospacedDigit()
+                        .boarText("mono.xs")
                         .foregroundStyle(.secondary)
                     Text(verbatim: answer)
-                        .font(.subheadline)
+                        .font(.boar("ui.subtext"))
                 }
             }
             .contentShape(.rect)

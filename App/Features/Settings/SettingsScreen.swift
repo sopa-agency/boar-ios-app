@@ -21,7 +21,7 @@ struct SettingsScreen: View {
     }
 
     var body: some View {
-        Form {
+        BoarForm {
             SettingsToneSection(services: services, bridge: bridge)
             SettingsLibrarySection(services: services)
             SettingsMemorySection(bridge: bridge)
@@ -35,12 +35,12 @@ struct SettingsScreen: View {
                 NavigationLink {
                     AdvancedSettingsScreen(services: services, bridge: bridge)
                 } label: {
-                    SettingsLabel("Advanced", symbol: "gearshape.2.fill", color: .gray)
+                    SettingsLabel("Advanced", symbol: "gearshape.2.fill")
                 }
                 NavigationLink {
                     AboutScreen()
                 } label: {
-                    SettingsLabel("About BOAR", symbol: "info", color: .gray)
+                    SettingsLabel("About BOAR", symbol: "info")
                 }
             }
             SettingsRecoverySection(services: services, bridge: bridge)

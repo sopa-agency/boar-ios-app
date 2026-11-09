@@ -11,7 +11,7 @@ struct SettingsVoiceSection: View {
     var body: some View {
         Section {
             Toggle(isOn: bridge.binding({ $0.voiceInputEnabled && state != .unsupported }, { $0.voiceInputEnabled = $1 })) {
-                SettingsLabel("Dictation", symbol: "mic.fill", color: .red)
+                SettingsLabel("Dictation", symbol: "mic.fill")
             }
                 .disabled(state == .unsupported)
             if state == .downloadable || state == .downloading {
@@ -19,7 +19,7 @@ struct SettingsVoiceSection: View {
                     VStack(alignment: .leading) {
                         Text("English Speech Model")
                         Text(installing == nil && state == .downloadable ? "Needed once for dictation" : "Downloading…")
-                            .font(.subheadline)
+                            .font(.boar("ui.subtext"))
                             .foregroundStyle(.secondary)
                     }
                     Spacer()
@@ -38,16 +38,20 @@ struct SettingsVoiceSection: View {
                 }
             }
         } header: {
-            Text("Voice")
+            BoarHeader {
+                Text("Voice")
+            }
         } footer: {
-            VStack(alignment: .leading) {
-                if state == .unsupported {
-                    Text("Dictation isn't available on this \(Platform.deviceNoun).")
-                } else {
-                    Text("Speech is recognized on your \(Platform.deviceNoun). The audio never leaves it.")
-                }
-                if let error {
-                    Text(error).foregroundStyle(.red)
+            BoarFooter {
+                VStack(alignment: .leading) {
+                    if state == .unsupported {
+                        Text("Dictation isn't available on this \(Platform.deviceNoun).")
+                    } else {
+                        Text("Speech is recognized on your \(Platform.deviceNoun). The audio never leaves it.")
+                    }
+                    if let error {
+                        Text(error).foregroundStyle(.boar(.danger))
+                    }
                 }
             }
         }
