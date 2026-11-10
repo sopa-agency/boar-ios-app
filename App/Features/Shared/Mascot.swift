@@ -64,9 +64,11 @@ struct ChatTitle: View {
                 Text(verbatim: title)
                     .font(.headline)
                     .foregroundStyle(.boar(.heading))
+                // The model, as Android's header writes it: mono.xs, upper case, textDim.
                 Text(verbatim: subtitle)
-                    .font(.caption)
-                    .foregroundStyle(.boar(.muted))
+                    .boarText("mono.xs")
+                    .textCase(.uppercase)
+                    .foregroundStyle(.boar(.dim))
             }
             .lineLimit(1)
             .accessibilityElement(children: .combine)
@@ -86,9 +88,10 @@ struct MascotFullView: View {
                 .resizable()
                 .scaledToFit()
                 .clipShape(.rect(cornerRadius: 24))
+            // White in every theme: the veil is black, and Paper's heading color (black) would vanish on it.
             Text(verbatim: "BOAR")
                 .boarText("ui.titleLg")
-                .foregroundStyle(.boar(.heading))
+                .foregroundStyle(.white)
         }
         .padding(24)
         .frame(maxWidth: .infinity, maxHeight: .infinity)

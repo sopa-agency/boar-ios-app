@@ -6,7 +6,8 @@ path, one fill) and writes App/Resources/Assets.xcassets/Icons/<name>.symbolset:
 as its Regular glyph at the small, medium and large scales. As a symbol it scales with the text, sits on the baseline,
 and takes the theme's tint where it's drawn (android PackIcon), like an SF Symbol. Other weights fall back to Regular.
 
-The symbol name drops the `ic_` prefix: ic_settings_models.xml becomes "Icons/settings_models". It also writes
+The symbol name swaps the `ic_` prefix for `boar.` (the Icons folder adds no namespace): ic_settings_models.xml becomes
+"boar.settings_models", BoarIcon.symbolName. It also writes
 App/Sources/Theme/BoarIcon.swift, one case per symbol; views draw them as AppIcon.pack(.settingsModels).
 
 Usage: python3 scripts/import-icon-pack.py   (refresh .ref first with scripts/sync-reference.sh)
