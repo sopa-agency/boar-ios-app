@@ -6,7 +6,7 @@ import SwiftUI
 struct LibraryCard: View {
     let title: LocalizedStringKey
     let detail: LocalizedStringKey
-    let symbol: String
+    let symbol: AppIcon
     let fill: Color
     let ink: Color
     var width: CGFloat = 236
@@ -19,7 +19,7 @@ struct LibraryCard: View {
                 Text(title)
                     .boarText("ui.titleLg")
             } icon: {
-                Image(systemName: symbol)
+                Image(icon: symbol)
                     .accessibilityHidden(true)
             }
             Text(detail)

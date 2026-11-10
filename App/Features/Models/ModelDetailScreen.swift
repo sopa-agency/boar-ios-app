@@ -34,7 +34,7 @@ struct ModelDetailScreen: View {
                 Label {
                     Text(verbatim: asset.plainPurpose)
                 } icon: {
-                    Image(systemName: asset.symbol)
+                    Image(icon: asset.symbol)
                         .foregroundStyle(.boar(.success))
                 }
             } footer: {
@@ -67,7 +67,7 @@ struct ModelDetailScreen: View {
                     downloadRow
                 }
                 if present && !active && asset.kind == .llm {
-                    Button("Use This Model", systemImage: Symbols.active, action: use)
+                    Button("Use This Model", icon: Symbols.active, action: use)
                         .disabled(controller.activating != nil)
                 }
                 if let modelPage {
@@ -81,7 +81,7 @@ struct ModelDetailScreen: View {
             if present && !asset.required {
                 Section {
                     Button(role: .destructive, action: askRemove) {
-                        Label("Delete Model", systemImage: Symbols.delete)
+                        Label("Delete Model", icon: Symbols.delete)
                             .foregroundStyle(.boar(.danger))
                     }
                     .disabled(controller.activating != nil)
@@ -129,7 +129,7 @@ struct ModelDetailScreen: View {
                 Button("Cancel", role: .cancel) { controller.cancelDownload(asset) }
             }
         } else {
-            Button("Download (\(FeatureFormat.megabytes(asset.sizeBytes)))", systemImage: Symbols.download) {
+            Button("Download (\(FeatureFormat.megabytes(asset.sizeBytes)))", icon: Symbols.download) {
                 controller.download(asset)
             }
             .disabled(fit == .red)

@@ -30,7 +30,7 @@ struct CollectionDetail: View {
         Form {
             Section {
                 HStack(spacing: 14) {
-                    Image(systemName: Symbols.collection)
+                    Image(icon: Symbols.collection)
                         .font(.title)
                         .foregroundStyle(.tint)
                         .frame(width: 44, height: 44)
@@ -95,7 +95,7 @@ struct CollectionDetail: View {
                         Label("Export…", systemImage: "square.and.arrow.up")
                     }
                     Spacer()
-                    Button("Delete Collection…", systemImage: Symbols.delete, role: .destructive, action: onDelete)
+                    Button("Delete Collection…", icon: Symbols.delete, role: .destructive, action: onDelete)
                 }
             }
         }
@@ -132,7 +132,7 @@ struct PackDetail: View {
         Form {
             Section {
                 HStack(spacing: 14) {
-                    Image(systemName: Symbols.pack)
+                    Image(icon: Symbols.pack)
                         .font(.title)
                         .foregroundStyle(.tint)
                         .frame(width: 44, height: 44)
@@ -155,7 +155,7 @@ struct PackDetail: View {
                     } else if row.indexing {
                         Text("Preparing for search…")
                     } else if present {
-                        Label("Installed", systemImage: Symbols.active).foregroundStyle(.tint)
+                        Label("Installed", icon: Symbols.active).foregroundStyle(.tint)
                     } else {
                         Text("Not downloaded")
                     }
@@ -170,11 +170,11 @@ struct PackDetail: View {
                 if row.downloading {
                     Button("Cancel Download", role: .cancel) { controller.cancelDownload(pack) }
                 } else if !present {
-                    Button("Download (\(FeatureFormat.megabytes(pack.sizeBytes)))", systemImage: Symbols.download) {
+                    Button("Download (\(FeatureFormat.megabytes(pack.sizeBytes)))", icon: Symbols.download) {
                         controller.download(pack)
                     }
                 } else if !pack.required && !row.indexing {
-                    Button("Delete…", systemImage: Symbols.delete, role: .destructive) { confirmRemove = true }
+                    Button("Delete…", icon: Symbols.delete, role: .destructive) { confirmRemove = true }
                 } else if pack.required {
                     Text("BOAR needs this part of the library.")
                         .foregroundStyle(.secondary)

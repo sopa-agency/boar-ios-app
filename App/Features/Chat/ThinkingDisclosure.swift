@@ -20,7 +20,7 @@ struct ThinkingDisclosure: View {
             Label {
                 title
             } icon: {
-                Image(systemName: Symbols.thinking)
+                Image(icon: Symbols.thinking)
                     .symbolEffect(.pulse, isActive: active)
             }
             .foregroundStyle(.secondary)

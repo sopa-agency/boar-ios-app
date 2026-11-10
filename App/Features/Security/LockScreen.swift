@@ -10,7 +10,7 @@ struct LockScreen: View {
 
     var body: some View {
         ContentUnavailableView {
-            Label("BOAR is locked", systemImage: "lock.fill")
+            Label("BOAR is locked", icon: Symbols.lock)
         } description: {
             if lock.keyLost {
                 Text("The key that opens your chats is gone (this \(Platform.deviceNoun)'s passcode was turned off). The chats can't be read any more.")

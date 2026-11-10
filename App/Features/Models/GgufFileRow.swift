@@ -94,7 +94,7 @@ struct GgufFileRow: View {
         if row.downloading, let asset {
             DownloadProgressButton(fraction: row.progress) { controller.hfCancel(asset) }
         } else if active {
-            Image(systemName: Symbols.active)
+            Image(icon: Symbols.active)
                 .font(.title2)
                 .foregroundStyle(.tint)
                 .accessibilityLabel("In use")
@@ -104,7 +104,7 @@ struct GgufFileRow: View {
                 .disabled(controller.activating != nil)
         } else {
             Button(row.error != nil ? "Retry Download" : "Download \(title)",
-                   systemImage: row.error != nil ? Symbols.retry : Symbols.download) {
+                   icon: row.error != nil ? Symbols.retry : Symbols.download) {
                 controller.hfDownload(repo, file)
             }
             .labelStyle(.iconOnly)

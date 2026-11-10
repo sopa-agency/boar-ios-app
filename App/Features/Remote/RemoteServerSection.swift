@@ -44,7 +44,7 @@ struct RemoteServerSection: View {
                     Label {
                         Text(verbatim: e.description)
                     } icon: {
-                        Image(systemName: Symbols.error).foregroundStyle(.boar(.danger))
+                        Image(icon: Symbols.error).foregroundStyle(.boar(.danger))
                     }
                     .foregroundStyle(.secondary)
                 }

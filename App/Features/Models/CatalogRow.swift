@@ -43,9 +43,9 @@ struct CatalogRow: View {
         }
         .swipeActions(edge: .trailing) {
             if present && !asset.required {
-                Button("Delete", systemImage: Symbols.delete, role: .destructive, action: askRemove)
+                Button("Delete", icon: Symbols.delete, role: .destructive, action: askRemove)
             } else if !present && controller.isDiscovered(asset) {
-                Button("Remove from List", systemImage: Symbols.delete, role: .destructive, action: askUnlist)
+                Button("Remove from List", icon: Symbols.delete, role: .destructive, action: askUnlist)
             }
         }
         .contextMenu {
@@ -53,12 +53,12 @@ struct CatalogRow: View {
             Button("Details", systemImage: "info.circle", action: onDetails)
             #endif
             if switches {
-                Button("Use This Model", systemImage: Symbols.active, action: use)
+                Button("Use This Model", icon: Symbols.active, action: use)
             }
             if present && !asset.required {
-                Button("Delete", systemImage: Symbols.delete, role: .destructive, action: askRemove)
+                Button("Delete", icon: Symbols.delete, role: .destructive, action: askRemove)
             } else if !present && controller.isDiscovered(asset) {
-                Button("Remove from List", systemImage: Symbols.delete, role: .destructive, action: askUnlist)
+                Button("Remove from List", icon: Symbols.delete, role: .destructive, action: askUnlist)
             }
         }
         .confirmationDialog("Delete \(asset.friendlyName)?", isPresented: $confirmRemove, titleVisibility: .visible) {
@@ -95,19 +95,19 @@ struct CatalogRow: View {
         } else if loading {
             ProgressView()
         } else if active {
-            Image(systemName: Symbols.active)
+            Image(icon: Symbols.active)
                 .font(.title2)
                 .foregroundStyle(.tint)
                 .accessibilityLabel("In use")
         } else if present || tooBig {
             EmptyView()
         } else if row.error != nil {
-            Button("Retry Download", systemImage: Symbols.retry, action: download)
+            Button("Retry Download", icon: Symbols.retry, action: download)
                 .labelStyle(.iconOnly)
                 .buttonStyle(.borderless)
                 .font(.title2)
         } else {
-            Button("Download \(asset.friendlyName)", systemImage: Symbols.download, action: download)
+            Button("Download \(asset.friendlyName)", icon: Symbols.download, action: download)
                 .labelStyle(.iconOnly)
                 .buttonStyle(.borderless)
                 .font(.title2)

@@ -28,14 +28,14 @@ enum AppScreen: String, Hashable, CaseIterable, Identifiable {
         }
     }
 
-    var symbol: String {
+    var symbol: AppIcon {
         switch self {
         case .documents: Symbols.library
         case .models: Symbols.model
-        case .settings: "gearshape"
+        case .settings: Symbols.settings
         case .evaluation: Symbols.benchmark
         case .about: "info.circle"
-        case .labs: "flask"
+        case .labs: Symbols.labs
         }
     }
 }

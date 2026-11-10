@@ -1,15 +1,15 @@
 import SwiftUI
 
 /// A Settings row title with its icon, as Android's Settings draws them (BoarSection, the Boar icon pack): a one-color
-/// glyph in the heading color, then the title. The SF Symbol stands in for the pack's
-/// drawable; every glyph fits the same box, so the titles line up.
+/// glyph in the heading color, then the title. The pack's glyph where Android's section has one, an SF Symbol for the
+/// rows Android doesn't have; every glyph fits the same box, so the titles line up.
 struct SettingsLabel: View {
     let title: LocalizedStringKey
-    let symbol: String
+    let symbol: AppIcon
     @ScaledMetric(relativeTo: .body) private var side = 24
     @Environment(\.isEnabled) private var isEnabled
 
-    init(_ title: LocalizedStringKey, symbol: String) {
+    init(_ title: LocalizedStringKey, symbol: AppIcon) {
         self.title = title
         self.symbol = symbol
     }
@@ -18,7 +18,7 @@ struct SettingsLabel: View {
         Label {
             Text(title)
         } icon: {
-            Image(systemName: symbol)
+            Image(icon: symbol)
                 .resizable()
                 .scaledToFit()
                 .foregroundStyle(.boar(.heading))

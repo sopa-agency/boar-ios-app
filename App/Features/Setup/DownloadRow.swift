@@ -27,17 +27,17 @@ struct DownloadRow: View {
                         .foregroundStyle(progress.error != nil ? AnyShapeStyle(.red) : AnyShapeStyle(.secondary))
                 }
             } icon: {
-                Image(systemName: progress.asset.symbol)
+                Image(icon: progress.asset.symbol)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
 
             if progress.done {
-                Image(systemName: Symbols.active)
+                Image(icon: Symbols.active)
                     .font(.title2)
                     .foregroundStyle(.tint)
                     .accessibilityLabel("Done")
             } else if progress.error != nil {
-                Image(systemName: Symbols.error)
+                Image(icon: Symbols.error)
                     .font(.title2)
                     .foregroundStyle(.red)
                     .accessibilityLabel("Failed")

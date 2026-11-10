@@ -77,11 +77,11 @@ struct AdvancedSettingsScreen: View {
                 NavigationLink {
                     DeviceInfoScreen(services: services)
                 } label: {
-                    SettingsLabel("\(Platform.deviceNoun) & Storage", symbol: "iphone")
+                    SettingsLabel("\(Platform.deviceNoun) & Storage", symbol: .pack(.settingsHardware))
                 }
                 #endif
                 Button(action: model.reopenSetup) {
-                    SettingsLabel("Run Setup Again", symbol: "arrow.clockwise")
+                    SettingsLabel("Run Setup Again", symbol: Symbols.retry)
                         .foregroundStyle(.boar(.link))
                 }
                 #if os(macOS)
@@ -104,7 +104,7 @@ struct AdvancedSettingsScreen: View {
                     #if os(macOS)
                     // The Mac's Settings window shows Engine Tweaks as a tab; the benchmark runs in the main window.
                     Button(action: openBenchmark) {
-                        SettingsLabel("Open Benchmark", symbol: "gauge.with.dots.needle.67percent")
+                        SettingsLabel("Open Benchmark", symbol: Symbols.benchmark)
                     }
                     .buttonStyle(.plain)
                     #else
@@ -114,14 +114,14 @@ struct AdvancedSettingsScreen: View {
                         LabeledContent {
                             Text(bridge.read { $0.engineTweaks.isAuto } ? "Auto" : "Custom")
                         } label: {
-                            SettingsLabel("Engine Tweaks", symbol: "slider.horizontal.3")
+                            SettingsLabel("Engine Tweaks", symbol: Symbols.advanced)
                         }
                     }
                     if let evaluation = model.evaluation {
                         NavigationLink {
                             EvaluationScreen(controller: evaluation, chatBusy: model.chat?.isAnswering ?? false)
                         } label: {
-                            SettingsLabel("Benchmark", symbol: "gauge.with.dots.needle.67percent")
+                            SettingsLabel("Benchmark", symbol: Symbols.benchmark)
                         }
                     }
                     #endif
@@ -142,7 +142,7 @@ struct AdvancedSettingsScreen: View {
             if LabsBuild.experimental {
                 Section {
                     Toggle(isOn: Binding(get: { labs.labsOn }, set: { labs.labsOn = $0 })) {
-                        SettingsLabel("Boar Labs", symbol: "flask.fill")
+                        SettingsLabel("Boar Labs", symbol: Symbols.labs)
                     }
                 } footer: {
                     BoarFooter {

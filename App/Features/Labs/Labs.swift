@@ -238,9 +238,10 @@ final class Labs {
     }
 }
 
-/// The name and picture an instant answer speaks with, over its text.
+/// The name and picture an instant answer speaks with, over its text (BoarSpeakerLabel's row, with the lab's art).
 struct LabSpeakerLabel: View {
     let speaker: Labs.Speaker
+    @ScaledMetric(relativeTo: .caption) private var side = 20
 
     var body: some View {
         HStack(spacing: 6) {
@@ -248,14 +249,13 @@ struct LabSpeakerLabel: View {
                 Image(art)
                     .resizable()
                     .scaledToFill()
-                    .frame(width: 20, height: 20)
+                    .frame(width: side, height: side)
                     .clipShape(.rect(cornerRadius: 4))
             } else {
                 Text(verbatim: speaker.emoji).font(.subheadline)
             }
             Text(verbatim: speaker.title)
-                .font(.caption.weight(.semibold))
-                .foregroundStyle(.green)
+                .speakerStyle()
         }
         .accessibilityElement(children: .combine)
         .accessibilityLabel(Text("Answered by \(speaker.title)"))

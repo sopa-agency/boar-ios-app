@@ -6,7 +6,7 @@ struct Composer: View {
     @Binding var text: String
     var focused: FocusState<Bool>.Binding
     /// The current answer style's symbol; Deep Research shows its own.
-    let toneSymbol: String
+    let toneSymbol: AppIcon
     let toneLabel: String
     let deepResearch: Bool
     let answering: Bool
@@ -62,11 +62,11 @@ struct Composer: View {
     @ViewBuilder private var styleButton: some View {
         #if os(macOS)
         if let chat {
-            ToneMenu(chat: chat, symbol: deepResearch ? "flask.fill" : toneSymbol)
+            ToneMenu(chat: chat, symbol: deepResearch ? Symbols.deepResearch : toneSymbol)
                 .help("Answer Style: \(toneLabel)\(deepResearch ? String(localized: ", Deep Research") : "")")
         }
         #else
-        Button("Answer Style", systemImage: deepResearch ? "flask.fill" : toneSymbol, action: onTones)
+        Button("Answer Style", icon: deepResearch ? Symbols.deepResearch : toneSymbol, action: onTones)
             .labelStyle(.iconOnly)
             .buttonStyle(.borderless)
             .foregroundStyle(.secondary)
@@ -81,7 +81,7 @@ struct Composer: View {
                 .frame(minWidth: 36, minHeight: 36)
         } else {
             Button(action: answering ? onStop : send) {
-                Label(answering ? "Stop Answering" : "Send", systemImage: answering ? Symbols.stop : Symbols.send)
+                Label(answering ? "Stop Answering" : "Send", icon: answering ? Symbols.stop : Symbols.send)
                     .labelStyle(.iconOnly)
                     .fontWeight(.semibold)
                     .contentTransition(.symbolEffect(.replace))

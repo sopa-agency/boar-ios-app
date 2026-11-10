@@ -36,7 +36,7 @@ struct SourcesList: View {
                 Label {
                     title
                 } icon: {
-                    Image(systemName: message.sources.isEmpty ? "clock" : Symbols.sources)
+                    Image(icon: message.sources.isEmpty ? "clock" : Symbols.sources)
                 }
                 .foregroundStyle(.secondary)
             }

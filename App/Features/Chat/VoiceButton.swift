@@ -8,11 +8,11 @@ struct VoiceButton: View {
     var body: some View {
         Button(action: toggle) {
             switch voice.state {
-            case .idle: Label("Dictate", systemImage: "mic")
+            case .idle: Label("Dictate", icon: Symbols.mic)
             case .preparing, .finishing: ProgressView()
             case .installing(let p): ProgressView(value: p).progressViewStyle(.circular)
             case .listening:
-                Label("Stop Dictation", systemImage: "mic.fill")
+                Label("Stop Dictation", icon: Symbols.stop)
                     .foregroundStyle(.tint)
             }
         }

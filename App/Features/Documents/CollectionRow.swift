@@ -12,7 +12,7 @@ struct CollectionRow: View {
                 Text(verbatim: collection.name)
                 Text("^[\(collection.docCount) document](inflect: true)")
             } icon: {
-                Image(systemName: Symbols.collection)
+                Image(icon: Symbols.collection)
             }
         }
         .accessibilityHint("When off, answers don't use this collection")

@@ -5,7 +5,7 @@ import SwiftUI
 /// Research switch, the same choices as the iPhone's style sheet.
 struct ToneMenu: View {
     @Bindable var chat: ChatController
-    let symbol: String
+    let symbol: AppIcon
 
     var body: some View {
         Menu {
@@ -17,7 +17,7 @@ struct ToneMenu: View {
                             Text(tone.displayLabel)
                             Text(ToneRow.detail(for: tone))
                         } icon: {
-                            Image(systemName: tone.symbol)
+                            Image(icon: tone.symbol)
                         }
                     }
                     .tag(tone.id)
@@ -30,11 +30,11 @@ struct ToneMenu: View {
                     Text("Deep Research")
                     Text("Splits your question into parts and researches each one. Slower.")
                 } icon: {
-                    Image(systemName: Symbols.deepResearch)
+                    Image(icon: Symbols.deepResearch)
                 }
             }
         } label: {
-            Label("Answer Style", systemImage: symbol)
+            Label("Answer Style", icon: symbol)
                 .labelStyle(.iconOnly)
         }
         .menuStyle(.button)

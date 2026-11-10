@@ -6,6 +6,8 @@ import SwiftUI
 /// style button.
 struct ChatEmptyState: View {
     let noModel: Bool
+    /// The question field has the keyboard: the topics need the room, so the mascot steps aside (the header keeps one).
+    let typing: Bool
     let chat: ChatController
     let onAsk: (String) -> Void
     @Environment(AppModel.self) private var model
@@ -33,7 +35,7 @@ struct ChatEmptyState: View {
             LoadCrashNotice(chat: chat)
             if noModel {
                 ContentUnavailableView {
-                    Label("No Answer Model", systemImage: Symbols.model)
+                    Label("No Answer Model", icon: Symbols.model)
                 } description: {
                     Text("Download an answer model to start asking questions.")
                 } actions: {
@@ -41,6 +43,11 @@ struct ChatEmptyState: View {
                         .buttonStyle(.boarProminent)
                 }
             } else {
+                #if os(iOS)
+                if !typing { header.transition(.opacity) }
+                #else
+                header
+                #endif
                 let topics = HomeTopic.all
                 if let topic = topics.first(where: { $0.id == openTopic }) {
                     TopicQuestions(topic: topic, onAsk: onAsk, onBack: { show(nil) })
@@ -64,6 +71,25 @@ struct ChatEmptyState: View {
         .padding(.vertical)
         .frame(maxWidth: 640)
         .frame(maxWidth: .infinity)
+        .animation(.snappy, value: typing)
+    }
+
+    /// BOAR's mascot, name and tagline over the topics (android EmptyState).
+    private var header: some View {
+        VStack(spacing: 6) {
+            Mascot(size: 96)
+            Text(verbatim: "BOAR")
+                .boarText("ui.headline")
+                .foregroundStyle(.boar(.heading))
+            Text("Answers from this \(Platform.deviceNoun), with sources")
+                .boarText("ui.subtext")
+                .fontWeight(.medium)
+                .foregroundStyle(.boar(.success))
+                .multilineTextAlignment(.center)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.bottom, 8)
+        .accessibilityElement(children: .combine)
     }
 
     #if os(macOS)

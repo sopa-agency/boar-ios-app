@@ -7,7 +7,7 @@ extension CatalogAsset {
     private struct Copy {
         let name: String
         let purpose: String
-        let symbol: String
+        let symbol: AppIcon
     }
 
     private var copy: Copy? {
@@ -25,13 +25,13 @@ extension CatalogAsset {
         case "phi-3.5-mini-instruct-q4km":
             Copy(name: String(localized: "Phi 3.5 Mini"), purpose: String(localized: "Compact general model"), symbol: "cube")
         case "bge-small-en-v1.5-q8":
-            Copy(name: String(localized: "Search Model"), purpose: String(localized: "Finds the right passages in your library"), symbol: "magnifyingglass")
+            Copy(name: String(localized: "Search Model"), purpose: String(localized: "Finds the right passages in your library"), symbol: Symbols.search)
         case "corpus-standard":
-            Copy(name: String(localized: "Essentials"), purpose: String(localized: "1,000 common topics"), symbol: "book.closed")
+            Copy(name: String(localized: "Essentials"), purpose: String(localized: "1,000 common topics"), symbol: Symbols.pack)
         case "corpus-full":
-            Copy(name: String(localized: "Extended"), purpose: String(localized: "4,000 topics"), symbol: "book.closed")
+            Copy(name: String(localized: "Extended"), purpose: String(localized: "4,000 topics"), symbol: Symbols.pack)
         case "wiki-vital5":
-            Copy(name: String(localized: "Wikipedia"), purpose: String(localized: "50,000 article intros"), symbol: "book.closed")
+            Copy(name: String(localized: "Wikipedia"), purpose: String(localized: "50,000 article intros"), symbol: Symbols.pack)
         default:
             nil
         }
@@ -59,9 +59,9 @@ extension CatalogAsset {
         copy?.purpose ?? (kind == .corpus ? String(localized: "Library") : String(localized: "Answer model"))
     }
 
-    /// The SF Symbol for its row.
-    var symbol: String {
-        copy?.symbol ?? (kind == .corpus ? "book.closed" : "cube")
+    /// The icon for its row.
+    var symbol: AppIcon {
+        copy?.symbol ?? (kind == .corpus ? Symbols.pack : Symbols.otherModel)
     }
 }
 

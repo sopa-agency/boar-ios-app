@@ -27,7 +27,7 @@ struct UserBubble: View {
                     .padding(.vertical, 12)
                     .background(Color(palette.bgCardHover), in: Self.shape)
                     .contextMenu {
-                        Button("Ask Again", systemImage: Symbols.retry, action: reuse)
+                        Button("Ask Again", icon: Symbols.retry, action: reuse)
                         Button("Copy", systemImage: "doc.on.doc", action: copy)
                     }
                     .accessibilityLabel(Text("You: \(text)"))

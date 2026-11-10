@@ -9,7 +9,7 @@ struct EvalConfigsSection: View {
         Section {
             if let configs = controller.configs {
                 if configs.isEmpty {
-                    ContentUnavailableView("No Answer Models", systemImage: Symbols.model, description: Text("Download an answer model in Models first."))
+                    ContentUnavailableView("No Answer Models", icon: Symbols.model, description: Text("Download an answer model in Models first."))
                 }
                 ForEach(configs, id: \.id) { cfg in
                     let on = controller.selected.contains(cfg.id)
@@ -28,7 +28,7 @@ struct EvalConfigsSection: View {
                             }
                             Spacer()
                             if on {
-                                Image(systemName: "checkmark")
+                                Image(icon: Symbols.active)
                                     .fontWeight(.semibold)
                                     .foregroundStyle(.boar(.accent))
                                     .accessibilityHidden(true)

@@ -19,7 +19,7 @@ struct SourceReader: View {
                 SourceReaderBody(article: article, passage: source.body)
             } else {
                 ContentUnavailableView {
-                    Label("Not on This Device", systemImage: Symbols.sources)
+                    Label("Not on This Device", icon: Symbols.sources)
                 } description: {
                     Text("This article is no longer on this \(Platform.deviceNoun): its pack or collection was removed.")
                 }

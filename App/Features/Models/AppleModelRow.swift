@@ -45,7 +45,7 @@ struct AppleModelRow: View {
             if loading {
                 ProgressView()
             } else if active {
-                Image(systemName: Symbols.active)
+                Image(icon: Symbols.active)
                     .font(.title2)
                     .foregroundStyle(.tint)
                     .accessibilityLabel("In use")

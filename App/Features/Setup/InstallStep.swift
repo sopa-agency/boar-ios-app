@@ -26,7 +26,7 @@ struct InstallStep: View {
                 }
                 if flow.stalled {
                     Section {
-                        Button("Restart Downloads", systemImage: Symbols.retry, action: flow.restartDownloads)
+                        Button("Restart Downloads", icon: Symbols.retry, action: flow.restartDownloads)
                     } footer: {
                         Text("Downloads not moving? Restarting keeps the bytes already on the \(Platform.deviceNoun).")
                     }
@@ -34,7 +34,7 @@ struct InstallStep: View {
                 }
                 if !flow.failed.isEmpty {
                     Section {
-                        Button("Try Again", systemImage: Symbols.retry, action: flow.retry)
+                        Button("Try Again", icon: Symbols.retry, action: flow.retry)
                         if flow.failed.contains(where: \.storage) && flow.package == .encyclopedia {
                             Button("Choose a Smaller Package", systemImage: "arrow.down.right.and.arrow.up.left", action: flow.smallerPackage)
                         }
@@ -45,7 +45,7 @@ struct InstallStep: View {
                 }
                 if flow.indexPhase == .error {
                     Section {
-                        Button("Try Again", systemImage: Symbols.retry, action: flow.retryIndex)
+                        Button("Try Again", icon: Symbols.retry, action: flow.retryIndex)
                     } footer: {
                         Text(flow.indexError ?? "")
                     }

@@ -25,7 +25,7 @@ struct IndexRow: View {
                         .foregroundStyle(flow.indexPhase == .error ? AnyShapeStyle(.red) : AnyShapeStyle(.secondary))
                 }
             } icon: {
-                Image(systemName: Symbols.library)
+                Image(icon: Symbols.library)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
 
@@ -38,9 +38,9 @@ struct IndexRow: View {
                     ProgressView()
                 }
             case .ready:
-                Image(systemName: Symbols.active).font(.title2).foregroundStyle(.tint).accessibilityLabel("Done")
+                Image(icon: Symbols.active).font(.title2).foregroundStyle(.tint).accessibilityLabel("Done")
             case .error:
-                Image(systemName: Symbols.error).font(.title2).foregroundStyle(.red).accessibilityLabel("Failed")
+                Image(icon: Symbols.error).font(.title2).foregroundStyle(.red).accessibilityLabel("Failed")
             }
         }
         .accessibilityElement(children: .combine)

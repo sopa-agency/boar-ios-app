@@ -137,14 +137,14 @@ private struct SolidBadge: View {
 /// A model's symbol on a rounded tile in the accent's subtle wash and border (Android's emerald accents on a card); a
 /// quiet tile when the model can't run here.
 struct ModelIconTile: View {
-    let symbol: String
+    let symbol: AppIcon
     var dimmed = false
     @ScaledMetric(relativeTo: .title3) private var side = 44
     @Environment(\.palette) private var palette
 
     var body: some View {
         let shape = RoundedRectangle(cornerRadius: side * 0.27)
-        Image(systemName: symbol)
+        Image(icon: symbol)
             .font(.title3)
             .foregroundStyle(Color(dimmed ? palette.textDim : palette.textAccentEmerald))
             .frame(width: side, height: side)
