@@ -28,7 +28,7 @@ struct StorageSummary: View {
                 Text("\(freeBytes.map(Self.format) ?? "—") free on this \(Platform.deviceNoun)")
                     .monospacedDigit()
             } icon: {
-                Image(systemName: Symbols.storage)
+                Image(icon: Symbols.storage)
             }
             .font(.boar("ui.subtext"))
             .foregroundStyle(.boar(.muted))

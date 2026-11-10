@@ -19,7 +19,7 @@ struct ChatConversation: View {
                     Label {
                         Text(error)
                     } icon: {
-                        Image(systemName: Symbols.error).foregroundStyle(.red)
+                        Image(icon: Symbols.error).foregroundStyle(.red)
                     }
                     .font(.subheadline)
                     .frame(maxWidth: .infinity, alignment: .leading)

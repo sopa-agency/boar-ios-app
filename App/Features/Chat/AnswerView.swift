@@ -90,10 +90,10 @@ struct AnswerView: View {
         NoticeCard(symbol: message.failureNoModel ? Symbols.model : "exclamationmark.triangle.fill", tint: .red,
                    title: message.failureNoModel ? "No Answer Model" : "BOAR Couldn't Finish This Answer", message: failure) {
             if message.failureNoModel {
-                Button("Open Models", systemImage: Symbols.model, action: openModels)
+                Button("Open Models", icon: Symbols.model, action: openModels)
                     .buttonStyle(.boarProminent)
             } else {
-                Button("Try Again", systemImage: Symbols.retry, action: retry)
+                Button("Try Again", icon: Symbols.retry, action: retry)
                     .buttonStyle(.boarProminent)
                     .disabled(chat.isAnswering)
                 Button("Choose a Model", action: openModels)

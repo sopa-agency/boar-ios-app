@@ -13,7 +13,7 @@ struct ModelChoiceRow: View {
     var body: some View {
         Button(action: choose) {
             HStack {
-                Image(systemName: selected ? "checkmark.circle.fill" : "circle")
+                Image(icon: .pack(selected ? .radioOn : .radioOff))
                     .font(.title2)
                     .foregroundStyle(selected ? AnyShapeStyle(.tint) : AnyShapeStyle(.boar(.dim)))
                     .accessibilityHidden(true)

@@ -11,7 +11,7 @@ struct SettingsVoiceSection: View {
     var body: some View {
         Section {
             Toggle(isOn: bridge.binding({ $0.voiceInputEnabled && state != .unsupported }, { $0.voiceInputEnabled = $1 })) {
-                SettingsLabel("Dictation", symbol: "mic.fill")
+                SettingsLabel("Dictation", symbol: Symbols.voice)
             }
                 .disabled(state == .unsupported)
             if state == .downloadable || state == .downloading {
@@ -28,7 +28,7 @@ struct SettingsVoiceSection: View {
                             .progressViewStyle(.circular)
                             .accessibilityLabel("Downloading the speech model")
                     } else if state == .downloadable {
-                        Button("Download", systemImage: Symbols.download, action: install)
+                        Button("Download", icon: Symbols.download, action: install)
                             .labelStyle(.iconOnly)
                             .buttonStyle(.borderless)
                             .font(.title2)

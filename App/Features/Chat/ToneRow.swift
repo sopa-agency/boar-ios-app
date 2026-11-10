@@ -21,11 +21,11 @@ struct ToneRow: View {
                         Text(detail).font(.subheadline).foregroundStyle(.secondary)
                     }
                 } icon: {
-                    Image(systemName: tone.symbol)
+                    Image(icon: tone.symbol)
                 }
                 Spacer()
                 if selected {
-                    Image(systemName: Symbols.active)
+                    Image(icon: Symbols.active)
                         .foregroundStyle(.tint)
                         .accessibilityHidden(true)
                 }

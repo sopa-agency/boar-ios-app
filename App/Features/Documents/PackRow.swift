@@ -21,19 +21,19 @@ struct PackRow: View {
                         .monospacedDigit()
                 }
             } icon: {
-                Image(systemName: Symbols.pack)
+                Image(icon: Symbols.pack)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             accessory
         }
         .swipeActions(edge: .trailing) {
             if present && !pack.required && !row.indexing {
-                Button("Delete", systemImage: Symbols.delete, role: .destructive, action: askRemove)
+                Button("Delete", icon: Symbols.delete, role: .destructive, action: askRemove)
             }
         }
         .contextMenu {
             if present && !pack.required && !row.indexing {
-                Button("Delete", systemImage: Symbols.delete, role: .destructive, action: askRemove)
+                Button("Delete", icon: Symbols.delete, role: .destructive, action: askRemove)
             }
         }
         .confirmationDialog("Delete \(pack.friendlyName)?", isPresented: $confirmRemove, titleVisibility: .visible) {
@@ -64,17 +64,17 @@ struct PackRow: View {
         } else if row.indexing {
             ProgressView()
         } else if present {
-            Image(systemName: Symbols.active)
+            Image(icon: Symbols.active)
                 .font(.title2)
                 .foregroundStyle(.tint)
                 .accessibilityLabel("Installed")
         } else if row.error != nil {
-            Button("Retry Download", systemImage: Symbols.retry, action: download)
+            Button("Retry Download", icon: Symbols.retry, action: download)
                 .labelStyle(.iconOnly)
                 .buttonStyle(.borderless)
                 .font(.title2)
         } else {
-            Button("Download \(pack.friendlyName)", systemImage: Symbols.download, action: download)
+            Button("Download \(pack.friendlyName)", icon: Symbols.download, action: download)
                 .labelStyle(.iconOnly)
                 .buttonStyle(.borderless)
                 .font(.title2)

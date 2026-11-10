@@ -8,7 +8,7 @@ struct SettingsSecuritySection: View {
         let canLock = lock.available || lock.enabled
         Section {
             Toggle(isOn: $lock.enabledChoice) {
-                SettingsLabel("Lock with \(lock.methodName)", symbol: "lock.fill")
+                SettingsLabel("Lock with \(lock.methodName)", symbol: Symbols.lock)
             }
                 .disabled(lock.busy || !canLock)
         } header: {

@@ -4,7 +4,7 @@ import SwiftUI
 /// one or two plain sentences, then the actions as small capsule buttons, the first one prominent. One shape for every
 /// problem the chat reports, so people learn it once.
 struct NoticeCard<Actions: View>: View {
-    let symbol: String
+    let symbol: AppIcon
     let tint: Color
     let title: LocalizedStringKey
     let message: String
@@ -22,7 +22,7 @@ struct NoticeCard<Actions: View>: View {
                         .fixedSize(horizontal: false, vertical: true)
                 }
             } icon: {
-                Image(systemName: symbol)
+                Image(icon: symbol)
                     .foregroundStyle(tint)
             }
             HStack {

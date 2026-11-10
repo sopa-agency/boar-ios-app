@@ -10,7 +10,7 @@ struct EvalRunSection: View {
     var body: some View {
         Section {
             if controller.running {
-                Button(controller.stopping ? "Stopping…" : "Stop", systemImage: Symbols.stop, action: controller.stop)
+                Button(controller.stopping ? "Stopping…" : "Stop", icon: Symbols.stop, action: controller.stop)
                     .disabled(controller.stopping)
             } else {
                 Button("Run Benchmark", systemImage: "play.fill", action: controller.run)
@@ -23,7 +23,7 @@ struct EvalRunSection: View {
                 Label {
                     Text("The benchmark failed: \(error)")
                 } icon: {
-                    Image(systemName: Symbols.error).foregroundStyle(.boar(.danger))
+                    Image(icon: Symbols.error).foregroundStyle(.boar(.danger))
                 }
             }
             if let path = controller.savedPath {
@@ -32,7 +32,7 @@ struct EvalRunSection: View {
                         .font(.boar("ui.subtext"))
                         .foregroundStyle(.secondary)
                 } icon: {
-                    Image(systemName: controller.stopped ? Symbols.caution : Symbols.active)
+                    Image(icon: controller.stopped ? Symbols.caution : Symbols.active)
                         .foregroundStyle(.boar(controller.stopped ? .warning : .success))
                 }
             }

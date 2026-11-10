@@ -24,12 +24,12 @@ struct SessionsSidebar: View {
         List(selection: $model.selection) {
             Section {
                 ForEach(AppScreen.sidebarCases) { screen in
-                    Label(screen.title, systemImage: screen.symbol)
+                    Label(screen.title, icon: screen.symbol)
                         .tag(SidebarItem.screen(screen))
                 }
                 // Android's drawer entry: only while Boar Labs is on (Settings → Advanced).
                 if Labs.shared.labsOn {
-                    Label(AppScreen.labs.title, systemImage: AppScreen.labs.symbol)
+                    Label(AppScreen.labs.title, icon: AppScreen.labs.symbol)
                         .tag(SidebarItem.screen(.labs))
                 }
             }
@@ -46,20 +46,20 @@ struct SessionsSidebar: View {
                     SessionRow(session: session)
                         .tag(SidebarItem.session(session.id))
                         .swipeActions(edge: .trailing) {
-                            Button("Delete", systemImage: Symbols.delete, role: .destructive) { askDelete(session) }
+                            Button("Delete", icon: Symbols.delete, role: .destructive) { askDelete(session) }
                                 .disabled(isAnswering(in: session))
                             Button("Rename", systemImage: "pencil") { startRename(session) }
                         }
                         .contextMenu {
                             Button("Rename", systemImage: "pencil") { startRename(session) }
-                            Button("Delete", systemImage: Symbols.delete, role: .destructive) { askDelete(session) }
+                            Button("Delete", icon: Symbols.delete, role: .destructive) { askDelete(session) }
                                 .disabled(isAnswering(in: session))
                         }
                 }
             } header: {
                 Text("Chats")
             } footer: {
-                Label("Works without internet", systemImage: Symbols.offline)
+                Label("Works without internet", icon: Symbols.offline)
             }
         }
         .listStyle(.sidebar)
@@ -71,11 +71,11 @@ struct SessionsSidebar: View {
             #if !os(macOS)
             // The Mac has Settings in the app menu (⌘,).
             ToolbarItem(placement: .leadingBar) {
-                Button("Settings", systemImage: AppScreen.settings.symbol, action: openSettings)
+                Button("Settings", icon: AppScreen.settings.symbol, action: openSettings)
             }
             #endif
             ToolbarItem(placement: .primaryAction) {
-                Button("New Chat", systemImage: Symbols.newChat, action: model.newChat)
+                Button("New Chat", icon: Symbols.newChat, action: model.newChat)
                     .disabled(chat.isAnswering)
                     .help("New Chat (⌘N)")
             }

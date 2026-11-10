@@ -33,7 +33,7 @@ struct ChatEmptyState: View {
             LoadCrashNotice(chat: chat)
             if noModel {
                 ContentUnavailableView {
-                    Label("No Answer Model", systemImage: Symbols.model)
+                    Label("No Answer Model", icon: Symbols.model)
                 } description: {
                     Text("Download an answer model to start asking questions.")
                 } actions: {

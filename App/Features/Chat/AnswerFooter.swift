@@ -30,10 +30,10 @@ struct AnswerFooter: View {
 
     private var moreMenu: some View {
         Menu("More", systemImage: "ellipsis") {
-            Button("Ask Again", systemImage: Symbols.retry, action: askAgain)
+            Button("Ask Again", icon: Symbols.retry, action: askAgain)
                 .disabled(chat.isAnswering)
             if chat.technicalDetails, message.receipt != nil {
-                Button("Performance Details", systemImage: Symbols.performance, action: showReceipt)
+                Button("Performance Details", icon: Symbols.performance, action: showReceipt)
             }
             let actions = Labs.shared.answerActions(answerRef)
             if !actions.isEmpty {

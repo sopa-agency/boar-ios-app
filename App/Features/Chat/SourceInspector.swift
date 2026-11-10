@@ -12,7 +12,7 @@ struct SourceInspector: View {
         Group {
             if sources.isEmpty {
                 ContentUnavailableView {
-                    Label("No Source Selected", systemImage: Symbols.sources)
+                    Label("No Source Selected", icon: Symbols.sources)
                 } description: {
                     Text("Click a numbered citation in an answer to read the passage BOAR used.")
                 }

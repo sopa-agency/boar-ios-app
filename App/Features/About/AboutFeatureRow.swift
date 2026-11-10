@@ -3,7 +3,7 @@ import SwiftUI
 /// One promise on the About screen: a symbol, a title and one secondary line.
 struct AboutFeatureRow: View {
     let title: LocalizedStringKey
-    let symbol: String
+    let symbol: AppIcon
     let text: LocalizedStringKey
 
     var body: some View {
@@ -15,7 +15,7 @@ struct AboutFeatureRow: View {
                     .foregroundStyle(.secondary)
             }
         } icon: {
-            Image(systemName: symbol)
+            Image(icon: symbol)
         }
         .accessibilityElement(children: .combine)
     }

@@ -35,7 +35,7 @@ struct SettingsScreen: View {
                 NavigationLink {
                     AdvancedSettingsScreen(services: services, bridge: bridge)
                 } label: {
-                    SettingsLabel("Advanced", symbol: "gearshape.2.fill")
+                    SettingsLabel("Advanced", symbol: Symbols.advanced)
                 }
                 NavigationLink {
                     AboutScreen()

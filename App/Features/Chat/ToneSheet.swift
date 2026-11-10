@@ -17,7 +17,7 @@ struct ToneSheet: View {
                 }
                 Section {
                     Toggle(isOn: $chat.deepResearchEnabled) {
-                        Label("Deep Research", systemImage: Symbols.deepResearch)
+                        Label("Deep Research", icon: Symbols.deepResearch)
                     }
                 } footer: {
                     Text("Splits your question into parts and researches each one. Slower.")

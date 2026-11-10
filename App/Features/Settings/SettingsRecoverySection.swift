@@ -20,7 +20,7 @@ struct SettingsRecoverySection: View {
                 confirmClear = true
             } label: {
                 // Android's LinkButton: danger until it's done, then the link color (SettingsScreen.kt ClearChats).
-                Label(cleared ? "Chat History Cleared" : "Clear Chat History", systemImage: cleared ? "checkmark" : Symbols.delete)
+                Label(cleared ? "Chat History Cleared" : "Clear Chat History", icon: cleared ? Symbols.active : Symbols.delete)
                     .foregroundStyle(.boar(cleared ? .link : .danger))
                     .contentTransition(.symbolEffect(.replace))
             }

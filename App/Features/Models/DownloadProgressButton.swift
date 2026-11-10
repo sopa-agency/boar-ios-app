@@ -26,7 +26,7 @@ struct DownloadRing: View {
             EmptyView()
         } currentValueLabel: {
             if showsStop {
-                Image(systemName: Symbols.stop)
+                Image(icon: Symbols.stop)
                     .font(.caption)
                     .foregroundStyle(.tint)
             }

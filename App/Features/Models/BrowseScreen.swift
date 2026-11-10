@@ -40,21 +40,21 @@ struct BrowseScreen: View {
     @ViewBuilder private var listContent: some View {
         if !model.connectivity.online {
             Section {
-                Label("You're offline. Connect to the internet to search for models.", systemImage: Symbols.offline)
+                Label("You're offline. Connect to the internet to search for models.", icon: Symbols.offline)
                     .foregroundStyle(.boar(.warning))
             }
         }
 
         if let added = controller.hfAdded {
             Section {
-                Label("Added \(added) to Models.", systemImage: Symbols.active)
+                Label("Added \(added) to Models.", icon: Symbols.active)
                     .foregroundStyle(.boar(.success))
             }
         }
 
         if let error = controller.hfError {
             Section {
-                Label(error, systemImage: Symbols.error)
+                Label(error, icon: Symbols.error)
                     .foregroundStyle(.boar(.danger))
             }
         }

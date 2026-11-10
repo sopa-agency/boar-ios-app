@@ -81,7 +81,7 @@ struct AboutScreen: View {
 
     private var sqliteVersion: String { SqliteDatabase.version }
 
-    private static var lockSymbol: String {
+    private static var lockSymbol: AppIcon {
         #if os(macOS)
         "lock.laptopcomputer"
         #else

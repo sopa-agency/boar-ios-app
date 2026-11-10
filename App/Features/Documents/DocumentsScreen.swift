@@ -103,7 +103,7 @@ struct DocumentsScreen: View {
         }
         if let error = documents.error {
             Section {
-                Label("Import failed: \(error)", systemImage: Symbols.error)
+                Label("Import failed: \(error)", icon: Symbols.error)
                     .foregroundStyle(.red)
             }
         }
@@ -140,7 +140,7 @@ struct DocumentsScreen: View {
         Section {
             if documents.collections.isEmpty {
                 ContentUnavailableView {
-                    Label("No Collections Yet", systemImage: Symbols.library)
+                    Label("No Collections Yet", icon: Symbols.library)
                 } description: {
                     Text("Add files or photos of pages. BOAR reads them on this \(Platform.deviceNoun) and never uploads them.")
                 } actions: {
@@ -154,7 +154,7 @@ struct DocumentsScreen: View {
                     .tag(DocumentsSelection.collection(c.id))
                     #endif
                     .swipeActions(edge: .trailing) {
-                        Button("Delete", systemImage: Symbols.delete, role: .destructive) { removing = c }
+                        Button("Delete", icon: Symbols.delete, role: .destructive) { removing = c }
                     }
                     .swipeActions(edge: .leading) {
                         ShareLink(item: documents.exportFile(c), preview: SharePreview(c.name)) {
@@ -166,7 +166,7 @@ struct DocumentsScreen: View {
                         ShareLink(item: documents.exportFile(c), preview: SharePreview(c.name)) {
                             Label("Export", systemImage: "square.and.arrow.up")
                         }
-                        Button("Delete", systemImage: Symbols.delete, role: .destructive) { removing = c }
+                        Button("Delete", icon: Symbols.delete, role: .destructive) { removing = c }
                     }
             }
         } header: {
@@ -200,7 +200,7 @@ struct DocumentsScreen: View {
     }
 
     private var emptyDetail: some View {
-        ContentUnavailableView("Nothing Selected", systemImage: Symbols.library,
+        ContentUnavailableView("Nothing Selected", icon: Symbols.library,
                                description: Text("Select a collection or a part of the library to see what's in it."))
     }
 

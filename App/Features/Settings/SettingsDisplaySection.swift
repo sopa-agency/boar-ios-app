@@ -13,7 +13,7 @@ struct SettingsDisplaySection: View {
                     choice.title.tag(choice)
                 }
             } label: {
-                SettingsLabel("Theme", symbol: "circle.lefthalf.filled")
+                SettingsLabel("Theme", symbol: Symbols.theme)
             }
             .pickerStyle(.menu)
             #if !os(macOS)

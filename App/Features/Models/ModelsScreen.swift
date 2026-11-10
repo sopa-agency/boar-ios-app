@@ -136,7 +136,7 @@ struct ModelsScreen: View {
             ModelDetailScreen(asset: asset, controller: controller, embedded: true)
                 .id(id)
         } else {
-            ContentUnavailableView("Select a Model", systemImage: Symbols.model,
+            ContentUnavailableView("Select a Model", icon: Symbols.model,
                                    description: Text("Its details, and the button to use or download it, appear here."))
         }
     }

@@ -6,7 +6,7 @@ struct PrivacyCover: View {
         Rectangle()
             .fill(.regularMaterial)
             .overlay {
-                Image(systemName: "lock.fill")
+                Image(icon: Symbols.lock)
                     .font(.largeTitle)
                     .foregroundStyle(.secondary)
                     .accessibilityHidden(true)

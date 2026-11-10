@@ -11,7 +11,7 @@ struct SettingsFreeMemorySection: View {
         let on = bridge.binding({ $0.freeMemoryInBackground }, { $0.freeMemoryInBackground = $1 })
         Section {
             Toggle(isOn: on) {
-                SettingsLabel("Free Memory When I Leave BOAR", symbol: "memorychip")
+                SettingsLabel("Free Memory When I Leave BOAR", symbol: Symbols.memory)
             }
             if on.wrappedValue {
                 Picker(selection: bridge.binding({ $0.freeMemoryAfterMinutes }, { $0.freeMemoryAfterMinutes = $1 })) {

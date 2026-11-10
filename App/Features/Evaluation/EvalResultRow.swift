@@ -14,7 +14,7 @@ struct EvalResultRow: View {
     private var check: String? { row["check"]?.stringValue }
     private var why: String { row["checkWhy"]?.stringValue ?? "" }
 
-    private var status: (name: String, color: BoarStyle, label: LocalizedStringKey) {
+    private var status: (name: AppIcon, color: BoarStyle, label: LocalizedStringKey) {
         if outcome == "cancelled" { return (Symbols.caution, .boar(.warning), "Stopped") }
         if outcome == "failure" { return (Symbols.error, .boar(.danger), "Failed") }
         switch check {
@@ -77,7 +77,7 @@ struct EvalResultRow: View {
                             .lineLimit(1)
                     }
                     Spacer()
-                    Image(systemName: status.name)
+                    Image(icon: status.name)
                         .foregroundStyle(status.color)
                         .accessibilityLabel(status.label)
                 }

@@ -141,10 +141,10 @@ struct AnswerStep: Hashable, Sendable {
     var index: Int?
     var count: Int?
 
-    var symbol: String {
+    var symbol: AppIcon {
         switch kind {
         case .loading: Symbols.model
-        case .searching: "magnifyingglass"
+        case .searching: Symbols.search
         case .thinking: Symbols.thinking
         case .splitting, .subQuestion: "list.number"
         case .writing: "pencil.line"

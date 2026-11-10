@@ -4,7 +4,7 @@ import SwiftUI
 struct DrillDownOption<Value: Hashable> {
     let value: Value
     let title: Text
-    var symbol: String?
+    var symbol: AppIcon?
     /// A line under the title on the iPhone page (what an answer style does, as Android's StyleRow); the Mac menu shows
     /// the title only.
     var detail: Text?
@@ -59,7 +59,7 @@ private struct DrillDownOptionLabel<Value: Hashable>: View {
         if let symbol = option.symbol {
             // The icon in the tint, as on the system's picker page (a Mac menu draws its own), dim when disabled.
             Label { text } icon: {
-                Image(systemName: symbol)
+                Image(icon: symbol)
                     .foregroundStyle(option.disabled ? AnyShapeStyle(.boar(.dim)) : AnyShapeStyle(.tint))
             }
         } else {
@@ -110,7 +110,7 @@ private struct DrillDownPage<Value: Hashable>: View {
                             DrillDownOptionLabel(option: option, showsDetail: true)
                             Spacer()
                             if selected {
-                                Image(systemName: "checkmark")
+                                Image(icon: Symbols.active)
                                     .fontWeight(.semibold)
                                     .foregroundStyle(.boar(.success))
                                     .accessibilityHidden(true)
