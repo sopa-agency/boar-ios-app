@@ -14,6 +14,8 @@ struct ChatView: View {
     /// A lab's page opened from its toolbar badge.
     @State private var openLab: OpenLab?
     @State private var openSource: ChatSource?
+    /// The header's mascot shown full screen.
+    @State private var showingMascot = false
     #if os(macOS)
     /// The Mac shows sources in a trailing inspector beside the answer instead of a sheet.
     @State private var showingSources = false
@@ -44,7 +46,7 @@ struct ChatView: View {
     var body: some View {
         Group {
             if chat.messages.isEmpty {
-                ChatEmptyState(noModel: chat.noModel, chat: chat, onAsk: send)
+                ChatEmptyState(noModel: chat.noModel, typing: composerFocused, chat: chat, onAsk: send)
             } else {
                 ChatConversation(chat: chat, onReuse: reuse, onOpenSource: open)
             }
@@ -58,7 +60,9 @@ struct ChatView: View {
                      onSend: sendInput, onStop: chat.stop, onTones: showTones, voice: voiceOn ? voice : nil, chat: chat)
         }
         .navigationTitle(Text(verbatim: title))
+        #if os(macOS)
         .navigationSubtitleIfAvailable(Text(subtitle))
+        #endif
         .inlineNavigationTitle()
         .toolbar {
             // The switched-on labs' badges (android HeaderBadge): Boar Press's 📎 n opens its page over the chat.
@@ -77,9 +81,18 @@ struct ChatView: View {
                 .help(showingSources ? "Hide Sources" : "Show Sources")
             }
             #else
+            // BOAR's mascot beside the title, as Android's header has it; a tap shows it big (ChatHeader).
+            ToolbarItem(placement: .principal) {
+                ChatTitle(title: title, subtitle: subtitle) { showingMascot = true }
+            }
             ChatToolbar(chat: chat, onNewChat: model.newChat)
             #endif
         }
+        #if os(iOS)
+        .fullScreenCover(isPresented: $showingMascot) {
+            MascotFullView { showingMascot = false }
+        }
+        #endif
         .sheet(isPresented: $showingTones) { ToneSheet(chat: chat) }
         .sheet(item: $openLab) { open in
             if let lab = Labs.shared.byId(open.id) {

@@ -895,6 +895,16 @@
         }
       }
     },
+    "Answers from this %@, with sources" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Respostas deste %@, com fontes"
+          }
+        }
+      }
+    },
     "Answers on its own" : {
       "localizations" : {
         "pt" : {

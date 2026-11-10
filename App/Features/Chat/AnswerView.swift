@@ -31,6 +31,8 @@ struct AnswerView: View {
         VStack(alignment: .leading, spacing: 12) {
             if let speaker, !streaming {
                 LabSpeakerLabel(speaker: speaker)
+            } else {
+                BoarSpeakerLabel(researched: researched)
             }
             if message.text == AesTextCipher.locked {
                 Label("Locked Chat", systemImage: "lock.fill")
@@ -62,11 +64,21 @@ struct AnswerView: View {
                 if message.stopped { MessageNote(symbol: Symbols.stop, text: "Stopped", warning: false) }
                 if message.timedOut { MessageNote(symbol: Symbols.caution, text: "A research step took too long and was cut short", warning: true) }
                 // The plugin answered without the model: the same question, plugins skipped (never the CO safety answer).
+                // BOAR's mascot on it: a way out of the plugin's answer, not one of its controls (android ChatScreen).
                 if !streaming, speaker?.canBypass == true {
-                    Button("Ask BOAR instead", systemImage: "arrow.uturn.forward") { chat.askModel(message.id) }
-                        .buttonStyle(.bordered)
-                        .disabled(chat.isAnswering)
-                        .frame(maxWidth: .infinity, alignment: .trailing)
+                    Button {
+                        chat.askModel(message.id)
+                    } label: {
+                        Label {
+                            Text("Ask BOAR instead")
+                        } icon: {
+                            Mascot(size: 20)
+                                .clipShape(.rect(cornerRadius: 4))
+                        }
+                    }
+                    .buttonStyle(.bordered)
+                    .disabled(chat.isAnswering)
+                    .frame(maxWidth: .infinity, alignment: .trailing)
                 }
                 if !message.text.isEmpty && !streaming {
                     AnswerFooter(message: message, chat: chat, shown: shown)
