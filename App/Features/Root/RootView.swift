@@ -25,7 +25,7 @@ struct RootView: View {
             .overlay { cover }
             #else
             // In its own window: an overlay would sit under any open sheet or full-screen cover.
-            .lockWindow(isPresented: model.lock.map { $0.enabled && ($0.locked || coversContent) } ?? false) {
+            .lockWindow(isPresented: coverKind != nil, takesFocus: coverKind == .lock) {
                 cover
                     .environment(model)
                     .environment(\.scenePhase, scenePhase)
@@ -36,14 +36,20 @@ struct RootView: View {
             .onChange(of: IntentInbox.shared.sessionId) { _, _ in model.drainInbox() }
     }
 
-    /// The lock screen while BOAR is locked, else the privacy cover while it isn't in front.
+    private enum CoverKind { case lock, privacy }
+
+    /// The lock screen while BOAR is locked, else the privacy cover while it isn't in front; nil with the lock off.
+    private var coverKind: CoverKind? {
+        guard let lock = model.lock, lock.enabled else { return nil }
+        if lock.locked { return .lock }
+        return coversContent ? .privacy : nil
+    }
+
     @ViewBuilder private var cover: some View {
-        if let lock = model.lock, lock.enabled {
-            if lock.locked {
-                LockScreen(lock: lock)
-            } else if coversContent {
-                PrivacyCover()
-            }
+        switch coverKind {
+        case .lock: if let lock = model.lock { LockScreen(lock: lock) }
+        case .privacy: PrivacyCover()
+        case nil: EmptyView()
         }
     }
 
