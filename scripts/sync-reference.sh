@@ -10,4 +10,7 @@ mv "$ROOT/.ref/android-native/engine/src/test/resources/golden" "$ROOT/Fixtures/
 git -C "$APP" -c core.autocrlf=false archive "$SHA" android-native/engine/src/main/java android-native/engine/src/test/java android-native/app/src/main \
   android-native/engine/src/main/cpp/boar_jni.cpp android-native/engine/src/main/cpp/boar_sqlite.cpp android-native/engine/src/main/cpp/CMakeLists.txt | tar -x -C "$ROOT/.ref"
 rm -rf "$ROOT/.ref/android-native/engine/src/test/resources"
+# Boar Avatars' roster (VaultTests checks Vault.rules against it, as Android's VaultTest does).
+mkdir -p "$ROOT/Fixtures/vault"
+git -C "$APP" show "$SHA:android-native/art/icons/truffles.json" > "$ROOT/Fixtures/vault/truffles.json"
 echo "$SHA" > "$ROOT/Fixtures/SOURCE_SHA"; echo "synced $REF = $SHA"
