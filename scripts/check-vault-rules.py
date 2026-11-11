@@ -1,0 +1,55 @@
+#!/usr/bin/env python3
+"""Checks Sources/BoarCore/Vault.swift against Android's engine/vault/Vault.kt at Fixtures/SOURCE_SHA.
+
+Compares every rule's condition (Kotlin's lambda body against the Swift switch case, with .size read as .count and
+LocalDate `d` as `today`) and the avatar -> rule table, in order. Reads Vault.kt from .ref/, so run it after
+scripts/sync-reference.sh: a rule changed on Android fails here. Usage: scripts/check-vault-rules.py
+"""
+import re
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent
+SHA = (ROOT / "Fixtures/SOURCE_SHA").read_text().strip()
+KT = ROOT / ".ref/android-native/engine/src/main/java/team/sopa/boar/engine/vault/Vault.kt"
+
+if not KT.exists():
+    sys.exit(f"{KT.relative_to(ROOT)} is missing: run scripts/sync-reference.sh first")
+kt = KT.read_text()
+swift = (ROOT / "Sources/BoarCore/Vault.swift").read_text()
+
+
+def norm(expr: str) -> str:
+    expr = re.sub(r"\s+", " ", expr).strip()
+    expr = expr.replace(".size", ".count")
+    expr = re.sub(r",\s*d\)", ", today)", expr)
+    return expr
+
+
+kt_rules = {m.group(1): norm(m.group(2)) for m in re.finditer(r"^\s+([A-Z][A-Z0-9_]*)\(\{\s*\w+,\s*\w+\s*->\s*(.*?)\s*\}\),", kt, re.M)}
+sw_rules = {m.group(1): norm(m.group(2)) for m in re.finditer(r"^\s+case \.([A-Z][A-Z0-9_]*): (.*)$", swift, re.M)}
+kt_table = re.findall(r'"([a-z0-9_]+)" to Rule\.([A-Z0-9_]+)', kt)
+sw_table = re.findall(r'\("([a-z0-9_]+)", \.([A-Z0-9_]+)\)', swift)
+
+errors = []
+if not kt_rules:
+    errors.append("no rules found in Vault.kt (format changed?)")
+for name in sorted(set(kt_rules) | set(sw_rules)):
+    a, b = kt_rules.get(name), sw_rules.get(name)
+    if a is None:
+        errors.append(f"rule {name}: only in Swift")
+    elif b is None:
+        errors.append(f"rule {name}: only in Kotlin ({a})")
+    elif a != b:
+        errors.append(f"rule {name}: Kotlin `{a}` vs Swift `{b}`")
+if kt_table != sw_table:
+    for i, (a, b) in enumerate(zip(kt_table, sw_table)):
+        if a != b:
+            errors.append(f"avatar #{i}: Kotlin {a} vs Swift {b}")
+    if len(kt_table) != len(sw_table):
+        errors.append(f"avatars: Kotlin has {len(kt_table)}, Swift {len(sw_table)}")
+
+if errors:
+    print("\n".join(errors))
+    sys.exit(1)
+print(f"Vault rules match Android at {SHA[:8]}: {len(kt_rules)} rules, {len(kt_table)} avatars")

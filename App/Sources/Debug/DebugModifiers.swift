@@ -12,6 +12,15 @@ extension View {
         #endif
     }
 
+    /// Opens the tour on its card for `-uiScreen tour-<card>`.
+    func debugTour() -> some View {
+        #if DEBUG
+        modifier(DebugTour())
+        #else
+        self
+        #endif
+    }
+
     /// Opens the citation sheet or the answer style sheet for `-uiScreen citation-sheet / tone-sheet`.
     func debugChatSheets(source: Binding<ChatSource?>, tones: Binding<Bool>, chat: ChatController) -> some View {
         #if DEBUG
@@ -58,6 +67,24 @@ private struct DebugPush<Destination: View>: ViewModifier {
                 pushedScreens.insert(screen)
                 try? await Task.sleep(for: .milliseconds(700))
                 pushed = true
+            }
+    }
+}
+
+private struct DebugTour: ViewModifier {
+    @State private var shown = false
+
+    func body(content: Content) -> some View {
+        content
+            .tourCover(isPresented: $shown, index: DebugLaunch.tourCard.flatMap { card in
+                TourCard.cards(experimental: LabsBuild.experimental).firstIndex(of: card)
+            } ?? 0)
+            .task {
+                // Once per launch, like DebugPush: closing the tour shows Settings again, and this would reopen it.
+                guard DebugLaunch.tourCard != nil, !pushedScreens.contains("tour") else { return }
+                pushedScreens.insert("tour")
+                try? await Task.sleep(for: .milliseconds(700))
+                shown = true
             }
     }
 }

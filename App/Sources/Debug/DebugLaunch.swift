@@ -5,6 +5,7 @@ import Foundation
 ///
 ///     -uiDemo            seed an in-memory-style demo state (no model needed); wipes BOAR's files in the app container
 ///     -uiScreen <name>   open that screen directly (see `DebugRouter`); `lab-<id>` opens that lab's page
+///     -uiScreen tour-<card>  the tour on that card (welcome, theme, styles…), over Settings
 ///     -uiScroll <pts|end> scroll the main list that far once the screen is up
 ///     -uiBasket YES      with -uiDemo, Boar Press's basket starts with the demo chats' answers
 ///     -uiStyle <id>      pick that answer style (succinct, detailed, personal, custom) on launch
@@ -38,11 +39,14 @@ enum DebugLaunch {
     static var labId: String? { screen.flatMap { $0.hasPrefix("lab-") ? String($0.dropFirst(4)) : nil } }
     /// The lock screen stays as it is drawn: no Face ID / passcode prompt, no error text under it.
     static var holdsLockScreen: Bool { screen == "lock" }
+    /// `-uiScreen tour-<card>` (`tour-welcome`, `tour-theme`…): the tour on that card, over Settings.
+    static var tourCard: TourCard? { screen.flatMap { $0.hasPrefix("tour-") ? TourCard(rawValue: String($0.dropFirst(5))) : nil } }
     #else
     static let demo = false
     static let ramBytes: Int64? = nil
     static func isScreen(_ name: String) -> Bool { false }
     static var labId: String? { nil }
     static var holdsLockScreen: Bool { false }
+    static var tourCard: TourCard? { nil }
     #endif
 }

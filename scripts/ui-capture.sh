@@ -79,6 +79,7 @@ models-browse|models-browse|
 documents|documents|
 settings|settings|
 settings-2|settings|650
+settings-3|settings|end
 settings-advanced|settings-advanced|
 settings-advanced-2|settings-advanced|end
 device-info|device-info|
@@ -90,6 +91,17 @@ about-2|about|end
 lock|lock|
 labs|labs|
 labs-2|labs|end
+tour-welcome|tour-welcome|
+tour-theme|tour-theme|
+tour-styles|tour-styles|
+tour-deep|tour-deep|
+tour-sources|tour-sources|
+tour-knowledge|tour-knowledge|
+tour-models|tour-models|
+tour-adaptive|tour-adaptive|
+tour-lock|tour-lock|
+tour-labs|tour-labs|
+tour-end|tour-end|
 "
 
 if [ -n "${THEME:-}" ] && [ "$THEME" != system ]; then MODES="${MODES:-light}"; fi

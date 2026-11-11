@@ -47,7 +47,7 @@ xcodebuild -project Boar.xcodeproj -scheme BoarMac -destination 'platform=macOS'
 - Tests find fixtures relative to `#filePath` (repo root → `Fixtures/golden`), no SwiftPM resources.
 - The engine (`Sources/*`) never imports SwiftUI or UIKit and never imports from `App/`.
 - Swift 6 language mode, strict concurrency. Async/await; token streams are `AsyncThrowingStream`; mutable shared state lives in actors. No Combine, no completion handlers in new code.
-- Tests use Swift Testing (`import Testing`, `@Test`, `#expect`), not XCTest.
+- Tests use Swift Testing (`import Testing`, `@Test`, `#expect`), not XCTest. The one exception is the UI smoke test in `UITests/` (target BoarUITests), which uses XCTest because Swift Testing can't drive `XCUIApplication`.
 - Logging: `os.Logger(subsystem: "team.sopa.boar", category: <module>)`, no `print`.
 - Deployment target iOS 18.0 (2026-10-19, for testers on iOS 18; the Mac target stays 26.0). iOS 26 APIs (Liquid Glass, Foundation Models, SpeechAnalyzer, RecognizeDocumentsRequest, navigationSubtitle, safeAreaBar, close-role buttons) go behind `#available(iOS 26.0, *)` or the shims in `App/Sources/Platform/PlatformModifiers.swift` (`glassOrMaterial`, `prominentGlassButtonStyle`, `bottomBar`, `navigationSubtitleIfAvailable`, `SheetCloseButton`); dictation goes through `Dictation` (unsupported before 26). iOS 27 APIs (Core AI, Spotlight search tool, image prompts, the Foundation Models `LanguageModel` protocol) go behind `if #available(iOS 27, macOS 27, *)`.
 - Dependencies: llama.cpp XCFramework and zstd only. No third-party UI or utility packages.
