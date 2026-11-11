@@ -28,6 +28,10 @@ targets:
     type: application
     platform: iOS
     deploymentTarget: "18.0"
+    # The scheme's Test action runs the UI smoke test (BoarUITests).
+    scheme:
+      testTargets:
+        - BoarUITests
     sources:
       - path: App
         excludes:
@@ -90,6 +94,23 @@ targets:
         SUPPORTS_MACCATALYST: NO
         SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD: NO
         SWIFT_APPROACHABLE_CONCURRENCY: YES
+
+  # XCUITest smoke test (XCTest: Swift Testing can't drive XCUIApplication). Runs the DEBUG app with -uiDemo, so no
+  # model or real data is needed: `xcodebuild test -scheme Boar -destination 'platform=iOS Simulator,id=…'`.
+  BoarUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    deploymentTarget: "18.0"
+    sources:
+      - path: UITests
+    dependencies:
+      - target: Boar
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: team.sopa.boar.native.uitests
+        GENERATE_INFOPLIST_FILE: YES
+        TEST_TARGET_NAME: Boar
+        CODE_SIGN_STYLE: Automatic
 
   BoarMac:
     type: application
