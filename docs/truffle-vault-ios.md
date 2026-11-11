@@ -1,6 +1,7 @@
 # Boar Avatars (the Truffle Vault) on iOS
 
-Study and plan, 2026-11-10, against `rferrari/boar-app` at `Fixtures/SOURCE_SHA`. Nothing here is built yet. The UI
+Study and plan, 2026-11-10, against `rferrari/boar-app` at `Fixtures/SOURCE_SHA`. Step 1 (the engine) is merged; step 2
+(counting) is built, see [Step 2 as built](#step-2-as-built-counting-2026-11-11); nothing shows on screen yet. The UI
 says **Boar Avatars**, and the switch that turns them on says **Boarverse**; the Android code still says vault and truffle,
 and so does this plan when it names code.
 
@@ -74,14 +75,18 @@ surface mixed by Compose's `lerp`, which mixes in Oklab. Paper is written out wh
   "with a PIN" (same change the tour made).
 - **Airplane mode:** iOS has no API for it. Closest honest signal: opened with no network at all
   (`NWPath.status == .unsatisfied`, which `SystemStatus` already watches). Four avatars use it (nomad, ice, snow,
-  tactical_ii); their clues would say "no network" instead of "airplane mode". **Decision for Biel.**
+  tactical_ii); their clues will say "no network" instead of "airplane mode". **Decided 2026-11-11 (Biel):** a day
+  counts in `airplaneDays` when BOAR is opened with no network at all; the clue wording comes with the UI.
 - **Source build** (`hacker`): Android checks the APK isn't signed with BOAR's release key. iOS: the build isn't from the
   App Store or TestFlight (`AppTransaction.shared` → `environment == .xcode`, or a debug build). Same meaning: built it
-  yourself.
+  yourself. **Decided 2026-11-11 (Biel):** a DEBUG build, or `AppTransaction.shared` reporting `.xcode`; asked once per
+  launch in the background, and an error (offline, no receipt) counts nothing.
 - **De-Googled** (`stealth`): no iOS equivalent (every iPhone is "de-Googled"). Options: (a) unlock it on every iPhone
   at first open, like `tactical`; (b) keep it locked forever on iOS (the unicorn would then be unreachable); (c) a
   different iOS rule (e.g. Lockdown Mode, which has no public API either). **Recommendation: (a)**, with an iOS clue,
-  and tell Android so the decision is shared. **Decision for Biel.**
+  and tell Android so the decision is shared. **Decided 2026-11-11 (Biel): (a).** Every iPhone and Mac counts as
+  de-Googled (`degoogled = true` at every open), so `stealth` unlocks at the first open like `tactical` (but, unlike
+  `tactical`, it is announced). Android still to be told.
 - **Offline answers:** "no validated internet" on Android → `NWPath.status != .satisfied` on iOS (what the chat's
   ONLINE pill already uses).
 - **Picture of a locked avatar:** Android's color matrix → SwiftUI `.colorMultiply(.black)` + a near-black tint, or a
@@ -122,8 +127,50 @@ Each step is one branch/PR, behind the Boarverse switch (off by default) so main
 6. **Launcher icons** (flag off, like Android): 40 alternate icon sets, build setting, `setAlternateIconName`. ~2 h, and
    checked on the iPhone.
 
-About **two nights** of work in total, plus Biel's two decisions (airplane mode, de-Googled) before step 2 and the theme
+About **two nights** of work in total, plus Biel's two decisions (airplane mode, de-Googled; both made 2026-11-11) before step 2 and the theme
 fixture before step 5.
+
+## Step 2 as built (counting, 2026-11-11)
+
+`App/Sources/Services/TruffleVault.swift` (main actor, `@Observable`, owned by `BoarServices`) stores
+`Vault.toJson(state)` under `truffleVault` as a JSON object (`AppSettings.truffleVault`, Android's shape). `record`
+applies `Vault.apply` with today and now in ms, saves only on a change, and queues new avatars for the message while
+Boarverse is on, dropping `ALWAYS` (Android line 59). Boarverse is stored in the app's defaults as
+`vault.experimental.on` (Android: prefs "vault", `experimental.on`), off, with no switch yet. The fact updates are pure
+(`Vault.Counting` in BoarCore, tested in `VaultCountingTests`); the network, clock, lock, files and App Store are read in
+the app. DEBUG `-uiVault <json>` stores a state before the vault opens (`DebugLaunch`).
+
+| iOS | Android |
+|---|---|
+| `AppModel.checkVault` (launch, `didBecomeActive`, leaving Models) → `onOpen` | `BoarServices.checkVault`, `MainActivity` start and leaving "models" |
+| `AppLock.enable` → `pinOn` | `MainActivity` PIN setup `onDone` → `checkVault` |
+| `ChatController.answer` after the answer is saved → `answered` | `ChatViewModel` after `upsertMessage` |
+| `AppModel.setTheme` (Settings → Display and the tour's theme card) → `themeChanged` | `SettingsScreen` (2 places), `MainActivity` tour |
+| `EngineTweaksScreen.save`, non-Auto → `tweaksChanged` | `SettingsScreen` TweaksSection `save` |
+| `DocumentsController.run` after an import → `documents += files` | `DocumentsViewModel.import` |
+| `DocumentsController.exportFile` → `exports += 1` | `DocumentsViewModel.exportIntent` |
+| `EvaluationController.start`, a screen run that wasn't stopped → `evalRuns += 1` | `EvaluationViewModel.run` |
+| `ModelsController.hfAdd` → `hfModels = max(…, discovered)` | `ModelsViewModel.hfAdd` |
+| `VoiceInputController` (dictation that heard words) → `voice` | `VoiceInput.onResults` |
+| `DailyQuizLab` pick → `quizRight`, `quizDays` (the quiz's day) | `DailyQuizLab` (labs plugin) |
+
+Offline answers: no satisfied path, what the ONLINE badge shows. Night: `Vault.isNight(hour:)` with the local hour.
+A no-network day: the path status at open is `.unsatisfied` (at launch it waits up to 2 s for the monitor's first report).
+
+Differences and what's left out, on purpose:
+
+- **`evalShares` is never counted:** Android uploads a run to BOAR's results service (`ResultsSharing`) and counts a
+  successful upload; iOS only exports files through the share sheet, which is not that. `EVAL_SHARED` has no avatar.
+- **Setup's file import** (`SetupViewModel`, documents): iOS setup has no files page; documents come only from Knowledge.
+- **Bench requests** (debug builds' `Documents/eval/requests`) don't count evaluation runs, as Android's `BenchActivity`
+  doesn't. Its `grantTheme` waits for the extra themes (step 5).
+- **Also on return to the foreground:** iOS checks the vault whenever BOAR becomes active, Android only at start and
+  after Models or PIN setup. It saves only on a change, so a return the same day writes nothing.
+- **Exports** count when the share sheet asks for the file (iOS makes it lazily), not when the sheet opens.
+- **Dictation** counts when words were heard, also when sending cuts the dictation short (Android's recognizer ends by
+  itself and reports `onResults`).
+- The Daily Quiz's "Right answers unlock Boar Avatars." copy, the clues, `equip`, the launcher icon and the toast come
+  with the UI (step 4).
 
 ## Questions for Android
 
