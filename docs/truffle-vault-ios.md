@@ -111,7 +111,8 @@ Each step is one branch/PR, behind the Boarverse switch (off by default) so main
 1. **Engine + tests** (steps 1–4 above): ~2 h. No UI. *(Tonight's item 5, if time allows.)*
 2. **Counting**: `TruffleVault` service in `BoarServices`, `onOpen` at launch and on foreground, `answered` after each
    answer, and the ~12 one-line `record { }` calls (theme, tweaks, documents, export, eval run/share, HF model, voice,
-   quiz). ~3 h, plus a debug `-uiVault <state>` to seed states for captures and the XCUITest.
+   quiz). ~3 h, plus a debug `-uiVault <state>` to seed states for captures and the XCUITest. The engine's `fresh`
+   includes `tactical`; like Android (`TruffleVault.kt`), the service drops `ALWAYS` avatars before announcing.
 3. **Art import**: extend `import-icon-pack.py` (or a new `import-truffles.py`) for 40 avatar imagesets from the hi-res
    webp (HEIC/PNG), and the silhouettes. ~1 h. Adds ~2–3 MB.
 4. **UI**: Boarverse switch, grid, avatar picker, toast, equipped boar in `Mascot` (chat header, empty chat, answers,

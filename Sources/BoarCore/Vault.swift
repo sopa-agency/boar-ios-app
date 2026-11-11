@@ -282,17 +282,23 @@ public enum Vault {
             epochDay = era * 146097 + doe - 719468
         }
 
-        /// "yyyy-MM-dd", or nil when it isn't one.
+        /// "yyyy-MM-dd", or nil when it isn't a real date (LocalDate.parse: no "2026-02-31", no signs).
         public init?(iso: String) {
-            let parts = iso.split(separator: "-")
+            let parts = iso.split(separator: "-", omittingEmptySubsequences: false)
             guard parts.count == 3, parts[0].count == 4, parts[1].count == 2, parts[2].count == 2,
+                  parts.allSatisfy({ $0.allSatisfy(\.isASCII) && $0.allSatisfy(\.isNumber) }),
                   let y = Int(parts[0]), let m = Int(parts[1]), let d = Int(parts[2]),
                   (1...12).contains(m), (1...31).contains(d) else { return nil }
             self.init(year: y, month: m, day: d)
+            // A day past the month's end rolls into the next month: not the same text back.
+            guard description == iso else { return nil }
         }
 
-        /// Today in `calendar`'s time zone (LocalDate.now()).
-        public static func today(_ date: Date = Date(), calendar: Calendar = .current) -> Day {
+        /// Today in `timeZone` (LocalDate.now()), always in the Gregorian calendar: a phone set to the Buddhist or
+        /// Japanese calendar must still count the same days as Android.
+        public static func today(_ date: Date = Date(), timeZone: TimeZone = .current) -> Day {
+            var calendar = Calendar(identifier: .gregorian)
+            calendar.timeZone = timeZone
             let c = calendar.dateComponents([.year, .month, .day], from: date)
             return Day(year: c.year!, month: c.month!, day: c.day!)
         }
@@ -324,7 +330,7 @@ public enum Vault {
         public static let keep = 64
 
         public static func add(_ days: [String], _ day: Day) -> [String] {
-            Array(Array(Set(days + [day.description])).sorted().suffix(keep))
+            Array(Set(days + [day.description]).sorted().suffix(keep))
         }
 
         /// Days in a row that end today (or yesterday, so a streak isn't lost before the first open of the day).

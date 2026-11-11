@@ -2,20 +2,20 @@
 """Checks Sources/BoarCore/Vault.swift against Android's engine/vault/Vault.kt at Fixtures/SOURCE_SHA.
 
 Compares every rule's condition (Kotlin's lambda body against the Swift switch case, with .size read as .count and
-LocalDate `d` as `today`) and the avatar -> rule table, in order. Run it after scripts/sync-reference.sh: a rule changed
-on Android fails here. Usage: scripts/check-vault-rules.py [path/to/boar-app]   (default ../boar-app)
+LocalDate `d` as `today`) and the avatar -> rule table, in order. Reads Vault.kt from .ref/, so run it after
+scripts/sync-reference.sh: a rule changed on Android fails here. Usage: scripts/check-vault-rules.py
 """
 import re
-import subprocess
 import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-APP = Path(sys.argv[1]) if len(sys.argv) > 1 else ROOT.parent / "boar-app"
 SHA = (ROOT / "Fixtures/SOURCE_SHA").read_text().strip()
-KT_PATH = "android-native/engine/src/main/java/team/sopa/boar/engine/vault/Vault.kt"
+KT = ROOT / ".ref/android-native/engine/src/main/java/team/sopa/boar/engine/vault/Vault.kt"
 
-kt = subprocess.run(["git", "-C", str(APP), "show", f"{SHA}:{KT_PATH}"], check=True, capture_output=True, text=True).stdout
+if not KT.exists():
+    sys.exit(f"{KT.relative_to(ROOT)} is missing: run scripts/sync-reference.sh first")
+kt = KT.read_text()
 swift = (ROOT / "Sources/BoarCore/Vault.swift").read_text()
 
 
@@ -28,8 +28,8 @@ def norm(expr: str) -> str:
 
 kt_rules = {m.group(1): norm(m.group(2)) for m in re.finditer(r"^\s+([A-Z][A-Z0-9_]*)\(\{\s*\w+,\s*\w+\s*->\s*(.*?)\s*\}\),", kt, re.M)}
 sw_rules = {m.group(1): norm(m.group(2)) for m in re.finditer(r"^\s+case \.([A-Z][A-Z0-9_]*): (.*)$", swift, re.M)}
-kt_table = re.findall(r'"([a-z_]+)" to Rule\.([A-Z0-9_]+)', kt)
-sw_table = re.findall(r'\("([a-z_]+)", \.([A-Z0-9_]+)\)', swift)
+kt_table = re.findall(r'"([a-z0-9_]+)" to Rule\.([A-Z0-9_]+)', kt)
+sw_table = re.findall(r'\("([a-z0-9_]+)", \.([A-Z0-9_]+)\)', swift)
 
 errors = []
 if not kt_rules:

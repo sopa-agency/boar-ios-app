@@ -122,18 +122,22 @@ struct VaultTests {
         #expect(Day(year: 2027, month: 1, day: 1).minusDays(1).description == "2026-12-31")
         #expect(Day(iso: "2026-13-01") == nil)
         #expect(Day(iso: "junk") == nil)
+        // LocalDate.parse rejects both.
+        #expect(Day(iso: "2026-02-31") == nil)
+        #expect(Day(iso: "2026-+1-05") == nil)
+        #expect(Day(iso: "2024-02-29") != nil)
         for n in stride(from: Int64(-1000), through: 40000, by: 37) {
             let d = Day(epochDay: n)
             #expect(Day(iso: d.description) == d)
         }
     }
 
-    @Test func todayFollowsTheCalendarsTimeZone() throws {
-        var cal = Calendar(identifier: .gregorian)
-        cal.timeZone = try #require(TimeZone(identifier: "America/Sao_Paulo"))
+    @Test func todayFollowsTheTimeZone() throws {
+        let saoPaulo = try #require(TimeZone(identifier: "America/Sao_Paulo"))
         // 02:30 UTC on Nov 11 is 23:30 on Nov 10 in São Paulo.
         let instant = Date(timeIntervalSince1970: 1_794_364_200)
-        #expect(Day.today(instant, calendar: cal).description == "2026-11-10")
+        #expect(Day.today(instant, timeZone: saoPaulo).description == "2026-11-10")
+        #expect(Day.today(instant, timeZone: try #require(TimeZone(identifier: "UTC"))).description == "2026-11-11")
     }
 
     @Test func jsonLeavesDefaultsOutLikeAndroid() {
