@@ -90,12 +90,13 @@ jobs:
           unzip -q "$RUNNER_TEMP/xcodegen.zip" -d "$RUNNER_TEMP"
           "$RUNNER_TEMP/xcodegen/bin/xcodegen" generate
 
-      - name: Build iOS app
+      # build-for-testing also compiles the UI smoke test (BoarUITests); running it needs a simulator and stays local.
+      - name: Build iOS app and UI tests
         run: >
           xcodebuild -project Boar.xcodeproj -scheme Boar
           -destination 'generic/platform=iOS'
           -derivedDataPath .build/DerivedData
-          CODE_SIGNING_ALLOWED=NO build
+          CODE_SIGNING_ALLOWED=NO build-for-testing
 
       - name: Build Mac app
         run: >
