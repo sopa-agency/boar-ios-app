@@ -95,7 +95,7 @@ Input for the decision after phase 3's measurements. What the SDK's `ImagePlaygr
 - **Not offered:** seeds (Designer's "same composition, new words"), a no-style raw prompt, the per-size timings, and
   drawing in the background (`backgroundCreationForbidden`).
 - **Devices:** only where Apple Intelligence is on (`ImagePlaygroundViewController.isAvailable`): iPhone 15 Pro and
-  later. **the test iPhone 14 Pro and the 4 GB iPhone 13 have none**, so on the phones we test with the lab would
+  later. **The test iPhone 14 Pro and the 4 GB iPhone 13 have none**, so on the phones we test with the lab would
   only show "not available on this iPhone". Android's sd-cli runs on every phone it targets.
 - **Gains:** no 683 MB download, no memory fight with the chat model (the system draws out of BOAR's process and
   jetsam budget), Apple's safety filters, nothing to license.
