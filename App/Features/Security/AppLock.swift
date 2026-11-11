@@ -133,6 +133,8 @@ final class AppLock {
             services.chats.cipher = cipher
             keyLoaded = true
             setFlag(true)
+            // Boar Avatars: the lock is Android's PIN (MainActivity checks the vault when PIN setup is done).
+            services.vault.record { $0.pinOn = true }
             error = nil
         } catch {
             self.error = Self.message(error)

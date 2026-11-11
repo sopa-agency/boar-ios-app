@@ -33,6 +33,8 @@ final class BoarServices: @unchecked Sendable {
     let host: SessionHost
     let assets: AssetStore
     let downloads: BackgroundDownloads
+    /// Boar Avatars: what using the app unlocks, counted on the device.
+    let vault: TruffleVault
 
     private let baseCatalog: Catalog
     private let catalogLock = OSAllocatedUnfairLock<Catalog?>(initialState: nil)
@@ -75,6 +77,7 @@ final class BoarServices: @unchecked Sendable {
         }
         assets = AssetStore(filesDir: filesDir, catalog: catalog, log: { Self.log.info("\($0, privacy: .public)") })
         downloads = BackgroundDownloads.shared
+        vault = TruffleVault(settings: settings)
     }
 
     // MARK: catalog
@@ -125,6 +128,22 @@ final class BoarServices: @unchecked Sendable {
         let extra = readDiscovered().filter { d in !base.models.contains { $0.filename == d.filename } }
         c.models += extra
         return c
+    }
+
+    // MARK: Boar Avatars
+
+    /// What the vault reads from the app's files (android `BoarServices.checkVault`): installed knowledge packs (the
+    /// catalog's and other `.sqlite` files in corpus/) and models added from Hugging Face. File checks: call it off the
+    /// main actor.
+    func vaultReadings() -> (packs: Int, hfModels: Int) {
+        let fm = FileManager.default
+        let catalogFiles = catalog.corpusCatalog.map { filesDir.appending(path: $0.filename).standardizedFileURL }
+        let installed = catalog.corpusCatalog.filter {
+            $0.format == "sqlite-pack" && fm.fileExists(atPath: filesDir.appending(path: $0.filename).path(percentEncoded: false))
+        }.count
+        let corpus = (try? fm.contentsOfDirectory(at: filesDir.appending(path: "corpus"), includingPropertiesForKeys: nil)) ?? []
+        let local = corpus.filter { $0.pathExtension == "sqlite" && !catalogFiles.contains($0.standardizedFileURL) }.count
+        return (installed + local, discovered().count)
     }
 
     // MARK: installed models
