@@ -4,8 +4,8 @@ import SwiftUI
 /// Boar Labs' Daily Quiz (android labs/plugins/dailyQuiz, Oct 24): five questions a day from BOAR's built-in library,
 /// offline and without the model (BoarRAG `DailyQuiz`, the same draw as Android's for the same date and library). It
 /// stays behind its classified tile: leaking the tile (the Labs easter egg) unlocks it, as on Android's normal builds.
-/// Today's answers are kept, so leaving resumes the quiz and replaying counts nothing more. Android's right answers also
-/// unlock Boar Avatars; the iOS app has no Vault yet, so the copy leaves them out.
+/// Today's answers are kept, so leaving resumes the quiz and replaying counts nothing more. Right answers and the days
+/// played count for Boar Avatars (knight, elder), as on Android; the copy says so again once the avatars have a screen.
 struct DailyQuizLab: LabPlugin {
     let id = "dailyQuiz"
     let order = 80
@@ -110,6 +110,7 @@ private struct DailyQuizSections: View {
         AppPaths.defaults.set(String(today), forKey: Self.dayKey)
         AppPaths.defaults.set(picks.map(String.init).joined(separator: ","), forKey: Self.picksKey)
         showing = i
+        model.services?.vault.quizAnswered(right: right, epochDay: today)
     }
 
     private func load() async {

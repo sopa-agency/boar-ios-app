@@ -123,6 +123,9 @@ final class EvaluationController {
                     savedPath = "Documents/eval/\(result.file.lastPathComponent)"
                     stopped = result.stopped
                     rows = result.rows
+                    // Boar Avatars: a run from the Evaluation screen that finished (android EvaluationViewModel.run); a
+                    // bench request is Android's BenchActivity, which doesn't count.
+                    if requestId == nil && !result.stopped { services.vault.record { $0.evalRuns += 1 } }
                 }
             } catch {
                 failure = error

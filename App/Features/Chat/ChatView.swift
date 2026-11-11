@@ -138,8 +138,13 @@ struct ChatView: View {
         .onChange(of: scenePhase) { _, phase in
             if phase != .active { voice.cancel() }
         }
-        // A new chat opens ready to type, as Messages and ChatGPT do.
-        .onAppear(perform: focusIfEmpty)
+        .onAppear {
+            // A new chat opens ready to type, as Messages and ChatGPT do.
+            focusIfEmpty()
+            // Boar Avatars: voice input used (android VoiceInput).
+            let vault = chat.services.vault
+            voice.onRecognized = { vault.record { $0.voice = true } }
+        }
         .onChange(of: chat.messages.isEmpty) { _, empty in
             if empty { focusIfEmpty() }
         }

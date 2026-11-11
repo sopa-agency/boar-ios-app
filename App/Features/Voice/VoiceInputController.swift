@@ -23,6 +23,8 @@ final class VoiceInputController {
     /// A `VoiceTranscriber` once dictation starts (iOS 26 and later only).
     @ObservationIgnored private var transcriber: AnyObject?
     @ObservationIgnored private var task: Task<Void, Never>?
+    /// A dictation ended with words heard (Boar Avatars counts voice input, android VoiceInput.onResults).
+    @ObservationIgnored var onRecognized: (@MainActor () -> Void)?
     private static let log = BoarLog.logger("voice")
 
     /// This iPhone has the on-device transcriber (iOS 26 SpeechTranscriber).
@@ -44,6 +46,8 @@ final class VoiceInputController {
         let voice = (transcriber as? VoiceTranscriber) ?? VoiceTranscriber()
         transcriber = voice
         task = Task {
+            // Words were heard, whether the dictation was stopped or cut short by sending.
+            var heard = false
             do {
                 switch await VoiceTranscriber.assetState() {
                 case .unsupported:
@@ -59,6 +63,7 @@ final class VoiceInputController {
                 state = .listening
                 for try await update in updates {
                     let spoken = update.text.trimmingCharacters(in: .whitespacesAndNewlines)
+                    if !spoken.isEmpty { heard = true }
                     onText(base.isEmpty ? spoken : spoken.isEmpty ? base : "\(base) \(spoken)")
                 }
             } catch is CancellationError {
@@ -66,6 +71,7 @@ final class VoiceInputController {
                 self.error = Self.message(error)
                 Self.log.error("dictation: \(String(describing: error), privacy: .public)")
             }
+            if heard { onRecognized?() }
             state = .idle
         }
     }
