@@ -43,7 +43,7 @@
 6. **Photos (new).** Photos of pages are picked with the system photo picker (`PhotosPicker`), which gives BOAR only
    the photos the user selects, without library access: the app declares no photo library permission or
    entitlement. The text in them is read on the device (Vision).
-7. **Another computer (new, iOS and Mac).** In Settings → Advanced, the user can point BOAR at a llama.cpp server,
+7. **Mac on Your Network (new, iOS and Mac).** In Settings → Advanced → Engine, the user can point BOAR at a llama.cpp server,
    meant for a computer on their own network (for example a Mac mini). When that is on, **the whole prompt is sent to
    that server** to write the answer: the question, the passages BOAR found, the chat's summary and its recent
    questions and answers, and the Personal Files note (`RagPure.assemblePrompt`). The library, documents and stored

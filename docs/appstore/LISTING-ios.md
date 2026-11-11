@@ -27,14 +27,15 @@ partner can keep it. BOAR sends nothing to SOPA or anyone else on its own:
 
 - No account, no analytics, no crash reporting, no ads (`PrivacyInfo.xcprivacy` declares no tracking and no collected
   data).
-- Downloads (models and packs from Hugging Face or GitHub, the Hugging Face search) only fetch files; the request
-  carries no user data beyond what any download does.
-- **Another computer** (Settings → Advanced) sends the whole prompt to a server the user sets up. That server is the
+- Downloads (models and packs from Hugging Face or GitHub) only fetch files. The Hugging Face model search sends the
+  words typed in it to Hugging Face, which BOAR doesn't keep or link to anyone: still not collection by the developer.
+- **Mac on Your Network** (Settings → Advanced → Engine) sends the whole prompt to a server the user sets up. That server is the
   user's, not the developer's or a partner's, so it isn't collection; say so in the review notes.
 - Voice input and Apple Intelligence run on the device.
 
-Revisit this answer if anything starts sending data: Share Results (ported but not shown in the iOS app), crash
-reporting, or any analytics.
+Revisit this answer if anything starts sending data: Android's evaluation upload (`ShareResults.swift`, ported but
+unused on iOS; the Benchmark's "Share Results" menu only exports a file through the share sheet), crash reporting, or
+any analytics.
 
 ## Age rating
 
@@ -43,7 +44,7 @@ Expected **4+** (Apple's questionnaire, all "None"/"No"), except two answers to 
 - The new AI questions (generated content / chatbot): answer that BOAR is a general-purpose assistant whose answers
   come from a small on-device model, and that it can be wrong. If the form asks for unrestricted generation of
   mature content, the honest answer is that an open model can produce anything a user asks for: this may push the
-  rating to 12+ or higher. Decide with the team; Android's Play rating is the reference.
+  rating to 13+ or higher (Apple's ages since 2025: 4+, 9+, 13+, 16+, 18+). Decide with the team; Android's Play rating is the reference.
 - Unrestricted web access: **No** (no browser; Hugging Face search lists model files only).
 
 ## Export compliance
@@ -68,7 +69,8 @@ AES-GCM for locked chats, HTTPS for downloads), which Apple treats as exempt. No
 > the exact passage.
 >
 > NOTHING LEAVES YOUR PHONE
-> No account, no analytics, no tracking. Your questions are answered on the device. Lock your chats with Face ID.
+> No account, no analytics, no tracking. Your questions are answered on the device, unless you choose to have your own
+> Mac write the answers. Lock your chats with Face ID.
 >
 > YOUR OWN LIBRARY
 > Import your own documents and photos of pages, and ask about them. Pick the answer style you like, from short and
@@ -79,7 +81,7 @@ AES-GCM for locked chats, HTTPS for downloads), which Apple treats as exempt. No
 >
 > MORE
 > • Choose another model, or find one on Hugging Face.
-> • Boar Labs: optional experiments such as a calculator, a daily quiz and Boar Press, which turns answers into a PDF.
+> • Boar Labs: optional experiments such as a calculator and Boar Press, which turns answers into a PDF.
 > • Siri and Shortcuts: "Ask BOAR".
 > • Light and dark themes.
 >
@@ -92,7 +94,7 @@ replace nothing with a number that wasn't measured on a device.
 
 `offline,ai,private,local,assistant,chat,no internet,airplane,library,encyclopedia,sources,llm` (93)
 
-**What's New** (first version): `First release of BOAR for iPhone and iPad.`
+**What's New:** App Store Connect doesn't ask for it on the first version.
 
 ## Review notes (App Review Information)
 
@@ -101,7 +103,7 @@ replace nothing with a number that wasn't measured on a device.
   user). This is data the app reads, not code: llama.cpp runs the model, nothing is executed from the download
   (guideline 2.5.2).
 - After setup, turn on airplane mode: chat, search and sources keep working.
-- Settings → Advanced → Another computer is off by default and only talks to a server the user enters.
+- Settings → Advanced → Engine → Mac on Your Network is off by default and only talks to a server the user enters.
 - A short screen recording of setup and an offline answer goes with the submission (phase 4).
 
 ## Screenshots
