@@ -12,7 +12,7 @@ final class TourUITests: BoarUITestCase {
         for _ in 0..<12 where !onScreen(see) { app.collectionViews.firstMatch.swipeUp(velocity: .slow) }
         guard see.exists else { throw XCTSkip("this build has no tour") }
         tap(see, "See the Tour")
-        XCTAssertTrue(app.navigationBars[L("BOAR tour")].waitForExistence(timeout: 5), "the tour didn't open")
+        XCTAssertTrue(app.navigationBars[L("BOAR tour")].waitForExistence(timeout: 5), "the tour didn't open\n\(app.debugDescription)")
 
         var cards = 1
         while next.exists {
