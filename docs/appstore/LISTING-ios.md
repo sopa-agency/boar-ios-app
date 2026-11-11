@@ -68,7 +68,7 @@ AES-GCM for locked chats, HTTPS for downloads), which Apple treats as exempt. No
 > Small models make mistakes, so BOAR answers from a library and lists the articles it used. Tap a citation to read
 > the exact passage.
 >
-> NOTHING LEAVES YOUR PHONE
+> NOTHING LEAVES YOUR DEVICES
 > No account, no analytics, no tracking. Your questions are answered on the device, unless you choose to have your own
 > Mac write the answers. Lock your chats with Face ID.
 >
