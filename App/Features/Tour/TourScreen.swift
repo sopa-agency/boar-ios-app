@@ -37,11 +37,17 @@ struct TourScreen: View {
             .inlineNavigationTitle()
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
+                    // Escape closes the sheet on the Mac, too.
                     Button("Done") { dismiss() }
+                        .keyboardShortcut(.cancelAction)
                 }
             }
         }
         .macSheetSize(width: 560, height: 720)
+        // VoiceOver stays on Next or Back otherwise, and never hears that the card changed.
+        .onChange(of: position) {
+            AccessibilityNotification.ScreenChanged(nil).post()
+        }
     }
 
     /// Back (from the second card on), the dots, and Next, or Done on the last card.
@@ -69,7 +75,7 @@ struct TourScreen: View {
             .accessibilityLabel(Text("Card \(position + 1) of \(cards.count)"))
             Button(action: forward) {
                 HStack(spacing: 6) {
-                    Text(last ? "Done" : "Next")
+                    Text(last ? Self.done : Self.next)
                     if !last { Image(icon: .pack(.arrowForward)).accessibilityHidden(true) }
                 }
                 .boarText("ui.titleSm")
@@ -87,6 +93,10 @@ struct TourScreen: View {
         .padding(16)
         .background(Color(palette.bgTerminal))
     }
+
+    // Their own keys: the tour's PT is Android's "Próximo" and "Pronto", not the app's "Próxima" and "OK".
+    private static let next = LocalizedStringResource("tour.next", defaultValue: "Next", comment: "Tour button; PT is masculine (o cartão)")
+    private static let done = LocalizedStringResource("tour.done", defaultValue: "Done", comment: "Tour button on the last card")
 
     private func back() {
         index = position - 1
@@ -197,8 +207,9 @@ private struct FlowChips: Layout {
         for row in arrange(width: bounds.width, subviews) {
             var x = bounds.minX
             for i in row.items {
-                let size = subviews[i].sizeThatFits(.unspecified)
-                subviews[i].place(at: CGPoint(x: x, y: y), proposal: ProposedViewSize(size))
+                let size = chipSize(of: subviews[i], width: bounds.width)
+                // Centred in the row, as Compose's FlowRow does with chips of different heights.
+                subviews[i].place(at: CGPoint(x: x, y: y + (row.height - size.height) / 2), proposal: ProposedViewSize(size))
                 x += size.width + spacing
             }
             y += row.height + spacing
@@ -210,7 +221,7 @@ private struct FlowChips: Layout {
     private func arrange(width: CGFloat, _ subviews: Subviews) -> [Row] {
         var rows: [Row] = [Row()]
         for i in subviews.indices {
-            let size = subviews[i].sizeThatFits(.unspecified)
+            let size = chipSize(of: subviews[i], width: width)
             let extra = rows[rows.count - 1].items.isEmpty ? size.width : rows[rows.count - 1].width + spacing + size.width
             if extra > width, !rows[rows.count - 1].items.isEmpty {
                 rows.append(Row())
@@ -223,15 +234,33 @@ private struct FlowChips: Layout {
         }
         return rows
     }
+
+    /// A chip's size, at most the row's width: at large text sizes a wide chip wraps its text instead of running off.
+    private func chipSize(of subview: LayoutSubview, width: CGFloat) -> CGSize {
+        let ideal = subview.sizeThatFits(.unspecified)
+        guard ideal.width > width, width.isFinite else { return ideal }
+        return subview.sizeThatFits(ProposedViewSize(width: width, height: nil))
+    }
 }
 
 extension View {
     /// The tour over everything: full screen on iPhone, a sheet on the Mac.
     func tourCover(isPresented: Binding<Bool>, index: Int = 0) -> some View {
         #if os(macOS)
-        sheet(isPresented: isPresented) { TourScreen(index: index) }
+        sheet(isPresented: isPresented) { TourCoverContent(index: index) }
         #else
-        fullScreenCover(isPresented: isPresented) { TourScreen(index: index) }
+        fullScreenCover(isPresented: isPresented) { TourCoverContent(index: index) }
         #endif
+    }
+}
+
+/// The tour with the theme applied to its own presentation: its theme card changes the theme while it's open, and the
+/// cover's bars and system appearance must follow, not only the palette it inherits.
+private struct TourCoverContent: View {
+    @Environment(AppModel.self) private var model
+    let index: Int
+
+    var body: some View {
+        TourScreen(index: index).boarTheme(model.theme)
     }
 }

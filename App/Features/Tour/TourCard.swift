@@ -47,7 +47,7 @@ enum TourCard: String, CaseIterable, Identifiable, Sendable {
     var text: LocalizedStringResource {
         switch self {
         case .welcome:
-            "BOAR answers on your \(Platform.deviceNoun), from its own offline library, and shows where each answer came from. Here's a quick look around while it gets ready."
+            "BOAR answers on your \(Platform.deviceNoun), from its own offline library, and shows where each answer came from. Here's a quick look around."
         case .theme: "Pick a theme. It changes right away, and you can change it again any time."
         case .styles:
             "Succinct & Direct for quick replies, Thorough & Detailed for full explanations (the default), Personal Files to answer only from your own documents."
@@ -60,12 +60,20 @@ enum TourCard: String, CaseIterable, Identifiable, Sendable {
         case .models: "Swap the answer model, find more on Hugging Face, and let BOAR free the memory when you leave it."
         case .adaptive:
             "Off by default. Switch it on and BOAR picks which of your installed models answers each question, and how. Worth it when you have more than one model."
-        case .lock:
-            "Face ID, Touch ID or your passcode seals your chats and hides BOAR's screen in the app switcher. Imported documents aren't encrypted yet."
+        case .lock: Self.lockText
         case .labs:
             "Experiments, labelled beta or alpha. They all start off: switch on the ones you want.\n\nAlso try Boar Press, which turns answers into a PDF.\n\nIf one misbehaves, switch it off and, if you can, open an issue on GitHub."
-        case .end: "BOAR is ready when the download is. You can see this tour again from Settings."
+        case .end: "You can see this tour again from Settings."
         }
+    }
+
+    /// The Mac locks with Touch ID or its password and has no app switcher snapshot to hide.
+    private static var lockText: LocalizedStringResource {
+        #if os(macOS)
+        return "Touch ID or your Mac's password seals your chats. Imported documents aren't encrypted yet."
+        #else
+        return "Face ID, Touch ID or your passcode seals your chats and hides BOAR's screen in the app switcher. Imported documents aren't encrypted yet."
+        #endif
     }
 
     /// Where to find it in the app; none on the welcome and end cards.

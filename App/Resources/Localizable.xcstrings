@@ -1366,12 +1366,12 @@
         }
       }
     },
-    "BOAR answers on your %@, from its own offline library, and shows where each answer came from. Here's a quick look around while it gets ready." : {
+    "BOAR answers on your %@, from its own offline library, and shows where each answer came from. Here's a quick look around." : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O BOAR responde no seu %@, a partir da própria biblioteca offline, e mostra de onde veio cada resposta. Uma volta rápida enquanto ele se prepara."
+            "value" : "O BOAR responde no seu %@, a partir da própria biblioteca offline, e mostra de onde veio cada resposta. Uma volta rápida pelo app."
           }
         }
       }
@@ -1412,16 +1412,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "O BOAR está bloqueado"
-          }
-        }
-      }
-    },
-    "BOAR is ready when the download is. You can see this tour again from Settings." : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "O BOAR fica pronto quando o download terminar. Dá para ver este tour de novo nas Configurações."
           }
         }
       }
@@ -7370,6 +7360,16 @@
         }
       }
     },
+    "Touch ID or your Mac's password seals your chats. Imported documents aren't encrypted yet." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Touch ID ou a senha do Mac selam suas conversas. Documentos importados ainda não são criptografados."
+          }
+        }
+      }
+    },
     "Touch and hold an answer, then drag it to change the order." : {
       "localizations" : {
         "pt" : {
@@ -7997,6 +7997,16 @@
         }
       }
     },
+    "You can see this tour again from Settings." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dá para ver este tour de novo nas Configurações."
+          }
+        }
+      }
+    },
     "You're offline. Connect to the internet to search for models." : {
       "localizations" : {
         "pt" : {
@@ -8526,6 +8536,40 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "quente demais: o %@ está reduzindo a velocidade"
+          }
+        }
+      }
+    },
+    "tour.done" : {
+      "comment" : "Tour button on the last card",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Done"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pronto"
+          }
+        }
+      }
+    },
+    "tour.next" : {
+      "comment" : "Tour button; PT is masculine (o cartão)",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Next"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Próximo"
           }
         }
       }
