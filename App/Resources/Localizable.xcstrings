@@ -4157,22 +4157,22 @@
         }
       }
     },
-    "Menu → Knowledge" : {
+    "BOAR → Knowledge" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Menu → Conhecimento"
+            "value" : "BOAR → Conhecimento"
           }
         }
       }
     },
-    "Menu → Models" : {
+    "BOAR → Models" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Menu → Modelos"
+            "value" : "BOAR → Modelos"
           }
         }
       }

@@ -14,6 +14,7 @@ struct SettingsScreen: View {
     @Environment(AppModel.self) private var model
     let services: BoarServices
     @State private var bridge: SettingsBridge
+    @State private var touring = false
 
     init(services: BoarServices) {
         self.services = services
@@ -43,10 +44,12 @@ struct SettingsScreen: View {
                     SettingsLabel("About BOAR", symbol: "info")
                 }
             }
-            SettingsRecoverySection(services: services, bridge: bridge)
+            SettingsRecoverySection(services: services, bridge: bridge, touring: $touring)
         }
         .navigationTitle(AppScreen.settings.title)
         .inlineNavigationTitle()
+        // Outside the form: see SettingsRecoverySection.touring.
+        .tourCover(isPresented: $touring)
         .debugPush("settings-advanced") { AdvancedSettingsScreen(services: services, bridge: bridge) }
         .debugPush("settings-engine") { EngineTweaksScreen(services: services, bridge: bridge) }
         .debugPush("device-info") { DeviceInfoScreen(services: services) }

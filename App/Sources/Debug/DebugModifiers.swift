@@ -80,7 +80,9 @@ private struct DebugTour: ViewModifier {
                 TourCard.cards(experimental: LabsBuild.experimental).firstIndex(of: card)
             } ?? 0)
             .task {
-                guard DebugLaunch.tourCard != nil else { return }
+                // Once per launch, like DebugPush: closing the tour shows Settings again, and this would reopen it.
+                guard DebugLaunch.tourCard != nil, !pushedScreens.contains("tour") else { return }
+                pushedScreens.insert("tour")
                 try? await Task.sleep(for: .milliseconds(700))
                 shown = true
             }

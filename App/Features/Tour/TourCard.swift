@@ -2,8 +2,8 @@ import SwiftUI
 
 /// One card of BOAR's tour (android ui/tour/TourScreen.kt `TourCard`, `tourCards`), in Android's order. The copy is
 /// Android's (native.tour.<key>.*) with three iOS changes: "phone" is this device's name, the "where" lines name the
-/// iOS screens (the sidebar is Android's menu; Advanced holds Adaptive Routing and Boar Labs), and the PIN and Labs
-/// cards say what the iOS app has (Face ID or the passcode instead of a PIN; the labs ported so far).
+/// iOS screens (the sidebar, titled BOAR, is Android's menu; Advanced holds Adaptive Routing and Boar Labs), and the PIN
+/// and Labs cards say what the iOS app has (Face ID or the passcode instead of a PIN; the labs ported so far).
 enum TourCard: String, CaseIterable, Identifiable, Sendable {
     case welcome, theme, styles, deep, sources, knowledge, models, adaptive, lock, labs, end
 
@@ -83,8 +83,8 @@ enum TourCard: String, CaseIterable, Identifiable, Sendable {
         case .theme: "Settings → Display"
         case .styles, .deep: "The style button in the chat, or Settings → Answers"
         case .sources: "Under every answer"
-        case .knowledge: "Menu → Knowledge"
-        case .models: "Menu → Models"
+        case .knowledge: "BOAR → Knowledge"
+        case .models: "BOAR → Models"
         case .adaptive: "Settings → Advanced, with Show Technical Details on"
         case .lock: "Settings → Privacy"
         case .labs: "Settings → Advanced → Boar Labs"

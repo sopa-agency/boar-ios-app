@@ -187,7 +187,7 @@ private struct TourThemePicker: View {
                 .accessibilityAddTraits(on ? .isSelected : [])
             }
         }
-        .sensoryFeedback(.selection, trigger: model.theme)
+        .sensoryFeedback(.selection, trigger: model.theme) { _, _ in model.services?.settings.hapticsEnabled ?? false }
     }
 }
 

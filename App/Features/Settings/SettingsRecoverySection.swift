@@ -7,12 +7,14 @@ struct SettingsRecoverySection: View {
     @Environment(AppModel.self) private var model
     let services: BoarServices
     let bridge: SettingsBridge
+    /// The tour's cover lives on the screen that holds this section, outside the List: a List can drop an offscreen
+    /// row, and the cover on it (rotating to landscape moves this last row off screen).
+    @Binding var touring: Bool
     @State private var confirmClear = false
     @State private var confirmReset = false
     @State private var confirmPurge = false
     @State private var cleared = false
     @State private var purging = false
-    @State private var touring = false
 
     private var answering: Bool { model.chat?.isAnswering ?? false }
 
@@ -25,9 +27,6 @@ struct SettingsRecoverySection: View {
                 Label("See the Tour", systemImage: "signpost.right")
                     .foregroundStyle(.boar(.link))
             }
-            // On the row, not the Section: a List gives each of the Section's rows its own copy of a modifier, and four
-            // covers on one binding present none.
-            .tourCover(isPresented: $touring)
             Button(role: .destructive) {
                 confirmClear = true
             } label: {
