@@ -469,6 +469,16 @@
         }
       }
     },
+    "42 pages · in Personal Files" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "42 páginas · em Arquivos pessoais"
+          }
+        }
+      }
+    },
     "50,000 article intros" : {
       "localizations" : {
         "pt" : {
@@ -600,6 +610,16 @@
       }
     },
     "Adaptive Routing" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Roteamento adaptativo"
+          }
+        }
+      }
+    },
+    "Adaptive routing" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
@@ -745,6 +765,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Já está neste %@"
+          }
+        }
+      }
+    },
+    "An answer from the library lists the articles it used: tap one to read it. A receipt shows the model, the speed and the time." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uma resposta da biblioteca lista os artigos que usou: toque em um para ler. Um recibo mostra o modelo, a velocidade e o tempo."
           }
         }
       }
@@ -1116,6 +1146,16 @@
         }
       }
     },
+    "Ask with 🗂️ Personal Files" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pergunte com 🗂️ Arquivos pessoais"
+          }
+        }
+      }
+    },
     "Asks BOAR" : {
       "localizations" : {
         "pt" : {
@@ -1306,6 +1346,36 @@
         }
       }
     },
+    "BOAR Knowledge and your Personal Files" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conhecimento BOAR e seus Arquivos pessoais"
+          }
+        }
+      }
+    },
+    "BOAR Knowledge is the Vital Articles library on your %@. Import your notes, PDFs and spreadsheets into Personal Files, then ask about them with the Personal Files style." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Conhecimento BOAR é a biblioteca Vital Articles no seu %@. Importe suas notas, PDFs e planilhas em Arquivos pessoais e pergunte sobre eles com o estilo Arquivos pessoais."
+          }
+        }
+      }
+    },
+    "BOAR answers on your %@, from its own offline library, and shows where each answer came from. Here's a quick look around." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O BOAR responde no seu %@, a partir da própria biblioteca offline, e mostra de onde veio cada resposta. Uma volta rápida pelo app."
+          }
+        }
+      }
+    },
     "BOAR can't read %@: it imports .txt, .md, .csv, .json and .pdf. Save the page as one of those (a browser can save it as PDF) and import it again." : {
       "localizations" : {
         "pt" : {
@@ -1372,6 +1442,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "O BOAR pesquisa estes trechos quando você pergunta. Eles ficam neste %@."
+          }
+        }
+      }
+    },
+    "BOAR tour" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tour do BOAR"
           }
         }
       }
@@ -1616,6 +1696,16 @@
         }
       }
     },
+    "Boil it for at least one minute [1], then let it cool covered [2]." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ferva por pelo menos um minuto [1] e deixe esfriar tampada [2]."
+          }
+        }
+      }
+    },
     "Built into %@, nothing to download" : {
       "localizations" : {
         "pt" : {
@@ -1712,6 +1802,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cancelar importação"
+          }
+        }
+      }
+    },
+    "Card %lld of %lld" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cartão %1$lld de %2$lld"
           }
         }
       }
@@ -2696,6 +2796,26 @@
         }
       }
     },
+    "Example" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exemplo"
+          }
+        }
+      }
+    },
+    "Experiments, labelled beta or alpha. They all start off: switch on the ones you want.\n\nAlso try Boar Press, which turns answers into a PDF.\n\nIf one misbehaves, switch it off and, if you can, open an issue on GitHub." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Experimentos, marcados beta ou alpha. Todos começam desligados: ligue os que quiser.\n\nExperimente também o Boar Press, que transforma respostas em PDF.\n\nSe algum der problema, desligue e, se puder, abra uma issue no GitHub."
+          }
+        }
+      }
+    },
     "Export" : {
       "localizations" : {
         "pt" : {
@@ -2732,6 +2852,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Face ID"
+          }
+        }
+      }
+    },
+    "Face ID, Touch ID or your passcode seals your chats and hides BOAR's screen in the app switcher. Imported documents aren't encrypted yet." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Face ID, Touch ID ou o código do aparelho selam suas conversas e escondem a tela do BOAR na troca de apps. Documentos importados ainda não são criptografados."
           }
         }
       }
@@ -2977,6 +3107,16 @@
         }
       }
     },
+    "For big questions: BOAR searches in several steps and writes a longer answer. It takes more time. When it's on, the chat glows and the 🔬 lights up, so you always know." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para perguntas grandes: o BOAR pesquisa em várias etapas e escreve uma resposta mais longa. Leva mais tempo. Quando está ligada, o chat brilha e o 🔬 acende, então você sempre sabe."
+          }
+        }
+      }
+    },
     "Found ^[%lld source](inflect: true)" : {
       "localizations" : {
         "pt" : {
@@ -3193,6 +3333,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Quanto cada núcleo está ocupado. O %@ não passa o clock para os apps."
+          }
+        }
+      }
+    },
+    "How do I make water safe to drink?" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Como deixo a água segura para beber?"
           }
         }
       }
@@ -3827,6 +3977,16 @@
         }
       }
     },
+    "Lock BOAR" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bloquear o BOAR"
+          }
+        }
+      }
+    },
     "Lock with %@" : {
       "localizations" : {
         "pt" : {
@@ -3893,6 +4053,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mac na sua rede"
+          }
+        }
+      }
+    },
+    "Make it yours" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deixe do seu jeito"
           }
         }
       }
@@ -3967,12 +4137,42 @@
         }
       }
     },
+    "Meet BOAR" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conheça o BOAR"
+          }
+        }
+      }
+    },
     "Memory" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Memória"
+          }
+        }
+      }
+    },
+    "BOAR → Knowledge" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BOAR → Conhecimento"
+          }
+        }
+      }
+    },
+    "BOAR → Models" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BOAR → Modelos"
           }
         }
       }
@@ -4593,12 +4793,32 @@
         }
       }
     },
+    "ON · deeper, slower answers" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "LIGADA · respostas mais profundas e lentas"
+          }
+        }
+      }
+    },
     "Off" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Desligado"
+          }
+        }
+      }
+    },
+    "Off by default. Switch it on and BOAR picks which of your installed models answers each question, and how. Worth it when you have more than one model." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vem desligado. Ligue e o BOAR escolhe qual dos seus modelos instalados responde cada pergunta, e como. Vale a pena quando você tem mais de um modelo."
           }
         }
       }
@@ -4933,6 +5153,16 @@
         }
       }
     },
+    "Pick a theme. It changes right away, and you can change it again any time." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolha um tema. Ele muda na hora, e dá para trocar de novo quando quiser."
+          }
+        }
+      }
+    },
     "Pick a topic for ideas, or type your own question below." : {
       "localizations" : {
         "pt" : {
@@ -4943,12 +5173,32 @@
         }
       }
     },
+    "Pick how BOAR answers" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolha como o BOAR responde"
+          }
+        }
+      }
+    },
     "Picking today's questions…" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Escolhendo as perguntas de hoje…"
+          }
+        }
+      }
+    },
+    "Picks a model per question from the ones installed." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolhe um modelo por pergunta entre os instalados."
           }
         }
       }
@@ -5725,6 +5975,16 @@
         }
       }
     },
+    "See the Tour" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ver o tour"
+          }
+        }
+      }
+    },
     "Select a Model" : {
       "localizations" : {
         "pt" : {
@@ -5801,6 +6061,46 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Os ajustes voltam ao padrão e a configuração abre de novo. Seus modelos, pacotes, conversas, documentos e o bloqueio ficam."
+          }
+        }
+      }
+    },
+    "Settings → Advanced → Boar Labs" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configurações → Avançado → Boar Labs"
+          }
+        }
+      }
+    },
+    "Settings → Advanced, with Show Technical Details on" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configurações → Avançado, com Mostrar detalhes técnicos ligado"
+          }
+        }
+      }
+    },
+    "Settings → Display" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configurações → Exibição"
+          }
+        }
+      }
+    },
+    "Settings → Privacy" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configurações → Privacidade"
           }
         }
       }
@@ -6117,6 +6417,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Fontes"
+          }
+        }
+      }
+    },
+    "Sources and receipts" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fontes e recibos"
           }
         }
       }
@@ -6439,6 +6749,16 @@
         }
       }
     },
+    "Succinct & Direct for quick replies, Thorough & Detailed for full explanations (the default), Personal Files to answer only from your own documents." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sucinto e Direto para respostas rápidas, Completo e Detalhado para explicações inteiras (o padrão), Arquivos pessoais para responder só a partir dos seus documentos."
+          }
+        }
+      }
+    },
     "Summarize Older Turns" : {
       "localizations" : {
         "pt" : {
@@ -6455,6 +6775,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Resumo"
+          }
+        }
+      }
+    },
+    "Swap the answer model, find more on Hugging Face, and let BOAR free the memory when you leave it." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Troque o modelo de resposta, encontre outros no Hugging Face e deixe o BOAR liberar a memória quando você sair dele."
           }
         }
       }
@@ -6495,6 +6825,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "O tamanho do texto segue o Tipo Dinâmico do seu %@."
+          }
+        }
+      }
+    },
+    "That's the tour" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fim do tour"
           }
         }
       }
@@ -6645,6 +6985,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "O modelo de busca está faltando. Rode a configuração de novo em Ajustes → Recuperação."
+          }
+        }
+      }
+    },
+    "The style button in the chat, or Settings → Answers" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O botão de estilo no chat, ou Configurações → Respostas"
+          }
+        }
+      }
+    },
+    "The style button, next to where you type" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O botão de estilo, ao lado de onde você digita"
           }
         }
       }
@@ -7000,6 +7360,16 @@
         }
       }
     },
+    "Touch ID or your Mac's password seals your chats. Imported documents aren't encrypted yet." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Touch ID ou a senha do Mac selam suas conversas. Documentos importados ainda não são criptografados."
+          }
+        }
+      }
+    },
     "Touch and hold an answer, then drag it to change the order." : {
       "localizations" : {
         "pt" : {
@@ -7116,6 +7486,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Embaixo de qualquer resposta numa conversa, abra Mais (…) e adicione-a à cesta. Junte de quantas conversas quiser e volte para organizar e compilar."
+          }
+        }
+      }
+    },
+    "Under every answer" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Embaixo de cada resposta"
           }
         }
       }
@@ -7607,6 +7987,26 @@
         }
       }
     },
+    "You" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Você"
+          }
+        }
+      }
+    },
+    "You can see this tour again from Settings." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dá para ver este tour de novo nas Configurações."
+          }
+        }
+      }
+    },
     "You're offline. Connect to the internet to search for models." : {
       "localizations" : {
         "pt" : {
@@ -7843,6 +8243,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "recursos"
+          }
+        }
+      }
+    },
+    "field-manual.pdf" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "manual-de-campo.pdf"
           }
         }
       }
@@ -8126,6 +8536,40 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "quente demais: o %@ está reduzindo a velocidade"
+          }
+        }
+      }
+    },
+    "tour.done" : {
+      "comment" : "Tour button on the last card",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Done"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pronto"
+          }
+        }
+      }
+    },
+    "tour.next" : {
+      "comment" : "Tour button; PT is masculine (o cartão)",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Next"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Próximo"
           }
         }
       }
