@@ -74,6 +74,41 @@ the chat engine's and an out-of-memory kill takes only the image down.
   3. **Core ML** (Apple's `ml-stable-diffusion`): SD 1.5/2.1/SDXL convert, SDXS has no ready Core ML port.
 - Recommendation: start with Image Playground where it exists (small, no model to ship) and decide on 2 or 3 with Biel.
 
+#### Image Playground against what Designer does (2026-11-10, read from the iOS 27.2 SDK)
+
+Input for the decision after phase 3's measurements. What the SDK's `ImagePlayground.swiftinterface` says:
+
+- **The programmatic path is going away.** `ImageCreator` (iOS 18.4+, the only API that draws without showing Apple's
+  UI) is **deprecated in iOS 27**: "Use ImagePlaygroundViewController or imagePlaygroundSheet." It still works, but
+  building Designer on it means building on something Apple is retiring.
+- **What stays is Apple's own sheet** (`imagePlaygroundSheet`, `ImagePlaygroundViewController`, iOS 18.1+): the user
+  draws inside Apple's UI from our concepts (text, or text extracted from a longer passage) and an optional source
+  image, and gets back a file URL. Our screen would be a launcher plus a gallery, not Designer's own composer.
+- **Styles:** animation, illustration, sketch, emoji (Genmoji), `externalProvider` (iOS 26+, ChatGPT in the cloud:
+  must be left out, BOAR is offline) and `any` (iOS 27). The app can limit and preselect them
+  (`imagePlaygroundGenerationStyle(_:in:)`), not add its own. Designer's 8 prompt styles (engraving, scientific, photo,
+  cyber, solarpunk, Y2K, lo-fi, watercolor) can only survive as words in the concept, and the system decides how much
+  of them shows.
+- **Sizes:** iOS 27 adds `ImagePlaygroundOptions.sizeSpecification` (`.closest(to: CGSize)`), so Designer's 9
+  canvases map to the nearest size the system offers; iOS 26.4 adds variety and personalization options, iOS 27 a
+  creation strategy (edit existing or generate new).
+- **Not offered:** seeds (Designer's "same composition, new words"), a no-style raw prompt, the per-size timings, and
+  drawing in the background (`backgroundCreationForbidden`).
+- **Devices:** only where Apple Intelligence is on (`ImagePlaygroundViewController.isAvailable`): iPhone 15 Pro and
+  later. **the test iPhone 14 Pro and the 4 GB iPhone 13 have none**, so on the phones we test with the lab would
+  only show "not available on this iPhone". Android's sd-cli runs on every phone it targets.
+- **Gains:** no 683 MB download, no memory fight with the chat model (the system draws out of BOAR's process and
+  jetsam budget), Apple's safety filters, nothing to license.
+
+What Designer has that Image Playground can't give: its own styles, sizes and seeds, Regenerate with the same recipe,
+Illustrate (the chat model picks the subject and the drawing goes under the answer: with the sheet, the user would
+have to confirm in Apple's UI every time), and the same result on every phone.
+
+Reading for the decision: Image Playground is the cheap way to have *a* drawing lab on recent iPhones, but it is not
+Designer, and its no-UI API is deprecated. If the lab should behave like Android's, option 2 (stable-diffusion.cpp in
+the process, sharing llama.cpp's ggml, chat model unloaded while drawing) is the one that ports it; phase 3's memory
+numbers decide whether SDXS (683 MB) fits under the 3 GB jetsam limit with the chat model out.
+
 ### Big Boar (`bmoe`): study only, large
 
 BigMoeOnEdge runs Qwen3.6-35B-A3B (12.3 GB) by keeping the always-used weights in memory and reading each token's
