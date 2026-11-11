@@ -50,6 +50,7 @@ struct SettingsScreen: View {
         .debugPush("settings-advanced") { AdvancedSettingsScreen(services: services, bridge: bridge) }
         .debugPush("settings-engine") { EngineTweaksScreen(services: services, bridge: bridge) }
         .debugPush("device-info") { DeviceInfoScreen(services: services) }
+        .debugTour()
         .onDisappear {
             // The tone, Deep Research, technical details and model may have changed.
             Task { await model.chat?.refreshSettings() }

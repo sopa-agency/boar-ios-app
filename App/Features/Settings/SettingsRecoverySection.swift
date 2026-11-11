@@ -1,7 +1,8 @@
 import BoarCore
 import SwiftUI
 
-/// The destructive actions, last on the page: clear the chats, reset the settings (setup opens again), erase everything.
+/// The last section (android RecoverySection): the tour again, then the destructive actions: clear the chats, reset the
+/// settings (setup opens again), erase everything.
 struct SettingsRecoverySection: View {
     @Environment(AppModel.self) private var model
     let services: BoarServices
@@ -11,11 +12,19 @@ struct SettingsRecoverySection: View {
     @State private var confirmPurge = false
     @State private var cleared = false
     @State private var purging = false
+    @State private var touring = false
 
     private var answering: Bool { model.chat?.isAnswering ?? false }
 
     var body: some View {
         Section {
+            // The tour on its own (android "See the tour"): Done comes back here.
+            Button {
+                touring = true
+            } label: {
+                Label("See the Tour", systemImage: "signpost.right")
+                    .foregroundStyle(.boar(.link))
+            }
             Button(role: .destructive) {
                 confirmClear = true
             } label: {
@@ -43,6 +52,7 @@ struct SettingsRecoverySection: View {
                 Text("Reset Settings and Erase All Data reopen setup.")
             }
         }
+        .tourCover(isPresented: $touring)
         .sensoryFeedback(.success, trigger: cleared) { _, new in new }
         .onAppear { cleared = false }
         .task(id: cleared) {
