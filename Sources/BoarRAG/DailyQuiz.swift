@@ -123,8 +123,11 @@ public enum DailyQuiz {
         return out
     }
 
-    /// LocalDate.toEpochDay for `date` in `calendar`'s time zone.
-    public static func epochDay(_ date: Date, calendar: Calendar = .current) -> Int64 {
+    /// LocalDate.toEpochDay for `date` in `timeZone`, always in the Gregorian calendar: a phone set to the Buddhist or
+    /// Japanese calendar must still get Android's question of the day.
+    public static func epochDay(_ date: Date, timeZone: TimeZone = .current) -> Int64 {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = timeZone
         let c = calendar.dateComponents([.year, .month, .day], from: date)
         var utc = Calendar(identifier: .gregorian)
         utc.timeZone = TimeZone(identifier: "UTC")!

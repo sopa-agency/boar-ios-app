@@ -15,4 +15,6 @@ git -C "$APP" -c core.autocrlf=false archive "$SHA" android-native/engine/src/ma
 rm -rf "$ROOT/.ref/android-native/engine/src/test/resources"
 mkdir -p "$ROOT/Fixtures/vault"
 printf '%s\n' "$ROSTER" > "$ROOT/Fixtures/vault/truffles.json"
+# The theme golden isn't one of Android's: it's exported from the Kotlin theme just extracted (the rm above took it).
+python3 "$ROOT/scripts/export-theme-tokens.py"
 echo "$SHA" > "$ROOT/Fixtures/SOURCE_SHA"; echo "synced $REF = $SHA"

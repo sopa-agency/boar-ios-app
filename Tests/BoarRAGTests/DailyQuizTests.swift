@@ -75,7 +75,8 @@ struct DailyQuizTests {
         sp.timeZone = TimeZone(identifier: "America/Sao_Paulo")!
         // 2026-10-24 23:30 in São Paulo is already the 25th in UTC: still day 20,750 there.
         let late = sp.date(from: DateComponents(year: 2026, month: 10, day: 24, hour: 23, minute: 30))!
-        #expect(DailyQuiz.epochDay(late, calendar: sp) == oct24)
+        #expect(DailyQuiz.epochDay(late, timeZone: sp.timeZone) == oct24)
+        #expect(DailyQuiz.epochDay(late, timeZone: TimeZone(identifier: "UTC")!) == oct24 + 1)
     }
 }
 
