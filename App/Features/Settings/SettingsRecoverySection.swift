@@ -25,6 +25,9 @@ struct SettingsRecoverySection: View {
                 Label("See the Tour", systemImage: "signpost.right")
                     .foregroundStyle(.boar(.link))
             }
+            // On the row, not the Section: a List gives each of the Section's rows its own copy of a modifier, and four
+            // covers on one binding present none.
+            .tourCover(isPresented: $touring)
             Button(role: .destructive) {
                 confirmClear = true
             } label: {
@@ -52,7 +55,6 @@ struct SettingsRecoverySection: View {
                 Text("Reset Settings and Erase All Data reopen setup.")
             }
         }
-        .tourCover(isPresented: $touring)
         .sensoryFeedback(.success, trigger: cleared) { _, new in new }
         .onAppear { cleared = false }
         .task(id: cleared) {

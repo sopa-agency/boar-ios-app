@@ -246,21 +246,32 @@ private struct FlowChips: Layout {
 extension View {
     /// The tour over everything: full screen on iPhone, a sheet on the Mac.
     func tourCover(isPresented: Binding<Bool>, index: Int = 0) -> some View {
-        #if os(macOS)
-        sheet(isPresented: isPresented) { TourCoverContent(index: index) }
-        #else
-        fullScreenCover(isPresented: isPresented) { TourCoverContent(index: index) }
-        #endif
+        modifier(TourCover(isPresented: isPresented, index: index))
     }
 }
 
-/// The tour with the theme applied to its own presentation: its theme card changes the theme while it's open, and the
-/// cover's bars and system appearance must follow, not only the palette it inherits.
-private struct TourCoverContent: View {
-    @Environment(AppModel.self) private var model
+/// Presents the tour with the theme applied to its own presentation: its theme card changes the theme while it's open,
+/// and the cover's bars and system appearance must follow, not only the palette it inherits.
+private struct TourCover: ViewModifier {
+    @Binding var isPresented: Bool
     let index: Int
+    @Environment(AppModel.self) private var model
+    /// The presenter's appearance: under System, the device's.
+    @Environment(\.colorScheme) private var presenterScheme
 
-    var body: some View {
-        TourScreen(index: index).boarTheme(model.theme)
+    func body(content: Content) -> some View {
+        #if os(macOS)
+        content.sheet(isPresented: $isPresented) { tour }
+        #else
+        content.fullScreenCover(isPresented: $isPresented) { tour }
+        #endif
+    }
+
+    private var tour: some View {
+        TourScreen(index: index)
+            .boarTheme(model.theme)
+            // Outside boarTheme, so this one is what the presentation reads. System has no scheme of its own (nil), and
+            // a presentation keeps the last one it was given: Campfire, then System, stayed dark. Name the presenter's.
+            .preferredColorScheme(model.theme.colorScheme ?? presenterScheme)
     }
 }
