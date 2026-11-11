@@ -10,4 +10,6 @@ mv "$ROOT/.ref/android-native/engine/src/test/resources/golden" "$ROOT/Fixtures/
 git -C "$APP" -c core.autocrlf=false archive "$SHA" android-native/engine/src/main/java android-native/engine/src/test/java android-native/app/src/main \
   android-native/engine/src/main/cpp/boar_jni.cpp android-native/engine/src/main/cpp/boar_sqlite.cpp android-native/engine/src/main/cpp/CMakeLists.txt | tar -x -C "$ROOT/.ref"
 rm -rf "$ROOT/.ref/android-native/engine/src/test/resources"
+# The theme golden isn't one of Android's: it's exported from the Kotlin theme just extracted (the rm above took it).
+python3 "$ROOT/scripts/export-theme-tokens.py"
 echo "$SHA" > "$ROOT/Fixtures/SOURCE_SHA"; echo "synced $REF = $SHA"
