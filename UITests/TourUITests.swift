@@ -1,18 +1,24 @@
 import XCTest
 
 /// Settings → See the Tour: every card with Next and Back, the theme card's chips (the whole tour, bars included,
-/// follows a theme picked there), and Done back to Settings. Skipped in a build without the tour.
+/// follows a theme picked there), a turn to landscape and back with the tour open, and Done back to Settings.
 final class TourUITests: BoarUITestCase {
-    func testTour() throws {
+    func testTour() {
         launch()
         let back = app.navigationBars.buttons["BackButton"].firstMatch
         if back.waitForExistence(timeout: 3) { back.tap() }
         tap(button("Settings"), "Settings")
         let see = button("See the Tour")
-        for _ in 0..<12 where !onScreen(see) { app.collectionViews.firstMatch.swipeUp(velocity: .slow) }
-        guard see.exists else { throw XCTSkip("this build has no tour") }
         tap(see, "See the Tour")
-        XCTAssertTrue(app.navigationBars[L("BOAR tour")].waitForExistence(timeout: 5), "the tour didn't open\n\(app.debugDescription)")
+        let tour = app.navigationBars[L("BOAR tour")]
+        XCTAssertTrue(tour.waitForExistence(timeout: 5), "the tour didn't open\n\(app.debugDescription)")
+        // In landscape the See the Tour row leaves the screen; the tour must stay open (its cover isn't on that row).
+        XCUIDevice.shared.orientation = .landscapeLeft
+        sleep(1)
+        XCTAssertTrue(tour.exists, "the tour closed when the device turned")
+        XCUIDevice.shared.orientation = .portrait
+        sleep(1)
+        XCTAssertTrue(tour.exists, "the tour closed when the device turned back")
 
         var cards = 1
         while next.exists {

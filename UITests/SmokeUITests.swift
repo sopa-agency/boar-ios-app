@@ -42,7 +42,8 @@ final class SmokeUITests: BoarUITestCase {
         field.typeText("12 * 7")
         // The composer's Send, not the keyboard's send key (identifier "Send").
         tap(app.buttons.matching(NSPredicate(format: "label == %@ AND identifier == ''", L("Send"))).firstMatch, "Send")
-        // The demo has no answer model: BOAR says so, and its button opens Models (with a model: the answer, 84).
+        // The demo's model files are sparse placeholders, never loaded: BOAR says No Answer Model, and its button opens
+        // Models (with a real model: the answer, 84).
         let answer = app.staticTexts.matching(NSPredicate(format: "label CONTAINS %@ OR label == %@", "84", L("No Answer Model"))).firstMatch
         XCTAssertTrue(answer.waitForExistence(timeout: 20), "no reply to 12 * 7\n\(app.debugDescription)")
         dismissKeyboard()
@@ -162,7 +163,7 @@ final class SmokeUITests: BoarUITestCase {
 
         // Memory, display, privacy, voice.
         for name in ["Generate Chat Titles", "Ask Before Deleting a Chat", "Free Memory When I Leave BOAR", "Haptics"] {
-            if toggle(name).waitForExistence(timeout: 1) || anything(name).exists { flipTwice(name) }
+            flipTwice(name)
         }
         // The theme menu: Campfire, then back to System.
         tap(anything("Theme"), "Theme")

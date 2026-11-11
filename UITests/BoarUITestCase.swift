@@ -163,9 +163,9 @@ class BoarUITestCase: XCTestCase {
         guard s.isEnabled else { return }
         let before = s.value as? String
         tapSwitch(s)
-        XCTAssertTrue(waitValue(s, not: before), "\(english) didn't change\n\(s.debugDescription)", file: file, line: line)
+        XCTAssertTrue(waitValue(s) { $0 != before }, "\(english) didn't change\n\(s.debugDescription)", file: file, line: line)
         tapSwitch(s)
-        XCTAssertTrue(waitValue(s, is: before), "\(english) didn't change back", file: file, line: line)
+        XCTAssertTrue(waitValue(s) { $0 == before }, "\(english) didn't change back", file: file, line: line)
         assertRunning(file: file, line: line)
     }
 
@@ -175,12 +175,10 @@ class BoarUITestCase: XCTestCase {
         (knob.exists ? knob : s).coordinate(withNormalizedOffset: CGVector(dx: 0.9, dy: 0.5)).tap()
     }
 
-    /// Waits up to 2 s for a switch's value to become (or stop being) `value`.
-    private func waitValue(_ s: XCUIElement, is value: String? = nil, not other: String? = nil) -> Bool {
+    /// Waits up to 2 s for a switch's value to pass `check` (nil when it has none, so a nil value compares too).
+    private func waitValue(_ s: XCUIElement, until check: (String?) -> Bool) -> Bool {
         for _ in 0..<10 {
-            let v = s.value as? String
-            if let other, v != other { return true }
-            if other == nil, v == value { return true }
+            if check(s.value as? String) { return true }
             usleep(200_000)
         }
         return false
