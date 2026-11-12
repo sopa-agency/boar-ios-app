@@ -548,12 +548,20 @@ final class ChatController {
         let maxSessions = settings.maxSavedSessions
         // A failed answer with no text stays on screen (with Try Again) but is not saved.
         let keep = failure == nil || !finalText.isEmpty
-        _ = try? await services.background { s in
+        let saved = (try? await services.background { s -> Bool in
             if keep {
                 try s.chats.upsertMessage(sessionId: sid, role: "assistant", text: finalText, id: answerId)
                 if let meta { try s.chats.setMessageMeta(messageId: answerId, meta: meta) }
             }
             try s.chats.prune(maxSessions: maxSessions)
+            return keep
+        }) ?? false
+        // Boar Avatars: a saved answer that wrote something; Boar Polyglot's "doesn't speak it yet" reply isn't one. The
+        // speed avatars count this device's speed: an answer from the Mac on the network (iOS only) gives none.
+        if saved && !finalText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && tool?.tool != LanguageGate.tool {
+            let speed = instant == nil && services.backend != .remote ? receipt?.tokPerSec : nil
+            services.vault.answered(sourced: !shown.isEmpty, deep: deep, portuguese: PtLexicon.looksPortuguese(q),
+                                    tokPerSec: speed, newChat: isNewSession)
         }
         if let i = messages.lastIndex(where: { $0.id == answerId }) {
             messages[i].text = finalText

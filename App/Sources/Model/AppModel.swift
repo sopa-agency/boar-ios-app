@@ -80,6 +80,8 @@ final class AppModel {
     /// Settings → Free memory when I leave BOAR: the release waiting to happen while BOAR is in the background.
     @ObservationIgnored private var memoryRelease: Task<Void, Never>?
     @ObservationIgnored private var inForeground = true
+    /// The sidebar's last selection, to see the Models screen being left (the vault counts packs and models then).
+    @ObservationIgnored private var lastSelection: SidebarItem? = .newChat
     var selection: SidebarItem? = .newChat
     /// System or one of Android's themes (Settings → Display), as read from `themeId`. Only `setTheme` writes it back:
     /// reading never rewrites the stored id, so a Vault theme set on Android (shown here as Moonlight) or an unset id
@@ -91,6 +93,8 @@ final class AppModel {
     func setTheme(_ choice: ThemeChoice) {
         theme = choice
         services?.settings.themeId = choice.storedId
+        // Settings → Display and the tour's theme card both come here (android SettingsScreen, MainActivity's tour).
+        services?.vault.record { $0.themeChanged = true }
     }
 
     /// Settings were reset or erased: the theme goes back to System with nothing stored.
@@ -134,6 +138,7 @@ final class AppModel {
             let services = try await Task.detached(priority: .userInitiated) { try BoarServices() }.value
             open.end()
             self.services = services
+            services.vault.connectivity = connectivity
             Self.migrateTechnicalDetails(services)
             #if DEBUG
             await DemoSeed.run(services: services)
@@ -151,6 +156,7 @@ final class AppModel {
             chat.onSessionsChanged = { [weak self] in self?.reloadSessions() }
             self.chat = chat
             wireFeatures(services, chat: chat)
+            checkVault()
             // Setup is complete when everything required and an answer model are on disk (file checks, off the main actor).
             let complete = (try? await services.background { $0.assets.requiredPresent() }) ?? false
             let setup = SetupFlow(services: services)
@@ -287,6 +293,9 @@ final class AppModel {
 
     /// The sidebar's selection changed: open that chat, or start a new one.
     func select(_ item: SidebarItem?) {
+        // Leaving Models: packs and models from Hugging Face may have come or gone (android MainActivity, "models").
+        if lastSelection == .screen(.models) && item != .screen(.models) { checkVault() }
+        lastSelection = item
         guard let chat else { return }
         switch item {
         case .newChat: if chat.sessionId != nil { chat.newChat() }
@@ -413,6 +422,20 @@ final class AppModel {
         memoryRelease = nil
         setup?.onForeground()
         drainInbox()
+        checkVault()
+    }
+
+    // MARK: Boar Avatars
+
+    /// The vault's facts that come from the device and the app's files (android `BoarServices.checkVault`): at launch,
+    /// whenever BOAR becomes active again, and after leaving Models.
+    func checkVault() {
+        guard let services else { return }
+        let pinOn = lock?.enabled ?? false
+        Task {
+            guard let read = try? await services.background({ $0.vaultReadings() }) else { return }
+            await services.vault.onOpen(pinOn: pinOn, packs: read.packs, hfModels: read.hfModels)
+        }
     }
 }
 

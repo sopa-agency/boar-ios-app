@@ -20,18 +20,50 @@ enum AppMemory {
 @MainActor
 @Observable
 final class Connectivity {
-    private(set) var online = false
+    /// `NWPath.Status`, kept Sendable.
+    enum Status: Sendable { case satisfied, unsatisfied, requiresConnection }
+
+    /// The last path's status; nil until the monitor's first report.
+    private(set) var status: Status?
+    var online: Bool { status == .satisfied }
     @ObservationIgnored private let monitor = NWPathMonitor()
+    @ObservationIgnored private var waiting: [CheckedContinuation<Status?, Never>] = []
 
     init() {
         monitor.pathUpdateHandler = { [weak self] path in
-            let online = path.status == .satisfied
-            Task { @MainActor in self?.online = online }
+            let status: Status = switch path.status {
+            case .satisfied: .satisfied
+            case .requiresConnection: .requiresConnection
+            default: .unsatisfied
+            }
+            Task { @MainActor in self?.update(status) }
         }
         monitor.start(queue: DispatchQueue(label: "team.sopa.boar.connectivity"))
     }
 
     deinit { monitor.cancel() }
+
+    /// The status once the monitor has reported (at launch it takes a moment); nil if it hasn't within `timeout`.
+    func settledStatus(timeout: Duration = .seconds(2)) async -> Status? {
+        if let status { return status }
+        let timer = Task { [weak self] in
+            try? await Task.sleep(for: timeout)
+            if !Task.isCancelled { self?.release(nil) }
+        }
+        defer { timer.cancel() }
+        return await withCheckedContinuation { waiting.append($0) }
+    }
+
+    private func update(_ status: Status) {
+        self.status = status
+        release(status)
+    }
+
+    private func release(_ status: Status?) {
+        let all = waiting
+        waiting = []
+        for c in all { c.resume(returning: status) }
+    }
 }
 
 /// Free space and RAM of this iPhone, as iOS Settings reports them.

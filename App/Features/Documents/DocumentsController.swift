@@ -118,6 +118,7 @@ final class DocumentsController {
                         shouldStop: { stop.value }
                     )
                 }.value
+                services.vault.record { $0.documents += files.count }
                 imported = name
             } catch is SeedCorpus.Stopped {
             } catch {
@@ -156,6 +157,8 @@ final class DocumentsController {
         let slug = DocumentImport.slug(c.name)
         return ExportedFile(filename: (slug.isEmpty ? "collection" : slug) + ".json") {
             let json = try await services.background { DocumentImport.exportJson(try $0.knowledgeBase.collectionDocs(id)) }
+            // Boar Avatars: counted once the file is made, when the share sheet asks for it (android exportIntent).
+            await MainActor.run { services.vault.record { $0.exports += 1 } }
             return Data(json.utf8)
         }
     }

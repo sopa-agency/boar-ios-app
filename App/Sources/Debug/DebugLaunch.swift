@@ -11,6 +11,8 @@ import Foundation
 ///     -uiStyle <id>      pick that answer style (succinct, detailed, personal, custom) on launch
 ///     -uiTheme <id>      show that theme (system, campfire, moonlight, paper) for this run, without saving it
 ///     -uiAsk "<q1> || <q2>"  after any -uiImport, ask the questions in one new chat, each after the previous answer
+///     -uiVault <json>    store that Boar Avatars state (`truffleVault`, Android's JSON) before the vault opens; junk
+///                        stores an empty one. e.g. -uiVault '{"facts":{"answers":9},"unlocked":{"tactical":1}}'
 enum DebugLaunch {
     #if DEBUG
     /// `-uiScreen <name>`: the argument domain of UserDefaults carries it.
@@ -29,6 +31,13 @@ enum DebugLaunch {
     /// `-uiAsk "<q1> || <q2>"`: questions asked in a new chat on launch, each after the previous answer ends.
     static let questions: [String] = (UserDefaults.standard.string(forKey: "uiAsk") ?? "")
         .components(separatedBy: " || ").map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }.filter { !$0.isEmpty }
+    /// `-uiVault <json>`: the Boar Avatars state to store on launch (TruffleVault). Read from the arguments as is:
+    /// UserDefaults would parse a value that reads as a property list ("{}") into one.
+    static let vault: String? = {
+        let args = ProcessInfo.processInfo.arguments
+        guard let i = args.firstIndex(of: "-uiVault"), args.indices.contains(i + 1) else { return nil }
+        return args[i + 1]
+    }()
     /// `-uiScroll <points>` or `-uiScroll end`.
     static let scroll: String? = UserDefaults.standard.string(forKey: "uiScroll")
     /// iPhone 13 memory: the demo shows the owner's phone numbers, not the Mac's.

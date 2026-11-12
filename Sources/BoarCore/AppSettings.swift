@@ -168,6 +168,15 @@ public final class AppSettings: @unchecked Sendable {
     /// The id submit-results gave this device's key.
     public var shareDeviceId: String? { get { str("shareDeviceId") } set { set("shareDeviceId", newValue.map(JSONValue.string)) } }
 
+    // MARK: Boar Avatars
+
+    /// Boar Avatars' `Vault.State` as JSON text, stored as a JSON object like Android's `truffleVault`; nil before
+    /// anything was counted, or when the stored value isn't an object.
+    public var truffleVault: String? {
+        get { store.value(forKey: "truffleVault").flatMap { $0.objectValue == nil ? nil : $0.jsonString } }
+        set { set("truffleVault", newValue.flatMap { JSONValue(jsonString: $0) }) }
+    }
+
     // MARK: PIN lock (the Keychain/LocalAuthentication path replaces this on iOS; kept for parity and migration)
 
     public var pinWrapped: String? { get { str("pinWrapped") } set { set("pinWrapped", newValue.map(JSONValue.string)) } }

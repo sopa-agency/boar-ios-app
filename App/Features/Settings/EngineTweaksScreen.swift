@@ -17,6 +17,8 @@ struct EngineTweaksScreen: View {
 
     private func save(_ next: EngineTweaks) {
         services.settings.engineTweaks = next
+        // Boar Avatars: a tweak set to anything but Auto (android SettingsScreen TweaksSection).
+        if !next.isAuto { services.vault.record { $0.tweaksChanged = true } }
         bridge.touch()
         let host = services.host
         Task { await host.unload() }
