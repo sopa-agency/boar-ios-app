@@ -59,6 +59,9 @@ restart after a crash in a lab (an iOS app can't relaunch itself; the next launc
 
 ### Boar Designer (`image`): possible, large, with a decision first
 
+**Decided 2026-11-12 (Biel):** Image Playground, offered only where Apple Intelligence is on (iOS 18+, iPhone 15 Pro and
+later); no in-process engine, as 683 MB for this lab isn't worth it. The rest of this section is the analysis behind it.
+
 **Status (2026-11-05):** moved to phase 3. The choice waits for phase 3's memory measurements: the iPhone 14 Pro (6 GB)
 lets BOAR use about 3 GB before iOS ends it, and the chat model alone takes about 1 GB.
 
@@ -118,6 +121,8 @@ experts from storage.
 - Mapping a 12 GB file on an iPhone likely needs the extended virtual addressing entitlement (and maybe the increased
   memory limit one); whether a free Personal Team can sign them is unchecked. Speed on the iPhone 14 Pro is unknown.
 - Recommendation: leave it for phase 3, after the paid developer account, with a measured run on the cabled iPhone.
+- **Decided 2026-11-12 (Biel):** the last item of the full version. Measured on the iPhone once the paid account exists;
+  if it doesn't run well, the full version ships without it.
 
 ### Boar Wisp (`colibri`): skip, as Android does
 

@@ -48,6 +48,17 @@ final class TruffleVault {
         AppPaths.defaults.set(on, forKey: Self.enabledKey)
     }
 
+    /// Erase All Data (Android's "clear app data" empties the vault's preferences too): every count, unlocked avatar
+    /// and the Boarverse switch. The state in memory goes with them, or the next `record` would write it all back.
+    func erase() {
+        state = Vault.State()
+        fresh = []
+        enabled = false
+        askedStore = false
+        settings.truffleVault = nil
+        AppPaths.defaults.removeObject(forKey: Self.enabledKey)
+    }
+
     func unlocked(_ id: String) -> Bool { state.unlocked[id] != nil }
 
     /// The avatars waiting for their message; the list is emptied.
@@ -113,6 +124,12 @@ final class TruffleVault {
     private func checkStoreEnvironment() {
         guard !askedStore, !state.facts.sourceBuild else { return }
         askedStore = true
+        #if os(macOS)
+        // A Mac app with no receipt didn't come from the App Store or TestFlight, and asking may open the App Store's
+        // sign-in. (The receipt's path, as `appStoreReceiptURL` is deprecated.)
+        let receipt = Bundle.main.bundleURL.appending(path: "Contents/_MASReceipt/receipt")
+        guard FileManager.default.fileExists(atPath: receipt.path(percentEncoded: false)) else { return }
+        #endif
         Task { [weak self] in
             guard let result = try? await AppTransaction.shared else { return }
             let transaction = switch result {

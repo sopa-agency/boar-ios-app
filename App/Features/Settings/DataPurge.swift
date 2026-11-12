@@ -27,6 +27,8 @@ enum DataPurge {
         Labs.shared.eraseUserData()
         if let lock, lock.enabled { await lock.eraseChatsAndReset() }
         services.settings.resetPreferences()
+        // Boar Avatars: counts, unlocked avatars and the Boarverse switch (outside preferenceKeys, as Reset settings keeps them).
+        services.vault.erase()
         // The network server's address (a setting outside preferenceKeys) and its API key (Keychain, which also
         // outlives an uninstall).
         RemoteConfig.setAddress("", services.settings)

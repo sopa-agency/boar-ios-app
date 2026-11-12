@@ -80,7 +80,11 @@ surface mixed by Compose's `lerp`, which mixes in Oklab. Paper is written out wh
 - **Source build** (`hacker`): Android checks the APK isn't signed with BOAR's release key. iOS: the build isn't from the
   App Store or TestFlight (`AppTransaction.shared` → `environment == .xcode`, or a debug build). Same meaning: built it
   yourself. **Decided 2026-11-11 (Biel):** a DEBUG build, or `AppTransaction.shared` reporting `.xcode`; asked once per
-  launch in the background, and an error (offline, no receipt) counts nothing.
+  launch in the background, and an error (offline, no receipt) counts nothing. On the Mac, a build with no App Store
+  receipt isn't asked (asking may open the App Store's sign-in).
+- **Speed** (`quantum` FAST_15, `volcanic` FAST_8): Android only has on-device engines. iOS's "Mac on your network"
+  engine would count the Mac's speed, so a remote answer gives no speed; Apple's model runs on the device and counts.
+- **Erase All Data** (Android's "clear app data") empties the vault and the Boarverse switch; Reset settings keeps them.
 - **De-Googled** (`stealth`): no iOS equivalent (every iPhone is "de-Googled"). Options: (a) unlock it on every iPhone
   at first open, like `tactical`; (b) keep it locked forever on iOS (the unicorn would then be unreachable); (c) a
   different iOS rule (e.g. Lockdown Mode, which has no public API either). **Recommendation: (a)**, with an iOS clue,

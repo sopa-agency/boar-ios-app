@@ -556,10 +556,12 @@ final class ChatController {
             try s.chats.prune(maxSessions: maxSessions)
             return keep
         }) ?? false
-        // Boar Avatars: a saved answer that wrote something; Boar Polyglot's "doesn't speak it yet" reply isn't one.
+        // Boar Avatars: a saved answer that wrote something; Boar Polyglot's "doesn't speak it yet" reply isn't one. The
+        // speed avatars count this device's speed: an answer from the Mac on the network (iOS only) gives none.
         if saved && !finalText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && tool?.tool != LanguageGate.tool {
+            let speed = instant == nil && services.backend != .remote ? receipt?.tokPerSec : nil
             services.vault.answered(sourced: !shown.isEmpty, deep: deep, portuguese: PtLexicon.looksPortuguese(q),
-                                    tokPerSec: instant == nil ? receipt?.tokPerSec : nil, newChat: isNewSession)
+                                    tokPerSec: speed, newChat: isNewSession)
         }
         if let i = messages.lastIndex(where: { $0.id == answerId }) {
             messages[i].text = finalText
