@@ -138,8 +138,19 @@ struct AdvancedSettingsScreen: View {
                 }
             }
 
-            // At the very bottom, the switch builders find (android LabHooks.SettingsRow).
+            // At the very bottom, the switches builders find (android ExperimentalSection: Boarverse, then
+            // LabHooks.SettingsRow).
             if LabsBuild.experimental {
+                Section {
+                    Toggle(isOn: Binding(get: { services.vault.enabled }, set: { services.vault.setEnabled($0) })) {
+                        SettingsLabel("Boarverse", symbol: Symbols.avatars)
+                    }
+                    .accessibilityIdentifier("settings.boarverse")
+                } footer: {
+                    BoarFooter {
+                        Text("Unlock boar avatars as you use BOAR and wear them in the chat; some unlock new themes.")
+                    }
+                }
                 Section {
                     Toggle(isOn: Binding(get: { labs.labsOn }, set: { labs.labsOn = $0 })) {
                         SettingsLabel("Boar Labs", symbol: Symbols.labs)

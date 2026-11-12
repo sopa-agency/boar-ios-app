@@ -7,9 +7,8 @@ import os
 /// Boar Avatars on this device (android app/appearance `TruffleVault.kt`; the code says vault and truffle): counts what
 /// the vault's rules need (BoarCore `Vault`) as the app is used, stores it in the settings under `truffleVault`, and keeps
 /// each newly unlocked avatar for a "New avatar unlocked" message. Everything is counted here and never leaves the device;
-/// nothing runs in the background, only when the app opens and when something happens in it.
-///
-/// No screen shows it yet: the Boarverse switch, the grid and the message come with the avatars' UI.
+/// nothing runs in the background, only when the app opens and when something happens in it. The equipped avatar takes
+/// the mascot's place while Boarverse is on (`equipped`).
 @MainActor
 @Observable
 final class TruffleVault {
@@ -18,9 +17,11 @@ final class TruffleVault {
     private static let log = BoarLog.logger("vault")
 
     private(set) var state: Vault.State
-    /// Avatars unlocked while Boarverse is on, oldest first, until the message about them is shown (`takeFresh`). The
+    /// Avatars unlocked while Boarverse is on, oldest first, each until its message has been shown (`shown`). The
     /// avatar every install starts with isn't news.
     private(set) var fresh: [String] = []
+    /// The avatar chosen in Settings (android `icon`, stored as `iconId`); nil for BOAR's own.
+    private(set) var icon: String?
     /// Boarverse: off, BOAR's own avatar and no messages. Avatars are still counted, so turning it on later finds them
     /// waiting. Only builds that show Labs can turn it on, like Android's EXPERIMENTAL_FEATURES.
     private(set) var enabled: Bool
@@ -40,12 +41,26 @@ final class TruffleVault {
         if let seed = DebugLaunch.vault { settings.truffleVault = Vault.toJson(Vault.fromJson(seed)) }
         #endif
         _state = Vault.fromJson(settings.truffleVault)
-        _enabled = LabsBuild.experimental && AppPaths.defaults.bool(forKey: Self.enabledKey)
+        var on = AppPaths.defaults.bool(forKey: Self.enabledKey)
+        #if DEBUG
+        // -uiBoarverse YES: on for captures and UI tests, without storing it.
+        if DebugLaunch.boarverse { on = true }
+        #endif
+        _enabled = LabsBuild.experimental && on
+        var icon = settings.iconId
+        #if DEBUG
+        if let debug = DebugLaunch.icon { icon = debug }
+        #endif
+        _icon = icon.flatMap { id in Vault.rules.contains { $0.id == id } ? id : nil }
     }
+
+    /// The avatar in the mascot's place: the equipped one while Boarverse is on, else nil (BOAR's own).
+    var equipped: String? { enabled ? icon : nil }
 
     func setEnabled(_ on: Bool) {
         enabled = on && LabsBuild.experimental
         AppPaths.defaults.set(on, forKey: Self.enabledKey)
+        if !enabled { fresh = [] }
     }
 
     /// Erase All Data (Android's "clear app data" empties the vault's preferences too): every count, unlocked avatar
@@ -57,14 +72,21 @@ final class TruffleVault {
         askedStore = false
         settings.truffleVault = nil
         AppPaths.defaults.removeObject(forKey: Self.enabledKey)
+        equip(nil)
+    }
+
+    /// Equips an unlocked avatar, or BOAR's own for nil (or an avatar that isn't unlocked). The mascot changes at once.
+    func equip(_ id: String?) {
+        let target = id.flatMap { unlocked($0) ? $0 : nil }
+        settings.iconId = target
+        icon = target
     }
 
     func unlocked(_ id: String) -> Bool { state.unlocked[id] != nil }
 
-    /// The avatars waiting for their message; the list is emptied.
-    func takeFresh() -> [String] {
-        defer { fresh = [] }
-        return fresh
+    /// The message about `id` was shown (or Boarverse went off): the next one, if any, comes up.
+    func shown(_ id: String) {
+        fresh.removeAll { $0 == id }
     }
 
     /// Changes the facts and unlocks what they now earn. Saved only when something changed.

@@ -51,7 +51,7 @@ enum DebugRouter {
             model.models?.debugShowBrowse(DemoContent.repos)
             model.selection = .screen(.models)
         case "documents": model.selection = .screen(.documents)
-        case "settings", "settings-engine", "settings-advanced", "device-info", _ where screen.hasPrefix("tour-"):
+        case "settings", "settings-engine", "settings-advanced", "device-info", "avatars", _ where screen.hasPrefix("tour-"):
             model.selection = .screen(.settings)
         case "evaluation": model.selection = .screen(.evaluation)
         case "about": model.selection = .screen(.about)

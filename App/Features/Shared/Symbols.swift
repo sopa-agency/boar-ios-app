@@ -39,6 +39,8 @@ enum Symbols {
     static let memory = AppIcon.pack(.settingsMemory)
     static let offline: AppIcon = "wifi.slash"
     static let advanced = AppIcon.pack(.settingsTweaks)
+    /// Boar Avatars and Boarverse (android ic_settings_avatars).
+    static let avatars = AppIcon.pack(.settingsAvatars)
     static let benchmark = AppIcon.pack(.settingsHardware)
     static let performance: AppIcon = "speedometer"
     static let settings = AppIcon.pack(.styleCustom)

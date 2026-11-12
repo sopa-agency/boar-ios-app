@@ -1,18 +1,37 @@
 import SwiftUI
 
+extension EnvironmentValues {
+    /// The Boar Avatar in the mascot's place (android `LocalTruffle`): the equipped one while Boarverse is on, nil for
+    /// BOAR's own. RootView provides it.
+    @Entry var truffle: String?
+}
+
 /// BOAR's mascot (android R.drawable.mascot), where Android shows it: the chat's empty state and header, the name on
-/// each answer, and "Ask BOAR instead". Decorative: the name next to it says who it is.
+/// each answer, and "Ask BOAR instead"; the equipped Boar Avatar instead while Boarverse is on (android
+/// `TruffleVault.avatar`). Decorative: the name next to it says who it is.
 struct Mascot: View {
     let size: CGFloat
-    /// A circle, as the chat header crops it; otherwise the whole picture.
+    /// A circle, as the chat header crops it; otherwise the whole picture. An avatar is square art: a rounded square
+    /// keeps its ears and tusks (android Header: 10 dp on 42).
     var circle = false
+    @Environment(\.truffle) private var truffle
 
     var body: some View {
-        Image(decorative: "Brand/mascot")
+        picture
             .resizable()
             .scaledToFit()
             .frame(width: size, height: size)
-            .clipShape(circle ? AnyShape(.circle) : AnyShape(.rect))
+            .clipShape(shape)
+            .accessibilityHidden(true)
+    }
+
+    private var picture: Image {
+        truffle.flatMap(TruffleArt.image) ?? Image(decorative: "Brand/mascot")
+    }
+
+    private var shape: AnyShape {
+        guard circle else { return AnyShape(.rect) }
+        return truffle == nil ? AnyShape(.circle) : AnyShape(.rect(cornerRadius: size * 10 / 42))
     }
 }
 
@@ -81,15 +100,17 @@ struct ChatTitle: View {
 /// closes it.
 struct MascotFullView: View {
     let onClose: () -> Void
+    @Environment(\.truffle) private var truffle
 
     var body: some View {
         VStack(spacing: 16) {
-            Image(decorative: "Brand/mascot")
+            (truffle.flatMap(TruffleArt.image) ?? Image(decorative: "Brand/mascot"))
                 .resizable()
                 .scaledToFit()
                 .clipShape(.rect(cornerRadius: 24))
+                .accessibilityHidden(true)
             // White in every theme: the veil is black, and Paper's heading color (black) would vanish on it.
-            Text(verbatim: "BOAR")
+            Text(verbatim: AvatarCopy.name(truffle))
                 .boarText("ui.titleLg")
                 .foregroundStyle(.white)
         }

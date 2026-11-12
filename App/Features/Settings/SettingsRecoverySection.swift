@@ -90,6 +90,8 @@ struct SettingsRecoverySection: View {
 
     private func resetSettings() {
         services.settings.resetPreferences()
+        // BOAR's own avatar again; the avatars unlocked stay unlocked (android SettingsScreen).
+        services.vault.equip(nil)
         services.backend = .llama
         model.themeWasReset()
         bridge.touch()

@@ -1,8 +1,9 @@
 # Boar Avatars (the Truffle Vault) on iOS
 
 Study and plan, 2026-11-10, against `rferrari/boar-app` at `Fixtures/SOURCE_SHA`. Steps 1 (the engine) and 2 (counting,
-see [Step 2 as built](#step-2-as-built-counting-2026-11-11)) are merged; step 3 (the art) is built, see
-[Step 3 as built](#step-3-as-built-art-2026-11-12); nothing shows on screen yet. The UI
+see [Step 2 as built](#step-2-as-built-counting-2026-11-11)) are merged; steps 3 (the art) and 4 (the screens) are
+built, see [Step 3 as built](#step-3-as-built-art-2026-11-12) and [Step 4 as built](#step-4-as-built-screens-2026-11-12).
+Left: the extra themes (step 5) and the launcher icons (step 6). The UI
 says **Boar Avatars**, and the switch that turns them on says **Boarverse**; the Android code still says vault and truffle,
 and so does this plan when it names code.
 
@@ -192,6 +193,34 @@ quality 85: no visible difference from the WebP at 1:1). 40 files, 2.2 MB, in bo
 - **No silhouette files:** Android's `SILHOUETTE` matrix zeroes the colors and adds (18, 18, 24); the art is opaque, so
   a locked avatar is a flat square of that color with "?" on it. The view draws it (step 4), and the art of a locked
   avatar isn't even loaded.
+
+## Step 4 as built (screens, 2026-11-12)
+
+| iOS | Android |
+|---|---|
+| Settings → Advanced, last sections: Boarverse switch above Boar Labs | `ExperimentalSection` |
+| Settings → Display: the avatar row under Theme (`AvatarPicker`, BOAR's own first) | `AvatarPicker` |
+| Settings → Boar Avatars section, teaser in the footer, "Open Boar Avatars" (a sheet on the Mac) | `VaultEntry` in its own section |
+| `BoarAvatarsScreen`: count, intro, adaptive grid (150 pt), equipped border, date or Equipped, locked = (18, 18, 24) square with "?" and the clue | `VaultScreen` |
+| `FreshAvatarBanner` over every screen (RootView), 6 s, Equip | `FreshTruffle` through `Toasts` (6 s with an action) |
+| `Mascot` and `MascotFullView` read `\.truffle` (RootView: `vault.equipped`) | `LocalTruffle`, `TruffleVault.avatar` |
+| Reset Settings → `equip(nil)`; Erase All Data → `erase()` (also the equipped avatar) | `SettingsScreen` reset; clear app data |
+
+`TruffleVault.equip` stores `iconId` (Android's key) and only takes unlocked avatars; `equipped` is nil while Boarverse is
+off. Names and clues are literals in `AvatarCopy` (generated from Android's EN strings, PT in the catalog). Debug:
+`-uiBoarverse YES`, `-uiIcon <id>`, `-uiScreen avatars`; `VAULT='<json>' ICON=<id> scripts/ui-capture.sh` captures with
+them. `AvatarsUITests`: Boarverse on, grid, equip Cosmo, the Display row, BOAR's own, Boarverse off.
+
+Differences, on purpose:
+
+- **Clues** that name something iOS doesn't have: PIN → "Lock BOAR.", airplane mode → "no network at all", the APK → the
+  App Store, Play Services → "Running without Google Play services." (unlocked at the first open anyway).
+- **No mascot in the menu:** the iOS sidebar has none, so the note says "Changes the boar in the chat." and the drawer
+  header has no avatar.
+- **The banner** sits under the navigation bar (52 pt) over every screen but under sheets and the lock.
+- **Extra themes:** the copy says "some unlock new themes", as Android's does; the themes come in step 5, so the theme
+  chips and "N more themes are unlocked…" aren't there yet.
+- The Daily Quiz's copy says "Right answers unlock Boar Avatars." again (tile and page).
 
 ## Questions for Android
 

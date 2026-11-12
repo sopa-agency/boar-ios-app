@@ -30,6 +30,7 @@ struct SettingsScreen: View {
             SettingsFreeMemorySection(bridge: bridge)
             #endif
             SettingsDisplaySection(bridge: bridge)
+            SettingsAvatarsSection(vault: services.vault)
             if let lock = model.lock { SettingsSecuritySection(lock: lock) }
             SettingsVoiceSection(bridge: bridge)
             Section {
@@ -53,6 +54,7 @@ struct SettingsScreen: View {
         .debugPush("settings-advanced") { AdvancedSettingsScreen(services: services, bridge: bridge) }
         .debugPush("settings-engine") { EngineTweaksScreen(services: services, bridge: bridge) }
         .debugPush("device-info") { DeviceInfoScreen(services: services) }
+        .debugPush("avatars") { BoarAvatarsScreen(vault: services.vault) }
         .debugTour()
         .onDisappear {
             // The tone, Deep Research, technical details and model may have changed.

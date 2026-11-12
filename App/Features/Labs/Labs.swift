@@ -278,8 +278,7 @@ extension Labs {
             GuardLab(),
             CoHazardLab(),
             ClassifiedLab(id: "dailyQuiz", order: 80, emoji: "❔", title: String(localized: "Daily Quiz"),
-                          // Android's tile adds "Right answers unlock Boar Avatars."; the iOS app has no Vault yet.
-                          body: String(localized: "A short daily quiz from BOAR's library, offline."),
+                          body: String(localized: "A short daily quiz from BOAR's library, offline. Right answers unlock Boar Avatars."),
                           inner: DailyQuizLab()),
             ClassifiedLab(id: "sanctuary", order: 85, emoji: "📚", title: String(localized: "Sanctuary"),
                           body: String(localized: "Knowledge packs you collect, keep and open on this \(Platform.deviceNoun): whole libraries, offline.")),
