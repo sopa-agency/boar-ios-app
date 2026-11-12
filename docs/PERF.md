@@ -14,7 +14,7 @@ open .build/perf/cold1.trace            # the same trace in Instruments (Hangs, 
 
 Set the iPhone's Auto-Lock to Never while profiling: a locked iPhone is "offline" for `xctrace` and `devicectl`.
 
-To measure a build installed another way (for example `scripts/device.sh`, bundle `team.sopa.boar.biel`), skip `build` and set `BOAR_BUNDLE` to that bundle ID for `record` and `metrickit`.
+To measure a Release build installed another way (under another bundle ID, such as `team.sopa.boar.biel`), skip `build` and set `BOAR_BUNDLE` to that bundle ID for `record` and `metrickit`. `scripts/device.sh` builds Debug: its hang and time numbers don't count as Release.
 
 ## What the app reports
 
