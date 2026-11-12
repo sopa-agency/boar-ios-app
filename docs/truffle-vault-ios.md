@@ -1,7 +1,8 @@
 # Boar Avatars (the Truffle Vault) on iOS
 
-Study and plan, 2026-11-10, against `rferrari/boar-app` at `Fixtures/SOURCE_SHA`. Step 1 (the engine) is merged; step 2
-(counting) is built, see [Step 2 as built](#step-2-as-built-counting-2026-11-11); nothing shows on screen yet. The UI
+Study and plan, 2026-11-10, against `rferrari/boar-app` at `Fixtures/SOURCE_SHA`. Steps 1 (the engine) and 2 (counting,
+see [Step 2 as built](#step-2-as-built-counting-2026-11-11)) are merged; step 3 (the art) is built, see
+[Step 3 as built](#step-3-as-built-art-2026-11-12); nothing shows on screen yet. The UI
 says **Boar Avatars**, and the switch that turns them on says **Boarverse**; the Android code still says vault and truffle,
 and so does this plan when it names code.
 
@@ -123,7 +124,8 @@ Each step is one branch/PR, behind the Boarverse switch (off by default) so main
    quiz). ~3 h, plus a debug `-uiVault <state>` to seed states for captures and the XCUITest. The engine's `fresh`
    includes `tactical`; like Android (`TruffleVault.kt`), the service drops `ALWAYS` avatars before announcing.
 3. **Art import**: extend `import-icon-pack.py` (or a new `import-truffles.py`) for 40 avatar imagesets from the hi-res
-   webp (HEIC/PNG), and the silhouettes. ~1 h. Adds ~2–3 MB.
+   webp (HEIC/PNG), and the silhouettes. ~1 h. Adds ~2–3 MB. *(Built as loose HEIC files, no silhouettes: see step 3
+   as built.)*
 4. **UI**: Boarverse switch, grid, avatar picker, toast, equipped boar in `Mascot` (chat header, empty chat, answers,
    sidebar). Captures EN/PT, light/dark, iPhone 13 and 17; XCUITest for switch → grid → equip. ~4 h.
 5. **Extra themes**: Oklab lerp, the six derived palettes + Paper, `ThemeChoice` listing them only while Boarverse is on
@@ -175,6 +177,21 @@ Differences and what's left out, on purpose:
   itself and reports `onResults`).
 - The Daily Quiz's "Right answers unlock Boar Avatars." copy, the clues, `equip`, the launcher icon and the toast come
   with the UI (step 4).
+
+## Step 3 as built (art, 2026-11-12)
+
+`scripts/import-truffles.py` reads the roster (`Fixtures/vault/truffles.json`) and each boar's 512 px
+`art/icons/hires/<id>.webp` from the boar-app clone at `Fixtures/SOURCE_SHA` (Android ships the same art at 256 px in
+`drawable-nodpi`, too soft for a ~165 pt grid cell at 3x), and writes `App/Resources/Boars/truffle_<id>.heic` (sips,
+quality 85: no visible difference from the WebP at 1:1). 40 files, 2.2 MB, in both apps' bundles. `TruffleArt.image(id)`
+(`App/Sources/Theme`) loads them, with an `NSCache` the system empties under memory pressure. Rerun the script after
+`sync-reference.sh` when Android's roster or art changes.
+
+- **Not in the asset catalog:** actool keeps every HEIC as is *and* a decoded 16-bit copy for old systems, whatever
+  `compression-type` says (checked: automatic, lossy, gpu-optimized-smallest), so the catalog came to 12 MB.
+- **No silhouette files:** Android's `SILHOUETTE` matrix zeroes the colors and adds (18, 18, 24); the art is opaque, so
+  a locked avatar is a flat square of that color with "?" on it. The view draws it (step 4), and the art of a locked
+  avatar isn't even loaded.
 
 ## Questions for Android
 
