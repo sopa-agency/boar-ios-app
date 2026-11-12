@@ -92,6 +92,7 @@ about-2|about|end
 lock|lock|
 labs|labs|
 labs-2|labs|end
+lab-image|lab-image|
 avatars|avatars|
 avatars-2|avatars|end
 tour-welcome|tour-welcome|

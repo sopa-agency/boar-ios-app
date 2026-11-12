@@ -61,6 +61,14 @@ restart after a crash in a lab (an iOS app can't relaunch itself; the next launc
 **Decided 2026-11-12 (Biel):** Image Playground, offered only where Apple Intelligence is on (iOS 18+, iPhone 15 Pro and
 later); no in-process engine, as 683 MB for this lab isn't worth it. The rest of this section is the analysis behind it.
 
+**Built 2026-11-12 (`DesignerLab`, ALPHA):** a "What to draw" field and Draw, which opens Apple's
+`imagePlaygroundSheet` with the words as the concept and the styles limited to animation, illustration and sketch (never
+the cloud provider); the picture comes back as a file and is kept in `designer/` under BOAR's files (Erase All Data
+removes it), shown in a gallery with Share and Delete. Needs iOS 18.4 / macOS 15.4 (the style limit) and Apple
+Intelligence (`supportsImagePlayground`); elsewhere the page says why. Not ported: Designer's own styles, sizes, seeds,
+Regenerate, "From your last chat" and Illustrate. Only the unavailable page has been seen (simulator, iPhone 14 Pro):
+the sheet still has to be tried on an iPhone 15 Pro or later, or a Mac with Apple Intelligence.
+
 **Status (2026-11-05):** moved to phase 3. The choice waits for phase 3's memory measurements: the iPhone 14 Pro (6 GB)
 lets BOAR use about 3 GB before iOS ends it, and the chat model alone takes about 1 GB.
 

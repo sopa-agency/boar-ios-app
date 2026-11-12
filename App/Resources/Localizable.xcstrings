@@ -1156,6 +1156,16 @@
         }
       }
     },
+    "Apple's Image Playground opens with your words: pick a style there (animation, illustration or sketch) and keep the picture you like. It is drawn on this %@, and BOAR keeps it here." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Image Playground da Apple abre com as suas palavras: escolha o estilo lá (animação, ilustração ou esboço) e fique com a imagem que gostar. Ela é desenhada neste %@, e o BOAR guarda aqui."
+          }
+        }
+      }
+    },
     "Apple's on-device model · built in" : {
       "localizations" : {
         "pt" : {
@@ -1802,6 +1812,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Boar Cohazard"
+          }
+        }
+      }
+    },
+    "Boar Designer" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Boar Designer"
+          }
+        }
+      }
+    },
+    "Boar Designer draws with Apple's Image Playground, which needs Apple Intelligence (an iPhone 15 Pro or later, or a Mac with Apple silicon) on iOS 18.4 or macOS 15.4 or later, turned on in Settings. It isn't available on this %@." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Boar Designer desenha com o Image Playground da Apple, que precisa da Apple Intelligence (um iPhone 15 Pro ou mais novo, ou um Mac com Apple silicon) no iOS 18.4 ou macOS 15.4 ou mais novo, ligada nos Ajustes. Ele não está disponível neste %@."
           }
         }
       }
@@ -2922,6 +2952,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Baixa uma vez, pelo Wi‑Fi. Nada do que você pergunta sai deste %@."
+          }
+        }
+      }
+    },
+    "Draw" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desenhar"
+          }
+        }
+      }
+    },
+    "Draw an illustration from a few words with Apple's Image Playground, on this %@." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desenhe uma ilustração com poucas palavras, com o Image Playground da Apple, neste %@."
           }
         }
       }
@@ -5443,6 +5493,16 @@
         }
       }
     },
+    "On Android, Boar Designer draws with its own model. On iPhone and Mac it uses Apple's instead, so there is nothing to download." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No Android, o Boar Designer desenha com um modelo próprio. No iPhone e no Mac ele usa o da Apple, então não há nada para baixar."
+          }
+        }
+      }
+    },
     "On This %@" : {
       "localizations" : {
         "pt" : {
@@ -5809,6 +5869,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Escolhe um modelo por pergunta entre os instalados."
+          }
+        }
+      }
+    },
+    "Picture" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Imagem"
           }
         }
       }
@@ -8746,6 +8816,16 @@
         }
       }
     },
+    "What to draw" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O que desenhar"
+          }
+        }
+      }
+    },
     "What we measured best on real phones. Balanced." : {
       "localizations" : {
         "pt" : {
@@ -9133,6 +9213,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "^[%lld fonte](inflect: true)"
+          }
+        }
+      }
+    },
+    "a wild boar" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "um javali"
           }
         }
       }
