@@ -15,6 +15,7 @@ import Foundation
 ///                        stores an empty one. e.g. -uiVault '{"facts":{"answers":9},"unlocked":{"tactical":1}}'
 ///     -uiBoarverse YES   Boarverse on for this run (Boar Avatars in Settings, the equipped avatar), without saving it
 ///     -uiIcon <id>       that unlocked avatar equipped for this run
+///     -uiGrantThemes YES  grant every Boar Avatars theme (stored), as Android's adb-only bench "themes" run
 enum DebugLaunch {
     #if DEBUG
     /// `-uiScreen <name>`: the argument domain of UserDefaults carries it.
@@ -40,6 +41,8 @@ enum DebugLaunch {
         guard let i = args.firstIndex(of: "-uiVault"), args.indices.contains(i + 1) else { return nil }
         return args[i + 1]
     }()
+    /// `-uiGrantThemes YES`.
+    static let grantThemes: Bool = UserDefaults.standard.bool(forKey: "uiGrantThemes")
     /// `-uiIcon <id>`.
     static let icon: String? = UserDefaults.standard.string(forKey: "uiIcon")
     /// `-uiBoarverse YES`.

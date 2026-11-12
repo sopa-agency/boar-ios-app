@@ -11,7 +11,7 @@ struct SettingsDisplaySection: View {
         let vault = model.services?.vault
         Section {
             Picker(selection: Binding(get: { model.theme }, set: { model.setTheme($0) })) {
-                ForEach(ThemeChoice.choices(current: model.theme)) { choice in
+                ForEach(model.themeChoices) { choice in
                     choice.title.tag(choice)
                 }
             } label: {
@@ -33,6 +33,11 @@ struct SettingsDisplaySection: View {
         } footer: {
             BoarFooter {
                 Text("System follows your \(Platform.deviceNoun)'s appearance: Moonlight when dark, Paper when light.")
+                // android ThemePicker: how many themes Boar Avatars still keeps closed.
+                if let vault, vault.enabled {
+                    let locked = ThemeTokens.all.count - ThemeTokens.available(boarverse: true, state: vault.state).count
+                    if locked > 0 { Text("\(locked) more themes are unlocked by Labs and avatars.") }
+                }
                 #if !os(macOS)
                 Text("Text size follows your \(Platform.deviceNoun)'s Dynamic Type setting.")
                 #endif

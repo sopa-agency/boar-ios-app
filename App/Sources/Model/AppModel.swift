@@ -84,14 +84,34 @@ final class AppModel {
     @ObservationIgnored private var lastSelection: SidebarItem? = .newChat
     var selection: SidebarItem? = .newChat
     /// System or one of Android's themes (Settings → Display), as read from `themeId`. Only `setTheme` writes it back:
-    /// reading never rewrites the stored id, so a Vault theme set on Android (shown here as Moonlight) or an unset id
-    /// stays as it was until someone picks a theme. Read from the settings' defaults when the app starts, before the
-    /// services open, so the first frames are already in the chosen theme instead of System's.
-    private(set) var theme: ThemeChoice = AppModel.launchTheme()
+    /// reading never rewrites the stored id, so a theme that can't show here or an unset id stays as it was until
+    /// someone picks a theme. Read from the settings' defaults when the app starts, before the services open, so the
+    /// first frames are already in the chosen theme instead of System's.
+    private var chosenTheme: ThemeChoice = AppModel.launchTheme()
+
+    /// The theme on screen (and selected in the pickers): the chosen one, or Moonlight for a Boar Avatars theme while
+    /// Boarverse is off (android MainActivity).
+    var theme: ThemeChoice { chosenTheme.shown(boarverse: boarverse) }
+
+    /// The theme pickers' choices (Settings → Display, the tour): the open themes, and Boar Avatars' while Boarverse is
+    /// on and they're unlocked.
+    var themeChoices: [ThemeChoice] {
+        let available = services.map { ThemeTokens.available(boarverse: boarverse, state: $0.vault.state) } ?? ThemeTokens.open
+        return ThemeChoice.choices(current: theme, available: available)
+    }
+
+    /// Boarverse is on: the vault's switch once the services are open, the stored one before (the first frames).
+    private var boarverse: Bool { services?.vault.enabled ?? Self.launchBoarverse }
+    private static let launchBoarverse: Bool = {
+        #if DEBUG
+        if DebugLaunch.boarverse { return LabsBuild.experimental }
+        #endif
+        return LabsBuild.experimental && AppPaths.defaults.bool(forKey: TruffleVault.enabledKey)
+    }()
 
     /// The theme picked in Settings → Display, saved under Android's id (or "system").
     func setTheme(_ choice: ThemeChoice) {
-        theme = choice
+        chosenTheme = choice
         services?.settings.themeId = choice.storedId
         // Settings → Display and the tour's theme card both come here (android SettingsScreen, MainActivity's tour).
         services?.vault.record { $0.themeChanged = true }
@@ -99,7 +119,7 @@ final class AppModel {
 
     /// Settings were reset or erased: the theme goes back to System with nothing stored.
     func themeWasReset() {
-        theme = .system
+        chosenTheme = .system
     }
 
     private static func launchTheme() -> ThemeChoice {
@@ -147,10 +167,10 @@ final class AppModel {
                 RemoteConfig.setAddress(remote, services.settings)
             }
             #endif
-            theme = ThemeChoice(storedId: services.settings.themeId)
+            chosenTheme = ThemeChoice(storedId: services.settings.themeId)
             #if DEBUG
             // For this run only: -uiTheme doesn't touch the stored choice.
-            if let id = DebugLaunch.theme { theme = ThemeChoice(storedId: id) }
+            if let id = DebugLaunch.theme { chosenTheme = ThemeChoice(storedId: id) }
             #endif
             let chat = ChatController(services: services)
             chat.onSessionsChanged = { [weak self] in self?.reloadSessions() }
@@ -228,6 +248,8 @@ final class AppModel {
         #if DEBUG
         // The bench harness drops device requests in Documents/eval/requests (debug builds, as on Android).
         evaluation.startPolling()
+        // -uiGrantThemes YES (android BenchActivity's adb-only "themes" run): every Boar Avatars theme opened, to test them.
+        if DebugLaunch.grantThemes { for theme in ThemeTokens.vault { services.vault.grantTheme(theme.id) } }
         #endif
     }
 

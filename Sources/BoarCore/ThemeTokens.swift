@@ -98,16 +98,37 @@ public struct BoarPalette: Sendable, Identifiable, Hashable {
     public func trackAlpha(_ alpha: Double) -> Double { light ? 0.08 : alpha }
 }
 
-/// ThemeTokens + Themes: the palettes by id. The derived extras that the Truffle Vault unlocks (Tactical Red, Hacker
-/// Green, ...) mix colors in Oklab and come with the Vault's port.
+/// ThemeTokens + Themes: the palettes by id, and which ones Boar Avatars opens (android ExtraThemes.kt `Themes`).
 public enum ThemeTokens {
     public static let defaultId = "moonlight"
     /// Campfire and Moonlight, open to everyone.
     public static let open: [BoarPalette] = [.campfire, .moonlight]
-    public static let all: [BoarPalette] = [.campfire, .moonlight, .paper]
+    /// Boar Avatars' themes in Android's order (`Themes.extras`): six derived from Moonlight in Oklab, then Paper.
+    public static let vault: [BoarPalette] = [.tacticalRed, .hackerGreen, .stealthMono, .nomadMoss, .quantumCyan,
+                                              .solarpunkGold, .paper]
+    public static let all: [BoarPalette] = open + vault
+    /// Open without a grant while Boarverse is on (`Themes.starter`).
+    public static let starter: Set<String> = [BoarPalette.tacticalRed.id]
+    /// Themes an avatar brings, theme id to avatar id (`Themes.byAvatar`).
+    public static let byAvatar: [String: String] = [BoarPalette.paper.id: "snow"]
 
     public static func byId(_ id: String?) -> BoarPalette {
         all.first { $0.id == id } ?? .moonlight
+    }
+
+    /// The themes the picker offers (android `ThemePicker`): the open ones, and with Boarverse on, Tactical Red, the
+    /// ones a Lab granted and the ones an unlocked avatar brings.
+    public static func available(boarverse: Bool, state: Vault.State) -> [BoarPalette] {
+        all.filter { p in
+            open.contains { $0.id == p.id } || boarverse && (starter.contains(p.id) || state.themes[p.id] != nil
+                || byAvatar[p.id].map { state.unlocked[$0] != nil } == true)
+        }
+    }
+
+    /// Whether a theme may be shown (android MainActivity): the open ones always, Boar Avatars' only while Boarverse
+    /// is on. Paper too on iOS: System shows it in light mode, and builds before Nov 7, 2026 stored it as "light".
+    public static func shows(_ id: String, boarverse: Bool) -> Bool {
+        boarverse || id == BoarPalette.paper.id || open.contains { $0.id == id }
     }
 }
 

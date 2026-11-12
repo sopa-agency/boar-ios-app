@@ -35,11 +35,17 @@ public enum ThemeChoice: Hashable, Sendable, Identifiable {
         }
     }
 
-    /// The picker's choices: System, then the open themes (Campfire, Moonlight). Paper and the Vault's themes open with
-    /// an avatar on Android and the iOS app has no Vault yet, so a theme outside the open ones is listed only while it is
-    /// the current choice (set on Android, or Light from an older build).
-    public static func choices(current: ThemeChoice) -> [ThemeChoice] {
-        var list: [ThemeChoice] = [.system] + ThemeTokens.open.map { .theme($0.id) }
+    /// The theme to show: a Boar Avatars theme only while Boarverse is on, else Android's default, Moonlight
+    /// (`ThemeTokens.shows`). The stored id is left as it was.
+    public func shown(boarverse: Bool) -> ThemeChoice {
+        guard case .theme(let id) = self, !ThemeTokens.shows(id, boarverse: boarverse) else { return self }
+        return .theme(ThemeTokens.defaultId)
+    }
+
+    /// The picker's choices: System, then the themes available (`ThemeTokens.available`), and the current one if it
+    /// isn't among them (Paper set on Android or by an older build, a theme granted on another phone).
+    public static func choices(current: ThemeChoice, available: [BoarPalette] = ThemeTokens.open) -> [ThemeChoice] {
+        var list: [ThemeChoice] = [.system] + available.map { .theme($0.id) }
         if !list.contains(current) { list.append(current) }
         return list
     }

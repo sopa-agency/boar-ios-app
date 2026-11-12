@@ -2,8 +2,8 @@
 
 Study and plan, 2026-11-10, against `rferrari/boar-app` at `Fixtures/SOURCE_SHA`. Steps 1 (the engine) and 2 (counting,
 see [Step 2 as built](#step-2-as-built-counting-2026-11-11)) are merged; steps 3 (the art) and 4 (the screens) are
-built, see [Step 3 as built](#step-3-as-built-art-2026-11-12) and [Step 4 as built](#step-4-as-built-screens-2026-11-12).
-Left: the extra themes (step 5) and the launcher icons (step 6). The UI
+built, see [Step 3 as built](#step-3-as-built-art-2026-11-12) and [Step 4 as built](#step-4-as-built-screens-2026-11-12);
+step 5 (the themes) too, see [Step 5 as built](#step-5-as-built-themes-2026-11-12). Left: the launcher icons (step 6). The UI
 says **Boar Avatars**, and the switch that turns them on says **Boarverse**; the Android code still says vault and truffle,
 and so does this plan when it names code.
 
@@ -218,9 +218,29 @@ Differences, on purpose:
 - **No mascot in the menu:** the iOS sidebar has none, so the note says "Changes the boar in the chat." and the drawer
   header has no avatar.
 - **The banner** sits under the navigation bar (52 pt) over every screen but under sheets and the lock.
-- **Extra themes:** the copy says "some unlock new themes", as Android's does; the themes come in step 5, so the theme
-  chips and "N more themes are unlocked…" aren't there yet.
+- **Extra themes:** come with step 5 (below).
 - The Daily Quiz's copy says "Right answers unlock Boar Avatars." again (tile and page).
+
+## Step 5 as built (themes, 2026-11-12)
+
+The palettes aren't re-derived in Swift: `scripts/export-vault-themes.sh` compiles Android's own `ThemeTokens.kt` and
+`ExtraThemes.kt` against Compose's `ui-graphics` for the desktop (JetBrains, the 1.9 line of Android's BOM) and prints
+every Vault theme's 59 tokens to `Fixtures/golden/theme/vault-themes.json`; `scripts/export-theme-tokens.py` writes
+them into `ThemePalettes.swift` (and checks that the JVM's Paper equals the one parsed from the Kotlin source).
+`ThemeTokensTests` compares every palette with the fixture. Rerun both after a sync that touches the theme files (needs
+`brew install openjdk@17`; Gradle and Compose download on the first run).
+
+| iOS | Android |
+|---|---|
+| `ThemeTokens.vault`, `starter` (Tactical Red), `byAvatar` (Paper ← snow) | `Themes.extras`, `starter`, `byAvatar` |
+| `ThemeTokens.available(boarverse:state:)` → `AppModel.themeChoices` (Settings menu, tour chips) | `ThemePicker`'s filter |
+| `ThemeChoice.shown(boarverse:)` → `AppModel.theme` (the stored id is kept) | `MainActivity`'s `theme.takeIf { avatarsOn \|\| it in open }` |
+| Display footer "N more themes are unlocked by Labs and avatars." while Boarverse is on | `ThemePicker`'s note |
+| `TruffleVault.grantTheme`; DEBUG `-uiGrantThemes YES` grants them all | `grantTheme`; `BenchActivity` "themes" (adb) |
+
+- **Paper stays open on iOS**, also with Boarverse off: System shows it in light mode, and older builds stored "light".
+  It is listed in the picker when snow brings it (or while it is the current choice).
+- No Lab grants a theme yet, on either platform; only the debug grant does.
 
 ## Questions for Android
 
