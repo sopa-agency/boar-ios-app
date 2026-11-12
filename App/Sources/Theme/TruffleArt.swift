@@ -29,6 +29,12 @@ enum TruffleArt {
         #endif
     }
 
+    /// The avatar's picture, or the asset that spot showed before Boar Avatars (android `TruffleVault.avatar`) for nil
+    /// or an id with no art.
+    static func image(_ id: String?, or original: String) -> Image {
+        id.flatMap(image) ?? Image(decorative: original)
+    }
+
     private static func picture(_ id: String) -> Picture? {
         if let hit = cache.object(forKey: id as NSString) { return hit }
         guard let url = Bundle.main.url(forResource: "truffle_\(id)", withExtension: "heic") else { return nil }

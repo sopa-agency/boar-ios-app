@@ -27,7 +27,7 @@ struct SettingsAvatarsSection: View {
                                 }
                             }
                     }
-                    .frame(minWidth: 560, minHeight: 600)
+                    .macSheetSize(width: 560, height: 600)
                 }
                 #else
                 NavigationLink {

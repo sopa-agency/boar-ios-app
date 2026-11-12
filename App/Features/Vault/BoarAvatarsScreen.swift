@@ -93,7 +93,7 @@ struct BoarAvatarsScreen: View {
     }
 
     private func picture(_ id: String) -> some View {
-        (TruffleArt.image(id) ?? Image(decorative: "Brand/mascot"))
+        TruffleArt.image(id, or: "Brand/mascot")
             .resizable()
             .scaledToFit()
             .clipShape(.rect(cornerRadius: 10))

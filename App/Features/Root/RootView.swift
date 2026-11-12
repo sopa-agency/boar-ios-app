@@ -25,7 +25,9 @@ struct RootView: View {
             // the lock).
             .environment(\.truffle, model.services?.vault.equipped)
             .overlay(alignment: .top) {
-                if let vault = model.services?.vault { FreshAvatarBanner(vault: vault) }
+                if let vault = model.services?.vault {
+                    FreshAvatarBanner(vault: vault, hidden: coverKind != nil || scenePhase != .active)
+                }
             }
             #if os(macOS)
             .overlay { cover }

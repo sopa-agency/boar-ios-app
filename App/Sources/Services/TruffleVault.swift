@@ -40,7 +40,8 @@ final class TruffleVault {
         // -uiVault <json>: the stored state for captures and UI tests (junk seeds an empty vault).
         if let seed = DebugLaunch.vault { settings.truffleVault = Vault.toJson(Vault.fromJson(seed)) }
         #endif
-        _state = Vault.fromJson(settings.truffleVault)
+        let state = Vault.fromJson(settings.truffleVault)
+        _state = state
         var on = AppPaths.defaults.bool(forKey: Self.enabledKey)
         #if DEBUG
         // -uiBoarverse YES: on for captures and UI tests, without storing it.
@@ -51,7 +52,8 @@ final class TruffleVault {
         #if DEBUG
         if let debug = DebugLaunch.icon { icon = debug }
         #endif
-        _icon = icon.flatMap { id in Vault.rules.contains { $0.id == id } ? id : nil }
+        // Only an unlocked avatar, as `equip` checks: a damaged state or -uiIcon of a locked one shows BOAR's own.
+        _icon = icon.flatMap { state.unlocked[$0] != nil ? $0 : nil }
     }
 
     /// The avatar in the mascot's place: the equipped one while Boarverse is on, else nil (BOAR's own).

@@ -25,9 +25,7 @@ struct Mascot: View {
             .accessibilityHidden(true)
     }
 
-    private var picture: Image {
-        truffle.flatMap(TruffleArt.image) ?? Image(decorative: "Brand/mascot")
-    }
+    private var picture: Image { TruffleArt.image(truffle, or: "Brand/mascot") }
 
     private var shape: AnyShape {
         guard circle else { return AnyShape(.rect) }
@@ -104,7 +102,7 @@ struct MascotFullView: View {
 
     var body: some View {
         VStack(spacing: 16) {
-            (truffle.flatMap(TruffleArt.image) ?? Image(decorative: "Brand/mascot"))
+            TruffleArt.image(truffle, or: "Brand/mascot")
                 .resizable()
                 .scaledToFit()
                 .clipShape(.rect(cornerRadius: 24))

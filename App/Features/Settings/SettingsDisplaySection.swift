@@ -75,7 +75,7 @@ private struct AvatarPicker: View {
         return Button {
             vault.equip(id)
         } label: {
-            (id.flatMap(TruffleArt.image) ?? Image(decorative: "Brand/boar"))
+            TruffleArt.image(id, or: "Brand/boar")
                 .resizable()
                 .scaledToFit()
                 .frame(width: side, height: side)

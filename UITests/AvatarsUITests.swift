@@ -15,7 +15,7 @@ final class AvatarsUITests: BoarUITestCase {
         tap(anything("Advanced"), "Advanced")
         let boarverse = reveal(app.switches["settings.boarverse"].firstMatch, "Boarverse")
         if boarverse.value as? String != "1" { tapSwitch(boarverse) }
-        XCTAssertEqual(boarverse.value as? String, "1", "Boarverse didn't turn on")
+        XCTAssertTrue(waitValue(boarverse) { $0 == "1" }, "Boarverse didn't turn on")
         goBack()
 
         // The grid: the count, then Cosmo equipped.
@@ -43,7 +43,7 @@ final class AvatarsUITests: BoarUITestCase {
         tap(anything("Advanced"), "Advanced")
         let off = reveal(app.switches["settings.boarverse"].firstMatch, "Boarverse")
         tapSwitch(off)
-        XCTAssertEqual(off.value as? String, "0", "Boarverse didn't turn off")
+        XCTAssertTrue(waitValue(off) { $0 == "0" }, "Boarverse didn't turn off")
         goBack()
         XCTAssertFalse(app.buttons["settings.avatars"].exists, "Boar Avatars still in Settings with Boarverse off")
     }

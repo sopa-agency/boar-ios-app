@@ -2,12 +2,20 @@ import SwiftUI
 
 /// "New avatar unlocked: X" over every screen, with Equip (android `FreshTruffle` through the app's toast: top,
 /// 6 s with an action). One at a time, oldest first; announced to VoiceOver.
+///
+/// Held back while it couldn't be seen (`hidden`: the lock on top, BOAR not in front): avatars counted at
+/// `didBecomeActive` arrive under the lock, and the 6 s would run out before a slow unlock. Removed from the screen,
+/// its timer stops and the avatar waits.
 struct FreshAvatarBanner: View {
     let vault: TruffleVault
+    let hidden: Bool
     @ScaledMetric(relativeTo: .subheadline) private var side = 36
+    #if os(iOS)
+    @Environment(\.verticalSizeClass) private var verticalSize
+    #endif
 
     var body: some View {
-        if let id = vault.fresh.first {
+        if !hidden, let id = vault.fresh.first {
             let message = String(localized: "New avatar unlocked: \(AvatarCopy.name(id))")
             HStack(spacing: 10) {
                 TruffleArt.image(id)?
@@ -33,7 +41,8 @@ struct FreshAvatarBanner: View {
             .padding(.horizontal, 16)
             #if os(iOS)
             // Below the navigation bar, as Android's toast sits below the header: over it, it hid Back and the title.
-            .padding(.top, 52)
+            // The bar is 44 pt (50 on iPad), 32 on an iPhone held sideways.
+            .padding(.top, verticalSize == .compact ? 40 : 52)
             #else
             .padding(.top, 8)
             #endif
