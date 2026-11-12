@@ -1,4 +1,17 @@
 // Shared build settings for the Boar app target.
 // The signing team lives in the git-ignored Local.xcconfig at the repo root:
 //   DEVELOPMENT_TEAM = ABCDE12345
+
+// Boar Avatars as the app icon (android boar.truffleLauncherIcons): off, like Android's default, and the icons aren't
+// shipped. On: run scripts/build-launcher-icons.py, `xcodegen generate`, then set BOAR_LAUNCHER_ICONS = YES in
+// Local.xcconfig (or on the xcodebuild command line). The Mac app never has them (only the Dock icon could change).
+BOAR_LAUNCHER_ICONS = NO
+BOAR_LAUNCHER_ICONS_EXCLUDED_NO = LauncherIcons.xcassets
+BOAR_LAUNCHER_ICONS_EXCLUDED_YES =
+EXCLUDED_SOURCE_FILE_NAMES = $(inherited) $(BOAR_LAUNCHER_ICONS_EXCLUDED_$(BOAR_LAUNCHER_ICONS))
+EXCLUDED_SOURCE_FILE_NAMES[sdk=macosx*] = $(inherited) LauncherIcons.xcassets
+// Every AppIcon-<id> set in the catalogs becomes an alternate icon: actool writes CFBundleAlternateIcons, which is how
+// the app knows the icons are there (TruffleVault.launcherIcons).
+ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = $(BOAR_LAUNCHER_ICONS)
+
 #include? "../../Local.xcconfig"

@@ -3,6 +3,9 @@ import Foundation
 import Observation
 import StoreKit
 import os
+#if os(iOS)
+import UIKit
+#endif
 
 /// Boar Avatars on this device (android app/appearance `TruffleVault.kt`; the code says vault and truffle): counts what
 /// the vault's rules need (BoarCore `Vault`) as the app is used, stores it in the settings under `truffleVault`, and keeps
@@ -63,6 +66,7 @@ final class TruffleVault {
         enabled = on && LabsBuild.experimental
         AppPaths.defaults.set(on, forKey: Self.enabledKey)
         if !enabled { fresh = [] }
+        applyIcon()
     }
 
     /// Erase All Data (Android's "clear app data" empties the vault's preferences too): every count, unlocked avatar
@@ -82,6 +86,40 @@ final class TruffleVault {
         let target = id.flatMap { unlocked($0) ? $0 : nil }
         settings.iconId = target
         icon = target
+        applyIcon()
+    }
+
+    // MARK: app icon
+
+    /// The avatars' app icons are in this build (android TRUFFLE_LAUNCHER_ICONS, here BOAR_LAUNCHER_ICONS in
+    /// App.xcconfig, off by default): actool lists them under CFBundleAlternateIcons. Never on the Mac.
+    nonisolated static let launcherIcons: Bool = {
+        #if os(iOS)
+        let icons = Bundle.main.object(forInfoDictionaryKey: "CFBundleIcons") as? [String: Any]
+        return (icons?["CFBundleAlternateIcons"] as? [String: Any])?.isEmpty == false
+        #else
+        false
+        #endif
+    }()
+
+    /// The app icon an avatar shows as (`AppIcon-<id>`, scripts/build-launcher-icons.py); nil for BOAR's own.
+    nonisolated static func iconName(_ id: String?) -> String? { id.map { "AppIcon-\($0)" } }
+
+    /// Puts the equipped avatar on the app icon if it isn't there yet (android `applyIcon`): at Equip, when Boarverse
+    /// changes and when BOAR opens (a restore, or a build without the icons after one with them). iOS only changes it
+    /// while BOAR is in front and says so in its own alert, so it happens at once, not when BOAR leaves the screen.
+    func applyIcon() {
+        #if os(iOS)
+        let app = UIApplication.shared
+        let wanted = Self.launcherIcons ? Self.iconName(equipped) : nil
+        guard app.supportsAlternateIcons, app.alternateIconName != wanted, app.applicationState == .active else { return }
+        Task {
+            do { try await app.setAlternateIconName(wanted) } catch {
+                // A refused switch mustn't matter: the avatar in the app has already changed.
+                Self.log.error("app icon switch failed: \(error.localizedDescription, privacy: .public)")
+            }
+        }
+        #endif
     }
 
     func unlocked(_ id: String) -> Bool { state.unlocked[id] != nil }
@@ -123,6 +161,7 @@ final class TruffleVault {
                                        sourceBuild: Self.debugBuild, degoogled: true)
         }
         checkStoreEnvironment()
+        applyIcon()
     }
 
     /// After an answer that wrote something; `tokPerSec` only when the model generated it (not an instant Labs answer).

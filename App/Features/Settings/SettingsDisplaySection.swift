@@ -69,8 +69,8 @@ private struct AvatarPicker: View {
                 .padding(.vertical, 3)
             }
             .scrollIndicators(.hidden)
-            // Android's own note; the iOS menu has no boar, so only the chat's changes.
-            Text("Changes the boar in the chat.")
+            // Android's notes; the iOS menu has no boar, and iOS changes the app icon at once (with its own alert).
+            Text(TruffleVault.launcherIcons ? "Changes the boar in the chat and the app icon." : "Changes the boar in the chat.")
                 .boarText("ui.subtext")
                 .foregroundStyle(.boar(.muted))
         }
