@@ -2056,6 +2056,16 @@
         }
       }
     },
+    "Changes the boar in the chat and the app icon." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Muda o javali da conversa e o ícone do app."
+          }
+        }
+      }
+    },
     "Changes the boar in the chat." : {
       "localizations" : {
         "pt" : {

@@ -8,3 +8,6 @@ xcuserdata/
 Local.xcconfig
 .DS_Store
 AGENTS.local.md
+
+# Boar Avatars app icons, built by scripts/build-launcher-icons.py (40 PNGs, ~47 MB)
+App/Resources/LauncherIcons.xcassets/

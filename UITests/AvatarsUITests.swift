@@ -26,6 +26,7 @@ final class AvatarsUITests: BoarUITestCase {
         XCTAssertTrue(count.waitForExistence(timeout: 3), "no avatar count\n\(app.debugDescription)")
         auditLabels("boar avatars")
         tap(app.buttons["vault.avatar.cosmo"].firstMatch, "Cosmo Boar")
+        okIconAlert()
         XCTAssertTrue(app.buttons["vault.avatar.cosmo"].firstMatch.isSelected, "Cosmo isn't equipped")
         XCTAssertTrue(app.buttons["vault.avatar.cosmo"].label.contains(L("Equipped")), "Cosmo doesn't say Equipped")
         // A locked one has no button.
@@ -36,6 +37,7 @@ final class AvatarsUITests: BoarUITestCase {
         let cosmo = reveal(app.buttons["vault.pick.cosmo"].firstMatch, "Cosmo in the avatar row")
         XCTAssertTrue(cosmo.isSelected, "the row doesn't show Cosmo")
         tap(app.buttons["vault.pick.boar"].firstMatch, "BOAR in the avatar row")
+        okIconAlert()
         XCTAssertTrue(app.buttons["vault.pick.boar"].firstMatch.isSelected, "BOAR's own isn't picked")
         auditLabels("settings with avatars")
 
@@ -46,5 +48,15 @@ final class AvatarsUITests: BoarUITestCase {
         XCTAssertTrue(waitValue(off) { $0 == "0" }, "Boarverse didn't turn off")
         goBack()
         XCTAssertFalse(app.buttons["settings.avatars"].exists, "Boar Avatars still in Settings with Boarverse off")
+    }
+
+    /// A build with BOAR_LAUNCHER_ICONS switches the app icon at Equip, and iOS says so in an alert of its own: OK it
+    /// (logged, so a run with the icons shows the switch happened). Nothing to do in a build without them.
+    private func okIconAlert() {
+        let springboard = XCUIApplication(bundleIdentifier: "com.apple.springboard")
+        let ok = springboard.alerts.buttons.firstMatch
+        guard ok.waitForExistence(timeout: 4) else { print("app icon alert: none"); return }
+        print("app icon alert: \(springboard.alerts.firstMatch.label)")
+        ok.tap()
     }
 }
