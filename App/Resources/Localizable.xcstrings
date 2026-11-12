@@ -369,6 +369,16 @@
         }
       }
     },
+    "%lld of %lld avatars unlocked" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld de %2$lld avatares liberados"
+          }
+        }
+      }
+    },
     "%lld of %lld right today." : {
       "localizations" : {
         "pt" : {
@@ -449,12 +459,72 @@
         }
       }
     },
+    "1,000 answers. Only the sovereign get here." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1.000 respostas. Só os soberanos chegam aqui."
+          }
+        }
+      }
+    },
     "1,000 common topics" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "1.000 temas comuns"
+          }
+        }
+      }
+    },
+    "10 Deep Researches." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "10 Pesquisas Profundas."
+          }
+        }
+      }
+    },
+    "10 answers with no network." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "10 respostas sem rede."
+          }
+        }
+      }
+    },
+    "10 answers." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "10 respostas."
+          }
+        }
+      }
+    },
+    "100 answers." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "100 respostas."
+          }
+        }
+      }
+    },
+    "14 days off the grid, in any order." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "14 dias fora da rede, em qualquer ordem."
           }
         }
       }
@@ -479,12 +549,32 @@
         }
       }
     },
+    "50 answers." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "50 respostas."
+          }
+        }
+      }
+    },
     "50,000 article intros" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "50.000 introduções de artigos"
+          }
+        }
+      }
+    },
+    "500 answers." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "500 respostas."
           }
         }
       }
@@ -529,12 +619,12 @@
         }
       }
     },
-    "A short daily quiz from BOAR's library, offline." : {
+    "A short daily quiz from BOAR's library, offline. Right answers unlock Boar Avatars." : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Um quiz diário curto da biblioteca do BOAR, offline."
+            "value" : "Um quiz diário curto da biblioteca do BOAR, offline. Respostas certas liberam Avatares do Boar."
           }
         }
       }
@@ -649,6 +739,16 @@
         }
       }
     },
+    "Add a model from Hugging Face." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adicione um modelo do Hugging Face."
+          }
+        }
+      }
+    },
     "Add files or photos of pages. BOAR reads them on this %@ and never uploads them." : {
       "localizations" : {
         "pt" : {
@@ -739,6 +839,16 @@
         }
       }
     },
+    "Airgap Boar" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Javali Airgap"
+          }
+        }
+      }
+    },
     "All %lld public questions of the BOAR research bench. %lld are checked on this %@; venue, first-aid and open-ended answers are judged on a computer." : {
       "localizations" : {
         "pt" : {
@@ -825,6 +935,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Modelo de resposta"
+          }
+        }
+      }
+    },
+    "Answer the same lab’s questions for a week." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Responda às perguntas do mesmo lab durante uma semana."
           }
         }
       }
@@ -1116,6 +1236,16 @@
         }
       }
     },
+    "Ask BOAR your first question." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Faça sua primeira pergunta ao BOAR."
+          }
+        }
+      }
+    },
     "Ask Before Deleting a Chat" : {
       "localizations" : {
         "pt" : {
@@ -1132,6 +1262,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pergunte sobre eles com o estilo Arquivos pessoais. Coleções desligadas não entram nas respostas."
+          }
+        }
+      }
+    },
+    "Ask in Portuguese." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pergunte em português."
           }
         }
       }
@@ -1162,6 +1302,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pergunta ao BOAR"
+          }
+        }
+      }
+    },
+    "Astro Boar" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Javali Astro"
+          }
+        }
+      }
+    },
+    "Atomic Boar" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Javali Atômico"
           }
         }
       }
@@ -1466,6 +1626,26 @@
         }
       }
     },
+    "BOAR → Knowledge" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BOAR → Conhecimento"
+          }
+        }
+      }
+    },
+    "BOAR → Models" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BOAR → Modelos"
+          }
+        }
+      }
+    },
     "BOAR's storage limit, not the %@'s" : {
       "localizations" : {
         "pt" : {
@@ -1572,6 +1752,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Modelos maiores podem responder melhor, mas precisam de mais memória."
+          }
+        }
+      }
+    },
+    "Boar" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Boar"
+          }
+        }
+      }
+    },
+    "Boar Avatars" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avatares do Boar"
           }
         }
       }
@@ -1696,6 +1896,16 @@
         }
       }
     },
+    "Boarverse" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Boarverse"
+          }
+        }
+      }
+    },
     "Boil it for at least one minute [1], then let it cool covered [2]." : {
       "localizations" : {
         "pt" : {
@@ -1812,6 +2022,36 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cartão %1$lld de %2$lld"
+          }
+        }
+      }
+    },
+    "Carry two knowledge packs." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tenha dois pacotes de conhecimento."
+          }
+        }
+      }
+    },
+    "Change the colors." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Troque as cores."
+          }
+        }
+      }
+    },
+    "Changes the boar in the chat." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Muda o javali da conversa."
           }
         }
       }
@@ -1946,6 +2186,16 @@
         }
       }
     },
+    "Chrono Boar" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Javali Crono"
+          }
+        }
+      }
+    },
     "Classified lab" : {
       "localizations" : {
         "pt" : {
@@ -2002,6 +2252,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Fechar"
+          }
+        }
+      }
+    },
+    "Code Boar" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Javali Código"
           }
         }
       }
@@ -2136,6 +2396,16 @@
         }
       }
     },
+    "Cosmo Boar" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Javali Cósmico"
+          }
+        }
+      }
+    },
     "Couldn't erase everything. The lock stays on: try again." : {
       "localizations" : {
         "pt" : {
@@ -2186,6 +2456,16 @@
         }
       }
     },
+    "Cyber Boar" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Javali Ciber"
+          }
+        }
+      }
+    },
     "Daily Quiz" : {
       "localizations" : {
         "pt" : {
@@ -2202,6 +2482,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Escuro"
+          }
+        }
+      }
+    },
+    "Data Nomad" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nômade Digital"
           }
         }
       }
@@ -2456,6 +2746,16 @@
         }
       }
     },
+    "Don't trust the App Store. Build the boar with your own hands." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não confie na App Store. Compile o BOAR com as próprias mãos."
+          }
+        }
+      }
+    },
     "Done" : {
       "localizations" : {
         "pt" : {
@@ -2492,6 +2792,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Baixar (%@)"
+          }
+        }
+      }
+    },
+    "Download a knowledge pack." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Baixe um pacote de conhecimento."
           }
         }
       }
@@ -2616,6 +2926,16 @@
         }
       }
     },
+    "Elder Boar" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Javali Ancião"
+          }
+        }
+      }
+    },
     "Enabled" : {
       "localizations" : {
         "pt" : {
@@ -2662,6 +2982,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Modelo de fala em inglês"
+          }
+        }
+      }
+    },
+    "Equip" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usar"
+          }
+        }
+      }
+    },
+    "Equipped" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Em uso"
           }
         }
       }
@@ -2732,6 +3072,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Essencial"
+          }
+        }
+      }
+    },
+    "Ethereal Boar" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Javali Etéreo"
           }
         }
       }
@@ -2822,6 +3172,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Exportar"
+          }
+        }
+      }
+    },
+    "Export a collection." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exporte uma coleção."
           }
         }
       }
@@ -2977,6 +3337,26 @@
         }
       }
     },
+    "Feed BOAR a document of your own." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dê ao BOAR um documento seu."
+          }
+        }
+      }
+    },
+    "Field Boar" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Javali Explorador"
+          }
+        }
+      }
+    },
     "Field notes" : {
       "localizations" : {
         "pt" : {
@@ -3067,6 +3447,16 @@
         }
       }
     },
+    "Five questions in the quiet hours." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cinco perguntas nas horas quietas."
+          }
+        }
+      }
+    },
     "Fixes a Yes, No or winner that the model's own figures or dates contradict, after it answers." : {
       "localizations" : {
         "pt" : {
@@ -3113,6 +3503,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Para perguntas grandes: o BOAR pesquisa em várias etapas e escreve uma resposta mais longa. Leva mais tempo. Quando está ligada, o chat brilha e o 🔬 acende, então você sempre sabe."
+          }
+        }
+      }
+    },
+    "Forage deep in the woods: no network, 7 days in a row." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vá fundo na mata: sem rede, 7 dias seguidos."
+          }
+        }
+      }
+    },
+    "Forest Boar" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Javali Floresta"
           }
         }
       }
@@ -3177,6 +3587,16 @@
         }
       }
     },
+    "Frost Boar" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Javali Gélido"
+          }
+        }
+      }
+    },
     "Full moon" : {
       "localizations" : {
         "pt" : {
@@ -3237,12 +3657,42 @@
         }
       }
     },
+    "Get an answer that cites a source." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Receba uma resposta com uma fonte."
+          }
+        }
+      }
+    },
+    "Get an answer with no network at all." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Receba uma resposta sem nenhuma rede."
+          }
+        }
+      }
+    },
     "Google's on-device model, needs more memory" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "O modelo do Google para o aparelho, precisa de mais memória"
+          }
+        }
+      }
+    },
+    "Hammock Boar" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Javali Descanso"
           }
         }
       }
@@ -3717,6 +4167,16 @@
         }
       }
     },
+    "Keep using BOAR and you’ll keep unlocking avatars: each one is a boar to wear, and some unlock new themes. Finding out what unlocks them is part of the fun." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continue usando o BOAR e você vai liberar avatares: cada um é um javali para usar, e alguns liberam novos temas. Descobrir o que libera cada um faz parte da graça."
+          }
+        }
+      }
+    },
     "Keeps the words heard so far" : {
       "localizations" : {
         "pt" : {
@@ -3727,12 +4187,32 @@
         }
       }
     },
+    "Kernel Boar" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Javali Kernel"
+          }
+        }
+      }
+    },
     "Keychain error %d" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Erro de Keychain %d"
+          }
+        }
+      }
+    },
+    "Knight Boar" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Javali Cavaleiro"
           }
         }
       }
@@ -3987,6 +4467,16 @@
         }
       }
     },
+    "Lock BOAR." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tranque o BOAR."
+          }
+        }
+      }
+    },
     "Lock with %@" : {
       "localizations" : {
         "pt" : {
@@ -4003,6 +4493,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Conversa bloqueada"
+          }
+        }
+      }
+    },
+    "Locked avatar. %@" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avatar bloqueado. %@"
+          }
+        }
+      }
+    },
+    "Locked, and opened with no network at all." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trancado, e aberto sem nenhuma rede."
           }
         }
       }
@@ -4037,6 +4547,16 @@
         }
       }
     },
+    "Lunar Boar" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Javali Lunar"
+          }
+        }
+      }
+    },
     "Mac" : {
       "localizations" : {
         "pt" : {
@@ -4053,6 +4573,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mac na sua rede"
+          }
+        }
+      }
+    },
+    "Magma Boar" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Javali Magma"
           }
         }
       }
@@ -4127,6 +4657,26 @@
         }
       }
     },
+    "Measure, don't guess: run an evaluation." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meça, não adivinhe: rode uma avaliação."
+          }
+        }
+      }
+    },
+    "Mecha Boar" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Javali Mecha"
+          }
+        }
+      }
+    },
     "Medium" : {
       "localizations" : {
         "pt" : {
@@ -4153,26 +4703,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Memória"
-          }
-        }
-      }
-    },
-    "BOAR → Knowledge" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "BOAR → Conhecimento"
-          }
-        }
-      }
-    },
-    "BOAR → Models" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "BOAR → Modelos"
           }
         }
       }
@@ -4423,6 +4953,16 @@
         }
       }
     },
+    "Neon Boar" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Javali Neon"
+          }
+        }
+      }
+    },
     "Network model" : {
       "localizations" : {
         "pt" : {
@@ -4449,6 +4989,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nova conversa (⌘N)"
+          }
+        }
+      }
+    },
+    "New avatar unlocked: %@" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Novo avatar: %@"
           }
         }
       }
@@ -4519,6 +5069,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Próxima lua nova"
+          }
+        }
+      }
+    },
+    "Night-vision gear, issued to everyone." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Óculos de visão noturna, para todos."
           }
         }
       }
@@ -4659,6 +5219,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nenhum texto foi encontrado nas fotos."
+          }
+        }
+      }
+    },
+    "Nomad Boar" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Javali Nômade"
           }
         }
       }
@@ -4913,12 +5483,32 @@
         }
       }
     },
+    "Open BOAR with no network at all, 3 days in a row." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abra o BOAR sem nenhuma rede, 3 dias seguidos."
+          }
+        }
+      }
+    },
     "Open Benchmark" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Abrir benchmark"
+          }
+        }
+      }
+    },
+    "Open Boar Avatars" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir Avatares do Boar"
           }
         }
       }
@@ -5203,6 +5793,26 @@
         }
       }
     },
+    "Pixel Boar" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Javali Pixel"
+          }
+        }
+      }
+    },
+    "Plasma Boar" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Javali Plasma"
+          }
+        }
+      }
+    },
     "Point the camera at a sign or a menu: read and translated, offline." : {
       "localizations" : {
         "pt" : {
@@ -5369,12 +5979,42 @@
         }
       }
     },
+    "Push local silicon past 15 tokens per second." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Passe de 15 tokens por segundo no seu chip."
+          }
+        }
+      }
+    },
+    "Push local silicon past 8 tokens per second." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Passe de 8 tokens por segundo no seu chip."
+          }
+        }
+      }
+    },
     "Q8_0 and Q4_0 use less memory for the KV cache; on some phones Q8_0 with flash attention generates slower." : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Q8_0 e Q4_0 usam menos memória para o cache KV; em alguns celulares, Q8_0 com flash attention gera mais devagar."
+          }
+        }
+      }
+    },
+    "Quantum Boar" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Javali Quântico"
           }
         }
       }
@@ -5729,6 +6369,16 @@
         }
       }
     },
+    "Retrowave Boar" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Javali Retrowave"
+          }
+        }
+      }
+    },
     "Retry Download" : {
       "localizations" : {
         "pt" : {
@@ -5779,6 +6429,16 @@
         }
       }
     },
+    "Run 5 evaluations." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rode 5 avaliações."
+          }
+        }
+      }
+    },
     "Run Benchmark" : {
       "localizations" : {
         "pt" : {
@@ -5805,6 +6465,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Rodar a configuração de novo confere seus modelos e a biblioteca."
+          }
+        }
+      }
+    },
+    "Run a Deep Research." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Faça uma Pesquisa Profunda."
+          }
+        }
+      }
+    },
+    "Running without Google Play services." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rodando sem os serviços do Google Play."
           }
         }
       }
@@ -6025,6 +6705,16 @@
         }
       }
     },
+    "Senior Boar" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Javali Sênior"
+          }
+        }
+      }
+    },
     "Set a passcode for this %@ in Settings to use the lock." : {
       "localizations" : {
         "pt" : {
@@ -6121,6 +6811,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Compartilhar resultados"
+          }
+        }
+      }
+    },
+    "Share an evaluation's results." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compartilhe os resultados de uma avaliação."
           }
         }
       }
@@ -6345,6 +7045,46 @@
         }
       }
     },
+    "Snow Boar" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Javali Neve"
+          }
+        }
+      }
+    },
+    "Solar Guardian" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guardião Solar"
+          }
+        }
+      }
+    },
+    "Solarpunk Boar" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Javali Solarpunk"
+          }
+        }
+      }
+    },
+    "Somewhere in Boar Labs, a question is waiting." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Em algum lugar do Boar Labs, uma pergunta está esperando."
+          }
+        }
+      }
+    },
     "Sorry, BOAR doesn't speak %@ yet. Ask in English." : {
       "localizations" : {
         "pt" : {
@@ -6441,6 +7181,16 @@
         }
       }
     },
+    "Sovereign Boar" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Javali Soberano"
+          }
+        }
+      }
+    },
     "Space and physics" : {
       "localizations" : {
         "pt" : {
@@ -6451,12 +7201,32 @@
         }
       }
     },
+    "Speak to BOAR." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fale com o BOAR."
+          }
+        }
+      }
+    },
     "Speak your question; it's transcribed on this %@" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Fale sua pergunta; ela é transcrita neste %@"
+          }
+        }
+      }
+    },
+    "SpecOps Boar" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Javali SpecOps"
           }
         }
       }
@@ -6487,6 +7257,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Velocidade em celulares"
+          }
+        }
+      }
+    },
+    "Spirit Boar" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Javali Espírito"
           }
         }
       }
@@ -6531,6 +7311,26 @@
         }
       }
     },
+    "Start 10 chats." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comece 10 conversas."
+          }
+        }
+      }
+    },
+    "Start 100 chats." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comece 100 conversas."
+          }
+        }
+      }
+    },
     "Started from a connected computer (request %@)." : {
       "localizations" : {
         "pt" : {
@@ -6567,6 +7367,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Fica no seu %@"
+          }
+        }
+      }
+    },
+    "Stealth Boar" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Javali Furtivo"
+          }
+        }
+      }
+    },
+    "Steampunk Boar" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Javali Steampunk"
           }
         }
       }
@@ -6809,6 +7629,26 @@
         }
       }
     },
+    "Tactical Boar" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Javali Tático"
+          }
+        }
+      }
+    },
+    "Tensor Boar" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Javali Tensor"
+          }
+        }
+      }
+    },
     "Text read" : {
       "localizations" : {
         "pt" : {
@@ -6899,12 +7739,32 @@
         }
       }
     },
+    "The forest is quietest between 2 AM and 4 AM." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A floresta fica mais quieta entre 2h e 4h."
+          }
+        }
+      }
+    },
     "The key that opens your chats is gone (this %@'s passcode was turned off). The chats can't be read any more." : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "A chave que abre suas conversas sumiu (o código deste %@ foi desligado). As conversas não podem mais ser lidas."
+          }
+        }
+      }
+    },
+    "The legendary avatar: unlock every other one." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O avatar lendário: libere todos os outros."
           }
         }
       }
@@ -7270,6 +8130,16 @@
         }
       }
     },
+    "Tinker with the engine in Advanced tweaks." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mexa no motor nos Ajustes avançados."
+          }
+        }
+      }
+    },
     "Tiny" : {
       "localizations" : {
         "pt" : {
@@ -7346,6 +8216,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Total"
+          }
+        }
+      }
+    },
+    "Totem Boar" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Javali Totem"
           }
         }
       }
@@ -7510,12 +8390,32 @@
         }
       }
     },
+    "Unicorn Boar" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Javali Unicórnio"
+          }
+        }
+      }
+    },
     "Unlock BOAR in its window to change settings." : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Desbloqueie o BOAR na janela dele para mudar os ajustes."
+          }
+        }
+      }
+    },
+    "Unlock boar avatars as you use BOAR and wear them in the chat; some unlock new themes." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Libere avatares de javali enquanto usa o BOAR e use-os na conversa; alguns liberam novos temas."
           }
         }
       }
@@ -7540,12 +8440,62 @@
         }
       }
     },
+    "Unlocked %@" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Liberado em %@"
+          }
+        }
+      }
+    },
+    "Urban Boar" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Javali Urbano"
+          }
+        }
+      }
+    },
     "Use" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Usar"
+          }
+        }
+      }
+    },
+    "Use BOAR on 3 different days." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Use o BOAR em 3 dias diferentes."
+          }
+        }
+      }
+    },
+    "Use BOAR on 30 different days." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Use o BOAR em 30 dias diferentes."
+          }
+        }
+      }
+    },
+    "Use BOAR on 7 different days." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Use o BOAR em 7 dias diferentes."
           }
         }
       }
@@ -7612,6 +8562,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Voz"
+          }
+        }
+      }
+    },
+    "Void Boar" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Javali Vazio"
           }
         }
       }
@@ -8003,6 +8963,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Dá para ver este tour de novo nas Configurações."
+          }
+        }
+      }
+    },
+    "You unlock avatars by using BOAR. Everything is counted on this %@ and never leaves it." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Você libera avatares usando o BOAR. Tudo é contado neste %@ e nunca sai dele."
           }
         }
       }

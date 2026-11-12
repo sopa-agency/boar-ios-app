@@ -13,6 +13,8 @@ import Foundation
 ///     -uiAsk "<q1> || <q2>"  after any -uiImport, ask the questions in one new chat, each after the previous answer
 ///     -uiVault <json>    store that Boar Avatars state (`truffleVault`, Android's JSON) before the vault opens; junk
 ///                        stores an empty one. e.g. -uiVault '{"facts":{"answers":9},"unlocked":{"tactical":1}}'
+///     -uiBoarverse YES   Boarverse on for this run (Boar Avatars in Settings, the equipped avatar), without saving it
+///     -uiIcon <id>       that unlocked avatar equipped for this run
 enum DebugLaunch {
     #if DEBUG
     /// `-uiScreen <name>`: the argument domain of UserDefaults carries it.
@@ -38,6 +40,10 @@ enum DebugLaunch {
         guard let i = args.firstIndex(of: "-uiVault"), args.indices.contains(i + 1) else { return nil }
         return args[i + 1]
     }()
+    /// `-uiIcon <id>`.
+    static let icon: String? = UserDefaults.standard.string(forKey: "uiIcon")
+    /// `-uiBoarverse YES`.
+    static let boarverse: Bool = UserDefaults.standard.bool(forKey: "uiBoarverse")
     /// `-uiScroll <points>` or `-uiScroll end`.
     static let scroll: String? = UserDefaults.standard.string(forKey: "uiScroll")
     /// iPhone 13 memory: the demo shows the owner's phone numbers, not the Mac's.

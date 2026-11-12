@@ -21,6 +21,14 @@ struct RootView: View {
     private var main: some View {
         content
             .groupedFormStyle()
+            // Boar Avatars: the equipped one in the mascot's place, and "New avatar unlocked" over the screens (under
+            // the lock).
+            .environment(\.truffle, model.services?.vault.equipped)
+            .overlay(alignment: .top) {
+                if let vault = model.services?.vault {
+                    FreshAvatarBanner(vault: vault, hidden: coverKind != nil || scenePhase != .active)
+                }
+            }
             #if os(macOS)
             .overlay { cover }
             #else

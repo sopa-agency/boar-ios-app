@@ -3,6 +3,7 @@
 # dark screenshot per screen, each launched straight onto the screen with -uiDemo -uiScreen (no taps, no model).
 #
 #   [MODES=dark] [UI_LANG=pt] [THEME=campfire] scripts/ui-capture.sh <out-dir> [--no-build] [--only name,name] [--wait seconds]
+#   VAULT='<json>' [ICON=<id>] scripts/ui-capture.sh ...   Boarverse on, that Boar Avatars state, that avatar equipped
 #
 # THEME shows the app in that theme (-uiTheme, this run only); a theme other than System looks the same in both modes,
 # so it is captured once (light) unless MODES says otherwise.
@@ -91,6 +92,8 @@ about-2|about|end
 lock|lock|
 labs|labs|
 labs-2|labs|end
+avatars|avatars|
+avatars-2|avatars|end
 tour-welcome|tour-welcome|
 tour-theme|tour-theme|
 tour-styles|tour-styles|
@@ -118,6 +121,8 @@ for MODE in ${MODES:-light dark}; do
     ARGS=(-uiDemo -uiScreen "$SCREEN" -AppleLanguages "(${UI_LANG:-en})" -AppleLocale "$LOCALE")
     [ -n "$SCROLL" ] && ARGS+=(-uiScroll "$SCROLL")
     [ -n "${THEME:-}" ] && ARGS+=(-uiTheme "$THEME")
+    [ -n "${VAULT:-}" ] && ARGS+=(-uiBoarverse YES -uiVault "$VAULT")
+    [ -n "${ICON:-}" ] && ARGS+=(-uiIcon "$ICON")
     xcrun simctl launch "$UDID" "$BUNDLE" "${ARGS[@]}" >/dev/null
     EXTRA=0; [ -n "$SCROLL" ] && EXTRA=4
     sleep $((WAIT + EXTRA))

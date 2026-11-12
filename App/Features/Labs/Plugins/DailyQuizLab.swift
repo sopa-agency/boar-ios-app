@@ -5,7 +5,7 @@ import SwiftUI
 /// offline and without the model (BoarRAG `DailyQuiz`, the same draw as Android's for the same date and library). It
 /// stays behind its classified tile: leaking the tile (the Labs easter egg) unlocks it, as on Android's normal builds.
 /// Today's answers are kept, so leaving resumes the quiz and replaying counts nothing more. Right answers and the days
-/// played count for Boar Avatars (knight, elder), as on Android; the copy says so again once the avatars have a screen.
+/// played count for Boar Avatars (knight, elder), and the copy says so, as on Android.
 struct DailyQuizLab: LabPlugin {
     let id = "dailyQuiz"
     let order = 80
@@ -13,7 +13,7 @@ struct DailyQuizLab: LabPlugin {
     let art: String? = "lab_daily_quiz"
     let status = LabStatus.alpha
     var title: String { String(localized: "Daily Quiz") }
-    var body: String { String(localized: "A short daily quiz from BOAR's library, offline.") }
+    var body: String { String(localized: "A short daily quiz from BOAR's library, offline. Right answers unlock Boar Avatars.") }
 
     func content() -> AnyView { AnyView(DailyQuizSections()) }
 }

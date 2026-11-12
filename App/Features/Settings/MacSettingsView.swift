@@ -38,6 +38,7 @@ private struct MacSettingsTabs: View {
                     SettingsToneSection(services: services, bridge: bridge)
                     SettingsMemorySection(bridge: bridge)
                     SettingsDisplaySection(bridge: bridge)
+                    SettingsAvatarsSection(vault: services.vault)
                     SettingsVoiceSection(bridge: bridge)
                 }
                 .formStyle(.grouped)

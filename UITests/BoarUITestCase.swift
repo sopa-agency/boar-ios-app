@@ -176,7 +176,7 @@ class BoarUITestCase: XCTestCase {
     }
 
     /// Waits up to 2 s for a switch's value to pass `check` (nil when it has none, so a nil value compares too).
-    private func waitValue(_ s: XCUIElement, until check: (String?) -> Bool) -> Bool {
+    func waitValue(_ s: XCUIElement, until check: (String?) -> Bool) -> Bool {
         for _ in 0..<10 {
             if check(s.value as? String) { return true }
             usleep(200_000)

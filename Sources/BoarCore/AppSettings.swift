@@ -176,6 +176,8 @@ public final class AppSettings: @unchecked Sendable {
         get { store.value(forKey: "truffleVault").flatMap { $0.objectValue == nil ? nil : $0.jsonString } }
         set { set("truffleVault", newValue.flatMap { JSONValue(jsonString: $0) }) }
     }
+    /// The equipped avatar's id (android `iconId`); nil for BOAR's own.
+    public var iconId: String? { get { str("iconId") } set { set("iconId", newValue.map(JSONValue.string)) } }
 
     // MARK: PIN lock (the Keychain/LocalAuthentication path replaces this on iOS; kept for parity and migration)
 
