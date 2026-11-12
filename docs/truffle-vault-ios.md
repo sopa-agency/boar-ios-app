@@ -3,7 +3,8 @@
 Study and plan, 2026-11-10, against `rferrari/boar-app` at `Fixtures/SOURCE_SHA`. Steps 1 (the engine) and 2 (counting,
 see [Step 2 as built](#step-2-as-built-counting-2026-11-11)) are merged; steps 3 (the art) and 4 (the screens) are
 built, see [Step 3 as built](#step-3-as-built-art-2026-11-12) and [Step 4 as built](#step-4-as-built-screens-2026-11-12);
-step 5 (the themes) too, see [Step 5 as built](#step-5-as-built-themes-2026-11-12). Left: the launcher icons (step 6). The UI
+step 5 (the themes) and step 6 (the app icons, off like Android) too, see [Step 5 as built](#step-5-as-built-themes-2026-11-12)
+and [Step 6 as built](#step-6-as-built-app-icons-2026-11-12). The UI
 says **Boar Avatars**, and the switch that turns them on says **Boarverse**; the Android code still says vault and truffle,
 and so does this plan when it names code.
 
@@ -241,6 +242,32 @@ them into `ThemePalettes.swift` (and checks that the JVM's Paper equals the one 
 - **Paper stays open on iOS**, also with Boarverse off: System shows it in light mode, and older builds stored "light".
   It is listed in the picker when snow brings it (or while it is the current choice).
 - No Lab grants a theme yet, on either platform; only the debug grant does.
+
+## Step 6 as built (app icons, 2026-11-12)
+
+Off by default, as Android's `TRUFFLE_LAUNCHER_ICONS`: `BOAR_LAUNCHER_ICONS = NO` in `App/Config/App.xcconfig` excludes the
+icons' catalog and the app ships none. To turn it on:
+
+1. `python3 scripts/build-launcher-icons.py`: one `AppIcon-<id>` set per boar (1024 px PNG) in the git-ignored
+   `App/Resources/LauncherIcons.xcassets`, from Android's 512 px art at `SOURCE_SHA`, framed like its adaptive icon
+   (the art fills the icon, 288/300 of it visible).
+2. `xcodegen generate`.
+3. `BOAR_LAUNCHER_ICONS = YES` in `Local.xcconfig` (or on the xcodebuild command line): actool adds every set as an
+   alternate icon (`ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS`).
+
+`TruffleVault.launcherIcons` reads `CFBundleAlternateIcons` from the Info.plist, so the code needs no flag of its own.
+`applyIcon` puts the equipped avatar on the icon (BOAR's own while Boarverse is off) at Equip, when Boarverse changes and
+whenever BOAR becomes active, which also sets BOAR's own back after a build without the icons. The avatar row's note
+says "Changes the boar in the chat and the app icon." when the build has them.
+
+- **At once, not when BOAR leaves:** iOS only switches the icon while the app is in front, and always shows its own
+  "You have changed the icon" alert. Android switches when the app stops, because disabling the alias it runs from
+  closes it.
+- **Size:** with the icons the compiled catalog grows from 3 MB to 76 MB (actool keeps every size of each one), which
+  is one more reason it stays off.
+- **The Mac** never has them: only the Dock icon of a running app could change.
+- Checked on the simulator: the Cosmo icon and the system's alert at launch with Cosmo equipped, and BOAR's own icon back
+  after installing a build without the icons. Not yet on the iPhone.
 
 ## Questions for Android
 
