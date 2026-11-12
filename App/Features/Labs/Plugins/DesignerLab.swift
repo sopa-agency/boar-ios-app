@@ -1,4 +1,5 @@
 import BoarCore
+import ImageIO
 import ImagePlayground
 import SwiftUI
 
@@ -18,65 +19,87 @@ struct DesignerLab: LabPlugin {
     var body: String { String(localized: "Draw an illustration from a few words with Apple's Image Playground, on this \(Platform.deviceNoun).") }
 
     func content() -> AnyView { AnyView(DesignerSections()) }
+    func presenter() -> AnyView? { AnyView(DesignerPresenter()) }
 }
 
-/// The pictures Designer made, newest first, as files in `designer/` under BOAR's files (Erase All Data removes it).
-@MainActor
-enum DesignerGallery {
+/// The pictures Designer made, newest first, as files in `designer/` under BOAR's files, and the one open in the sheet.
+/// Erase All Data and the lock's Forgot PIN erase them; Clear Chats keeps them, as Android's CHATS scope does.
+@MainActor @Observable
+final class DesignerGallery {
+    static let shared = DesignerGallery()
+
+    private(set) var pictures: [URL] = []
+    /// The picture open in the page's sheet (`DesignerPresenter`).
+    var shown: URL?
+    /// The last picture from Apple's sheet couldn't be kept.
+    var keepFailed = false
+
     static var dir: URL { AppPaths.filesDir.appending(path: "designer", directoryHint: .isDirectory) }
 
-    static func pictures() -> [URL] {
-        let keys: [URLResourceKey] = [.creationDateKey]
-        let files = (try? FileManager.default.contentsOfDirectory(at: dir, includingPropertiesForKeys: keys)) ?? []
-        func date(_ url: URL) -> Date { (try? url.resourceValues(forKeys: Set(keys)).creationDate) ?? .distantPast }
-        return files.filter { !$0.lastPathComponent.hasPrefix(".") }.sorted { date($0) > date($1) }
+    func reload() {
+        let keys: Set<URLResourceKey> = [.creationDateKey]
+        let files = (try? FileManager.default.contentsOfDirectory(at: Self.dir, includingPropertiesForKeys: Array(keys))) ?? []
+        pictures = files.filter { !$0.lastPathComponent.hasPrefix(".") }
+            .map { ($0, (try? $0.resourceValues(forKeys: keys).creationDate) ?? .distantPast) }
+            .sorted { $0.1 > $1.1 }
+            .map(\.0)
     }
 
-    /// Copies the sheet's result (a temporary file) in; nil if it couldn't.
-    @discardableResult
-    static func keep(_ url: URL) -> URL? {
+    /// Copies the sheet's result (a temporary file) in.
+    func keep(_ url: URL) {
         let fm = FileManager.default
-        try? fm.createDirectory(at: dir, withIntermediateDirectories: true)
         let ext = url.pathExtension.isEmpty ? "png" : url.pathExtension
-        let target = dir.appending(path: "designer-\(Int(Date().timeIntervalSince1970 * 1000)).\(ext)")
+        let target = Self.dir.appending(path: "designer-\(Int(Date().timeIntervalSince1970 * 1000)).\(ext)")
         do {
+            try fm.createDirectory(at: Self.dir, withIntermediateDirectories: true)
             try fm.copyItem(at: url, to: target)
-            return target
         } catch {
             BoarLog.logger("labs").error("designer keep: \(error.localizedDescription, privacy: .public)")
-            return nil
+            keepFailed = true
         }
+        reload()
     }
 
-    static func delete(_ url: URL) { try? FileManager.default.removeItem(at: url) }
+    func delete(_ url: URL) {
+        try? FileManager.default.removeItem(at: url)
+        if shown == url { shown = nil }
+        reload()
+    }
+
+    /// Every picture, and the sheet closes.
+    func erase() {
+        try? FileManager.default.removeItem(at: Self.dir)
+        shown = nil
+        reload()
+    }
 }
 
 /// The page: what to draw (or why it can't here), then the gallery.
 private struct DesignerSections: View {
-    @State private var pictures: [URL] = DesignerGallery.pictures()
-    @State private var shown: URL?
+    let gallery = DesignerGallery.shared
 
     var body: some View {
         // iOS 18.4 brings the sheet's style choice, which is how the cloud provider stays out.
         if #available(iOS 18.4, macOS 15.4, *) {
-            DesignerComposer(pictures: $pictures)
+            DesignerComposer()
         } else {
             DesignerUnavailable()
         }
-        if !pictures.isEmpty {
+        if !gallery.pictures.isEmpty {
             Section {
                 LazyVGrid(columns: [GridItem(.adaptive(minimum: 96), spacing: 8)], spacing: 8) {
-                    ForEach(pictures, id: \.self) { url in
+                    ForEach(gallery.pictures, id: \.self) { url in
                         Button {
-                            shown = url
+                            gallery.shown = url
                         } label: {
                             DesignerThumbnail(url: url)
                         }
                         .buttonStyle(.plain)
                         .accessibilityLabel(Text("Picture"))
+                        .accessibilityIdentifier("designer.picture")
                         .contextMenu {
                             ShareLink(item: url)
-                            Button("Delete", role: .destructive) { delete(url) }
+                            Button("Delete", role: .destructive) { gallery.delete(url) }
                         }
                     }
                 }
@@ -84,25 +107,29 @@ private struct DesignerSections: View {
             } header: {
                 Text("On this \(Platform.deviceNoun)")
             }
-            .sheet(item: Binding(get: { shown.map(ShownPicture.init) }, set: { shown = $0?.url })) { picture in
-                DesignerPictureView(url: picture.url) {
-                    delete(picture.url)
-                    shown = nil
-                }
-            }
         }
     }
+}
 
-    private func delete(_ url: URL) {
-        DesignerGallery.delete(url)
-        pictures = DesignerGallery.pictures()
+/// The open picture's sheet, behind the whole lab page (`LabPlugin.presenter`).
+private struct DesignerPresenter: View {
+    @Bindable private var gallery = DesignerGallery.shared
+
+    var body: some View {
+        Color.clear
+            .sheet(item: Binding(get: { gallery.shown.map(ShownPicture.init) }, set: { gallery.shown = $0?.url })) { picture in
+                DesignerPictureView(url: picture.url) { gallery.delete(picture.url) }
+            }
+            .alert("Couldn't keep the picture.", isPresented: $gallery.keepFailed) {
+                Button("OK", role: .cancel) {}
+            }
+            .onAppear { gallery.reload() }
     }
 }
 
 /// What to draw, and Apple's sheet; the reason instead where Image Playground isn't on.
 @available(iOS 18.4, macOS 15.4, *)
 private struct DesignerComposer: View {
-    @Binding var pictures: [URL]
     @Environment(\.supportsImagePlayground) private var supported
     @State private var subject = ""
     @State private var drawing = false
@@ -126,7 +153,7 @@ private struct DesignerComposer: View {
                 }
             }
             .imagePlaygroundSheet(isPresented: $drawing, concept: concept) { url in
-                if DesignerGallery.keep(url) != nil { pictures = DesignerGallery.pictures() }
+                DesignerGallery.shared.keep(url)
             }
             // On-device styles only: BOAR is offline, so never the external (cloud) provider.
             .imagePlaygroundGenerationStyle(.illustration, in: [.animation, .illustration, .sketch])
@@ -154,7 +181,7 @@ private struct ShownPicture: Identifiable {
     var id: URL { url }
 }
 
-/// A gallery cell: the picture, square.
+/// A gallery cell: the picture, square, decoded at cell size.
 private struct DesignerThumbnail: View {
     let url: URL
 
@@ -162,10 +189,11 @@ private struct DesignerThumbnail: View {
         Color.clear
             .aspectRatio(1, contentMode: .fit)
             .overlay {
-                AsyncImage(url: url) { image in
+                DesignerImage(url: url, maxPixels: 320) { image in
                     image.resizable().scaledToFill()
-                } placeholder: {
-                    Color.secondary.opacity(0.15)
+                } placeholder: { failed in
+                    Rectangle().fill(.boar(.border))
+                        .overlay { if failed { Image(systemName: "photo").foregroundStyle(.boar(.dim)) } }
                 }
             }
             .clipShape(.rect(cornerRadius: 10))
@@ -180,10 +208,14 @@ private struct DesignerPictureView: View {
 
     var body: some View {
         NavigationStack {
-            AsyncImage(url: url) { image in
+            DesignerImage(url: url, maxPixels: 2048) { image in
                 image.resizable().scaledToFit()
-            } placeholder: {
-                ProgressView()
+            } placeholder: { failed in
+                if failed {
+                    Text("Couldn't open the picture.").foregroundStyle(.boar(.muted))
+                } else {
+                    ProgressView()
+                }
             }
             .padding()
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -202,4 +234,42 @@ private struct DesignerPictureView: View {
         }
         .macSheetSize(width: 560, height: 600)
     }
+}
+
+/// A picture file decoded off the main thread, no larger than `maxPixels` on its long side (ImageIO's thumbnail, so a
+/// gallery cell doesn't hold the whole PNG); `placeholder(true)` when the file can't be read.
+private struct DesignerImage<Content: View, Placeholder: View>: View {
+    let url: URL
+    let maxPixels: Int
+    @ViewBuilder let content: (Image) -> Content
+    @ViewBuilder let placeholder: (_ failed: Bool) -> Placeholder
+    @State private var image: CGImage?
+    @State private var failed = false
+
+    var body: some View {
+        Group {
+            if let image {
+                content(Image(decorative: image, scale: 1))
+            } else {
+                placeholder(failed)
+            }
+        }
+        .task(id: url) {
+            let url = url, maxPixels = maxPixels
+            let decoded = await Task.detached(priority: .userInitiated) { decodePicture(url, maxPixels: maxPixels) }.value
+            image = decoded
+            failed = decoded == nil
+        }
+    }
+}
+
+/// `DesignerImage`'s decode, outside the generic view so the detached task captures none of its types.
+nonisolated private func decodePicture(_ url: URL, maxPixels: Int) -> CGImage? {
+    guard let source = CGImageSourceCreateWithURL(url as CFURL, nil) else { return nil }
+    let options: [CFString: Any] = [
+        kCGImageSourceCreateThumbnailFromImageAlways: true,
+        kCGImageSourceCreateThumbnailWithTransform: true,
+        kCGImageSourceThumbnailMaxPixelSize: maxPixels,
+    ]
+    return CGImageSourceCreateThumbnailAtIndex(source, 0, options as CFDictionary)
 }

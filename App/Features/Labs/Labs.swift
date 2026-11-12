@@ -58,6 +58,9 @@ protocol LabPlugin {
     var answerCheck: (any AnswerCheck)? { get }
     /// The experiment's page, below the shared header.
     func content() -> AnyView
+    /// The page's sheets, behind the whole page rather than on one of its rows: a row the list recycles (it leaves the
+    /// screen when the device turns) would close a sheet presented from it.
+    func presenter() -> AnyView?
     /// Rows in a finished answer's More menu (android `answerActions`, the 🧩 sheet).
     func answerActions(_ answer: AnswerRef) -> [LabAnswerAction]
     /// A small badge in the chat's toolbar (android `HeaderBadge`); `open` shows this lab's page.
@@ -97,6 +100,7 @@ extension LabPlugin {
     var answerTool: (any AnswerTool)? { nil }
     var answerCheck: (any AnswerCheck)? { nil }
     func content() -> AnyView { AnyView(EmptyView()) }
+    func presenter() -> AnyView? { nil }
     func answerActions(_ answer: AnswerRef) -> [LabAnswerAction] { [] }
     func headerBadge(open: @escaping () -> Void) -> AnyView? { nil }
     func eraseUserData() {}

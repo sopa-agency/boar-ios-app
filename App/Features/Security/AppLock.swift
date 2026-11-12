@@ -165,8 +165,9 @@ final class AppLock {
     }
 
     /// The key is lost: the sealed chats can't be read, so they're erased with it and the lock turns off. Personal Files
-    /// go too (android Forgot PIN, 2e0dafc0): only the chats are sealed, and the files would stay readable to whoever
-    /// opened BOAR without the owner's passcode. Models and knowledge packs stay. A failed erase keeps the lock on.
+    /// and Boar Designer's pictures go too (android Forgot PIN, 2e0dafc0): only the chats are sealed, and the rest would
+    /// stay readable to whoever opened BOAR without the owner's passcode. Models and knowledge packs stay. A failed erase
+    /// keeps the lock on.
     func eraseChatsAndReset() async {
         guard !busy else { return }
         busy = true
@@ -183,6 +184,8 @@ final class AppLock {
             return
         }
         Labs.shared.eraseUserData()
+        // Boar Designer's pictures too: they can show what the chats were about (android PinLock erases EVERYTHING).
+        DesignerGallery.shared.erase()
         services.chats.cipher = PlainCipher()
         keychain.delete()
         keyLoaded = false

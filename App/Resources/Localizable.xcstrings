@@ -2466,6 +2466,26 @@
         }
       }
     },
+    "Couldn't keep the picture." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi possível guardar a imagem."
+          }
+        }
+      }
+    },
+    "Couldn't open the picture." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi possível abrir a imagem."
+          }
+        }
+      }
+    },
     "Couldn't prepare the library" : {
       "localizations" : {
         "pt" : {

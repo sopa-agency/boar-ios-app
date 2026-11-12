@@ -17,8 +17,7 @@ enum DataPurge {
             for c in try s.knowledgeBase.collections() { try s.knowledgeBase.deleteCollection(c.id) }
             _ = try s.knowledgeBase.deleteSeedChunksWithPrefix("wiki-")
             let fm = FileManager.default
-            // designer: Boar Designer's pictures (android EVERYTHING scope deletes them too).
-            for name in AppPaths.downloadDirs + ["integrity.json", "setup_progress.json", "discovered_models.json", "model-load.marker.json", "designer"] {
+            for name in AppPaths.downloadDirs + ["integrity.json", "setup_progress.json", "discovered_models.json", "model-load.marker.json"] {
                 try? fm.removeItem(at: s.filesDir.appending(path: name))
             }
             // On the Mac the download folders are excluded one by one: recreate them excluded before the next download.
@@ -26,6 +25,8 @@ enum DataPurge {
             return ()
         }
         Labs.shared.eraseUserData()
+        // Boar Designer's pictures (android EVERYTHING scope deletes them too; Clear Chats keeps them).
+        DesignerGallery.shared.erase()
         if let lock, lock.enabled { await lock.eraseChatsAndReset() }
         services.settings.resetPreferences()
         // Boar Avatars: counts, unlocked avatars and the Boarverse switch (outside preferenceKeys, as Reset settings keeps them).

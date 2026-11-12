@@ -1,6 +1,8 @@
 #if DEBUG
 import BoarModels
+import CoreGraphics
 import Foundation
+import ImageIO
 
 /// Demo state on disk: BOAR's files are wiped, then the models the demo calls "installed" are created as sparse files of
 /// the catalog's exact size (so `AssetStore.status` says present, the disk gauge has a plausible number, and no GGUF is
@@ -18,12 +20,35 @@ enum DemoFiles {
         try? fm.createDirectory(at: AppPaths.filesDir, withIntermediateDirectories: true)
         AppPaths.markFilesDir(AppPaths.filesDir)
         if UserDefaults.standard.bool(forKey: "uiBasket") { DemoContent.writeBasket() }
+        if UserDefaults.standard.bool(forKey: "uiDesigner") { writeDesignerPictures() }
         // The setup screens need an empty phone; every other screen needs a ready one.
         if DebugLaunch.screen?.hasPrefix("setup") == true { return }
         guard let catalog = try? Catalog.bundled() else { return }
         for id in installedIds {
             guard let asset = catalog.byId(id) else { continue }
             makeSparse(AppPaths.filesDir.appending(path: asset.filename), size: asset.sizeBytes)
+        }
+    }
+
+    /// `-uiDesigner YES`: three pictures in Boar Designer's gallery (gradients drawn here, no Image Playground needed).
+    private static func writeDesignerPictures() {
+        let dir = AppPaths.filesDir.appending(path: "designer", directoryHint: .isDirectory)
+        try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+        let colors: [(CGFloat, CGFloat, CGFloat)] = [(0.95, 0.45, 0.2), (0.2, 0.6, 0.9), (0.4, 0.8, 0.45)]
+        for (i, c) in colors.enumerated() {
+            let side = 512
+            guard let ctx = CGContext(data: nil, width: side, height: side, bitsPerComponent: 8, bytesPerRow: 0,
+                                      space: CGColorSpaceCreateDeviceRGB(),
+                                      bitmapInfo: CGImageAlphaInfo.noneSkipLast.rawValue),
+                  let gradient = CGGradient(colorSpace: CGColorSpaceCreateDeviceRGB(),
+                                           colorComponents: [c.0, c.1, c.2, 1, c.0 * 0.3, c.1 * 0.3, c.2 * 0.3, 1],
+                                           locations: [0, 1], count: 2) else { continue }
+            ctx.drawLinearGradient(gradient, start: .zero, end: CGPoint(x: side, y: side), options: [])
+            let url = dir.appending(path: "designer-demo-\(i).png")
+            guard let image = ctx.makeImage(),
+                  let dest = CGImageDestinationCreateWithURL(url as CFURL, "public.png" as CFString, 1, nil) else { continue }
+            CGImageDestinationAddImage(dest, image, nil)
+            CGImageDestinationFinalize(dest)
         }
     }
 
