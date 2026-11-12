@@ -15,9 +15,19 @@ struct ThemeTokensTests {
 
     static var themes: [[String: Any]] { fixture["themes"] as? [[String: Any]] ?? [] }
 
+    /// Boar Avatars' themes as Compose computes them on the JVM (scripts/export-vault-themes.sh).
+    nonisolated(unsafe) static let vaultThemes: [[String: Any]] = {
+        let root = URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
+        let url = root.appendingPathComponent("Fixtures/golden/theme/vault-themes.json")
+        guard let data = try? Data(contentsOf: url),
+              let obj = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]] else { return [] }
+        return obj
+    }()
+
     @Test func everyPaletteMatchesKotlin() throws {
         #expect(Self.themes.count == 3)
-        for theme in Self.themes {
+        #expect(Self.vaultThemes.map { $0["id"] as? String } == ThemeTokens.vault.map(\.id))
+        for theme in Self.themes + Self.vaultThemes {
             let id = try #require(theme["id"] as? String)
             let palette = try #require(ThemeTokens.all.first { $0.id == id }, "missing palette \(id)")
             #expect(palette.name == theme["name"] as? String)
@@ -54,8 +64,9 @@ struct ThemeTokensTests {
         // Older iOS builds stored the appearance.
         #expect(ThemeChoice(storedId: "light") == .theme("paper"))
         #expect(ThemeChoice(storedId: "dark") == .theme("moonlight"))
-        // A Vault theme without a palette here: Moonlight, like Android's lookup.
-        #expect(ThemeChoice(storedId: "tactical_red") == .theme("moonlight"))
+        // A Vault theme keeps its id; one this app has no palette for falls back to Moonlight, like Android's lookup.
+        #expect(ThemeChoice(storedId: "tactical_red") == .theme("tactical_red"))
+        #expect(ThemeChoice(storedId: "neon_pink") == .theme("moonlight"))
         // "system" is unknown to Android, which falls back to its default.
         #expect(ThemeTokens.byId(ThemeChoice.system.storedId).id == ThemeTokens.defaultId)
 
@@ -66,6 +77,26 @@ struct ThemeTokensTests {
         #expect(ThemeChoice.choices(current: .system) == [.system, .theme("campfire"), .theme("moonlight")])
         #expect(ThemeChoice.choices(current: .theme("campfire")).count == 3)
         #expect(ThemeChoice.choices(current: .theme("paper")).last == .theme("paper"))
+    }
+
+    /// Android's ThemePicker filter and MainActivity's guard.
+    @Test func boarAvatarsThemes() {
+        let none = Vault.State()
+        #expect(ThemeTokens.available(boarverse: false, state: none).map(\.id) == ["campfire", "moonlight"])
+        // Boarverse on: Tactical Red comes with it.
+        #expect(ThemeTokens.available(boarverse: true, state: none).map(\.id) == ["campfire", "moonlight", "tactical_red"])
+        // Snow brings Paper; a Lab's grant brings its theme. Off, neither shows.
+        let some = Vault.State(unlocked: ["snow": 1], themes: ["hacker_green": 2])
+        #expect(ThemeTokens.available(boarverse: true, state: some).map(\.id)
+                == ["campfire", "moonlight", "tactical_red", "hacker_green", "paper"])
+        #expect(ThemeTokens.available(boarverse: false, state: some).count == 2)
+        // Shown only while Boarverse is on, back to Moonlight otherwise; Paper and the open ones always.
+        #expect(ThemeChoice.theme("tactical_red").shown(boarverse: true) == .theme("tactical_red"))
+        #expect(ThemeChoice.theme("tactical_red").shown(boarverse: false) == .theme("moonlight"))
+        #expect(ThemeChoice.theme("paper").shown(boarverse: false) == .theme("paper"))
+        #expect(ThemeChoice.theme("campfire").shown(boarverse: false) == .theme("campfire"))
+        #expect(ThemeChoice.system.shown(boarverse: false) == .system)
+        #expect(ThemeTokens.all.count - ThemeTokens.available(boarverse: true, state: none).count == 6)
     }
 
     @Test func spacingAndRadii() throws {

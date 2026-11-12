@@ -353,6 +353,16 @@
         }
       }
     },
+    "%lld more themes are unlocked by Labs and avatars." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mais %lld temas são liberados pelos Labs e pelos avatares."
+          }
+        }
+      }
+    },
     "%lld of %lld articles" : {
       "localizations" : {
         "en" : {

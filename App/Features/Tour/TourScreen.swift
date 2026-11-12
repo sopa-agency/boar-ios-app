@@ -170,7 +170,7 @@ private struct TourThemePicker: View {
 
     var body: some View {
         FlowChips {
-            ForEach(ThemeChoice.choices(current: model.theme)) { choice in
+            ForEach(model.themeChoices) { choice in
                 let on = model.theme == choice
                 Button {
                     model.setTheme(choice)

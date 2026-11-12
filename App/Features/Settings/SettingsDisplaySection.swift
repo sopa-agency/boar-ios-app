@@ -1,8 +1,8 @@
 import BoarCore
 import SwiftUI
 
-/// The theme (System, Campfire, Moonlight; Android's picker plus System), the avatar while Boarverse is on (android
-/// `AvatarPicker`, under the theme), and haptics.
+/// The theme (System plus Android's picker: Campfire, Moonlight, and Boar Avatars' while Boarverse is on), the avatar
+/// while Boarverse is on (android `AvatarPicker`, under the theme), and haptics.
 struct SettingsDisplaySection: View {
     @Environment(AppModel.self) private var model
     let bridge: SettingsBridge
@@ -11,7 +11,7 @@ struct SettingsDisplaySection: View {
         let vault = model.services?.vault
         Section {
             Picker(selection: Binding(get: { model.theme }, set: { model.setTheme($0) })) {
-                ForEach(ThemeChoice.choices(current: model.theme)) { choice in
+                ForEach(model.themeChoices) { choice in
                     choice.title.tag(choice)
                 }
             } label: {
@@ -33,6 +33,13 @@ struct SettingsDisplaySection: View {
         } footer: {
             BoarFooter {
                 Text("System follows your \(Platform.deviceNoun)'s appearance: Moonlight when dark, Paper when light.")
+                // android ThemePicker: how many themes Boar Avatars still keeps closed.
+                if let vault, vault.enabled {
+                    // The themes the menu lists (all but System), so a current one outside them (Paper from an older
+                    // build) doesn't count as locked.
+                    let locked = ThemeTokens.all.count - (model.themeChoices.count - 1)
+                    if locked > 0 { Text("\(locked) more themes are unlocked by Labs and avatars.") }
+                }
                 #if !os(macOS)
                 Text("Text size follows your \(Platform.deviceNoun)'s Dynamic Type setting.")
                 #endif

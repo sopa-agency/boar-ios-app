@@ -86,6 +86,15 @@ final class TruffleVault {
 
     func unlocked(_ id: String) -> Bool { state.unlocked[id] != nil }
 
+    /// A Lab grants a theme (android `grantTheme`): open from now on while Boarverse is on.
+    func grantTheme(_ id: String) {
+        guard state.themes[id] == nil else { return }
+        var s = state
+        s.themes[id] = Int64((Date().timeIntervalSince1970 * 1000).rounded(.down))
+        state = s
+        settings.truffleVault = Vault.toJson(s)
+    }
+
     /// The message about `id` was shown (or Boarverse went off): the next one, if any, comes up.
     func shown(_ id: String) {
         fresh.removeAll { $0 == id }
