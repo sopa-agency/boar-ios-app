@@ -9,7 +9,8 @@ import Foundation
 ///     -uiScroll <pts|end> scroll the main list that far once the screen is up
 ///     -uiBasket YES      with -uiDemo, Boar Press's basket starts with the demo chats' answers
 ///     -uiStyle <id>      pick that answer style (succinct, detailed, personal, custom) on launch
-///     -uiTheme <id>      show that theme (system, campfire, moonlight, paper) for this run, without saving it
+///     -uiTheme <id>      show that theme (system, or any palette id: campfire, moonlight, paper, tactical_red…) for this
+///                        run, without saving it; a Boar Avatars theme needs -uiBoarverse YES
 ///     -uiAsk "<q1> || <q2>"  after any -uiImport, ask the questions in one new chat, each after the previous answer
 ///     -uiVault <json>    store that Boar Avatars state (`truffleVault`, Android's JSON) before the vault opens; junk
 ///                        stores an empty one. e.g. -uiVault '{"facts":{"answers":9},"unlocked":{"tactical":1}}'

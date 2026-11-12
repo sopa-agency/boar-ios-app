@@ -20,5 +20,7 @@ cp -R "$ROOT/scripts/vault-themes/." "$WORK/"
 cp "$ANDROID/gradlew" "$WORK/"
 mkdir -p "$WORK/gradle" && cp -R "$ANDROID/gradle/wrapper" "$WORK/gradle/"
 OUT="$ROOT/Fixtures/golden/theme/vault-themes.json"
-(cd "$WORK" && ./gradlew -q --no-daemon run) > "$OUT"
+# Into the work folder first: a failed run (no JDK, no network, a compile error) leaves the fixture as it was.
+(cd "$WORK" && ./gradlew -q --no-daemon run) > "$WORK/vault-themes.json"
+mv "$WORK/vault-themes.json" "$OUT"
 echo "wrote ${OUT#$ROOT/}"

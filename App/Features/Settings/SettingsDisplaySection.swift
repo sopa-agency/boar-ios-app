@@ -1,8 +1,8 @@
 import BoarCore
 import SwiftUI
 
-/// The theme (System, Campfire, Moonlight; Android's picker plus System), the avatar while Boarverse is on (android
-/// `AvatarPicker`, under the theme), and haptics.
+/// The theme (System plus Android's picker: Campfire, Moonlight, and Boar Avatars' while Boarverse is on), the avatar
+/// while Boarverse is on (android `AvatarPicker`, under the theme), and haptics.
 struct SettingsDisplaySection: View {
     @Environment(AppModel.self) private var model
     let bridge: SettingsBridge
@@ -35,7 +35,9 @@ struct SettingsDisplaySection: View {
                 Text("System follows your \(Platform.deviceNoun)'s appearance: Moonlight when dark, Paper when light.")
                 // android ThemePicker: how many themes Boar Avatars still keeps closed.
                 if let vault, vault.enabled {
-                    let locked = ThemeTokens.all.count - ThemeTokens.available(boarverse: true, state: vault.state).count
+                    // The themes the menu lists (all but System), so a current one outside them (Paper from an older
+                    // build) doesn't count as locked.
+                    let locked = ThemeTokens.all.count - (model.themeChoices.count - 1)
                     if locked > 0 { Text("\(locked) more themes are unlocked by Labs and avatars.") }
                 }
                 #if !os(macOS)
