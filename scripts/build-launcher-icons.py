@@ -42,15 +42,15 @@ def sips(*args: str) -> None:
 def main() -> None:
     sha = (ROOT / "Fixtures/SOURCE_SHA").read_text().strip()
     ids = [icon["id"] for icon in json.loads(ROSTER.read_text())["icons"]]
-    if OUT.exists():
-        shutil.rmtree(OUT)
-    OUT.mkdir(parents=True)
-    (OUT / "Contents.json").write_text(json.dumps({"info": {"author": "xcode", "version": 1}}, indent=2) + "\n")
     with tempfile.TemporaryDirectory() as tmp:
+        # Built aside and moved in at the end: a failed run (no clone, a missing SHA) leaves the old catalog whole.
+        catalog = Path(tmp) / "LauncherIcons.xcassets"
+        catalog.mkdir()
+        (catalog / "Contents.json").write_text(json.dumps({"info": {"author": "xcode", "version": 1}}, indent=2) + "\n")
         for i in ids:
             src = Path(tmp) / f"{i}.webp"
             src.write_bytes(git("show", f"{sha}:{HIRES}/{i}.webp"))
-            icon_set = OUT / f"AppIcon-{i}.appiconset"
+            icon_set = catalog / f"AppIcon-{i}.appiconset"
             icon_set.mkdir()
             png = icon_set / "icon.png"
             sips("-s", "format", "png", "-z", str(SCALED), str(SCALED), str(src), "--out", str(png))
@@ -60,6 +60,9 @@ def main() -> None:
                 "info": {"author": "xcode", "version": 1},
             }
             (icon_set / "Contents.json").write_text(json.dumps(contents, indent=2) + "\n")
+        if OUT.exists():
+            shutil.rmtree(OUT)
+        shutil.move(str(catalog), str(OUT))
     total = sum(p.stat().st_size for p in OUT.rglob("*.png"))
     print(f"{len(ids)} app icons from {sha[:8]} into {OUT.relative_to(ROOT)} ({total / 1e6:.0f} MB)")
 

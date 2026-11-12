@@ -257,7 +257,9 @@ icons' catalog and the app ships none. To turn it on:
 
 `TruffleVault.launcherIcons` reads `CFBundleAlternateIcons` from the Info.plist, so the code needs no flag of its own.
 `applyIcon` puts the equipped avatar on the icon (BOAR's own while Boarverse is off) at Equip, when Boarverse changes and
-whenever BOAR becomes active, which also sets BOAR's own back after a build without the icons. The avatar row's note
+whenever BOAR becomes active (`onOpen`), which also sets BOAR's own back after a build without the icons. An avatar the
+build has no icon for (a stale or half-built catalog) counts as BOAR's own; a call during a switch waits for it and
+then checks again. DEBUG `-uiIcon` and `-uiBoarverse` never touch the real icon. The avatar row's note
 says "Changes the boar in the chat and the app icon." when the build has them.
 
 - **At once, not when BOAR leaves:** iOS only switches the icon while the app is in front, and always shows its own
@@ -266,8 +268,9 @@ says "Changes the boar in the chat and the app icon." when the build has them.
 - **Size:** with the icons the compiled catalog grows from 3 MB to 76 MB (actool keeps every size of each one), which
   is one more reason it stays off.
 - **The Mac** never has them: only the Dock icon of a running app could change.
-- Checked on the simulator: the Cosmo icon and the system's alert at launch with Cosmo equipped, and BOAR's own icon back
-  after installing a build without the icons. Not yet on the iPhone.
+- Checked on the simulator: the Cosmo icon and the system's alert with Cosmo equipped, BOAR's own icon back after
+  installing a build without the icons, and `AvatarsUITests` built with the icons (it OKs the system's alert at each
+  Equip and logs it: one for Cosmo, one for BOAR's own). Not yet on the iPhone.
 
 ## Questions for Android
 

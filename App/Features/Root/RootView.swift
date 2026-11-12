@@ -40,11 +40,6 @@ struct RootView: View {
                     .boarTheme(model.theme)
             }
             #endif
-            // Boar Avatars on the app icon (a no-op without them in the build): iOS only switches it while BOAR is active,
-            // so at launch the vault's own call can come too early.
-            .onChange(of: scenePhase, initial: true) { _, phase in
-                if phase == .active { model.services?.vault.applyIcon() }
-            }
             .onChange(of: IntentInbox.shared.question) { _, _ in model.drainInbox() }
             .onChange(of: IntentInbox.shared.sessionId) { _, _ in model.drainInbox() }
     }
