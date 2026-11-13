@@ -879,6 +879,16 @@
         }
       }
     },
+    "Allow %@ and redo" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permitir %@ e refazer"
+          }
+        }
+      }
+    },
     "Already on this %@" : {
       "localizations" : {
         "pt" : {
@@ -7577,6 +7587,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Parado enquanto pensava"
+          }
+        }
+      }
+    },
+    "Stopped at the %@-token limit" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Parou no limite de %@ tokens"
           }
         }
       }
