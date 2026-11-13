@@ -291,7 +291,7 @@ final class SetupFlow {
                     continue
                 }
                 let storage: Bool = if case .storage = error as? AssetStore.DownloadError { true } else { false }
-                update(a.id) { $0.error = error.localizedDescription; $0.verifying = false; $0.storage = storage }
+                update(a.id) { $0.error = DownloadErrorText.message(error); $0.verifying = false; $0.storage = storage }
                 return false
             }
         }

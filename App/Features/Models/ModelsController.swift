@@ -139,7 +139,7 @@ final class ModelsController {
                 try? FileManager.default.removeItem(at: AppPaths.resumeDir.appending(path: "\(a.id).data"))
                 rows[a.id] = Row()
             } catch {
-                rows[a.id] = Row(error: error.localizedDescription)
+                rows[a.id] = Row(error: DownloadErrorText.message(error))
             }
             jobs[a.id] = nil
             refresh()
@@ -394,3 +394,24 @@ extension ModelsController {
     }
 }
 #endif
+
+/// A failed download's text (android `UserErrors.downloadKey`): BOAR's own limit and a full phone read differently,
+/// since the phone may have plenty of room when the limit is hit. Other failures keep the engine's message.
+enum DownloadErrorText {
+    static func message(_ error: Error) -> String {
+        guard case .storage(_, let refused?) = error as? AssetStore.DownloadError else { return error.localizedDescription }
+        func size(_ bytes: Int64) -> String { bytes.formatted(.byteCount(style: .file)) }
+        let budget = size(refused.budgetBytes), used = size(refused.usedBytes), needed = size(refused.neededBytes)
+        let device = Platform.deviceNoun
+        switch refused.reason {
+        case .disk:
+            let free = refused.freeDiskBytes.map(size) ?? "?"
+            return String(localized: "This \(device) has only \(free) free and the download needs \(needed). Free some space and retry.")
+        case .budget where refused.downloadingBytes > 0:
+            let downloading = size(refused.downloadingBytes)
+            return String(localized: "BOAR's \(budget) storage limit is reached: BOAR stores \(used), with \(downloading) downloading. Remove a model or cancel a download. The \(device) itself may still have room.")
+        case .budget:
+            return String(localized: "BOAR's \(budget) storage limit is reached: BOAR already stores \(used). Remove a model first. The \(device) itself may still have room.")
+        }
+    }
+}
