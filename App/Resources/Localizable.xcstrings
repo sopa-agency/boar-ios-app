@@ -147,6 +147,26 @@
         }
       }
     },
+    "%@ may not fit in this %@'s memory." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ pode não caber na memória deste %@."
+          }
+        }
+      }
+    },
+    "%@ may not fit in this %@'s memory. A smaller model, such as %@ (about 1 GB), fits better." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ pode não caber na memória deste %@. Um modelo menor, como o %@ (cerca de 1 GB), cabe melhor."
+          }
+        }
+      }
+    },
     "%@ more before %@ closes it" : {
       "localizations" : {
         "pt" : {
@@ -4477,6 +4497,16 @@
         }
       }
     },
+    "Load Anyway" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Carregar mesmo assim"
+          }
+        }
+      }
+    },
     "Load More" : {
       "localizations" : {
         "pt" : {
@@ -4713,6 +4743,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Correspondência %@"
+          }
+        }
+      }
+    },
+    "May Not Fit" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pode não caber"
           }
         }
       }
@@ -5829,6 +5869,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Fotos de páginas"
+          }
+        }
+      }
+    },
+    "Pick Another Model" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolher outro modelo"
           }
         }
       }

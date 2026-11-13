@@ -186,6 +186,13 @@ enum ChatActivity: Hashable, Sendable {
     }
 }
 
+/// The chat's "may not fit" note: the answer model is RED for this device and the user hasn't chosen to load it anyway
+/// (android LoadNote.Risky). `onlyModel`: no other model is installed.
+struct RiskyLoad: Hashable, Sendable {
+    var modelId: String
+    var onlyModel: Bool
+}
+
 /// The meta JSON stored with an answer (same keys as android ChatViewModel.metaOf).
 enum MessageMeta {
     static func encode(_ sources: [ChatSource], _ receipt: Receipt?) -> String {

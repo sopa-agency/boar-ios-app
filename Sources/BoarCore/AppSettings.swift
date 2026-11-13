@@ -164,6 +164,11 @@ public final class AppSettings: @unchecked Sendable {
         set { set("pendingLoadCrash", newValue) }
     }
 
+    /// The models the user chose to load although they may not fit this phone's memory (StartLoad's "Load anyway").
+    public var loadAnywayIds: [String] {
+        get { strings("loadAnywayIds") }
+        set { setStrings("loadAnywayIds", newValue.reduce(into: []) { if !$0.contains($1) { $0.append($1) } }) }
+    }
     /// The last model that loaded: the fallback after a crash on a cold start.
     public var lastLoadedModelId: String? { get { str("lastLoadedModelId") } set { set("lastLoadedModelId", newValue.map(JSONValue.string)) } }
     /// The id submit-results gave this device's key.
