@@ -60,6 +60,14 @@ setup-model|setup-model|
 setup-knowledge|setup-knowledge|
 setup-install|setup-install|
 setup-index|setup-index|
+setup-guide-look|setup-guide-look|
+setup-guide-answers|setup-guide-answers|
+setup-guide-ask|setup-guide-ask|
+setup-guide-first|setup-guide-first|
+setup-guide-pin|setup-guide-pin|
+setup-guide-privacy|setup-guide-privacy|
+setup-guide-labs|setup-guide-labs|
+setup-guide-ready|setup-guide-ready|
 chat-empty|chat-empty|
 chat-load-crash|chat-load-crash|
 chat-error|chat-error|

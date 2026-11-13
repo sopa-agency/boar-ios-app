@@ -78,8 +78,12 @@ final class SetupFlow {
     private(set) var indexError: String?
     /// Setup was in its install step when the process ended: the app opens on it.
     private(set) var unfinished = false
+    /// Step 4's guide (SetupGuide): its pages, the one on screen, and whether the download's details show in its place.
+    private(set) var pages: [SetupGuide.Page] = []
+    private(set) var guidePage = 0
+    private(set) var details = false
 
-    @ObservationIgnored private let services: BoarServices
+    @ObservationIgnored let services: BoarServices
     @ObservationIgnored private var job: Task<Void, Never>?
     @ObservationIgnored private var stallWatch: Task<Void, Never>?
     @ObservationIgnored private var packageChosen = false
@@ -100,6 +104,7 @@ final class SetupFlow {
         let rec = BoarModels.SetupModel.recommended(services.catalog.answerModels, totalRamBytes: totalRamBytes)
         recommendedId = rec?.id
         chosenId = rec?.id
+        pages = Self.guidePages(lockOn: Self.lockOn(services))
         restore()
         // Process killed in step 4: pick up there, once the plans settled the package. Files already in are skipped and
         // the index skips what it has.
@@ -125,6 +130,9 @@ final class SetupFlow {
     func fit(_ m: CatalogAsset) -> Compatibility { Compatibility.compute(sizeBytes: m.sizeBytes, deviceRamBytes: totalRamBytes) }
     func isCompact(_ m: CatalogAsset) -> Bool { m.answerTier == .compact }
 
+    /// The guide's page on screen; Ready past the end.
+    var page: SetupGuide.Page { pages.indices.contains(guidePage) ? pages[guidePage] : .ready }
+
     // MARK: navigation
 
     func next() { setStep(Step(rawValue: min(step.rawValue + 1, 3)) ?? .knowledge) }
@@ -133,6 +141,27 @@ final class SetupFlow {
     private func setStep(_ s: Step) {
         step = s
         save()
+    }
+
+    func guideNext() { setGuide(guidePage + 1) }
+    func guideBack() { setGuide(guidePage - 1) }
+    func guideTo(_ p: SetupGuide.Page) { if let i = pages.firstIndex(of: p) { setGuide(i) } }
+    func showDetails(_ on: Bool) { details = on }
+
+    private func setGuide(_ i: Int) {
+        guidePage = min(max(i, 0), max(pages.count - 1, 0))
+        details = false
+        save()
+    }
+
+    /// The lock page only when the lock was off as this setup started (a setup run again from Settings may find it on);
+    /// iOS has no notification page. The files page comes in with setup's file import.
+    private static func guidePages(lockOn: Bool) -> [SetupGuide.Page] {
+        SetupGuide.pages(experimental: LabsBuild.experimental, pinSetBefore: lockOn, notifications: false).filter { $0 != .files }
+    }
+
+    private static func lockOn(_ services: BoarServices) -> Bool {
+        services.settings.jsonValue(forKey: AppLock.settingsKey)?.boolValue ?? false
     }
 
     func choose(_ id: String) {
@@ -157,6 +186,9 @@ final class SetupFlow {
         indexPhase = .waiting
         indexError = nil
         stalled = false
+        pages = Self.guidePages(lockOn: Self.lockOn(services))
+        guidePage = 0
+        details = false
         refreshPlans()
         save()
     }
@@ -439,12 +471,18 @@ final class SetupFlow {
         }
         step = Step(rawValue: min(max(o["step"]?.intValue ?? 1, 1), 4)) ?? .welcome
         if let p = o["packageId"]?.stringValue.flatMap(SetupPackage.init(rawValue:)) { package = p }
+        // A lock turned on from the guide keeps its page: the pages after it don't shift. The guide opens on its first page.
+        let resumed = SetupGuide.resume(experimental: LabsBuild.experimental, pinPage: o["pinPage"]?.boolValue, pinSetNow: Self.lockOn(services),
+                                        notifications: false, page: nil)
+        pages = resumed.pages.filter { $0 != .files }
+        guidePage = resumed.index
     }
 
     private func save() {
         let o: JSONValue = .object([
             "step": JSONValue(step.rawValue), "packageId": .string(package.rawValue), "chosenId": .string(chosenId ?? ""),
             "packageChosen": .bool(packageChosen), "answerChosen": .bool(answerChosen),
+            "guidePage": .string(page.rawValue), "pinPage": .bool(pages.contains(.pin)),
         ])
         try? Data(o.jsonString.utf8).write(to: AppPaths.setupProgress, options: .atomic)
     }
