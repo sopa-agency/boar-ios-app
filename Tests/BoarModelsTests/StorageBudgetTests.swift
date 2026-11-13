@@ -15,21 +15,46 @@ import Testing
 
     @Test func refusesADownloadThatWouldPassThe50GBBudget() {
         let r = StorageBudget.check(with { $0.usedBytes = 40 * gb; $0.downloadBytes = 10 * gb })
-        guard case .refused(let reason, _, let message) = r else { Issue.record("expected refusal"); return }
-        #expect(reason == .budget)
-        #expect(message.range(of: "50 GB storage budget.*10 GB download.*51 GB", options: .regularExpression) != nil, "\(message)")
+        guard case .refused(let refused) = r else { Issue.record("expected refusal"); return }
+        #expect(refused.reason == .budget)
+        #expect(refused.message.range(of: "50 GB storage budget.*10 GB download.*51 GB", options: .regularExpression) != nil, "\(refused.message)")
+        // The numbers the error text fills in (android UserErrors.downloadArgs).
+        #expect(refused.budgetBytes == 50 * gb && refused.usedBytes == 40 * gb && refused.neededBytes == 10 * gb && refused.freeDiskBytes == 300 * gb)
     }
 
     @Test func countsTheFullSizeOfOtherDownloadsStillRunning() {
         #expect(!StorageBudget.check(with { $0.usedBytes = 30 * gb; $0.reservedBytes = 12 * gb; $0.downloadBytes = 8 * gb }).isOk)
         #expect(StorageBudget.check(with { $0.usedBytes = 30 * gb; $0.reservedBytes = 12 * gb; $0.downloadBytes = 7 * gb }).isOk)
+        guard case .refused(let r) = StorageBudget.check(with { $0.usedBytes = 30 * gb; $0.reservedBytes = 12 * gb; $0.downloadBytes = 8 * gb }) else { return }
+        #expect(r.downloadingBytes == 12 * gb)
+    }
+
+    @Test func theUsersLimitReplacesTheCatalogsAndNoLimitLeavesOnlyTheDisk() {
+        #expect(StorageBudget.limit(catalogBudget: 50 * gb, user: nil) == 50 * gb)
+        #expect(StorageBudget.limit(catalogBudget: 50 * gb, user: 200 * gb) == 200 * gb)
+        let huge = with { $0.usedBytes = 120 * gb; $0.downloadBytes = 30 * gb; $0.budgetBytes = StorageBudget.noLimit }
+        #expect(StorageBudget.check(huge).isOk)
+        guard case .refused(let r) = StorageBudget.check(with { $0.usedBytes = 120 * gb; $0.downloadBytes = 30 * gb; $0.freeDiskBytes = 10 * gb; $0.budgetBytes = StorageBudget.noLimit })
+        else { Issue.record("expected refusal"); return }
+        #expect(r.reason == .disk)
+    }
+
+    @Test func readsTheLabsChoiceLikeAndroid() {
+        #expect(StorageBudget.limitBytes(choice: nil) == nil)
+        #expect(StorageBudget.limitBytes(choice: "auto") == nil)
+        #expect(StorageBudget.limitBytes(choice: "none") == StorageBudget.noLimit)
+        #expect(StorageBudget.limitBytes(choice: "25") == 25 * gb)
+        #expect(StorageBudget.limitBytes(choice: "200") == 200 * gb)
+        #expect(StorageBudget.limitBytes(choice: "0") == nil)
+        #expect(StorageBudget.limitBytes(choice: "x") == nil)
     }
 
     @Test func refusesWhenThePhoneLacksFreeSpaceKeepingAMargin() {
         let r = StorageBudget.check(with { $0.freeDiskBytes = 5 * gb })
-        guard case .refused(let reason, _, let message) = r else { Issue.record("expected refusal"); return }
-        #expect(reason == .disk)
-        #expect(message.contains("the download needs 5 GB and only 5 GB is free"))
+        guard case .refused(let refused) = r else { Issue.record("expected refusal"); return }
+        #expect(refused.reason == .disk)
+        #expect(refused.message.contains("the download needs 5 GB and only 5 GB is free"))
+        #expect(refused.neededBytes == 5 * gb && refused.freeDiskBytes == 5 * gb)
         #expect(StorageBudget.check(with { $0.freeDiskBytes = 5 * gb + StorageBudget.freeSpaceMarginBytes }).isOk)
     }
 

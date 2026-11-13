@@ -159,7 +159,7 @@ import Testing
             try await s.download(a)
             Issue.record("expected storage")
         } catch let e as AssetStore.DownloadError {
-            guard case .storage(let message) = e else { Issue.record("wrong error \(e)"); return }
+            guard case .storage(let message, let refused) = e, refused?.reason == .budget else { Issue.record("wrong error \(e)"); return }
             #expect(message.contains("storage budget"))
         }
     }
