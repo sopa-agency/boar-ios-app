@@ -11,7 +11,8 @@ export DEVELOPER_DIR=${DEVELOPER_DIR:-/Applications/Xcode-27.2.0.app/Contents/De
 ROOT=$(cd "$(dirname "$0")/.." && pwd)
 OUT=$ROOT/.build/perf
 DEVICE=${BOAR_DEVICE:?set BOAR_DEVICE to the iPhone UDID (xcrun devicectl list devices)}
-BUNDLE=team.sopa.boar.native
+# BOAR_BUNDLE: another install of the app, e.g. team.sopa.boar.biel (measure Release: scripts/device.sh builds Debug).
+BUNDLE=${BOAR_BUNDLE:-team.sopa.boar.native}
 mkdir -p "$OUT"
 
 app_path() {
