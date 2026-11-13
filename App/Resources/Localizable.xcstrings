@@ -1706,6 +1706,16 @@
         }
       }
     },
+    "Bad Answer" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resposta ruim"
+          }
+        }
+      }
+    },
     "Balanced size and quality" : {
       "localizations" : {
         "pt" : {
@@ -3767,6 +3777,16 @@
         }
       }
     },
+    "Good Answer" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Boa resposta"
+          }
+        }
+      }
+    },
     "Google's on-device model, needs more memory" : {
       "localizations" : {
         "pt" : {
@@ -4143,6 +4163,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Instalando"
+          }
+        }
+      }
+    },
+    "Interrupted: BOAR was closed while answering." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Interrompida: o BOAR foi fechado enquanto respondia."
           }
         }
       }
@@ -6639,6 +6669,16 @@
         }
       }
     },
+    "Saved on this %@ only. Nothing is sent. BOAR doesn't learn from it yet." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salvo só neste %@. Nada é enviado. O BOAR ainda não aprende com isso."
+          }
+        }
+      }
+    },
     "Saved to %@." : {
       "localizations" : {
         "pt" : {
@@ -7885,6 +7925,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "A biblioteca ainda não está pronta: termine a configuração e volte."
+          }
+        }
+      }
+    },
+    "The model stopped without writing an answer." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O modelo parou sem escrever uma resposta."
           }
         }
       }

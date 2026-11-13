@@ -188,7 +188,11 @@ enum ChatActivity: Hashable, Sendable {
 
 /// The meta JSON stored with an answer (same keys as android ChatViewModel.metaOf).
 enum MessageMeta {
-    static func encode(_ sources: [ChatSource], _ receipt: Receipt?) -> String {
+    /// The `error` of an answer saved while it's written: still there when the chat opens means BOAR was closed
+    /// mid-answer (android UserErrors.INTERRUPTED_KEY).
+    static let interrupted = "native.chat.errorInterrupted"
+
+    static func encode(_ sources: [ChatSource], _ receipt: Receipt?, error: String? = nil) -> String {
         var o: [String: JSONValue] = [
             "sources": .array(sources.map { s in
                 var e: [String: JSONValue] = ["title": .string(s.title), "body": .string(s.body)]
@@ -200,7 +204,13 @@ enum MessageMeta {
             }),
         ]
         if let receipt { o["receipt"] = receipt.json }
+        if let error { o["error"] = .string(error) }
         return JSONValue.object(o).jsonString
+    }
+
+    static func error(_ meta: String?) -> String? {
+        guard let meta, let root = JSONValue(jsonString: meta) else { return nil }
+        return root["error"]?.stringValue
     }
 
     static func sources(_ meta: String?) -> [ChatSource] {
