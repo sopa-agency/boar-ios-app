@@ -8,6 +8,7 @@ import Foundation
 ///     -uiScreen tour-<card>  the tour on that card (welcome, theme, styles…), over Settings
 ///     -uiScroll <pts|end> scroll the main list that far once the screen is up
 ///     -uiBasket YES      with -uiDemo, Boar Press's basket starts with the demo chats' answers
+///     -uiDesigner YES    with -uiDemo, Boar Designer's gallery starts with three pictures
 ///     -uiStyle <id>      pick that answer style (succinct, detailed, personal, custom) on launch
 ///     -uiTheme <id>      show that theme (system, or any palette id: campfire, moonlight, paper, tactical_red…) for this
 ///                        run, without saving it; a Boar Avatars theme needs -uiBoarverse YES

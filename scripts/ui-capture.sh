@@ -92,6 +92,7 @@ about-2|about|end
 lock|lock|
 labs|labs|
 labs-2|labs|end
+lab-image|lab-image|
 avatars|avatars|
 avatars-2|avatars|end
 tour-welcome|tour-welcome|
@@ -120,6 +121,9 @@ for MODE in ${MODES:-light dark}; do
     case "${UI_LANG:-en}" in pt) LOCALE=pt_BR ;; *) LOCALE=en_US ;; esac
     ARGS=(-uiDemo -uiScreen "$SCREEN" -AppleLanguages "(${UI_LANG:-en})" -AppleLocale "$LOCALE")
     [ -n "$SCROLL" ] && ARGS+=(-uiScroll "$SCROLL")
+    # A lab's page shows its content only switched on (-uiDemo starts every lab off); Designer with pictures to show.
+    case "$SCREEN" in lab-*) ARGS+=("-labs.enabled.${SCREEN#lab-}" YES) ;; esac
+    [ "$SCREEN" = lab-image ] && ARGS+=(-uiDesigner YES)
     [ -n "${THEME:-}" ] && ARGS+=(-uiTheme "$THEME")
     [ -n "${VAULT:-}" ] && ARGS+=(-uiBoarverse YES -uiVault "$VAULT")
     [ -n "${ICON:-}" ] && ARGS+=(-uiIcon "$ICON")

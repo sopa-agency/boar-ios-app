@@ -62,6 +62,9 @@ struct LabPage: View {
                 }
             }
         }
+        .background {
+            if let presenter = lab.presenter() { presenter }
+        }
         .navigationTitle(Text(verbatim: lab.title))
         .inlineNavigationTitle()
     }

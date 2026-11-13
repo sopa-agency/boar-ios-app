@@ -25,6 +25,8 @@ enum DataPurge {
             return ()
         }
         Labs.shared.eraseUserData()
+        // Boar Designer's pictures (android EVERYTHING scope deletes them too; Clear Chats keeps them).
+        DesignerGallery.shared.erase()
         if let lock, lock.enabled { await lock.eraseChatsAndReset() }
         services.settings.resetPreferences()
         // Boar Avatars: counts, unlocked avatars and the Boarverse switch (outside preferenceKeys, as Reset settings keeps them).
