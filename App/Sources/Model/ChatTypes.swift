@@ -218,17 +218,42 @@ enum MessageMeta {
     }
 }
 
-/// The suggested questions of the empty chat (chat.suggestions.* / chat.suggestionTopics.* in the shared locales).
-enum SuggestionText {
-    static let questions: [String: (topic: String, question: String)] = [
-        "q1": ("Science", "Why do we have seasons on Earth?"),
-        "q2": ("Health", "What is the difference between a pandemic and an epidemic?"),
-        "q3": ("Quick math", "What is 30 °C in Fahrenheit?"),
-        "q4": ("First aid", "How do I stop a nosebleed?"),
-        "q7": ("Climate", "What causes the greenhouse effect?"),
-        "q8": ("Weather", "What is a monsoon?"),
-        "q9": ("Earth science", "What is plate tectonics?"),
-    ]
+/// The prompt ideas of the empty chat by key: a topic and a research question (chat.suggestionTopics.* / chat.suggestions.*,
+/// and native.chat.suggestions.b* for the bench ideas, in the Android strings).
+enum PromptIdea {
+    static func text(_ key: String) -> (topic: String, question: String)? {
+        switch key {
+        case "q1": (String(localized: "Science"), String(localized: "How Earth's tilt creates the seasons, and why they flip between hemispheres"))
+        case "q2": (String(localized: "Health"), String(localized: "Pandemics and epidemics: how outbreaks spread and how they're classified"))
+        case "q3": (String(localized: "Quick math"), String(localized: "What is 30 °C in Fahrenheit?"))
+        case "q4": (String(localized: "First aid"), String(localized: "First aid for nosebleeds: what works and what to avoid"))
+        case "q7": (String(localized: "Climate"), String(localized: "The greenhouse effect: which gases trap heat, and how"))
+        case "q8": (String(localized: "Weather"), String(localized: "How monsoons form, and why they matter for farming in South Asia"))
+        case "q9": (String(localized: "Earth science"), String(localized: "Plate tectonics: how moving plates build mountains and cause earthquakes"))
+        case "b1": (String(localized: "History of science"), String(localized: "Darwin, Wallace and the discovery of natural selection"))
+        case "b2": (String(localized: "Health"), String(localized: "How vaccines train the immune system, from smallpox to mRNA"))
+        case "b3": (String(localized: "Biology"), String(localized: "Photosynthesis step by step: from sunlight to sugar"))
+        case "b4": (String(localized: "History"), String(localized: "The French and Industrial Revolutions compared: causes and lasting effects"))
+        case "b5": (String(localized: "History"), String(localized: "Why the Western Roman Empire fell: the main theories"))
+        case "b6": (String(localized: "Space"), String(localized: "How black holes form, and what happens at the event horizon"))
+        case "b7": (String(localized: "People"), String(localized: "Napoleon Bonaparte: his rise, his wars and his legacy in Europe"))
+        case "b8": (String(localized: "Medicine"), String(localized: "Antibiotic resistance: why bacteria adapt, and what slows it"))
+        case "b9": (String(localized: "Geography"), String(localized: "Canberra: why Australia built a new capital"))
+        case "b10": (String(localized: "Myths"), String(localized: "The Great Wall of China: its history, its length and the Moon myth"))
+        case "b11": (String(localized: "Animals"), String(localized: "Polar bears and grizzlies compared: size, diet and habitat"))
+        case "b12": (String(localized: "Geography"), String(localized: "Brazil and Russia compared: population, area and economy"))
+        case "b13": (String(localized: "Health"), String(localized: "How mosquitoes spread disease, and why HIV isn't one of them"))
+        case "b14": (String(localized: "Health"), String(localized: "Exercise and health: how much adults need, and why"))
+        case "b15": (String(localized: "Travel"), String(localized: "Kyoto's role in Japanese history and culture"))
+        case "b16": (String(localized: "Earth science"), String(localized: "Mount Kilimanjaro: how a volcano became Africa's highest peak"))
+        case "b17": (String(localized: "History"), String(localized: "The Berlin Wall: why it was built and how it fell"))
+        case "b18": (String(localized: "Animals"), String(localized: "How cheetahs reach top speed, and how long they can keep it"))
+        case "b19": (String(localized: "Travel"), String(localized: "Travelling in Brazil: plugs, voltage and emergency numbers"))
+        case "b20": (String(localized: "Geography"), String(localized: "Japan and Germany compared: population density and an aging society"))
+        case "b21": (String(localized: "Health"), String(localized: "Dengue fever: symptoms, how it spreads, and why a second infection is riskier"))
+        default: nil
+        }
+    }
 }
 
 /// The catalog label without its parenthesis ("Qwen3-4B-Instruct-2507"), as the header shows it (shortModelLabel).

@@ -18,6 +18,22 @@ struct SuggestionsTests {
         #expect(lines.count == 80)
     }
 
+    @Test func theIdeaPoolIsTheTestedIdeasThenTheBenchOnes() throws {
+        let s = try Suggestions.bundled()
+        let bench = (1...21).map { "b\($0)" }
+        // Three or more tested on the model: those, then the bench.
+        #expect(s.ideaPool("qwen3-4b-instruct-2507-q4km", language: "en") == ["q2", "q7", "q8"] + bench)
+        #expect(s.ideaPool("qwen3-4b-instruct-2507-q4km", language: "en", installed: ["wiki-vital5"])
+            == ["q2", "q4", "q7", "q8"] + bench)
+        // One tested in Portuguese: filled from the other models, same language, without repeats.
+        #expect(s.ideaPool("qwen2.5-1.5b-instruct-q4km", language: "pt-BR", installed: ["boar-preparedness"])
+            == ["q8", "q4"] + bench)
+        // No model, or one with no tested ideas: the other models' ideas.
+        #expect(s.ideaPool(nil, language: "en") == ["q2", "q7", "q8"] + bench)
+        #expect(s.ideaPool("hf-some-model", language: "pt") == ["q8"] + bench)
+        #expect(Suggestions.benchIdeas == bench && Suggestions.ideasShown == 3)
+    }
+
     @Test func theKnowledgeHintShowsBelowTheMinimum() throws {
         let s = try Suggestions.bundled()
         #expect(s.showsKnowledgeHint(s.minSuggestions - 1))

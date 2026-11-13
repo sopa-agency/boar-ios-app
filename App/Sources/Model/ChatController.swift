@@ -33,7 +33,10 @@ final class ChatController {
     private(set) var loadingModel = false
     private(set) var personalityId: String
     private(set) var stopping = false
+    /// The prompt ideas of the empty chat, as keys of `PromptIdea`.
     private(set) var suggestions: [String] = []
+    /// Every idea this model and language can show; `suggestions` is a few of them.
+    private var ideaPool: [String] = []
     private(set) var deepResearch = false
     /// A failure before the answer row exists (the chat couldn't be created).
     var error: String?
@@ -122,7 +125,14 @@ final class ChatController {
             noModel = m == nil
         }
         let installed = services.catalog.corpusCatalog.filter(services.isPresent).map(\.id)
-        suggestions = services.suggestions.forModel(m?.id, language: "en", installed: installed)
+        // In BOAR's language: the ideas are written and tested per language.
+        ideaPool = services.suggestions.ideaPool(m?.id, language: Bundle.main.preferredLocalizations.first, installed: installed)
+        suggestions = pickIdeas()
+    }
+
+    /// A few of the ideas at random, drawn again for each new chat (android pickIdeas).
+    private func pickIdeas() -> [String] {
+        Array(ideaPool.shuffled().prefix(Suggestions.ideasShown))
     }
 
     /// Loads the model when the chat opens, so the first answer doesn't wait for it.
@@ -156,6 +166,7 @@ final class ChatController {
         sessionId = nil
         messages = []
         error = nil
+        suggestions = pickIdeas()
     }
 
     func openSession(_ id: String) {
