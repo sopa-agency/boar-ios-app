@@ -1,6 +1,7 @@
 import BoarCore
 import BoarModels
 import SwiftUI
+import UniformTypeIdentifiers
 
 /// One page of setup's guide (android SetupGuide.kt's pages), under its header.
 struct SetupGuidePage: View {
@@ -18,6 +19,7 @@ struct SetupGuidePage: View {
     var body: some View {
         switch page {
         case .look: look
+        case .files: GuideFilesPage(flow: flow)
         case .answers: GuideAnswersPage(flow: flow, bridge: bridge)
         case .ask: ask
         case .first: GuideFirstQuestionPage(bridge: bridge)
@@ -25,8 +27,8 @@ struct SetupGuidePage: View {
         case .privacy: privacy
         case .labs: GuideLabsPage()
         case .ready: GuideReadyPage(flow: flow, bridge: bridge)
-        // Files come with setup's file import; iOS has no notifications page.
-        case .files, .notify: EmptyView()
+        // iOS has no notifications page.
+        case .notify: EmptyView()
         }
     }
 
@@ -44,7 +46,8 @@ struct SetupGuidePage: View {
     private var ask: some View {
         VStack(alignment: .leading, spacing: 16) {
             GuideCard {
-                ForEach(Self.tips, id: \.key) { tip in
+                // With files added, how to ask about them comes first.
+                ForEach((flow.files.files.isEmpty ? [] : [Self.tipFiles]) + Self.tips, id: \.key) { tip in
                     HStack(alignment: .firstTextBaseline, spacing: 8) {
                         Text(verbatim: "•")
                             .foregroundStyle(.boar(.success))
@@ -58,6 +61,8 @@ struct SetupGuidePage: View {
             TourPreview(card: .sources)
         }
     }
+
+    private static let tipFiles: LocalizedStringResource = "To answer only from your own files, pick the Personal Files style with the style button."
 
     private static let tips: [LocalizedStringResource] = [
         "Ask a whole question: \"How do I make water safe to drink?\" finds more than \"water\".",
@@ -94,17 +99,28 @@ struct SetupGuidePage: View {
 private struct GuideAnswersPage: View {
     let flow: SetupFlow
     let bridge: SettingsBridge
+    @State private var askFiles = false
 
     var body: some View {
         let personalities = flow.services.personalities
         let style = bridge.binding({ $0.personalityId ?? personalities.defaultId }, { $0.personalityId = $1 })
         let deep = bridge.binding({ $0.deepResearchMode }, { $0.deepResearchMode = $1 })
+        let hasFiles = !flow.files.files.isEmpty
         VStack(alignment: .leading, spacing: 12) {
-            // The styles BOAR can start with; Personal Files comes once there are files to answer from.
-            ForEach(["succinct", "detailed"], id: \.self) { id in
+            // The styles BOAR can start with; Personal Files only once there are files to answer from.
+            ForEach(["succinct", "detailed"] + (hasFiles ? ["personal"] : []), id: \.self) { id in
                 let p = personalities.get(id)
                 GuideModeCard(icon: p.symbol, title: p.displayLabel, detail: p.displayDescription, selected: style.wrappedValue == id) {
                     style.wrappedValue = id
+                }
+            }
+            // Without files, Personal Files is explained, not picked: there would be nothing to answer from. A tap offers
+            // the files page to add some.
+            if !hasFiles {
+                let p = personalities.get("personal")
+                GuideModeCard(icon: p.symbol, title: p.displayLabel,
+                              detail: String(localized: "Answers only from your own files. Tap to add some first."), selected: false) {
+                    askFiles = true
                 }
             }
             GuideModeCard(icon: Symbols.deepResearch, title: String(localized: "Deep Research"),
@@ -117,6 +133,116 @@ private struct GuideAnswersPage: View {
                 GuideNote("With the light model you picked, a Deep Research answer can take a few minutes.", role: .amber)
             }
             GuideNote("In the chat, the style button next to where you type shows this icon and switches it any time.", role: .link)
+        }
+        .alert("Add your files first?", isPresented: $askFiles) {
+            Button("Add Files") { withAnimation { flow.guideTo(.files) } }
+            Button("Not Now", role: .cancel) {}
+        } message: {
+            Text("Personal Files answers only from your own files. Add some on the files page, then come back and pick it here.\n\n\(Text(GuideFilesPage.types))")
+        }
+    }
+}
+
+/// Notes, PDFs or spreadsheets to ask about later: copied now, imported into Personal Files once the search model is in
+/// and the index isn't building.
+private struct GuideFilesPage: View {
+    let flow: SetupFlow
+    @State private var picking = false
+    @Environment(\.palette) private var palette
+
+    /// The same kinds as Knowledge → Personal Files.
+    private static let importTypes: [UTType] = [.plainText, .text, .commaSeparatedText, .json, .pdf] + [UTType(filenameExtension: "md")].compactMap { $0 }
+    /// iOS reads a scanned PDF too (OCR on the device), which Android doesn't.
+    static let types: LocalizedStringResource = "BOAR reads .txt, .md, .csv, .json and .pdf, scanned ones too."
+
+    var body: some View {
+        let files = flow.files
+        VStack(alignment: .leading, spacing: 16) {
+            if files.files.isEmpty {
+                Button { picking = true } label: {
+                    Label("Add Files", icon: .pack(.add))
+                        .boarText("ui.title")
+                        .frame(maxWidth: .infinity, minHeight: 22)
+                        .padding(.vertical, 8)
+                }
+                .buttonStyle(.boarProminent)
+                .buttonBorderShape(.roundedRectangle(radius: 14))
+                .controlSize(.large)
+            } else {
+                Button { picking = true } label: {
+                    Label("Add More Files", icon: .pack(.add))
+                        .frame(maxWidth: .infinity, minHeight: 22)
+                        .padding(.vertical, 4)
+                }
+                .buttonStyle(.bordered)
+                .buttonBorderShape(.roundedRectangle(radius: 14))
+                .controlSize(.large)
+            }
+            Text(Self.types)
+                .boarText("ui.subtext")
+                .foregroundStyle(.boar(.muted))
+            if !files.files.isEmpty {
+                GuideCard {
+                    ForEach(Array(files.files.enumerated()), id: \.element) { i, name in
+                        if i > 0 { Divider() }
+                        row(name, done: files.imported.contains(name) && !files.importing)
+                    }
+                }
+            }
+            ForEach(files.notes, id: \.self) { Text(verbatim: $0).boarText("ui.subtext").foregroundStyle(.boar(.secondary)) }
+            ForEach(files.errors, id: \.self) { Text(verbatim: $0).boarText("ui.subtext").foregroundStyle(.boar(.danger)) }
+            // A question about these files needs the Personal Files style: the default one searches the library first.
+            if !files.files.isEmpty {
+                GuideCard(highlight: true) {
+                    Text("To ask about them, switch the chat's style to Personal Files (the style button, next to where you type). Then BOAR answers only from your files, and says so when they don't have the answer.")
+                        .boarText("ui.body")
+                        .foregroundStyle(.boar(.primary))
+                }
+            }
+            GuideNote("Later: Knowledge → Personal Files", role: .link)
+        }
+        .fileImporter(isPresented: $picking, allowedContentTypes: Self.importTypes, allowsMultipleSelection: true) { result in
+            if case .success(let urls) = result { files.add(urls) }
+        }
+    }
+
+    private func row(_ name: String, done: Bool) -> some View {
+        HStack(spacing: 10) {
+            Image(icon: .pack(done ? .check : .pending))
+                .foregroundStyle(.boar(done ? .success : .secondary))
+                .accessibilityHidden(true)
+            Text(verbatim: name)
+                .boarText("ui.body")
+                .foregroundStyle(.boar(.primary))
+                .lineLimit(2)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            Text(done ? String(localized: "Added") : waiting)
+                .boarText("ui.caption")
+                .foregroundStyle(.boar(done ? .success : .muted))
+            // A wrong pick goes again; an imported one comes out of Personal Files too.
+            Button { flow.files.remove(name) } label: {
+                Image(icon: .pack(.close))
+                    .foregroundStyle(.boar(.muted))
+                    .padding(8)
+                    .contentShape(.circle)
+            }
+            .buttonStyle(.plain)
+            .disabled(flow.files.importing)
+            .accessibilityLabel(Text("Remove \(name)"))
+        }
+        .accessibilityElement(children: .contain)
+    }
+
+    private var waiting: String {
+        let searchReady = flow.downloads.contains { $0.asset.kind == .embedding && $0.done }
+        return if flow.files.importing {
+            String(localized: "Adding…")
+        } else if !searchReady {
+            String(localized: "After the search model")
+        } else if flow.indexPhase == .building {
+            String(localized: "After the index")
+        } else {
+            String(localized: "Up Next")
         }
     }
 }
@@ -334,6 +460,7 @@ private struct GuideReadyPage: View {
                     .foregroundStyle(.boar(.secondary))
                 row("Answer Style", style)
                 row("Deep Research", bridge.read { $0.deepResearchMode } ? on : off)
+                row("Your Files", flow.files.files.isEmpty ? String(localized: "None") : flow.files.files.count.formatted())
                 row("First Question", bridge.read { $0.pendingFirstQuestion } ?? String(localized: "None"))
                 if let lock = model.lock { row("Lock", lock.enabled ? on : off) }
                 GuideNote("Go back to change any of them, or later in Settings.")

@@ -61,6 +61,7 @@ setup-knowledge|setup-knowledge|
 setup-install|setup-install|
 setup-index|setup-index|
 setup-guide-look|setup-guide-look|
+setup-guide-files|setup-guide-files|
 setup-guide-answers|setup-guide-answers|
 setup-guide-ask|setup-guide-ask|
 setup-guide-first|setup-guide-first|

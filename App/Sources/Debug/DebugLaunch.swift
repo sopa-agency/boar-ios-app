@@ -18,6 +18,8 @@ import Foundation
 ///     -uiBoarverse YES   Boarverse on for this run (Boar Avatars in Settings, the equipped avatar), without saving it
 ///     -uiIcon <id>       that unlocked avatar equipped for this run
 ///     -uiGrantThemes YES  grant every Boar Avatars theme (stored), as Android's adb-only bench "themes" run
+///     -uiSetupFiles "<f1> || <f2>"  with -uiScreen setup-guide-files, those files picked on the page (the system's picker
+///                        runs in another process)
 enum DebugLaunch {
     #if DEBUG
     /// `-uiScreen <name>`: the argument domain of UserDefaults carries it.
@@ -43,6 +45,9 @@ enum DebugLaunch {
         guard let i = args.firstIndex(of: "-uiVault"), args.indices.contains(i + 1) else { return nil }
         return args[i + 1]
     }()
+    /// `-uiSetupFiles "<f1> || <f2>"`.
+    static let setupFiles: [URL] = (UserDefaults.standard.string(forKey: "uiSetupFiles") ?? "")
+        .components(separatedBy: " || ").filter { !$0.isEmpty }.map { URL(filePath: $0) }
     /// `-uiGrantThemes YES`.
     static let grantThemes: Bool = UserDefaults.standard.bool(forKey: "uiGrantThemes")
     /// `-uiIcon <id>`.

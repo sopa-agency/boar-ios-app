@@ -82,6 +82,8 @@ final class SetupFlow {
     private(set) var pages: [SetupGuide.Page] = []
     private(set) var guidePage = 0
     private(set) var details = false
+    /// The files page's picks and their import into Personal Files.
+    let files: SetupFiles
 
     @ObservationIgnored let services: BoarServices
     @ObservationIgnored private var job: Task<Void, Never>?
@@ -97,6 +99,7 @@ final class SetupFlow {
 
     init(services: BoarServices) {
         self.services = services
+        files = SetupFiles(services: services)
         totalRamBytes = services.totalRamBytes
         // Only the built-in suggested models: models added from Hugging Face come in through Models.
         let added = Set(services.discovered().map(\.id))
@@ -115,6 +118,9 @@ final class SetupFlow {
             if resume { install() }
         }
         watchStall()
+        files.indexBuilding = { [weak self] in self?.indexPhase == .building }
+        // Picks an earlier run didn't finish importing.
+        files.importQueued()
     }
 
     var allPresent: Bool { !downloads.isEmpty && downloads.allSatisfy(\.done) }
@@ -155,9 +161,9 @@ final class SetupFlow {
     }
 
     /// The lock page only when the lock was off as this setup started (a setup run again from Settings may find it on);
-    /// iOS has no notification page. The files page comes in with setup's file import.
+    /// iOS has no notification page.
     private static func guidePages(lockOn: Bool) -> [SetupGuide.Page] {
-        SetupGuide.pages(experimental: LabsBuild.experimental, pinSetBefore: lockOn, notifications: false).filter { $0 != .files }
+        SetupGuide.pages(experimental: LabsBuild.experimental, pinSetBefore: lockOn, notifications: false)
     }
 
     private static func lockOn(_ services: BoarServices) -> Bool {
@@ -197,6 +203,7 @@ final class SetupFlow {
     func forget() {
         stallWatch?.cancel()
         try? FileManager.default.removeItem(at: AppPaths.setupProgress)
+        files.setupEnded()
     }
 
     // MARK: packages
@@ -303,6 +310,8 @@ final class SetupFlow {
                 update(a.id) { $0.done = true; $0.bytesDone = a.sizeBytes; $0.verifying = false }
                 moved()
                 refreshPlans()
+                // The search model may have just arrived: picked files can go in before the index starts.
+                files.importQueued()
                 return true
             } catch is CancellationError {
                 return false
@@ -440,6 +449,8 @@ final class SetupFlow {
         case .success: indexPhase = .ready
         case .failure(let e): indexFailed(e.localizedDescription)
         }
+        // Picked files waited for the index.
+        files.importQueued()
     }
 
     private func indexProgress(_ p: SeedCorpus.Progress) {
@@ -474,7 +485,7 @@ final class SetupFlow {
         // A lock turned on from the guide keeps its page: the pages after it don't shift. The guide opens on its first page.
         let resumed = SetupGuide.resume(experimental: LabsBuild.experimental, pinPage: o["pinPage"]?.boolValue, pinSetNow: Self.lockOn(services),
                                         notifications: false, page: nil)
-        pages = resumed.pages.filter { $0 != .files }
+        pages = resumed.pages
         guidePage = resumed.index
     }
 

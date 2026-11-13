@@ -759,6 +759,26 @@
         }
       }
     },
+    "Add Files" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adicionar arquivos"
+          }
+        }
+      }
+    },
+    "Add More Files" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adicionar mais arquivos"
+          }
+        }
+      }
+    },
     "Add a model from Hugging Face." : {
       "localizations" : {
         "pt" : {
@@ -809,6 +829,26 @@
         }
       }
     },
+    "Add your files first?" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adicionar seus arquivos primeiro?"
+          }
+        }
+      }
+    },
+    "Added" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adicionado"
+          }
+        }
+      }
+    },
     "Added %@" : {
       "localizations" : {
         "pt" : {
@@ -825,6 +865,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ adicionado aos Modelos."
+          }
+        }
+      }
+    },
+    "Adding…" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adicionando…"
           }
         }
       }
@@ -865,6 +915,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Avançado"
+          }
+        }
+      }
+    },
+    "After the index" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Depois do índice"
+          }
+        }
+      }
+    },
+    "After the search model" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Depois do modelo de busca"
           }
         }
       }
@@ -925,6 +995,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Alpha: no começo, menos testados"
+          }
+        }
+      }
+    },
+    "Already added: %@" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Já adicionado: %@"
           }
         }
       }
@@ -1121,6 +1201,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Responde sozinha"
+          }
+        }
+      }
+    },
+    "Answers only from your own files. Tap to add some first." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Responde só com seus próprios arquivos. Toque para adicionar alguns primeiro."
           }
         }
       }
@@ -1692,6 +1782,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "O BOAR abre assim que o download e o índice terminarem."
+          }
+        }
+      }
+    },
+    "BOAR reads .txt, .md, .csv, .json and .pdf, scanned ones too." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O BOAR lê .txt, .md, .csv, .json e .pdf, inclusive digitalizados."
           }
         }
       }
@@ -4687,6 +4787,16 @@
         }
       }
     },
+    "Later: Knowledge → Personal Files" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Depois: Conhecimento → Arquivos pessoais"
+          }
+        }
+      }
+    },
     "Leave this open, ask BOAR something, then come back to see what it cost." : {
       "localizations" : {
         "pt" : {
@@ -6183,6 +6293,16 @@
         }
       }
     },
+    "Personal Files answers only from your own files. Add some on the files page, then come back and pick it here.\n\n%@" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arquivos pessoais responde só com seus próprios arquivos. Adicione alguns na página de arquivos, depois volte e escolha aqui.\n\n%@"
+          }
+        }
+      }
+    },
     "Phi 3.5 Mini" : {
       "localizations" : {
         "pt" : {
@@ -6725,6 +6845,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Remover"
+          }
+        }
+      }
+    },
+    "Remove %@" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remover %@"
           }
         }
       }
@@ -7341,6 +7471,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Configurações → Privacidade"
+          }
+        }
+      }
+    },
+    "Setup files" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arquivos da configuração"
           }
         }
       }
@@ -8760,6 +8900,26 @@
         }
       }
     },
+    "To answer only from your own files, pick the Personal Files style with the style button." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para responder só com seus arquivos, escolha o estilo Arquivos pessoais no botão de estilo."
+          }
+        }
+      }
+    },
+    "To ask about them, switch the chat's style to Personal Files (the style button, next to where you type). Then BOAR answers only from your files, and says so when they don't have the answer." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para perguntar sobre eles, mude o estilo da conversa para Arquivos pessoais (o botão de estilo, ao lado de onde você digita). Aí o BOAR responde só com seus arquivos, e avisa quando eles não têm a resposta."
+          }
+        }
+      }
+    },
     "Too big" : {
       "localizations" : {
         "pt" : {
@@ -9046,6 +9206,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Liberado em %@"
+          }
+        }
+      }
+    },
+    "Up Next" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A seguir"
           }
         }
       }
@@ -9613,6 +9783,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Você: %@"
+          }
+        }
+      }
+    },
+    "Your Files" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seus arquivos"
           }
         }
       }

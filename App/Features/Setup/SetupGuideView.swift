@@ -61,8 +61,9 @@ struct SetupGuideView: View {
         .background(Color(palette.bgTerminal).ignoresSafeArea(edges: .bottom))
     }
 
+    /// Pages whose own action (Add Files, Lock) is the strong button: the footer's goes quiet until it's used.
     private func skippable(_ page: SetupGuide.Page) -> Bool {
-        page == .pin && model.lock?.enabled != true
+        (page == .files && flow.files.files.isEmpty) || (page == .pin && model.lock?.enabled != true)
     }
 
     private func next() {

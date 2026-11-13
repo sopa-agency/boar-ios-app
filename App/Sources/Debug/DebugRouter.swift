@@ -86,6 +86,7 @@ enum DebugRouter {
         if screen.hasPrefix("setup-guide-"), let page = SetupGuide.Page(rawValue: screen.dropFirst(12).uppercased()) {
             model.setup?.debugShowInstall(indexing: false)
             model.setup?.guideTo(page)
+            model.setup?.files.add(DebugLaunch.setupFiles)
             return
         }
         let steps = screen == "setup-model" ? 1 : screen == "setup-knowledge" ? 2 : 0
