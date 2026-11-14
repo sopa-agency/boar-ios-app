@@ -524,12 +524,27 @@ final class ChatController {
         }
 
         mark.end("\(tokens) tokens\(failure == nil ? "" : ", failed")")
+        // One source per article, best first; the answer's numbers follow (a reused list is already grouped).
+        let grouped = SourceGroups.group(sources.map { ChatSource(number: 0, chunk: $0) },
+                                         key: { SourceGroups.articleKey(source: $0.source, docId: $0.docId, title: $0.title) },
+                                         score: { $0.similarity ?? $0.relevance }) { g in
+            var first = g[0]
+            first.similarity = g.compactMap(\.similarity).max()
+            first.relevance = g.compactMap(\.relevance).max()
+            first.body = g.map(\.body).joined(separator: "\n…\n")
+            return first
+        }
+        if reusedSources == nil { text = SourceGroups.renumber(text, map: grouped.renumber) }
         // A model that opens with the not-found line and then answers from the files keeps only the answer.
         if personal {
             let kept = PersonalFiles.dropHedge(text)
             if kept != text { text = kept }
         }
-        let shown = reusedSources ?? sources.enumerated().map { ChatSource(number: $0.offset + 1, chunk: $0.element) }
+        let shown = reusedSources ?? grouped.items.enumerated().map { i, s in
+            var s = s
+            s.number = i + 1
+            return s
+        }
         let stopped = stopFlag.value
         // The check slot (Boar Labs): a model's finished answer on the default or adaptive path may be repaired; not one
         // that was stopped, timed out or failed part way, nor one from the user's own files.

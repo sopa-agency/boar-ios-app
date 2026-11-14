@@ -119,7 +119,9 @@ Designer, and its no-UI API is deprecated. If the lab should behave like Android
 the process, sharing llama.cpp's ggml, chat model unloaded while drawing) is the one that ports it; phase 3's memory
 numbers decide whether SDXS (683 MB) fits under the 3 GB jetsam limit with the chat model out.
 
-### Big Boar (`bmoe`): study only, large
+### Big Boar (`bmoe`): not in the full version
+
+**Decided 2026-11-13 (Biel):** dropped from the full version; the notes below stay for reference.
 
 BigMoeOnEdge runs Qwen3.6-35B-A3B (12.3 GB) by keeping the always-used weights in memory and reading each token's
 experts from storage.
