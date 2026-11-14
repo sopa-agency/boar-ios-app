@@ -112,6 +112,9 @@ struct ChatItem: Identifiable, Hashable, Sendable {
     var feedback: String?
     var stopped = false
     var timedOut = false
+    /// It ended at this token limit, not by itself (a note with a redo at `nextLimit`). Live answers only, as on Android.
+    var cutAt: Int?
+    var nextLimit: Int?
     var receipt: Receipt?
     /// The steps the answer actually went through, in order (live answers only; a reopened chat has none).
     var steps: [AnswerStep] = []
@@ -186,9 +189,20 @@ enum ChatActivity: Hashable, Sendable {
     }
 }
 
+/// The chat's "may not fit" note: the answer model is RED for this device and the user hasn't chosen to load it anyway
+/// (android LoadNote.Risky). `onlyModel`: no other model is installed.
+struct RiskyLoad: Hashable, Sendable {
+    var modelId: String
+    var onlyModel: Bool
+}
+
 /// The meta JSON stored with an answer (same keys as android ChatViewModel.metaOf).
 enum MessageMeta {
-    static func encode(_ sources: [ChatSource], _ receipt: Receipt?) -> String {
+    /// The `error` of an answer saved while it's written: still there when the chat opens means BOAR was closed
+    /// mid-answer (android UserErrors.INTERRUPTED_KEY).
+    static let interrupted = "native.chat.errorInterrupted"
+
+    static func encode(_ sources: [ChatSource], _ receipt: Receipt?, error: String? = nil) -> String {
         var o: [String: JSONValue] = [
             "sources": .array(sources.map { s in
                 var e: [String: JSONValue] = ["title": .string(s.title), "body": .string(s.body)]
@@ -200,7 +214,13 @@ enum MessageMeta {
             }),
         ]
         if let receipt { o["receipt"] = receipt.json }
+        if let error { o["error"] = .string(error) }
         return JSONValue.object(o).jsonString
+    }
+
+    static func error(_ meta: String?) -> String? {
+        guard let meta, let root = JSONValue(jsonString: meta) else { return nil }
+        return root["error"]?.stringValue
     }
 
     static func sources(_ meta: String?) -> [ChatSource] {

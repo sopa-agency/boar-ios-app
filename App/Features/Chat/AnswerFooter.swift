@@ -1,7 +1,7 @@
 import SwiftUI
 
-/// Under a finished answer: copy, and More (Ask Again; Performance Details with technical details on; the switched-on
-/// labs' actions, android's 🧩 sheet).
+/// Under a finished answer: rate it (android's ▲ ▼, kept on the device), copy, and More (Ask Again; Performance Details
+/// with technical details on; the switched-on labs' actions, android's 🧩 sheet).
 struct AnswerFooter: View {
     let message: ChatItem
     let chat: ChatController
@@ -11,6 +11,8 @@ struct AnswerFooter: View {
 
     var body: some View {
         HStack {
+            rateButton("up", "Good Answer", symbol: "hand.thumbsup", on: .success)
+            rateButton("down", "Bad Answer", symbol: "hand.thumbsdown", on: .danger)
             Button("Copy", systemImage: "doc.on.doc", action: copy)
             Spacer(minLength: 0)
             if chat.technicalDetails, let receipt = message.receipt {
@@ -26,6 +28,14 @@ struct AnswerFooter: View {
             if let receipt = message.receipt { ReceiptDetails(receipt: receipt) }
         }
         .debugReceipt($showingReceipt)
+    }
+
+    /// The rating, tapped again to take it back; filled and in its color while set.
+    private func rateButton(_ rating: String, _ title: LocalizedStringKey, symbol: String, on role: BoarStyle.Role) -> some View {
+        let set = message.feedback == rating
+        return Button(title, systemImage: set ? symbol + ".fill" : symbol) { chat.rate(message.id, rating) }
+            .foregroundStyle(set ? AnyShapeStyle(BoarStyle(role: role)) : AnyShapeStyle(.secondary))
+            .accessibilityAddTraits(set ? .isSelected : [])
     }
 
     private var moreMenu: some View {
