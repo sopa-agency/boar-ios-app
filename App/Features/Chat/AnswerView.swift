@@ -76,7 +76,8 @@ struct AnswerView: View {
                                 .clipShape(.rect(cornerRadius: 4))
                         }
                     }
-                    .buttonStyle(.bordered)
+                    // In the accent, like Android's ActionButton (Try again, Allow more).
+                    .buttonStyle(.boarAction)
                     .disabled(chat.isAnswering)
                     .frame(maxWidth: .infinity, alignment: .trailing)
                 }
