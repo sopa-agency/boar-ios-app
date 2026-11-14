@@ -352,7 +352,6 @@ final class ModelsController {
         do {
             let asset = try HfBrowser.toAsset(repoId: repo, file: file)
             services.addDiscovered(asset)
-            services.settings.stampModel(AppSettings.modelAdded, asset.id)
             let added = services.discovered().count
             services.vault.record { $0.hfModels = max($0.hfModels, added) }
             hfAdded = asset.label
