@@ -265,6 +265,16 @@
         }
       }
     },
+    "%@ tok/s last query" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ tok/s na última consulta"
+          }
+        }
+      }
+    },
     "%@ tokens" : {
       "localizations" : {
         "pt" : {
@@ -1946,6 +1956,16 @@
         }
       }
     },
+    "BOAR's storage limit · %@ downloading" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Limite do BOAR · %@ baixando"
+          }
+        }
+      }
+    },
     "BOAR's storage limit, not the %@'s" : {
       "localizations" : {
         "pt" : {
@@ -2882,6 +2902,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Javali Ciber"
+          }
+        }
+      }
+    },
+    "DISK" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DISCO"
           }
         }
       }
@@ -7165,6 +7195,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Qwen 7B"
+          }
+        }
+      }
+    },
+    "RAM" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "RAM"
           }
         }
       }
