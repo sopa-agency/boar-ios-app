@@ -6,6 +6,8 @@ struct AddressRow: View {
     let text: String
     let copy: String
     @State private var copied = false
+    /// The last copy: an earlier copy's timer leaves "Copied" to the newer one.
+    @State private var copies = 0
 
     init(_ text: String, copy: String? = nil) {
         self.text = text
@@ -43,9 +45,11 @@ struct AddressRow: View {
     private func copyAddress() {
         Platform.copy(copy)
         withAnimation { copied = true }
+        copies += 1
+        let mine = copies
         Task {
             try? await Task.sleep(for: .seconds(1.5))
-            withAnimation { copied = false }
+            if mine == copies { withAnimation { copied = false } }
         }
     }
 }
