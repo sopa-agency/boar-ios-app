@@ -46,7 +46,7 @@ struct ChatView: View {
     var body: some View {
         Group {
             if chat.messages.isEmpty {
-                ChatEmptyState(noModel: chat.noModel, typing: composerFocused, chat: chat, onAsk: send)
+                ChatEmptyState(noModel: chat.noModel, typing: composerFocused, chat: chat, onAsk: send, onFill: fill)
             } else {
                 ChatConversation(chat: chat, onReuse: reuse, onOpenSource: open)
             }

@@ -358,6 +358,36 @@ extension PrimitiveButtonStyle where Self == BoarProminentButtonStyle {
     static var boarGlassProminent: BoarProminentButtonStyle { BoarProminentButtonStyle(glass: true) }
 }
 
+/// Something to do about an answer (Try again, Allow more, Ask BOAR instead), in the accent: the emerald text on its
+/// subtle background with its border, on a line of its own (android ChatScreen ActionButton).
+struct BoarActionButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        Styled(configuration: configuration)
+    }
+
+    private struct Styled: View {
+        let configuration: Configuration
+        @Environment(\.palette) private var palette
+        @Environment(\.isEnabled) private var isEnabled
+
+        var body: some View {
+            configuration.label
+                .padding(.horizontal, 14)
+                .padding(.vertical, 9)
+                .foregroundStyle(Color(palette.textAccentEmerald))
+                .background(Color(palette.emeraldBgSubtle), in: .rect(cornerRadius: 10))
+                .overlay(RoundedRectangle(cornerRadius: 10).strokeBorder(Color(palette.emeraldBorder)))
+                .opacity(isEnabled ? (configuration.isPressed ? 0.7 : 1) : 0.45)
+                .contentShape(.rect(cornerRadius: 10))
+        }
+    }
+}
+
+extension ButtonStyle where Self == BoarActionButtonStyle {
+    /// An answer's action in the accent (android ActionButton).
+    static var boarAction: BoarActionButtonStyle { BoarActionButtonStyle() }
+}
+
 extension Font {
     /// A brand text style by its Android name at the Standard size, scaled with Dynamic Type like the text style it
     /// stands for. Text size follows the system on iOS (Android's Settings → Text size isn't offered).

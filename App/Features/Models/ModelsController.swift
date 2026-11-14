@@ -173,6 +173,8 @@ final class ModelsController {
             services.settings.setActiveModelId("llm", a.id)
             // Picked again after it closed the app: the user's call (CR-2's confirmation).
             services.loadGuard.confirm(a.id)
+            // Picked although it may not fit this phone: the user's call, so the chat doesn't ask again at start.
+            if services.isRisky(a) { services.rememberLoadAnyway(a.id) }
             services.backend = .llama
             await services.host.unload()
             let loaded = await services.activeSession() != nil
