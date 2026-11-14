@@ -46,7 +46,7 @@ struct ChatView: View {
     var body: some View {
         Group {
             if chat.messages.isEmpty {
-                ChatEmptyState(noModel: chat.noModel, typing: composerFocused, chat: chat, onAsk: send)
+                ChatEmptyState(noModel: chat.noModel, typing: composerFocused, chat: chat, onAsk: send, onFill: fill)
             } else {
                 ChatConversation(chat: chat, onReuse: reuse, onOpenSource: open)
             }
@@ -147,6 +147,12 @@ struct ChatView: View {
         }
         .onChange(of: chat.messages.isEmpty) { _, empty in
             if empty { focusIfEmpty() }
+        }
+        // Setup's first question waits in the field; the user sends it.
+        .onChange(of: chat.prefill, initial: true) { _, q in
+            guard let q else { return }
+            fill(q)
+            chat.prefill = nil
         }
     }
 

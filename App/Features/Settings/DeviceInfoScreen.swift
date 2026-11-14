@@ -50,8 +50,15 @@ struct DeviceInfoScreen: View {
                     }
                 }
                 if let storage {
-                    UsageBar(title: "Storage", used: storage, total: services.catalog.storageBudgetBytes,
-                             caption: String(localized: "BOAR's storage limit, not the \(Platform.deviceNoun)'s"), kind: .storage)
+                    // Boar Labs can set another limit, or none: then the bar runs to what the device still has free.
+                    let limit = StorageBudget.limit(catalogBudget: services.catalog.storageBudgetBytes)
+                    if limit == StorageBudget.noLimit {
+                        UsageBar(title: "Storage", used: storage, total: storage + (free ?? 0),
+                                 caption: String(localized: "No BOAR limit: up to the \(Platform.deviceNoun)'s free space"), kind: .storage)
+                    } else {
+                        UsageBar(title: "Storage", used: storage, total: limit,
+                                 caption: String(localized: "BOAR's storage limit, not the \(Platform.deviceNoun)'s"), kind: .storage)
+                    }
                 }
                 ValueRow(label: "Saved Chats", value: model.sessions.count.formatted())
                 ValueRow(label: "Benchmark Runs", value: evals.count.formatted())

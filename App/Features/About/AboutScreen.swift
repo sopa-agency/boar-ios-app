@@ -1,7 +1,8 @@
 import BoarCore
 import SwiftUI
 
-/// About BOAR (android AboutScreen.kt / AboutScreen.tsx): what it is, the version and engine, and where the source is.
+/// About BOAR (android AboutScreen.kt / AboutScreen.tsx): what it is, its official addresses, the source, the team, the
+/// open work it stands on, and the version and engine.
 struct AboutScreen: View {
     private var version: String { Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "—" }
     private var build: String { Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "—" }
@@ -44,21 +45,86 @@ struct AboutScreen: View {
                                 text: "Turn on Show Technical Details in Settings → Advanced to see timings and run the benchmark.")
             }
 
+            // Android's thread posts as sections: the official addresses, the open source, the packs, the team and the
+            // credits. An address copies on tap or press and hold; nothing opens from here, like Android.
             Section {
-                Link(destination: Self.sourceURL) {
-                    Label {
-                        Text(verbatim: "github.com/sopa-agency/boar-ios-app")
-                    } icon: {
-                        Image(systemName: "chevron.left.forwardslash.chevron.right")
+                AddressRow("boarapp.com")
+                AddressRow("x.com/boar_app")
+                AddressRow("farcaster.xyz/boarapp")
+            } header: {
+                BoarHeader {
+                    Text("Official Site")
+                }
+            } footer: {
+                BoarFooter {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("News comes only from these addresses. Check the address before you download anything that says it is BOAR.")
+                        Text("Don't trust, verify.")
+                            .font(.boar("ui.subtext").weight(.heavy))
+                            .foregroundStyle(.boar(.success))
                     }
                 }
+            }
+
+            Section {
+                AddressRow("github.com/sopa-agency/boar-ios-app")
+                AddressRow("github.com/rferrari/boar-app")
             } header: {
                 BoarHeader {
                     Text("Open Source")
                 }
             } footer: {
                 BoarFooter {
-                    Text("Source code, model lists and the scripts that build the offline library.")
+                    Text("MIT. The code of this app and of the Android app, the model list and the scripts that build the knowledge packs.")
+                }
+            }
+
+            Section {
+                AddressRow("huggingface.co/datasets/r4topunk/boar-packs")
+            } header: {
+                BoarHeader {
+                    Text("Knowledge Packs")
+                }
+            } footer: {
+                BoarFooter {
+                    Text("Packs from R4to's R&D Lab.")
+                }
+            }
+
+            Section {
+                ForEach(Self.team, id: \.handle) { member in
+                    AddressRow("\(member.name) · @\(member.handle)", copy: "x.com/\(member.handle)")
+                }
+            } header: {
+                BoarHeader {
+                    Text("Core Team")
+                }
+            } footer: {
+                BoarFooter {
+                    Text("On X. Tap an address to copy it.")
+                }
+            }
+
+            Section {
+                ForEach(AboutCredits.all, id: \.self) { credit in
+                    LabeledContent {
+                        Text(verbatim: credit.license)
+                            .boarText("mono.xs")
+                            .foregroundStyle(.boar(.dim))
+                    } label: {
+                        Text(verbatim: credit.name)
+                            .font(.boar("ui.subtext"))
+                            .foregroundStyle(.boar(.secondary))
+                    }
+                    .accessibilityElement(children: .combine)
+                }
+            } header: {
+                BoarHeader {
+                    Text("Credits")
+                }
+            } footer: {
+                BoarFooter {
+                    Text("Standing on open work, each under its own license.")
                 }
             }
 
@@ -98,6 +164,15 @@ struct AboutScreen: View {
         #endif
     }
 
-    // A constant, valid URL literal.
-    private static let sourceURL = URL(string: "https://github.com/sopa-agency/boar-ios-app") ?? URL.homeDirectory
+    /// BOAR's core team on X, alphabetical by name (android AboutScreen's TEAM).
+    private static let team = [
+        Member(name: "Bielcx", handle: "bielthegoat"), Member(name: "Jasper", handle: "btcjasper"),
+        Member(name: "r4to", handle: "r4topunk"), Member(name: "Sopa", handle: "sopaagency"),
+        Member(name: "vaipraonde", handle: "arferrari"), Member(name: "vlad", handle: "sk8ordao"),
+    ]
+
+    private struct Member {
+        let name: String
+        let handle: String
+    }
 }

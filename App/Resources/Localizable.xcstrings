@@ -147,6 +147,26 @@
         }
       }
     },
+    "%@ may not fit in this %@'s memory." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ pode não caber na memória deste %@."
+          }
+        }
+      }
+    },
+    "%@ may not fit in this %@'s memory. A smaller model, such as %@ (about 1 GB), fits better." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ pode não caber na memória deste %@. Um modelo menor, como o %@ (cerca de 1 GB), cabe melhor."
+          }
+        }
+      }
+    },
     "%@ more before %@ closes it" : {
       "localizations" : {
         "pt" : {
@@ -245,12 +265,32 @@
         }
       }
     },
+    "%@ tok/s last query" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ tok/s na última consulta"
+          }
+        }
+      }
+    },
     "%@ tokens" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ tokens"
+          }
+        }
+      }
+    },
+    "%@ · %@" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · %@"
           }
         }
       }
@@ -359,6 +399,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mais %lld temas são liberados pelos Labs e pelos avatares."
+          }
+        }
+      }
+    },
+    "%lld of %lld" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld de %lld"
           }
         }
       }
@@ -779,6 +829,26 @@
         }
       }
     },
+    "Add Files" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adicionar arquivos"
+          }
+        }
+      }
+    },
+    "Add More Files" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adicionar mais arquivos"
+          }
+        }
+      }
+    },
     "Add a model from Hugging Face." : {
       "localizations" : {
         "pt" : {
@@ -795,6 +865,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Adicione arquivos ou fotos de páginas. O BOAR os lê neste %@ e nunca os envia para fora."
+          }
+        }
+      }
+    },
+    "Add notes, PDFs or spreadsheets now and ask about them later. They stay on this %@." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adicione notas, PDFs ou planilhas agora e pergunte sobre eles depois. Ficam neste %@."
           }
         }
       }
@@ -819,6 +899,26 @@
         }
       }
     },
+    "Add your files first?" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adicionar seus arquivos primeiro?"
+          }
+        }
+      }
+    },
+    "Added" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adicionado"
+          }
+        }
+      }
+    },
     "Added %@" : {
       "localizations" : {
         "pt" : {
@@ -835,6 +935,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ adicionado aos Modelos."
+          }
+        }
+      }
+    },
+    "Added by You" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adicionados por você"
+          }
+        }
+      }
+    },
+    "Adding…" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adicionando…"
           }
         }
       }
@@ -879,12 +999,42 @@
         }
       }
     },
+    "After the index" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Depois do índice"
+          }
+        }
+      }
+    },
+    "After the search model" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Depois do modelo de busca"
+          }
+        }
+      }
+    },
     "Airgap Boar" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Javali Airgap"
+          }
+        }
+      }
+    },
+    "All" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Todos"
           }
         }
       }
@@ -909,6 +1059,56 @@
         }
       }
     },
+    "All of these are in Settings too." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tudo isso também está nas Configurações."
+          }
+        }
+      }
+    },
+    "Allow %@ and redo" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permitir %@ e refazer"
+          }
+        }
+      }
+    },
+    "Almost there" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quase lá"
+          }
+        }
+      }
+    },
+    "Alpha: early, less tested" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alpha: no começo, menos testados"
+          }
+        }
+      }
+    },
+    "Already added: %@" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Já adicionado: %@"
+          }
+        }
+      }
+    },
     "Already on this %@" : {
       "localizations" : {
         "pt" : {
@@ -925,6 +1125,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Uma resposta da biblioteca lista os artigos que usou: toque em um para ler. Um recibo mostra o modelo, a velocidade e o tempo."
+          }
+        }
+      }
+    },
+    "Animals" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Animais"
           }
         }
       }
@@ -1105,6 +1315,16 @@
         }
       }
     },
+    "Answers only from your own files. Tap to add some first." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Responde só com seus próprios arquivos. Toque para adicionar alguns primeiro."
+          }
+        }
+      }
+    },
     "Answers only from your own files: notes, PDFs, spreadsheets." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1132,6 +1352,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Responde com este modelo a partir de agora"
+          }
+        }
+      }
+    },
+    "Antibiotic resistance: why bacteria adapt, and what slows it" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resistência a antibióticos: por que as bactérias se adaptam, e o que freia isso"
           }
         }
       }
@@ -1306,6 +1536,16 @@
         }
       }
     },
+    "Ask a whole question: \"How do I make water safe to drink?\" finds more than \"water\"." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Faça a pergunta inteira: \"Como deixar a água boa para beber?\" encontra mais que \"água\"."
+          }
+        }
+      }
+    },
     "Ask about them with the Personal Files style. Turned-off collections are not used in answers." : {
       "localizations" : {
         "pt" : {
@@ -1402,6 +1642,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Auto (%lld min)"
+          }
+        }
+      }
+    },
+    "Auto (50 GB)" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auto (50 GB)"
           }
         }
       }
@@ -1626,6 +1876,16 @@
         }
       }
     },
+    "BOAR is ready" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O BOAR está pronto"
+          }
+        }
+      }
+    },
     "BOAR needs the microphone for dictation. Allow it in Settings → Privacy & Security → Microphone." : {
       "localizations" : {
         "pt" : {
@@ -1642,6 +1902,36 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "O BOAR precisa desta parte da biblioteca."
+          }
+        }
+      }
+    },
+    "BOAR opens as soon as the download and the index are done." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O BOAR abre assim que o download e o índice terminarem."
+          }
+        }
+      }
+    },
+    "BOAR reads .txt, .md, .csv, .json and .pdf, scanned ones too." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O BOAR lê .txt, .md, .csv, .json e .pdf, inclusive digitalizados."
+          }
+        }
+      }
+    },
+    "BOAR searches its library for your question, then answers from what it found." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O BOAR busca sua pergunta na biblioteca e responde com o que encontrou."
           }
         }
       }
@@ -1696,6 +1986,46 @@
         }
       }
     },
+    "BOAR's %@ storage limit is reached: BOAR already stores %@. Remove a model first. The %@ itself may still have room." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O limite de %@ do BOAR foi atingido: o BOAR já guarda %@. Remova um modelo primeiro. O %@ ainda pode ter espaço."
+          }
+        }
+      }
+    },
+    "BOAR's %@ storage limit is reached: BOAR stores %@, with %@ downloading. Remove a model or cancel a download. The %@ itself may still have room." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O limite de %@ do BOAR foi atingido: o BOAR guarda %@, com %@ baixando. Remova um modelo ou cancele um download. O %@ ainda pode ter espaço."
+          }
+        }
+      }
+    },
+    "BOAR's Storage Limit" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Limite de armazenamento do BOAR"
+          }
+        }
+      }
+    },
+    "BOAR's storage limit · %@ downloading" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Limite do BOAR · %@ baixando"
+          }
+        }
+      }
+    },
     "BOAR's storage limit, not the %@'s" : {
       "localizations" : {
         "pt" : {
@@ -1716,6 +2046,16 @@
         }
       }
     },
+    "Back to Setup" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voltar à configuração"
+          }
+        }
+      }
+    },
     "Back to the App" : {
       "localizations" : {
         "pt" : {
@@ -1726,12 +2066,12 @@
         }
       }
     },
-    "Back to topics" : {
+    "Bad Answer" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Voltar aos temas"
+            "value" : "Resposta ruim"
           }
         }
       }
@@ -1776,6 +2116,16 @@
         }
       }
     },
+    "Beta: tested on phones" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beta: testados em celulares"
+          }
+        }
+      }
+    },
     "Better explanations, a little slower" : {
       "localizations" : {
         "pt" : {
@@ -1802,6 +2152,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Modelos maiores podem responder melhor, mas precisam de mais memória."
+          }
+        }
+      }
+    },
+    "Biology" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Biologia"
           }
         }
       }
@@ -1986,6 +2346,26 @@
         }
       }
     },
+    "Brazil and Russia compared: population, area and economy" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Brasil e Rússia comparados: população, área e economia"
+          }
+        }
+      }
+    },
+    "Building the index · %@ of %@" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Montando o índice · %@ de %@"
+          }
+        }
+      }
+    },
     "Built into %@, nothing to download" : {
       "localizations" : {
         "pt" : {
@@ -2052,6 +2432,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Can we bring the propane heater into the camper overnight?"
+          }
+        }
+      }
+    },
+    "Canberra: why Australia built a new capital" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Canberra: por que a Austrália construiu uma nova capital"
           }
         }
       }
@@ -2326,6 +2716,16 @@
         }
       }
     },
+    "Climate" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clima"
+          }
+        }
+      }
+    },
     "Close" : {
       "localizations" : {
         "pt" : {
@@ -2436,6 +2836,26 @@
         }
       }
     },
+    "Copied" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copiado"
+          }
+        }
+      }
+    },
+    "Copies the address" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copia o endereço"
+          }
+        }
+      }
+    },
     "Copy" : {
       "localizations" : {
         "pt" : {
@@ -2452,6 +2872,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Copiar o trecho"
+          }
+        }
+      }
+    },
+    "Core Team" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Equipe principal"
           }
         }
       }
@@ -2536,6 +2966,16 @@
         }
       }
     },
+    "Credits" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Créditos"
+          }
+        }
+      }
+    },
     "Custom" : {
       "localizations" : {
         "pt" : {
@@ -2566,6 +3006,16 @@
         }
       }
     },
+    "DISK" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DISCO"
+          }
+        }
+      }
+    },
     "Daily Quiz" : {
       "localizations" : {
         "pt" : {
@@ -2582,6 +3032,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Escuro"
+          }
+        }
+      }
+    },
+    "Darwin, Wallace and the discovery of natural selection" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Darwin, Wallace e a descoberta da seleção natural"
           }
         }
       }
@@ -2746,12 +3206,42 @@
         }
       }
     },
+    "Deleting a chat from the menu asks first. Off: one tap deletes it." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apagar uma conversa pelo menu pergunta antes. Desligado: um toque apaga."
+          }
+        }
+      }
+    },
+    "Dengue fever: symptoms, how it spreads, and why a second infection is riskier" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dengue: sintomas, transmissão e por que a segunda infecção é mais arriscada"
+          }
+        }
+      }
+    },
     "Details" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Detalhes"
+          }
+        }
+      }
+    },
+    "Details %@" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Detalhes %@"
           }
         }
       }
@@ -2852,6 +3342,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Não confie na App Store. Compile o BOAR com as próprias mãos."
+          }
+        }
+      }
+    },
+    "Don't trust, verify." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não confie, verifique."
           }
         }
       }
@@ -2966,6 +3466,16 @@
         }
       }
     },
+    "Downloading · %lld%%" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Baixando · %lld%%"
+          }
+        }
+      }
+    },
     "Downloading…" : {
       "localizations" : {
         "pt" : {
@@ -3026,12 +3536,12 @@
         }
       }
     },
-    "Earth and nature" : {
+    "Earth science" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Terra e natureza"
+            "value" : "Ciências da Terra"
           }
         }
       }
@@ -3042,6 +3552,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Editar"
+          }
+        }
+      }
+    },
+    "Edit Before Asking" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Editar antes de perguntar"
           }
         }
       }
@@ -3206,16 +3726,6 @@
         }
       }
     },
-    "Ethereum and tech" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ethereum e tecnologia"
-          }
-        }
-      }
-    },
     "Evaluation" : {
       "localizations" : {
         "pt" : {
@@ -3272,6 +3782,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Exemplo"
+          }
+        }
+      }
+    },
+    "Exercise and health: how much adults need, and why" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exercício e saúde: quanto um adulto precisa, e por quê"
+          }
+        }
+      }
+    },
+    "Experiments, labelled beta or alpha. They all start off: switch on the ones you want." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Experimentos, marcados beta ou alpha. Todos começam desligados: ligue os que quiser."
           }
         }
       }
@@ -3537,6 +4067,36 @@
         }
       }
     },
+    "First Question" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Primeira pergunta"
+          }
+        }
+      }
+    },
+    "First aid" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Primeiros socorros"
+          }
+        }
+      }
+    },
+    "First aid for nosebleeds: what works and what to avoid" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Primeiros socorros para sangramento nasal: o que funciona e o que evitar"
+          }
+        }
+      }
+    },
     "First quarter" : {
       "localizations" : {
         "pt" : {
@@ -3593,6 +4153,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Flash attention"
+          }
+        }
+      }
+    },
+    "Follow up as you would with a person: \"and if I can't boil it?\" keeps the subject." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continue como faria com uma pessoa: \"e se eu não puder ferver?\" mantém o assunto."
           }
         }
       }
@@ -3767,6 +4337,16 @@
         }
       }
     },
+    "Geography" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geografia"
+          }
+        }
+      }
+    },
     "Get Your Library" : {
       "localizations" : {
         "pt" : {
@@ -3793,6 +4373,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Receba uma resposta sem nenhuma rede."
+          }
+        }
+      }
+    },
+    "Go back to change any of them, or later in Settings." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Volte para mudar qualquer uma, ou depois nas Configurações."
+          }
+        }
+      }
+    },
+    "Good Answer" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Boa resposta"
           }
         }
       }
@@ -3833,6 +4433,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Título da seção"
+          }
+        }
+      }
+    },
+    "Health" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saúde"
           }
         }
       }
@@ -3887,6 +4497,16 @@
         }
       }
     },
+    "History of science" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "História da ciência"
+          }
+        }
+      }
+    },
     "How BOAR Answers" : {
       "localizations" : {
         "pt" : {
@@ -3897,12 +4517,62 @@
         }
       }
     },
+    "How BOAR answers" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Como o BOAR responde"
+          }
+        }
+      }
+    },
+    "How BOAR treats your chats and your %@'s memory." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Como o BOAR trata suas conversas e a memória do %@."
+          }
+        }
+      }
+    },
+    "How Earth's tilt creates the seasons, and why they flip between hemispheres" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Como a inclinação da Terra cria as estações, e por que elas se invertem entre os hemisférios"
+          }
+        }
+      }
+    },
+    "How black holes form, and what happens at the event horizon" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Como os buracos negros se formam, e o que acontece no horizonte de eventos"
+          }
+        }
+      }
+    },
     "How busy each core is. %@ doesn't give apps the clock speed." : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Quanto cada núcleo está ocupado. O %@ não passa o clock para os apps."
+          }
+        }
+      }
+    },
+    "How cheetahs reach top speed, and how long they can keep it" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Como os guepardos chegam à velocidade máxima, e por quanto tempo a mantêm"
           }
         }
       }
@@ -3957,12 +4627,72 @@
         }
       }
     },
+    "How monsoons form, and why they matter for farming in South Asia" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Como as monções se formam, e por que importam para a agricultura no sul da Ásia"
+          }
+        }
+      }
+    },
+    "How mosquitoes spread disease, and why HIV isn't one of them" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Como os mosquitos transmitem doenças, e por que o HIV não é uma delas"
+          }
+        }
+      }
+    },
+    "How much space BOAR's models and packs may take. No Limit: only the %@'s free space counts." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quanto espaço os modelos e pacotes do BOAR podem ocupar. Sem limite: só conta o espaço livre do %@."
+          }
+        }
+      }
+    },
+    "How to ask" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Como perguntar"
+          }
+        }
+      }
+    },
+    "How vaccines train the immune system, from smallpox to mRNA" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Como as vacinas treinam o sistema imune, da varíola ao mRNA"
+          }
+        }
+      }
+    },
     "Hugging Face" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Hugging Face"
+          }
+        }
+      }
+    },
+    "Hugging Face (where BOAR's models download from)" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hugging Face (de onde os modelos do BOAR são baixados)"
           }
         }
       }
@@ -4013,16 +4743,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "EM TESTE · SEM DATA DE LANÇAMENTO"
-          }
-        }
-      }
-    },
-    "Ideas and money" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ideias e dinheiro"
           }
         }
       }
@@ -4147,6 +4867,16 @@
         }
       }
     },
+    "In the chat, the style button next to where you type shows this icon and switches it any time." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Na conversa, o botão de estilo ao lado de onde você digita mostra este ícone e troca quando quiser."
+          }
+        }
+      }
+    },
     "In use" : {
       "localizations" : {
         "pt" : {
@@ -4173,6 +4903,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Instalando"
+          }
+        }
+      }
+    },
+    "Interrupted: BOAR was closed while answering." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Interrompida: o BOAR foi fechado enquanto respondia."
           }
         }
       }
@@ -4247,6 +4987,16 @@
         }
       }
     },
+    "Japan and Germany compared: population density and an aging society" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Japão e Alemanha comparados: densidade populacional e envelhecimento"
+          }
+        }
+      }
+    },
     "Judged on a computer" : {
       "localizations" : {
         "pt" : {
@@ -4283,6 +5033,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Manter Auto"
+          }
+        }
+      }
+    },
+    "Keep Going" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continuar"
           }
         }
       }
@@ -4347,6 +5107,16 @@
         }
       }
     },
+    "Knowledge Packs" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pacotes de conhecimento"
+          }
+        }
+      }
+    },
     "Knowledge packs you collect, keep and open on this %@: whole libraries, offline." : {
       "localizations" : {
         "pt" : {
@@ -4373,6 +5143,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Conhecimento que vai com você."
+          }
+        }
+      }
+    },
+    "Kyoto's role in Japanese history and culture" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O papel de Kyoto na história e na cultura do Japão"
           }
         }
       }
@@ -4407,6 +5187,16 @@
         }
       }
     },
+    "Labs don't slow the answers. The ones that load a model use extra memory while they run. All of them are in Settings → Advanced → Boar Labs." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Os Labs não deixam as respostas mais lentas. Os que carregam um modelo usam memória extra enquanto rodam. Todos ficam em Configurações → Avançado → Boar Labs."
+          }
+        }
+      }
+    },
     "Large" : {
       "localizations" : {
         "pt" : {
@@ -4437,12 +5227,32 @@
         }
       }
     },
+    "Last Used" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usados por último"
+          }
+        }
+      }
+    },
     "Last quarter" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Quarto minguante"
+          }
+        }
+      }
+    },
+    "Later: Knowledge → Personal Files" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Depois: Conhecimento → Arquivos pessoais"
           }
         }
       }
@@ -4477,16 +5287,6 @@
         }
       }
     },
-    "Life and health" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vida e saúde"
-          }
-        }
-      }
-    },
     "Light" : {
       "localizations" : {
         "pt" : {
@@ -4503,6 +5303,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Curtidas"
+          }
+        }
+      }
+    },
+    "Load Anyway" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Carregar mesmo assim"
           }
         }
       }
@@ -4577,6 +5387,16 @@
         }
       }
     },
+    "Lock" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bloqueio"
+          }
+        }
+      }
+    },
     "Lock BOAR" : {
       "localizations" : {
         "pt" : {
@@ -4593,6 +5413,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tranque o BOAR."
+          }
+        }
+      }
+    },
+    "Lock BOAR?" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bloquear o BOAR?"
+          }
+        }
+      }
+    },
+    "Lock on. BOAR asks for %@ from now on." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bloqueio ligado. O BOAR pede %@ a partir de agora."
           }
         }
       }
@@ -4677,6 +5517,16 @@
         }
       }
     },
+    "MIT. The code of this app and of the Android app, the model list and the scripts that build the knowledge packs." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MIT. O código deste app e do app de Android, a lista de modelos e os scripts que montam os pacotes de conhecimento."
+          }
+        }
+      }
+    },
     "Mac" : {
       "localizations" : {
         "pt" : {
@@ -4747,6 +5597,16 @@
         }
       }
     },
+    "May Not Fit" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pode não caber"
+          }
+        }
+      }
+    },
     "May be slow" : {
       "localizations" : {
         "pt" : {
@@ -4793,6 +5653,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Javali Mecha"
+          }
+        }
+      }
+    },
+    "Medicine" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Medicina"
           }
         }
       }
@@ -4983,6 +5853,16 @@
         }
       }
     },
+    "Mount Kilimanjaro: how a volcano became Africa's highest peak" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Monte Kilimanjaro: como um vulcão virou o pico mais alto da África"
+          }
+        }
+      }
+    },
     "Move down" : {
       "localizations" : {
         "pt" : {
@@ -5013,6 +5893,16 @@
         }
       }
     },
+    "Myths" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mitos"
+          }
+        }
+      }
+    },
     "Name" : {
       "localizations" : {
         "pt" : {
@@ -5029,6 +5919,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Dê um nome a esta coleção"
+          }
+        }
+      }
+    },
+    "Names new chats from your first message" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nomeia novas conversas com base na primeira mensagem"
+          }
+        }
+      }
+    },
+    "Napoleon Bonaparte: his rise, his wars and his legacy in Europe" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Napoleão Bonaparte: sua ascensão, suas guerras e seu legado na Europa"
           }
         }
       }
@@ -5153,6 +6063,16 @@
         }
       }
     },
+    "News comes only from these addresses. Check the address before you download anything that says it is BOAR." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "As novidades saem só destes endereços. Confira o endereço antes de baixar qualquer coisa que diga ser o BOAR."
+          }
+        }
+      }
+    },
     "Next" : {
       "localizations" : {
         "pt" : {
@@ -5219,6 +6139,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nenhum modelo de resposta"
+          }
+        }
+      }
+    },
+    "No BOAR limit: up to the %@'s free space" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sem limite do BOAR: até o espaço livre do %@"
           }
         }
       }
@@ -5303,6 +6233,16 @@
         }
       }
     },
+    "No connection to the download server. Check your connection and retry." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sem conexão com o servidor de download. Verifique a conexão e tente de novo."
+          }
+        }
+      }
+    },
     "No files BOAR can use in this model." : {
       "localizations" : {
         "pt" : {
@@ -5319,6 +6259,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nenhuma fonte correspondente"
+          }
+        }
+      }
+    },
+    "No models here. Pick All to see every model." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nenhum modelo aqui. Escolha Todos para ver todos."
           }
         }
       }
@@ -5383,6 +6333,26 @@
         }
       }
     },
+    "Not Now" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Agora não"
+          }
+        }
+      }
+    },
+    "Not available for download yet. Import the file instead." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ainda não disponível para download. Importe o arquivo."
+          }
+        }
+      }
+    },
     "Not checked by BOAR. Look at the model's page for its license before you use it." : {
       "localizations" : {
         "pt" : {
@@ -5439,6 +6409,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nada aqui sai do seu %@."
+          }
+        }
+      }
+    },
+    "Notifications" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notificações"
           }
         }
       }
@@ -5523,6 +6503,16 @@
         }
       }
     },
+    "Official Site" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Site oficial"
+          }
+        }
+      }
+    },
     "Offline research" : {
       "localizations" : {
         "pt" : {
@@ -5563,6 +6553,16 @@
         }
       }
     },
+    "On X. Tap an address to copy it." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No X. Toque num endereço para copiar."
+          }
+        }
+      }
+    },
     "On this %@" : {
       "localizations" : {
         "pt" : {
@@ -5589,6 +6589,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Um dado sobre um país, cidade, montanha, rio, monumento ou prêmio, de uma tabela da Wikidata, sem o modelo."
+          }
+        }
+      }
+    },
+    "One notification, only while BOAR answers." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uma notificação, só enquanto o BOAR responde."
+          }
+        }
+      }
+    },
+    "Only for BOAR: your %@'s own lock doesn't change." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Só para o BOAR: o bloqueio do seu %@ não muda."
           }
         }
       }
@@ -5743,6 +6763,16 @@
         }
       }
     },
+    "Or write your own…" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ou escreva a sua…"
+          }
+        }
+      }
+    },
     "Other Models" : {
       "localizations" : {
         "pt" : {
@@ -5759,6 +6789,36 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Outras versões (%lld)"
+          }
+        }
+      }
+    },
+    "Packs from R4to's R&D Lab." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pacotes do R&D Lab do R4to."
+          }
+        }
+      }
+    },
+    "Page %lld of %lld" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Página %lld de %lld"
+          }
+        }
+      }
+    },
+    "Pandemics and epidemics: how outbreaks spread and how they're classified" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pandemias e epidemias: como os surtos se espalham e como são classificados"
           }
         }
       }
@@ -5813,6 +6873,16 @@
         }
       }
     },
+    "People" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pessoas"
+          }
+        }
+      }
+    },
     "Performance Details" : {
       "localizations" : {
         "pt" : {
@@ -5829,6 +6899,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Arquivos pessoais"
+          }
+        }
+      }
+    },
+    "Personal Files answers only from your own files. Add some on the files page, then come back and pick it here.\n\n%@" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arquivos pessoais responde só com seus próprios arquivos. Adicione alguns na página de arquivos, depois volte e escolha aqui.\n\n%@"
           }
         }
       }
@@ -5863,6 +6943,26 @@
         }
       }
     },
+    "Photosynthesis step by step: from sunlight to sugar" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fotossíntese passo a passo: da luz do sol ao açúcar"
+          }
+        }
+      }
+    },
+    "Pick Another Model" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolher outro modelo"
+          }
+        }
+      }
+    },
     "Pick a library once. BOAR reads it to answer your questions, even with no signal." : {
       "localizations" : {
         "pt" : {
@@ -5883,12 +6983,12 @@
         }
       }
     },
-    "Pick a topic for ideas, or type your own question below." : {
+    "Pick a theme. It changes right away, and you can change it again in Settings." : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Escolha um tema para ter ideias ou digite sua pergunta abaixo."
+            "value" : "Escolha um tema. Ele muda na hora, e dá para mudar de novo nas Configurações."
           }
         }
       }
@@ -5899,6 +6999,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Escolha como o BOAR responde"
+          }
+        }
+      }
+    },
+    "Pick one, or write your own. It will be waiting in the chat when BOAR opens; you send it." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolha uma ou escreva a sua. Ela vai estar esperando na conversa quando o BOAR abrir; você envia."
           }
         }
       }
@@ -5953,6 +7063,16 @@
         }
       }
     },
+    "Plate tectonics: how moving plates build mountains and cause earthquakes" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tectônica de placas: como as placas em movimento formam montanhas e causam terremotos"
+          }
+        }
+      }
+    },
     "Point the camera at a sign or a menu: read and translated, offline." : {
       "localizations" : {
         "pt" : {
@@ -5969,6 +7089,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Aponta para o norte magnético, calculado neste %@ sem internet. O norte verdadeiro difere alguns graus conforme onde você está; precisaria da sua localização, que o BOAR não pede. Segure o %@ na horizontal."
+          }
+        }
+      }
+    },
+    "Polar bears and grizzlies compared: size, diet and habitat" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ursos-polares e ursos-pardos comparados: tamanho, dieta e habitat"
           }
         }
       }
@@ -6005,6 +7135,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Preparando para a busca… %lld de %lld"
+          }
+        }
+      }
+    },
+    "Preparing the index…" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preparando o índice…"
           }
         }
       }
@@ -6075,6 +7215,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Privacidade"
+          }
+        }
+      }
+    },
+    "Privacy and memory" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Privacidade e memória"
           }
         }
       }
@@ -6229,12 +7379,32 @@
         }
       }
     },
+    "Quick math" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conta rápida"
+          }
+        }
+      }
+    },
     "Qwen 7B" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Qwen 7B"
+          }
+        }
+      }
+    },
+    "RAM" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "RAM"
           }
         }
       }
@@ -6309,6 +7479,16 @@
         }
       }
     },
+    "Recently Added" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adicionados por último"
+          }
+        }
+      }
+    },
     "Recognizing text…" : {
       "localizations" : {
         "pt" : {
@@ -6345,6 +7525,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Remover"
+          }
+        }
+      }
+    },
+    "Remove %@" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remover %@"
           }
         }
       }
@@ -6425,6 +7615,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Banco de pesquisa v0.1"
+          }
+        }
+      }
+    },
+    "Research Topics" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Temas de pesquisa"
           }
         }
       }
@@ -6689,6 +7889,16 @@
         }
       }
     },
+    "Saved on this %@ only. Nothing is sent. BOAR doesn't learn from it yet." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salvo só neste %@. Nada é enviado. O BOAR ainda não aprende com isso."
+          }
+        }
+      }
+    },
     "Saved to %@." : {
       "localizations" : {
         "pt" : {
@@ -6715,6 +7925,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Páginas digitalizadas"
+          }
+        }
+      }
+    },
+    "Science" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ciência"
           }
         }
       }
@@ -6785,6 +8005,16 @@
         }
       }
     },
+    "Searches in several steps and writes a longer answer. It takes longer; you can also turn it on just for one question." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pesquisa em várias etapas e escreve uma resposta mais longa. Demora mais; dá para ligar só para uma pergunta também."
+          }
+        }
+      }
+    },
     "Searching" : {
       "localizations" : {
         "pt" : {
@@ -6821,6 +8051,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Estações, tempestades, monções"
+          }
+        }
+      }
+    },
+    "See the Download" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ver o download"
           }
         }
       }
@@ -6965,12 +8205,32 @@
         }
       }
     },
+    "Setup files" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arquivos da configuração"
+          }
+        }
+      }
+    },
     "Setup finished. BOAR is ready." : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Configuração concluída. O BOAR está pronto."
+          }
+        }
+      }
+    },
+    "Setup paused · tap to see it" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configuração pausada · toque para ver"
           }
         }
       }
@@ -7085,6 +8345,16 @@
         }
       }
     },
+    "Show the microphone button in the chat to dictate messages." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostra o botão de microfone no chat para ditar mensagens."
+          }
+        }
+      }
+    },
     "Shows performance details" : {
       "localizations" : {
         "pt" : {
@@ -7095,22 +8365,22 @@
         }
       }
     },
-    "Shows questions to ask" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mostra perguntas para fazer"
-          }
-        }
-      }
-    },
     "Shows the details and the answer" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mostra os detalhes e a resposta"
+          }
+        }
+      }
+    },
+    "Shows the download's details" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostra os detalhes do download"
           }
         }
       }
@@ -7215,6 +8485,16 @@
         }
       }
     },
+    "Smart" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inteligente"
+          }
+        }
+      }
+    },
     "Snow Boar" : {
       "localizations" : {
         "pt" : {
@@ -7275,6 +8555,16 @@
         }
       }
     },
+    "Sort and Filter" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ordenar e filtrar"
+          }
+        }
+      }
+    },
     "Source %lld" : {
       "localizations" : {
         "pt" : {
@@ -7297,16 +8587,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Fonte %lld: %@"
-          }
-        }
-      }
-    },
-    "Source code, model lists and the scripts that build the offline library." : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Código-fonte, listas de modelos e os scripts que montam a biblioteca offline."
           }
         }
       }
@@ -7371,12 +8651,12 @@
         }
       }
     },
-    "Space and physics" : {
+    "Space" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Espaço e física"
+            "value" : "Espaço"
           }
         }
       }
@@ -7497,6 +8777,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Dividindo sua pergunta…"
+          }
+        }
+      }
+    },
+    "Standing on open work, each under its own license." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Feito sobre trabalho aberto, cada um com sua licença."
           }
         }
       }
@@ -7657,6 +8947,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Parado enquanto pensava"
+          }
+        }
+      }
+    },
+    "Stopped at the %@-token limit" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Parou no limite de %@ tokens"
           }
         }
       }
@@ -7869,12 +9169,42 @@
         }
       }
     },
+    "The Berlin Wall: why it was built and how it fell" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Muro de Berlim: por que foi erguido e como caiu"
+          }
+        }
+      }
+    },
     "The English speech model couldn't be downloaded. Try again when online." : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Não foi possível baixar o modelo de fala em inglês. Tente de novo quando estiver online."
+          }
+        }
+      }
+    },
+    "The French and Industrial Revolutions compared: causes and lasting effects" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "As Revoluções Francesa e Industrial comparadas: causas e efeitos duradouros"
+          }
+        }
+      }
+    },
+    "The Great Wall of China: its history, its length and the Moon myth" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A Muralha da China: sua história, seu tamanho e o mito da Lua"
           }
         }
       }
@@ -7899,6 +9229,16 @@
         }
       }
     },
+    "The articles an answer used are listed under it: tap one to read it. Hold your question to copy it back." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Os artigos que a resposta usou aparecem embaixo dela: toque em um para ler. Segure sua pergunta para copiá-la de volta."
+          }
+        }
+      }
+    },
     "The basket is empty." : {
       "localizations" : {
         "pt" : {
@@ -7919,6 +9259,36 @@
         }
       }
     },
+    "The download paused (no data). Check your connection and try again." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O download pausou (sem dados). Verifique a conexão e tente de novo."
+          }
+        }
+      }
+    },
+    "The download server didn't answer. Retry later." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O servidor de download não respondeu. Tente mais tarde."
+          }
+        }
+      }
+    },
+    "The download stopped. Retry." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O download parou. Tente de novo."
+          }
+        }
+      }
+    },
     "The fastest answers, with more heat and battery use." : {
       "localizations" : {
         "pt" : {
@@ -7929,12 +9299,32 @@
         }
       }
     },
+    "The file didn't match its checksum and was removed. Retry the download." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O arquivo não bateu com o checksum e foi removido. Tente o download de novo."
+          }
+        }
+      }
+    },
     "The forest is quietest between 2 AM and 4 AM." : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "A floresta fica mais quieta entre 2h e 4h."
+          }
+        }
+      }
+    },
+    "The greenhouse effect: which gases trap heat, and how" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O efeito estufa: quais gases retêm calor, e como"
           }
         }
       }
@@ -7965,6 +9355,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "A biblioteca ainda não está pronta: termine a configuração e volte."
+          }
+        }
+      }
+    },
+    "The model stopped without writing an answer." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O modelo parou sem escrever uma resposta."
           }
         }
       }
@@ -8039,6 +9439,26 @@
         }
       }
     },
+    "The server now has a different file than this version of BOAR expects. Import the file or update the app." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O servidor agora tem um arquivo diferente do que esta versão do BOAR espera. Importe o arquivo ou atualize o app."
+          }
+        }
+      }
+    },
+    "The style BOAR starts with. In the chat, the style button switches it for any question." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O estilo com que o BOAR começa. Na conversa, o botão de estilo troca para qualquer pergunta."
+          }
+        }
+      }
+    },
     "The style button in the chat, or Settings → Answers" : {
       "localizations" : {
         "pt" : {
@@ -8109,6 +9529,16 @@
         }
       }
     },
+    "This %@ doesn't have enough free space for the download. Free some space and retry." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este %@ não tem espaço livre suficiente para o download. Libere espaço e tente de novo."
+          }
+        }
+      }
+    },
     "This %@ has %@ of memory, so Fast is recommended." : {
       "localizations" : {
         "pt" : {
@@ -8139,12 +9569,32 @@
         }
       }
     },
+    "This %@ has only %@ free and the download needs %@. Free some space and retry." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este %@ tem só %@ livres e o download precisa de %@. Libere espaço e tente de novo."
+          }
+        }
+      }
+    },
     "This article is no longer on this %@: its pack or collection was removed." : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Este artigo não está mais neste %@: o pacote ou a coleção foi removido."
+          }
+        }
+      }
+    },
+    "This build of BOAR has no network access. Import the file instead." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esta versão do BOAR não tem acesso à rede. Importe o arquivo."
           }
         }
       }
@@ -8215,6 +9665,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Este modelo não está baixado. Você pode adicioná-lo de novo em Encontrar mais modelos."
+          }
+        }
+      }
+    },
+    "This model needs a Hugging Face account and its license accepted. BOAR downloads without an account, so it can't get this one." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este modelo exige uma conta no Hugging Face e aceitar a licença. O BOAR baixa sem conta, então não consegue baixar este."
           }
         }
       }
@@ -8350,6 +9810,26 @@
         }
       }
     },
+    "To answer only from your own files, pick the Personal Files style with the style button." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para responder só com seus arquivos, escolha o estilo Arquivos pessoais no botão de estilo."
+          }
+        }
+      }
+    },
+    "To ask about them, switch the chat's style to Personal Files (the style button, next to where you type). Then BOAR answers only from your files, and says so when they don't have the answer." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para perguntar sobre eles, mude o estilo da conversa para Arquivos pessoais (o botão de estilo, ao lado de onde você digita). Aí o BOAR responde só com seus arquivos, e avisa quando eles não têm a resposta."
+          }
+        }
+      }
+    },
     "Too big" : {
       "localizations" : {
         "pt" : {
@@ -8456,6 +9936,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Registros para o juiz"
+          }
+        }
+      }
+    },
+    "Travel" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Viagem"
+          }
+        }
+      }
+    },
+    "Travelling in Brazil: plugs, voltage and emergency numbers" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Viajar pelo Brasil: tomadas, voltagem e números de emergência"
           }
         }
       }
@@ -8636,6 +10136,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Liberado em %@"
+          }
+        }
+      }
+    },
+    "Up Next" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A seguir"
           }
         }
       }
@@ -8836,6 +10346,16 @@
         }
       }
     },
+    "Weather" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tempo"
+          }
+        }
+      }
+    },
     "Weather & Climate" : {
       "localizations" : {
         "pt" : {
@@ -8896,12 +10416,12 @@
         }
       }
     },
-    "What do you want to know?" : {
+    "What is 30 °C in Fahrenheit?" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O que você quer saber?"
+            "value" : "Quanto é 30 °C em Fahrenheit?"
           }
         }
       }
@@ -8986,6 +10506,16 @@
         }
       }
     },
+    "Why the Western Roman Empire fell: the main theories" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Por que o Império Romano do Ocidente caiu: as principais teorias"
+          }
+        }
+      }
+    },
     "Wie lange dauert es, bis das Wasser kocht?" : {
       "localizations" : {
         "pt" : {
@@ -9002,6 +10532,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Wikipedia"
+          }
+        }
+      }
+    },
+    "Wikipedia (the built-in library and the Vital Articles pack)" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wikipédia (a biblioteca embutida e o pacote Vital Articles)"
+          }
+        }
+      }
+    },
+    "With the light model you picked, a Deep Research answer can take a few minutes." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Com o modelo leve que você escolheu, uma resposta da Pesquisa Profunda pode levar alguns minutos."
           }
         }
       }
@@ -9197,6 +10747,16 @@
         }
       }
     },
+    "Your Files" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seus arquivos"
+          }
+        }
+      }
+    },
     "Your Mac stays awake while it runs." : {
       "localizations" : {
         "pt" : {
@@ -9217,12 +10777,42 @@
         }
       }
     },
+    "Your choices" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suas escolhas"
+          }
+        }
+      }
+    },
+    "Your first question" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sua primeira pergunta"
+          }
+        }
+      }
+    },
     "Your library: an encyclopedia plus topics like first aid and weather." : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sua biblioteca: uma enciclopédia mais temas como primeiros socorros e tempo."
+          }
+        }
+      }
+    },
+    "Your own files" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seus arquivos"
           }
         }
       }

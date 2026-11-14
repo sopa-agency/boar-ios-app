@@ -47,6 +47,21 @@ import Testing
         #expect(AppSettings(store: JSONFileKeyValueStore(url: f)).raw()["engineTweaks"] == nil)
     }
 
+    @Test func modelTimesAndTheModelsScreensOrderSurviveAReopen() throws {
+        let f = try file(nil)
+        let s = AppSettings(store: JSONFileKeyValueStore(url: f))
+        s.stampModel(AppSettings.modelLastUsed, "a", at: 100)
+        s.stampModel(AppSettings.modelLastUsed, "b", at: 200)
+        s.stampModel(AppSettings.modelLastUsed, "a", at: 300)
+        s.stampModel(AppSettings.modelAdded, "c", at: 1_762_819_200_000)
+        s.modelSort = "LAST_USED"
+        s.modelFilter = "MINE"
+        let again = AppSettings(store: JSONFileKeyValueStore(url: f))
+        #expect(again.modelTimes(AppSettings.modelLastUsed) == ["a": 300, "b": 200])
+        #expect(again.modelTimes(AppSettings.modelAdded) == ["c": 1_762_819_200_000])
+        #expect(again.modelSort == "LAST_USED" && again.modelFilter == "MINE")
+    }
+
     @Test func resetSettingsClearsPreferencesAndKeepsModelsThePinTheLanguageAndTheCustomPrompt() throws {
         let f = try file(nil)
         let s = AppSettings(store: JSONFileKeyValueStore(url: f))
