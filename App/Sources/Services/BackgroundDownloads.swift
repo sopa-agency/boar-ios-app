@@ -46,6 +46,15 @@ final class BackgroundDownloads: NSObject, URLSessionDownloadDelegate, @unchecke
 
     private override init() { super.init() }
 
+    /// What the running downloads still have to land in BOAR's folder (android `AssetStore.downloadingBytes`): they count
+    /// against BOAR's storage limit before they land, as the sidebar's storage bar shows. Only a resumed partial file is
+    /// already there: what this transfer wrote waits in URLSession's own temporary file until it finishes.
+    func downloadingBytes() -> Int64 {
+        lock.withLock { jobs in
+            jobs.values.filter { !$0.finishedFile }.reduce(0) { $0 + max($1.asset.sizeBytes - $1.rangeStart, 0) }
+        }
+    }
+
     /// Recreates the session at launch so transfers that finished while the app was gone are delivered.
     func activate() { _ = session }
 
@@ -68,8 +77,8 @@ final class BackgroundDownloads: NSObject, URLSessionDownloadDelegate, @unchecke
         let check = StorageBudget.check(StorageBudget.Input(
             usedBytes: store.usedBytes(excluding: [dest.standardizedFileURL.path]),
             reservedBytes: 0, downloadBytes: asset.sizeBytes, alreadyDownloadedBytes: min(partial, asset.sizeBytes),
-            freeDiskBytes: DiskSpace.freeBytes(at: filesDir), budgetBytes: catalog.storageBudgetBytes))
-        if case .refused(_, _, let message) = check { throw AssetStore.DownloadError.storage(message: message) }
+            freeDiskBytes: DiskSpace.freeBytes(at: filesDir), budgetBytes: StorageBudget.limit(catalogBudget: catalog.storageBudgetBytes)))
+        if case .refused(let r) = check { throw AssetStore.DownloadError.storage(message: r.message, refused: r) }
 
         if partial != asset.sizeBytes {
             try await transfer(asset, url: url, dest: dest, onProgress: onProgress)
