@@ -112,6 +112,15 @@ public final class ChatStore: @unchecked Sendable {
         try db.execute("UPDATE chat_sessions SET updated_at = ? WHERE id = ?", args: [.integer(t), .text(sessionId)])
     }
 
+    /// One message with its meta and rating (an answer saved as it was written that ended with nothing to keep).
+    public func deleteMessage(id: String) throws {
+        try db.transaction {
+            try db.execute("DELETE FROM chat_message_meta WHERE message_id = ?", args: [.text(id)])
+            try db.execute("DELETE FROM answer_feedback WHERE message_id = ?", args: [.text(id)])
+            try db.execute("DELETE FROM chat_messages WHERE id = ?", args: [.text(id)])
+        }
+    }
+
     /// `rating` "up" or "down"; nil removes the rating.
     public func setFeedback(messageId: String, rating: String?) throws {
         if let rating {

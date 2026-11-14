@@ -55,6 +55,23 @@ struct ChatStoreTests {
         #expect(try s.listSessions().isEmpty)
     }
 
+    /// iOS only: an answer saved as it was written that ended with nothing to keep goes, with its meta and rating.
+    @Test func deleteMessageRemovesOnlyThatMessage() throws {
+        let s = try store()
+        let a = try s.createSession()
+        try s.addMessage(sessionId: a.id, role: "user", text: "q", id: "u1")
+        try s.upsertMessage(sessionId: a.id, role: "assistant", text: "", id: "a1")
+        try s.setMessageMeta(messageId: "a1", meta: #"{"error":"x"}"#)
+        try s.setFeedback(messageId: "a1", rating: "up")
+        try s.deleteMessage(id: "a1")
+        #expect(try s.messages(sessionId: a.id).map(\.id) == ["u1"])
+        // Saved again under the same id, it carries nothing of the deleted one.
+        try s.upsertMessage(sessionId: a.id, role: "assistant", text: "A", id: "a1")
+        let again = try s.messages(sessionId: a.id)[1]
+        #expect(again.meta == nil && again.feedback == nil)
+        try s.deleteMessage(id: "missing")
+    }
+
     @Test func sealedTextRoundTripsAndResealSwitchesTheForm() throws {
         let s = try store()
         let key = PinKeys.newDataKey()

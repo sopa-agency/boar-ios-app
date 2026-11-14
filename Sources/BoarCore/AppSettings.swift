@@ -115,6 +115,8 @@ public final class AppSettings: @unchecked Sendable {
 
     public var deepResearchMode: Bool { get { bool("deepResearchMode") ?? false } set { set("deepResearchMode", .bool(newValue)) } }
     /// The user closed the "Mixture of agents" line under the header (it stays closed).
+    /// The one-time note on the first rating (ratings stay on the device) was shown.
+    public var ratingNoteShown: Bool { get { bool("ratingNoteShown") ?? false } set { set("ratingNoteShown", .bool(newValue)) } }
     public var researchBannerHidden: Bool { get { bool("researchBannerHidden") ?? false } set { set("researchBannerHidden", .bool(newValue)) } }
     public var adaptiveRoutingEnabled: Bool { get { bool("adaptiveRoutingEnabled") ?? false } set { set("adaptiveRoutingEnabled", .bool(newValue)) } }
     public var routingPreset: String? { get { str("routingPreset") } set { set("routingPreset", newValue.map(JSONValue.string)) } }
