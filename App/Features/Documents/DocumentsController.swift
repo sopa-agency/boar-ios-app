@@ -46,24 +46,9 @@ final class DocumentsController {
             var files: [DocumentImport.File] = []
             let recognizer = DocumentTextRecognizer()
             for url in urls {
-                let scoped = url.startAccessingSecurityScopedResource()
-                defer { if scoped { url.stopAccessingSecurityScopedResource() } }
-                let fileName = url.lastPathComponent
-                let size = Int64((try? url.resourceValues(forKeys: [.fileSizeKey]).fileSize) ?? 0)
-                // Only what BOAR can read, and nothing so big its text could crowd out the model (android DocumentReader).
-                guard DocumentImport.readable(fileName) else {
-                    throw ImportError(String(localized: "BOAR can't read \(fileName): it imports .txt, .md, .csv, .json and .pdf. Save the page as one of those (a browser can save it as PDF) and import it again."))
-                }
-                if DocumentImport.tooLargeToRead(size) { throw Self.tooLarge(fileName) }
-                let text: String
-                if url.pathExtension.lowercased() == "pdf" {
-                    text = try await Self.pdfText(url, fileName: fileName, recognizer: recognizer) { done, total in
-                        Task { @MainActor in controller.stage = .recognizing(done: done, total: total) }
-                    }
-                } else {
-                    text = try Self.readCapped(url, fileName: fileName)
-                }
-                files.append(DocumentImport.File(name: fileName, sizeBytes: size > 0 ? size : Int64(text.utf8.count), text: text))
+                files.append(try await Self.read(url, recognizer: recognizer) { done, total in
+                    Task { @MainActor in controller.stage = .recognizing(done: done, total: total) }
+                })
             }
             return files
         }
@@ -165,20 +150,47 @@ final class DocumentsController {
 
     // MARK: reading
 
+    /// One picked file as a document (also setup's files, SetupFiles): only what BOAR can read, and nothing so big its
+    /// text could crowd out the model (android DocumentReader).
+    nonisolated static func read(_ url: URL, recognizer: DocumentTextRecognizer,
+                                 progress: @escaping @Sendable (Int, Int) -> Void = { _, _ in }) async throws -> DocumentImport.File {
+        let scoped = url.startAccessingSecurityScopedResource()
+        defer { if scoped { url.stopAccessingSecurityScopedResource() } }
+        let fileName = url.lastPathComponent
+        let size = Int64((try? url.resourceValues(forKeys: [.fileSizeKey]).fileSize) ?? 0)
+        guard DocumentImport.readable(fileName) else { throw unsupported(fileName) }
+        if DocumentImport.tooLargeToRead(size) { throw tooLarge(fileName) }
+        let text: String
+        if url.pathExtension.lowercased() == "pdf" {
+            text = try await pdfText(url, fileName: fileName, recognizer: recognizer, progress: progress)
+        } else {
+            text = try readCapped(url, fileName: fileName)
+        }
+        return DocumentImport.File(name: fileName, sizeBytes: size > 0 ? size : Int64(text.utf8.count), text: text)
+    }
+
+    nonisolated static func unsupported(_ fileName: String) -> ImportError {
+        ImportError(String(localized: "BOAR can't read \(fileName): it imports .txt, .md, .csv, .json and .pdf. Save the page as one of those (a browser can save it as PDF) and import it again."))
+    }
+
+    nonisolated static func unreadable(_ fileName: String) -> ImportError {
+        ImportError(String(localized: "Couldn't read \"\(fileName)\"."))
+    }
+
     struct ImportError: LocalizedError {
         var message: String
         init(_ message: String) { self.message = message }
         var errorDescription: String? { message }
     }
 
-    nonisolated private static func tooLarge(_ fileName: String) -> ImportError {
+    nonisolated static func tooLarge(_ fileName: String) -> ImportError {
         ImportError(String(localized: "Too large: \(fileName) (over \(DocumentImport.readLimit / 1_000_000) MB)."))
     }
 
     /// The file's bytes as text, at most `DocumentImport.readLimit` of them: a file whose size the system didn't report
     /// is turned away as soon as it's longer.
     nonisolated private static func readCapped(_ url: URL, fileName: String) throws -> String {
-        guard let handle = try? FileHandle(forReadingFrom: url) else { throw ImportError(String(localized: "Couldn't read \"\(fileName)\".")) }
+        guard let handle = try? FileHandle(forReadingFrom: url) else { throw unreadable(fileName) }
         defer { try? handle.close() }
         var data = Data()
         while let chunk = try handle.read(upToCount: 64 * 1024), !chunk.isEmpty {
@@ -192,7 +204,7 @@ final class DocumentsController {
     /// doesn't fill the memory a loaded model needs; a scanned PDF, with none, goes through OCR page by page.
     nonisolated private static func pdfText(_ url: URL, fileName: String, recognizer: DocumentTextRecognizer,
                                             progress: @escaping @Sendable (Int, Int) -> Void) async throws -> String {
-        guard let doc = PDFDocument(url: url) else { throw ImportError(String(localized: "Couldn't read \"\(fileName)\".")) }
+        guard let doc = PDFDocument(url: url) else { throw unreadable(fileName) }
         if doc.isLocked { throw ImportError(String(localized: "\"\(fileName)\" is password-protected. Password-protected PDFs aren't supported.")) }
         var text = ""
         for i in 0..<doc.pageCount {
