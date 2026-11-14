@@ -231,7 +231,11 @@ final class ChatController {
         Task {
             let records = (try? await services.background { try $0.chats.messages(sessionId: id) }) ?? []
             self.messages = records.map { r in
-                ChatItem(id: r.id, role: r.role, text: r.text, sources: MessageMeta.sources(r.meta), feedback: r.feedback, receipt: MessageMeta.receipt(r.meta))
+                var item = ChatItem(id: r.id, role: r.role, text: r.text, sources: MessageMeta.sources(r.meta), feedback: r.feedback, receipt: MessageMeta.receipt(r.meta))
+                if MessageMeta.error(r.meta) == MessageMeta.interrupted {
+                    item.failure = String(localized: "Interrupted: BOAR was closed while answering.")
+                }
+                return item
             }
             self.sessionId = id
             self.error = nil
@@ -257,6 +261,11 @@ final class ChatController {
         guard let i = messages.firstIndex(where: { $0.id == messageId }) else { return }
         let next = messages[i].feedback == rating ? nil : rating
         messages[i].feedback = next
+        // Once, on the first rating: ratings stay on the device and nothing uses them yet.
+        if next != nil && !services.settings.ratingNoteShown {
+            services.settings.ratingNoteShown = true
+            toast = String(localized: "Saved on this \(Platform.deviceNoun) only. Nothing is sent. BOAR doesn't learn from it yet.")
+        }
         Task { _ = try? await services.background { try $0.chats.setFeedback(messageId: messageId, rating: next) } }
     }
 
@@ -327,7 +336,10 @@ final class ChatController {
         let question = messages[i - 1]
         messages.remove(at: i)
         stopFlag.set(false)
+        let services = services
         job = Task {
+            // An answer BOAR was closed in the middle of is saved: the new one replaces it.
+            _ = try? await services.background { try $0.chats.deleteMessage(id: answerId) }
             await self.answer(question.text, savedQuestionId: question.id)
             self.job = nil
         }
@@ -393,8 +405,13 @@ final class ChatController {
         }
         let userId = savedQuestionId ?? services.chats.newId()
         let answerId = services.chats.newId()
-        if savedQuestionId == nil {
-            _ = try? await services.background { try $0.chats.addMessage(sessionId: sid, role: "user", text: q, id: userId) }
+        // The answer is saved as it's written, marked interrupted until it ends: if iOS closes BOAR mid-answer, the chat
+        // reopens with what was written and the note, not a lost answer (android ChatViewModel.savePartial).
+        let interruptedMeta = MessageMeta.encode([], nil, error: MessageMeta.interrupted)
+        _ = try? await services.background { s in
+            if savedQuestionId == nil { try s.chats.addMessage(sessionId: sid, role: "user", text: q, id: userId) }
+            try s.chats.upsertMessage(sessionId: sid, role: "assistant", text: "", id: answerId)
+            try s.chats.setMessageMeta(messageId: answerId, meta: interruptedMeta)
         }
         sessionId = sid
         error = nil
@@ -478,6 +495,10 @@ final class ChatController {
 
         let mark = BoarPerf.begin("answer", way.rawValue)
 
+        /// The partial answer's saves, every few seconds, one after the other; the final save waits for them.
+        var partialSave: Task<Void, Never>?
+        var savedAt = clock.now
+
         func onPiece(_ piece: String) {
             tokens += 1
             let now = clock.now
@@ -486,6 +507,14 @@ final class ChatController {
                 BoarPerf.event("answer.firstToken")
             }
             text += piece
+            if savedAt.duration(to: now) > Self.partialSaveEvery {
+                savedAt = now
+                let partial = text
+                partialSave = Task { [previous = partialSave] in
+                    await previous?.value
+                    _ = try? await services.background { try $0.chats.upsertMessage(sessionId: sid, role: "assistant", text: partial, id: answerId) }
+                }
+            }
             let elapsed = Self.seconds(firstAt!.duration(to: now))
             if elapsed > 0.5 { liveTokPerSec = Double(tokens) / elapsed }
             guard let i = messages.lastIndex(where: { $0.id == answerId }) else { return }
@@ -599,6 +628,10 @@ final class ChatController {
         } catch {
             failure = error
         }
+        // Ended without a word, no error and not stopped: say so (with Try Again) instead of an empty answer.
+        if failure == nil, !stopFlag.value, text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            failure = ChatError.emptyAnswer
+        }
 
         mark.end("\(tokens) tokens\(failure == nil ? "" : ", failed")")
         // One source per article, best first; the answer's numbers follow (a reused list is already grouped).
@@ -655,14 +688,18 @@ final class ChatController {
         }
         let nextLimit = cutAt.flatMap { AnswerLimit.next(after: $0, options: services.personalities.maxTokensOptions, openedContext: openedContext) }
         let finalText = text
-        let meta = (!shown.isEmpty || receipt != nil) ? MessageMeta.encode(shown, receipt) : nil
+        // Written over the interrupted mark, which an answer that ended no longer has.
+        let meta = MessageMeta.encode(shown, receipt)
         let maxSessions = settings.maxSavedSessions
         // A failed answer with no text stays on screen (with Try Again) but is not saved.
         let keep = failure == nil || !finalText.isEmpty
+        await partialSave?.value
         let saved = (try? await services.background { s -> Bool in
             if keep {
                 try s.chats.upsertMessage(sessionId: sid, role: "assistant", text: finalText, id: answerId)
-                if let meta { try s.chats.setMessageMeta(messageId: answerId, meta: meta) }
+                try s.chats.setMessageMeta(messageId: answerId, meta: meta)
+            } else {
+                try s.chats.deleteMessage(id: answerId)
             }
             try s.chats.prune(maxSessions: maxSessions)
             return keep
@@ -781,6 +818,9 @@ final class ChatController {
         await session.prewarm(input, enableThinking: thinking)
     }
 
+    /// How often an answer being written is saved (android PARTIAL_SAVE_NS).
+    private static let partialSaveEvery = Duration.seconds(3)
+
     private static func seconds(_ d: Duration) -> Double {
         Double(d.components.seconds) + Double(d.components.attoseconds) / 1e18
     }
@@ -791,12 +831,15 @@ private struct InstantAnswer: Error {}
 
 enum ChatError: LocalizedError {
     case noModel
+    /// The answer ended without a word, without an error and without Stop.
+    case emptyAnswer
     case adaptive(String)
     case remoteUnreachable(String)
 
     var errorDescription: String? {
         switch self {
         case .noModel: String(localized: "No answer model is installed.")
+        case .emptyAnswer: String(localized: "The model stopped without writing an answer.")
         case .adaptive(let w): String(localized: "Adaptive routing produced no answer: \(w)")
         case .remoteUnreachable(let why): why
         }
