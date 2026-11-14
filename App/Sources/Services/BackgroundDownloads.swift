@@ -58,6 +58,13 @@ final class BackgroundDownloads: NSObject, URLSessionDownloadDelegate, @unchecke
     /// Downloads `asset` to its file and verifies it. Throws `AssetStore.DownloadError` like the foreground store.
     /// Cancelling the calling task cancels the transfer and keeps its resume data for the next attempt.
     func download(_ asset: CatalogAsset, store: AssetStore, filesDir: URL, catalog: Catalog, onProgress: @escaping @Sendable (Progress) -> Void) async throws {
+        try await DebugLog.download(id: asset.id, sizeBytes: asset.sizeBytes) {
+            try await checkedDownload(asset, store: store, filesDir: filesDir, catalog: catalog, onProgress: onProgress)
+        }
+    }
+
+    private func checkedDownload(_ asset: CatalogAsset, store: AssetStore, filesDir: URL, catalog: Catalog,
+                                 onProgress: @escaping @Sendable (Progress) -> Void) async throws {
         if asset.sourceUrl.isEmpty { throw AssetStore.DownloadError.noSource(label: asset.label) }
         guard let url = URL(string: asset.sourceUrl) else { throw AssetStore.DownloadError.noSource(label: asset.label) }
         let dest = filesDir.appending(path: asset.filename)
