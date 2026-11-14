@@ -245,6 +245,16 @@
         }
       }
     },
+    "%@ tok/s last query" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ tok/s na última consulta"
+          }
+        }
+      }
+    },
     "%@ tokens" : {
       "localizations" : {
         "pt" : {
@@ -1702,6 +1712,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Limite de armazenamento do BOAR"
+          }
+        }
+      }
+    },
+    "BOAR's storage limit · %@ downloading" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Limite do BOAR · %@ baixando"
           }
         }
       }

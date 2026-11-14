@@ -63,6 +63,13 @@ struct SessionsSidebar: View {
             }
         }
         .listStyle(.sidebar)
+        // Android's drawer footer: the bars stay at the bottom while the chats scroll.
+        .safeAreaInset(edge: .bottom) {
+            if chat.technicalDetails {
+                SidebarStats(services: chat.services, lastTokPerSec: chat.isAnswering ? nil : chat.liveTokPerSec)
+                    .background(.bar)
+            }
+        }
         .navigationTitle(Text(verbatim: "BOAR"))
         // One compact bar: Settings on the left, New Chat on the right, the title between them. No large title row
         // and no bottom bar holding a lone button.

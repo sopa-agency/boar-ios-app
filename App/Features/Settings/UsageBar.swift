@@ -16,23 +16,28 @@ struct UsageBar: View {
     let total: Int64
     let caption: String
     var kind: Kind = .memory
+    /// Bytes on their way (running downloads), drawn after `used` in a lighter tint and counted in the numbers.
+    var pending: Int64 = 0
+    /// The sidebar's small version (android `UsageBar(large = false)`): smaller text and a 5 pt bar.
+    var compact = false
     @Environment(\.palette) private var palette
 
     private var fraction: Double { total > 0 ? min(Double(used) / Double(total), 1) : 0 }
-    private var over: Bool { total > 0 && used > total }
+    private var pendingFraction: Double { total > 0 ? min(Double(used + pending) / Double(total), 1) - fraction : 0 }
+    private var over: Bool { total > 0 && used + pending > total }
     private var style: ByteCountFormatStyle.Style { kind == .memory ? .memory : .file }
     private var tint: Color {
         Color(over ? palette.crimson500 : kind == .memory ? palette.emerald400 : palette.cyan400)
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
+        VStack(alignment: .leading, spacing: compact ? 4 : 6) {
             HStack(alignment: .firstTextBaseline) {
                 Text(title)
-                    .font(.boar("ui.subtext").bold())
-                    .foregroundStyle(.boar(.secondary))
+                    .font(compact ? .boar("mono.xs").bold() : .boar("ui.subtext").bold())
+                    .foregroundStyle(.boar(compact ? .dim : .secondary))
                 Spacer()
-                Text(verbatim: "\(used.formatted(.byteCount(style: style))) / \(total.formatted(.byteCount(style: style)))")
+                Text(verbatim: "\((used + pending).formatted(.byteCount(style: style))) / \(total.formatted(.byteCount(style: style)))")
                     .boarText("mono.xs")
                     .foregroundStyle(.boar(.muted))
             }
@@ -40,17 +45,20 @@ struct UsageBar: View {
             GeometryReader { g in
                 ZStack(alignment: .leading) {
                     Color.black.opacity(palette.trackAlpha(0.5))
-                    tint.frame(width: g.size.width * fraction)
+                    HStack(spacing: 0) {
+                        tint.frame(width: g.size.width * fraction)
+                        tint.opacity(0.35).frame(width: g.size.width * pendingFraction)
+                    }
                 }
             }
-            .frame(height: 9)
+            .frame(height: compact ? 5 : 9)
             .clipShape(.rect(cornerRadius: 3))
             .overlay(RoundedRectangle(cornerRadius: 3).strokeBorder(Color(palette.borderDefault), lineWidth: 1))
             Text(verbatim: caption)
-                .font(.boar("ui.subtext"))
+                .font(compact ? .boar("mono.xs") : .boar("ui.subtext"))
                 .foregroundStyle(.boar(.dim))
         }
-        .padding(.vertical, 4)
+        .padding(.vertical, compact ? 0 : 4)
         .accessibilityElement(children: .combine)
         // The percentage the system ProgressView used to speak, on top of the numbers.
         .accessibilityValue(Text(fraction, format: .percent.precision(.fractionLength(0))))
