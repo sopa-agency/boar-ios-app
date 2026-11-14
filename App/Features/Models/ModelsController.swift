@@ -29,6 +29,17 @@ final class ModelsController {
     private(set) var rows: [String: Row] = [:]
     private(set) var activeLlm: String?
     private(set) var activating: String?
+    /// When each model was last used and added (epoch ms), and the ids added from Hugging Face, for the sort and filter.
+    private(set) var lastUsed: [String: Int64] = [:]
+    private(set) var added: [String: Int64] = [:]
+    private(set) var mine: Set<String> = []
+    /// The Models screen's sort and filter (android `ModelOrder`), kept in settings.
+    var sort: ModelOrder.Sort = .smart {
+        didSet { services.settings.modelSort = sort == .smart ? nil : sort.rawValue }
+    }
+    var filter: ModelOrder.Filter = .all {
+        didSet { services.settings.modelFilter = filter == .all ? nil : filter.rawValue }
+    }
     /// A short confirmation ("Qwen3 4B is answering now").
     var toast: String?
 
@@ -58,7 +69,15 @@ final class ModelsController {
 
     init(services: BoarServices) {
         self.services = services
+        sort = services.settings.modelSort.flatMap(ModelOrder.Sort.init) ?? .smart
+        filter = services.settings.modelFilter.flatMap(ModelOrder.Filter.init) ?? .all
         refresh()
+    }
+
+    /// What the sort and filter know about the answer models now.
+    var orderFacts: ModelOrder.Facts {
+        ModelOrder.Facts(active: activeLlm, onPhone: present, downloading: Set(rows.filter(\.value.downloading).keys), mine: mine,
+                         lastUsed: lastUsed, added: added)
     }
 
     var totalRamBytes: Int64 { services.totalRamBytes }
@@ -86,10 +105,22 @@ final class ModelsController {
         Task {
             let scan = try? await services.background { s in
                 let all = s.catalog.models
-                return (all, Set(all.filter { s.assets.status($0).present }.map(\.id)), s.backend == .apple ? nil : s.activeModel()?.id)
+                let onDisk = Set(all.filter { s.assets.status($0).present }.map(\.id))
+                // Models from before these times were kept: the file's date stands in for when it was added, once it's
+                // complete (a download in progress isn't added yet).
+                var added = s.settings.modelTimes(AppSettings.modelAdded)
+                for a in all where added[a.id] == nil && onDisk.contains(a.id) {
+                    let date = try? s.filesDir.appending(path: a.filename).resourceValues(forKeys: [.contentModificationDateKey]).contentModificationDate
+                    if let date { added[a.id] = Int64(date.timeIntervalSince1970 * 1000) }
+                }
+                let times = (lastUsed: s.settings.modelTimes(AppSettings.modelLastUsed), added: added, mine: Set(s.discovered().map(\.id)))
+                return (all, onDisk, s.backend == .apple ? nil : s.activeModel()?.id, times)
             }
-            guard let (all, onDisk, active) = scan, token == refreshToken else { return }
+            guard let (all, onDisk, active, times) = scan, token == refreshToken else { return }
             present = onDisk
+            lastUsed = times.lastUsed
+            added = times.added
+            mine = times.mine
             items = all.filter { !$0.hidden || onDisk.contains($0.id) }
                 .enumerated()
                 .sorted { a, b in (Self.kindOrder(a.element.kind), a.offset) < (Self.kindOrder(b.element.kind), b.offset) }
@@ -129,6 +160,7 @@ final class ModelsController {
                     }
                 }
                 rows[a.id] = Row()
+                services.settings.stampModel(AppSettings.modelAdded, a.id)
                 refresh()
                 if a.kind == .corpus && a.format != "sqlite-pack" { await index(a) }
                 if a.kind == .corpus { services.packs.reload() }
@@ -320,6 +352,7 @@ final class ModelsController {
         do {
             let asset = try HfBrowser.toAsset(repoId: repo, file: file)
             services.addDiscovered(asset)
+            services.settings.stampModel(AppSettings.modelAdded, asset.id)
             let added = services.discovered().count
             services.vault.record { $0.hfModels = max($0.hfModels, added) }
             hfAdded = asset.label
