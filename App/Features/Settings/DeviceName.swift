@@ -3,8 +3,12 @@ import Foundation
 /// The iPhone's marketing name from its model identifier ("iPhone14,5" → "iPhone 13"); nil for one we don't know.
 enum DeviceName {
     static var current: String? {
-        let id = ProcessInfo.processInfo.environment["SIMULATOR_MODEL_IDENTIFIER"] ?? machine
-        return names[id]
+        names[identifier]
+    }
+
+    /// "iPhone15,2" (the simulated one in the simulator).
+    static var identifier: String {
+        ProcessInfo.processInfo.environment["SIMULATOR_MODEL_IDENTIFIER"] ?? machine
     }
 
     private static var machine: String {

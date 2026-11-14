@@ -193,6 +193,9 @@ struct EngineTweaksScreen: View {
                     }
                 }
             }
+
+            // Not an engine knob: Reset All to Auto leaves it (android DebugLogRows, under the tweaks).
+            DebugLogSection(bridge: bridge)
         }
         .navigationTitle("Engine Tweaks")
         .inlineNavigationTitle()

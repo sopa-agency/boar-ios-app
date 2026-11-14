@@ -63,6 +63,7 @@ final class TruffleVault {
     var equipped: String? { enabled ? icon : nil }
 
     func setEnabled(_ on: Bool) {
+        DebugLog.settingChanged("vault.experimental", old: enabled, new: on)
         enabled = on && LabsBuild.experimental
         AppPaths.defaults.set(on, forKey: Self.enabledKey)
         if !enabled { fresh = [] }

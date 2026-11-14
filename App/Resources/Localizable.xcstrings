@@ -2696,6 +2696,16 @@
         }
       }
     },
+    "Clear Log" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apagar log"
+          }
+        }
+      }
+    },
     "Clear all chat history?" : {
       "localizations" : {
         "pt" : {
@@ -2966,6 +2976,16 @@
         }
       }
     },
+    "Couldn't save the log" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi possível salvar o log"
+          }
+        }
+      }
+    },
     "Credits" : {
       "localizations" : {
         "pt" : {
@@ -3062,6 +3082,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Data"
+          }
+        }
+      }
+    },
+    "Debug Log" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Log de depuração"
           }
         }
       }
@@ -5057,6 +5087,16 @@
         }
       }
     },
+    "Keeps a file on this %@ of how BOAR uses it: memory, battery, temperature, model loads, answer speed, downloads and crashes. Never what you ask or what BOAR answers. Nothing is sent: save the file and share it yourself. Uses a little battery." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guarda neste %@ um arquivo de como o BOAR o usa: memória, bateria, temperatura, carregamento de modelos, velocidade das respostas, downloads e travamentos. Nunca o que você pergunta nem o que o BOAR responde. Nada é enviado: salve o arquivo e compartilhe você mesmo. Gasta um pouco de bateria."
+          }
+        }
+      }
+    },
     "Keeps the words heard so far" : {
       "localizations" : {
         "pt" : {
@@ -5473,6 +5513,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Trancado, e aberto sem nenhuma rede."
+          }
+        }
+      }
+    },
+    "Log saved" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Log salvo"
+          }
+        }
+      }
+    },
+    "Log: %@ (up to 4 MB, the oldest part is dropped)" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Log: %@ (até 4 MB, a parte mais antiga é descartada)"
           }
         }
       }
@@ -7855,6 +7915,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Santuário"
+          }
+        }
+      }
+    },
+    "Save Log…" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salvar log…"
           }
         }
       }

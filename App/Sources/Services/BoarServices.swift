@@ -44,6 +44,7 @@ final class BoarServices: @unchecked Sendable {
         self.filesDir = filesDir
         let settings = AppSettings(store: UserDefaultsKeyValueStore(defaults: AppPaths.defaults))
         self.settings = settings
+        DebugLog.start(settings: settings)
         baseCatalog = try Catalog.bundled()
         var personalities = try Personalities.bundled()
         // The native app starts on Detailed (the Expo app on Succinct); a style the user picked is kept.
