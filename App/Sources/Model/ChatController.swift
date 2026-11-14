@@ -37,8 +37,13 @@ final class ChatController {
     private(set) var deepResearch = false
     /// A failure before the answer row exists (the chat couldn't be created).
     var error: String?
-    /// CR-2, shown once: the model that closed the app and the one answering instead.
+    /// CR-2, shown once: the model that closed the app and the one answering instead. Also the note for a model that
+    /// closed the app and that no other model can stand in for (StartLoad.noFallback), shown at each start.
     var loadCrash: LoadGuard.Crash?
+    /// The answer model may not fit this device's memory (StartLoad.askRisky): it isn't loaded until the user chooses.
+    var riskyLoad: RiskyLoad?
+    /// A question asked while the memory note's model wasn't loaded: sent once the user loads it.
+    @ObservationIgnored private var heldQuestion: String?
     /// A short message over the chat (Toast.tsx): the new tone, a reused question.
     var toast: String?
 
@@ -123,30 +128,93 @@ final class ChatController {
         }
         let installed = services.catalog.corpusCatalog.filter(services.isPresent).map(\.id)
         suggestions = services.suggestions.forModel(m?.id, language: "en", installed: installed)
+        // A may-not-fit note that no longer holds (the model was loaded anyway, or replaced) goes away.
+        if let risky = riskyLoad, services.startDecision() != .askRisky(modelId: risky.modelId, onlyModel: risky.onlyModel) {
+            riskyLoad = nil
+        }
     }
 
-    /// Loads the model when the chat opens, so the first answer doesn't wait for it.
+    /// Loads the model when the chat opens, so the first answer doesn't wait for it. Not a model whose last load closed
+    /// the app with no other to stand in, nor one that may not fit this device's memory: the chat asks first (StartLoad).
     func preload() {
         guard services.activeModel() != nil || services.backend != .llama, !loadingModel else { return }
+        switch services.startDecision() {
+        case .askRisky(let id, let only):
+            _ = services.loadGuard.consume()
+            riskyLoad = RiskyLoad(modelId: id, onlyModel: only)
+            return
+        case .noFallback(let id, _):
+            loadCrash = services.loadGuard.consume() ?? blockedNote(id)
+            return
+        default: break
+        }
+        load(held: nil)
+    }
+
+    /// Loads the answer model now; then the held question, if any, is sent. A load that returns without a model (not a
+    /// closed app) brings the may-not-fit note back, so the user can still choose.
+    private func load(held: String?, risky: RiskyLoad? = nil) {
         loadingModel = true
         let services = services
         Task {
-            _ = await services.activeSession()
+            let loaded = await services.activeSession() != nil
             let crash = services.loadGuard.consume()
             self.loadingModel = false
             self.loadCrash = crash
             if crash != nil || services.backend == .remote { self.refreshModel() }
+            if !loaded, crash == nil, let risky { self.riskyLoad = risky }
+            if loaded, let held { self.send(held) }
         }
+    }
+
+    /// The note for a blocked model with nothing to answer instead: a crash record with no fallback.
+    private func blockedNote(_ modelId: String) -> LoadGuard.Crash {
+        LoadGuard.Crash(crashedModelId: modelId, crashedLabel: services.catalog.byId(modelId)?.label ?? modelId,
+                        fallbackModelId: "", fallbackLabel: "", at: 0)
+    }
+
+    /// The note a question gets instead of an answer: the user's model may not fit, or closed the app last time and
+    /// nothing can stand in. Nil when it may load, or is already loaded (picked in Models).
+    private func gate() async -> (risky: RiskyLoad?, crash: LoadGuard.Crash?)? {
+        let id: String
+        var note: (risky: RiskyLoad?, crash: LoadGuard.Crash?)
+        switch services.startDecision() {
+        case .askRisky(let m, let only): (id, note) = (m, (RiskyLoad(modelId: m, onlyModel: only), nil))
+        case .noFallback(let m, _): (id, note) = (m, (nil, blockedNote(m)))
+        default: return nil
+        }
+        if let file = services.catalog.byId(id)?.filename, await services.host.residentFilename() == file, services.host.current != nil {
+            return nil
+        }
+        return note
+    }
+
+    /// The may-not-fit note's "Load Anyway": loads the model now, and at start from now on without asking.
+    func loadAnyway(_ modelId: String) {
+        services.rememberLoadAnyway(modelId)
+        let risky = riskyLoad
+        riskyLoad = nil
+        load(held: heldQuestion.take(), risky: risky)
     }
 
     /// The crash note's "Try Again with Less Memory": the model is unblocked and loaded now, keeping the mapped file
     /// instead of repacking it (LoadGuard.retryMapped). It answers from then on.
     func retryWithLessMemory(_ modelId: String) {
         services.loadGuard.retryMapped(modelId)
+        // The user's call: a model that may not fit isn't asked about again at start.
+        if let m = services.catalog.byId(modelId), services.isRisky(m) { services.rememberLoadAnyway(modelId) }
         services.settings.setActiveModelId("llm", modelId)
         loadCrash = nil
         refreshModel()
-        preload()
+        guard !loadingModel else { return }
+        load(held: heldQuestion.take())
+    }
+
+    /// The memory note's "Pick Another Model" / "Choose a Model" and its OK: the held question is dropped.
+    func dismissLoadNote() {
+        heldQuestion = nil
+        riskyLoad = nil
+        loadCrash = nil
     }
 
     // MARK: sessions
@@ -215,6 +283,15 @@ final class ChatController {
         guard !q.isEmpty, job == nil else { return }
         stopFlag.set(false)
         job = Task {
+            // A model that may not fit, or closed the app with nothing to stand in, isn't loaded for a question: the
+            // question waits for the user's choice in the note.
+            if let note = await self.gate() {
+                self.heldQuestion = q
+                self.riskyLoad = note.risky
+                if let crash = note.crash { self.loadCrash = crash }
+                self.job = nil
+                return
+            }
             await self.answer(q)
             self.job = nil
         }

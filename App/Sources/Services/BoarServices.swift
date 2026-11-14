@@ -167,9 +167,27 @@ final class BoarServices: @unchecked Sendable {
     func answerModel() -> CatalogAsset? {
         guard let m = activeModel() else { return nil }
         if !loadGuard.isBlocked(m.id) { return m }
-        let ok = installed(.llm).filter { !loadGuard.isBlocked($0.id) }
-        if let last = settings.lastLoadedModelId, let found = ok.first(where: { $0.id == last }) { return found }
-        return ok.min { $0.sizeBytes < $1.sizeBytes }
+        let llms = installed(.llm)
+        let pick = StartLoad.fallback(installed: llms.map(startModel), isBlocked: loadGuard.isBlocked, lastLoadedId: settings.lastLoadedModelId)
+        return pick.flatMap { p in llms.first { $0.id == p.id } }
+    }
+
+    private func startModel(_ a: CatalogAsset) -> StartLoad.Model { StartLoad.Model(id: a.id, sizeBytes: a.sizeBytes) }
+
+    /// What the chat may load on its own now (StartLoad): a blocked model never, a RED one only after "Load anyway".
+    /// Apple's model and the Mac on the network take no memory of the GGUF's, so they always load.
+    func startDecision() -> StartLoad.Decision {
+        if backend != .llama, let m = activeModel() { return .load(modelId: m.id) }
+        return StartLoad.decide(active: activeModel().map(startModel), installed: installed(.llm).map(startModel),
+                                isBlocked: loadGuard.isBlocked, lastLoadedId: settings.lastLoadedModelId,
+                                totalRamBytes: totalRamBytes, loadAnyway: Set(settings.loadAnywayIds))
+    }
+
+    func isRisky(_ a: CatalogAsset) -> Bool { StartLoad.risky(startModel(a), totalRamBytes: totalRamBytes) }
+
+    /// "Load anyway": this model loads at start from now on without asking.
+    func rememberLoadAnyway(_ modelId: String) {
+        if !settings.loadAnywayIds.contains(modelId) { settings.loadAnywayIds.append(modelId) }
     }
 
     /// Everything BOAR keeps on the phone: models, packs, the knowledge base with imported documents, chats, settings.
