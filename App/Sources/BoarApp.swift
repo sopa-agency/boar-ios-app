@@ -10,6 +10,7 @@ struct BoarApp: App {
 
     init() {
         BrandFonts.register()
+        Labs.installStorageLimit()
         #if DEBUG && os(macOS)
         DebugSnapshot.probeWindows()
         #endif
