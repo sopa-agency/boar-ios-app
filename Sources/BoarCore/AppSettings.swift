@@ -115,6 +115,8 @@ public final class AppSettings: @unchecked Sendable {
 
     public var deepResearchMode: Bool { get { bool("deepResearchMode") ?? false } set { set("deepResearchMode", .bool(newValue)) } }
     /// The user closed the "Mixture of agents" line under the header (it stays closed).
+    /// The one-time note on the first rating (ratings stay on the device) was shown.
+    public var ratingNoteShown: Bool { get { bool("ratingNoteShown") ?? false } set { set("ratingNoteShown", .bool(newValue)) } }
     public var researchBannerHidden: Bool { get { bool("researchBannerHidden") ?? false } set { set("researchBannerHidden", .bool(newValue)) } }
     public var adaptiveRoutingEnabled: Bool { get { bool("adaptiveRoutingEnabled") ?? false } set { set("adaptiveRoutingEnabled", .bool(newValue)) } }
     public var routingPreset: String? { get { str("routingPreset") } set { set("routingPreset", newValue.map(JSONValue.string)) } }
@@ -143,6 +145,12 @@ public final class AppSettings: @unchecked Sendable {
     public var historyTurnThreshold: Int { get { int("historyTurnThreshold") ?? 6 } set { set("historyTurnThreshold", JSONValue(newValue)) } }
     public var maxSavedSessions: Int { get { int("maxSavedSessions") ?? 10 } set { set("maxSavedSessions", JSONValue(newValue)) } }
     public var autoGenerateTitles: Bool { get { bool("autoGenerateTitles") ?? true } set { set("autoGenerateTitles", .bool(newValue)) } }
+    /// The question picked or written on setup's first-question page: it waits in the chat's field when BOAR opens, once.
+    /// A blank one is no question.
+    public var pendingFirstQuestion: String? {
+        get { str("pendingFirstQuestion") }
+        set { set("pendingFirstQuestion", newValue.flatMap { $0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? nil : .string($0) }) }
+    }
 
     // MARK: engine
 
@@ -164,6 +172,11 @@ public final class AppSettings: @unchecked Sendable {
         set { set("pendingLoadCrash", newValue) }
     }
 
+    /// The models the user chose to load although they may not fit this phone's memory (StartLoad's "Load anyway").
+    public var loadAnywayIds: [String] {
+        get { strings("loadAnywayIds") }
+        set { setStrings("loadAnywayIds", newValue.reduce(into: []) { if !$0.contains($1) { $0.append($1) } }) }
+    }
     /// The last model that loaded: the fallback after a crash on a cold start.
     public var lastLoadedModelId: String? { get { str("lastLoadedModelId") } set { set("lastLoadedModelId", newValue.map(JSONValue.string)) } }
     /// The id submit-results gave this device's key.
