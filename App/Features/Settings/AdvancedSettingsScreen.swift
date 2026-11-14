@@ -155,9 +155,24 @@ struct AdvancedSettingsScreen: View {
                     Toggle(isOn: Binding(get: { labs.labsOn }, set: { labs.labsOn = $0 })) {
                         SettingsLabel("Boar Labs", symbol: Symbols.labs)
                     }
+                    // android LabHooks.SettingsRow: the storage limit shows while Boar Labs is on.
+                    if labs.labsOn {
+                        Picker(selection: Binding(get: { labs.storageLimit }, set: { labs.storageLimit = $0 })) {
+                            ForEach(Labs.storageLimitChoices, id: \.self) { Self.storageLimitTitle($0).tag($0) }
+                        } label: {
+                            SettingsLabel("BOAR's Storage Limit", symbol: "internaldrive.fill")
+                        }
+                        .pickerStyle(.menu)
+                        .accessibilityIdentifier("settings.storageLimit")
+                    }
                 } footer: {
                     BoarFooter {
-                        Text("Unfinished experiments in the menu and under answers. They may be slow, rough or change without notice.")
+                        VStack(alignment: .leading) {
+                            Text("Unfinished experiments in the menu and under answers. They may be slow, rough or change without notice.")
+                            if labs.labsOn {
+                                Text("How much space BOAR's models and packs may take. No Limit: only the \(Platform.deviceNoun)'s free space counts.")
+                            }
+                        }
                     }
                 }
             }
@@ -178,6 +193,14 @@ struct AdvancedSettingsScreen: View {
     /// The engine choices; Apple Intelligence stays listed but can't be picked where it isn't available.
     private static func engines(apple: Bool) -> [DrillDownOption<ModelBackend>] {
         ModelBackend.allCases.map { DrillDownOption(value: $0, title: engineName($0), disabled: $0 == .apple && !apple) }
+    }
+
+    private static func storageLimitTitle(_ choice: String) -> Text {
+        switch choice {
+        case "auto": Text("Auto (50 GB)")
+        case "none": Text("No Limit")
+        default: Text(verbatim: "\(choice) GB")
+        }
     }
 
     private static func engineName(_ backend: ModelBackend) -> Text {

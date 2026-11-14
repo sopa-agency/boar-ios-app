@@ -1,9 +1,9 @@
 import BoarModels
 import SwiftUI
 
-/// Step 4: the downloads and the library index, then "Open BOAR".
+/// Step 4's details, opened from the guide's download strip: the downloads and the library index, with the fixes when one
+/// stops, and the way back to the guide.
 struct InstallStep: View {
-    @Environment(AppModel.self) private var model
     let flow: SetupFlow
 
     private var title: LocalizedStringKey {
@@ -59,9 +59,8 @@ struct InstallStep: View {
         // The header is the first row: no extra list margin between it and the navigation bar.
         .contentMargins(.top, 0, for: .scrollContent)
         .safeAreaInset(edge: .bottom) {
-            if flow.finished {
-                SetupBottomButton(title: "Open BOAR", action: model.finishSetup)
-            }
+            // Back to the page the user was on; the download keeps going under it.
+            SetupBottomButton(title: "Back to Setup") { flow.showDetails(false) }
         }
         .onChange(of: flow.finished) { _, done in
             if done { AccessibilityNotification.Announcement(String(localized: "Setup finished. BOAR is ready.")).post() }

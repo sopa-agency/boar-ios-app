@@ -29,6 +29,17 @@ final class ModelsController {
     private(set) var rows: [String: Row] = [:]
     private(set) var activeLlm: String?
     private(set) var activating: String?
+    /// When each model was last used and added (epoch ms), and the ids added from Hugging Face, for the sort and filter.
+    private(set) var lastUsed: [String: Int64] = [:]
+    private(set) var added: [String: Int64] = [:]
+    private(set) var mine: Set<String> = []
+    /// The Models screen's sort and filter (android `ModelOrder`), kept in settings.
+    var sort: ModelOrder.Sort = .smart {
+        didSet { services.settings.modelSort = sort == .smart ? nil : sort.rawValue }
+    }
+    var filter: ModelOrder.Filter = .all {
+        didSet { services.settings.modelFilter = filter == .all ? nil : filter.rawValue }
+    }
     /// A short confirmation ("Qwen3 4B is answering now").
     var toast: String?
 
@@ -58,7 +69,15 @@ final class ModelsController {
 
     init(services: BoarServices) {
         self.services = services
+        sort = services.settings.modelSort.flatMap(ModelOrder.Sort.init) ?? .smart
+        filter = services.settings.modelFilter.flatMap(ModelOrder.Filter.init) ?? .all
         refresh()
+    }
+
+    /// What the sort and filter know about the answer models now.
+    var orderFacts: ModelOrder.Facts {
+        ModelOrder.Facts(active: activeLlm, onPhone: present, downloading: Set(rows.filter(\.value.downloading).keys), mine: mine,
+                         lastUsed: lastUsed, added: added)
     }
 
     var totalRamBytes: Int64 { services.totalRamBytes }
@@ -86,10 +105,22 @@ final class ModelsController {
         Task {
             let scan = try? await services.background { s in
                 let all = s.catalog.models
-                return (all, Set(all.filter { s.assets.status($0).present }.map(\.id)), s.backend == .apple ? nil : s.activeModel()?.id)
+                let onDisk = Set(all.filter { s.assets.status($0).present }.map(\.id))
+                // Models from before these times were kept: the file's date stands in for when it was added, once it's
+                // complete (a download in progress isn't added yet).
+                var added = s.settings.modelTimes(AppSettings.modelAdded)
+                for a in all where added[a.id] == nil && onDisk.contains(a.id) {
+                    let date = try? s.filesDir.appending(path: a.filename).resourceValues(forKeys: [.contentModificationDateKey]).contentModificationDate
+                    if let date { added[a.id] = Int64(date.timeIntervalSince1970 * 1000) }
+                }
+                let times = (lastUsed: s.settings.modelTimes(AppSettings.modelLastUsed), added: added, mine: Set(s.discovered().map(\.id)))
+                return (all, onDisk, s.backend == .apple ? nil : s.activeModel()?.id, times)
             }
-            guard let (all, onDisk, active) = scan, token == refreshToken else { return }
+            guard let (all, onDisk, active, times) = scan, token == refreshToken else { return }
             present = onDisk
+            lastUsed = times.lastUsed
+            added = times.added
+            mine = times.mine
             items = all.filter { !$0.hidden || onDisk.contains($0.id) }
                 .enumerated()
                 .sorted { a, b in (Self.kindOrder(a.element.kind), a.offset) < (Self.kindOrder(b.element.kind), b.offset) }
@@ -129,6 +160,7 @@ final class ModelsController {
                     }
                 }
                 rows[a.id] = Row()
+                services.settings.stampModel(AppSettings.modelAdded, a.id)
                 refresh()
                 if a.kind == .corpus && a.format != "sqlite-pack" { await index(a) }
                 if a.kind == .corpus { services.packs.reload() }
@@ -139,7 +171,7 @@ final class ModelsController {
                 try? FileManager.default.removeItem(at: AppPaths.resumeDir.appending(path: "\(a.id).data"))
                 rows[a.id] = Row()
             } catch {
-                rows[a.id] = Row(error: error.localizedDescription)
+                rows[a.id] = Row(error: DownloadErrorText.message(error))
             }
             jobs[a.id] = nil
             refresh()
@@ -173,6 +205,8 @@ final class ModelsController {
             services.settings.setActiveModelId("llm", a.id)
             // Picked again after it closed the app: the user's call (CR-2's confirmation).
             services.loadGuard.confirm(a.id)
+            // Picked although it may not fit this phone: the user's call, so the chat doesn't ask again at start.
+            if services.isRisky(a) { services.rememberLoadAnyway(a.id) }
             services.backend = .llama
             await services.host.unload()
             let loaded = await services.activeSession() != nil
@@ -394,3 +428,47 @@ extension ModelsController {
     }
 }
 #endif
+
+/// A failed download's text (android `UserErrors.downloadKey`): BOAR's own limit and a full phone read differently,
+/// since the phone may have plenty of room when the limit is hit. Every cause has its own text: the engine's messages are
+/// English and name the file, which the row already does.
+enum DownloadErrorText {
+    static func message(_ error: Error) -> String {
+        guard let error = error as? AssetStore.DownloadError else {
+            // No route, DNS, a dropped or timed-out connection (Kotlin's bare IOException).
+            if error is URLError { return String(localized: "No connection to the download server. Check your connection and retry.") }
+            return String(localized: "The download stopped. Retry.")
+        }
+        switch error {
+        case .noSource: return String(localized: "Not available for download yet. Import the file instead.")
+        case .offlineBuild: return String(localized: "This build of BOAR has no network access. Import the file instead.")
+        case .storage(_, let refused?): return storage(refused)
+        // A disk error while writing: no budget numbers to show.
+        case .storage(_, nil): return String(localized: "This \(Platform.deviceNoun) doesn't have enough free space for the download. Free some space and retry.")
+        case .sizeChanged: return String(localized: "The server now has a different file than this version of BOAR expects. Import the file or update the app.")
+        case .paused: return String(localized: "The download paused (no data). Check your connection and try again.")
+        case .checksum: return String(localized: "The file didn't match its checksum and was removed. Retry the download.")
+        // 401/403: the file needs an account (a gated Hugging Face model): retrying won't help.
+        case .http(_, let code) where code == 401 || code == 403:
+            return String(localized: "This model needs a Hugging Face account and its license accepted. BOAR downloads without an account, so it can't get this one.")
+        case .http: return String(localized: "The download server didn't answer. Retry later.")
+        case .network: return String(localized: "No connection to the download server. Check your connection and retry.")
+        }
+    }
+
+    private static func storage(_ refused: StorageBudget.Refused) -> String {
+        func size(_ bytes: Int64) -> String { bytes.formatted(.byteCount(style: .file)) }
+        let budget = size(refused.budgetBytes), used = size(refused.usedBytes), needed = size(refused.neededBytes)
+        let device = Platform.deviceNoun
+        switch refused.reason {
+        case .disk:
+            let free = refused.freeDiskBytes.map(size) ?? "?"
+            return String(localized: "This \(device) has only \(free) free and the download needs \(needed). Free some space and retry.")
+        case .budget where refused.downloadingBytes > 0:
+            let downloading = size(refused.downloadingBytes)
+            return String(localized: "BOAR's \(budget) storage limit is reached: BOAR stores \(used), with \(downloading) downloading. Remove a model or cancel a download. The \(device) itself may still have room.")
+        case .budget:
+            return String(localized: "BOAR's \(budget) storage limit is reached: BOAR already stores \(used). Remove a model first. The \(device) itself may still have room.")
+        }
+    }
+}

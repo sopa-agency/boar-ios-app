@@ -28,6 +28,9 @@ struct EvaluationScreen: View {
                     .accessibilityElement(children: .combine)
                 }
             }
+            if controller.running || !controller.rows.isEmpty {
+                EvalScoreSection(controller: controller)
+            }
             if !summary.configs.isEmpty {
                 EvalComparisonSection(controller: controller, summary: summary)
                 EvalCategorySection(controller: controller, summary: summary)

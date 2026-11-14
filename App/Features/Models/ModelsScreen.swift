@@ -13,11 +13,27 @@ struct ModelsScreen: View {
     @State private var usedBytes: Int64?
     @State private var freeBytes: Int64?
     @State private var apple = AppleModelAvailability.current
+    /// The sorted order while the screen is open: a download that starts, fails or ends doesn't move its row away from
+    /// the user's finger (android ModelsScreen). Sorted again when the sort, the filter or the set of models changes.
+    @State private var order: [String] = []
 
     private var appleActive: Bool { controller.services.backend == .apple && apple.isAvailable }
     private var models: [CatalogAsset] { controller.answerModels }
     private var inUse: [CatalogAsset] { models.filter { $0.id == controller.activeLlm } }
-    private var onPhone: [CatalogAsset] { models.filter { controller.isPresent($0) && $0.id != controller.activeLlm } }
+    /// Smart's order on the device: the last used first (android `ModelOrder`).
+    private var onPhone: [CatalogAsset] {
+        ModelOrder.apply(models, sort: .smart, filter: .onPhone, facts: controller.orderFacts).filter { $0.id != controller.activeLlm }
+    }
+    /// The default view (Smart, All) keeps the sections; any other sort or filter is one list in that order.
+    private var sectioned: Bool { controller.sort == .smart && controller.filter == .all }
+    private var catalogModels: [CatalogAsset] { controller.items.filter { $0.kind == .llm } }
+    private var ordered: [CatalogAsset] {
+        let shown = ModelOrder.apply(catalogModels, sort: controller.sort, filter: controller.filter, facts: controller.orderFacts)
+        return shown.enumerated().sorted { a, b in
+            (order.firstIndex(of: a.element.id) ?? .max, a.offset) < (order.firstIndex(of: b.element.id) ?? .max, b.offset)
+        }.map(\.element)
+    }
+    private var orderKey: String { "\(controller.sort.rawValue)|\(controller.filter.rawValue)|\(catalogModels.count)" }
     private var notOnPhone: [CatalogAsset] { models.filter { !controller.isPresent($0) } }
     private var available: [CatalogAsset] { notOnPhone.filter { fit($0) != .red } }
     private var tooBig: [CatalogAsset] { notOnPhone.filter { fit($0) == .red } }
@@ -42,6 +58,9 @@ struct ModelsScreen: View {
                     Label("Find More Models", systemImage: "plus")
                 }
             }
+            ToolbarItem(placement: .primaryAction) {
+                orderMenu
+            }
         }
         #else
         modelList
@@ -55,6 +74,9 @@ struct ModelsScreen: View {
                         Label("Find More Models", systemImage: "plus")
                     }
                 }
+                ToolbarItem(placement: .primaryAction) {
+                    orderMenu
+                }
             }
             .navigationDestination(item: $detail) { id in
                 if let asset = controller.items.first(where: { $0.id == id }) {
@@ -64,6 +86,9 @@ struct ModelsScreen: View {
         #endif
         }
         .onAppear(perform: controller.refresh)
+        .onChange(of: orderKey, initial: true) {
+            order = ModelOrder.apply(catalogModels, sort: controller.sort, filter: controller.filter, facts: controller.orderFacts).map(\.id)
+        }
         .task(id: controller.present) { await measureStorage() }
         .debugPush("models-browse") { BrowseScreen(controller: controller) }
         .debugPush("model-detail") {
@@ -82,7 +107,72 @@ struct ModelsScreen: View {
         #endif
     }
 
+    /// Sort and Show (android ModelsScreen's two chip rows) in one menu, as iOS lists do it.
+    private var orderMenu: some View {
+        @Bindable var controller = controller
+        return Menu {
+            Picker(selection: $controller.sort) {
+                ForEach(ModelOrder.Sort.allCases, id: \.self) { Self.title($0).tag($0) }
+            } label: {
+                Text("Sort")
+            }
+            .pickerStyle(.inline)
+            Picker(selection: $controller.filter) {
+                ForEach(ModelOrder.Filter.allCases, id: \.self) { Self.title($0).tag($0) }
+            } label: {
+                Text("Show")
+            }
+            .pickerStyle(.inline)
+        } label: {
+            Label("Sort and Filter", systemImage: sectioned ? "line.3.horizontal.decrease.circle" : "line.3.horizontal.decrease.circle.fill")
+        }
+        .accessibilityIdentifier("models.order")
+    }
+
+    private static func title(_ sort: ModelOrder.Sort) -> Text {
+        switch sort {
+        case .smart: Text("Smart")
+        case .lastUsed: Text("Last Used")
+        case .added: Text("Recently Added")
+        }
+    }
+
+    private static func title(_ filter: ModelOrder.Filter) -> Text {
+        switch filter {
+        case .all: Text("All")
+        case .onPhone: Text("On This \(Platform.deviceNoun)")
+        case .downloading: Text("Downloading")
+        case .mine: Text("Added by You")
+        }
+    }
+
     @ViewBuilder private var listContent: some View {
+        if sectioned {
+            sections
+        } else {
+            Section {
+                // Apple's model is built in: it's on this device, never downloading, never added by the user.
+                if apple.isAvailable && (controller.filter == .all || controller.filter == .onPhone) {
+                    AppleModelRow(controller: controller, availability: apple)
+                }
+                if ordered.isEmpty {
+                    Text("No models here. Pick All to see every model.")
+                        .foregroundStyle(.secondary)
+                }
+                ForEach(ordered) { row($0) }
+            } header: {
+                Text("\(Self.title(controller.sort)) · \(Self.title(controller.filter))")
+            } footer: {
+                listFooter
+            }
+        }
+
+        Section("Storage") {
+            StorageSummary(usedBytes: usedBytes, freeBytes: freeBytes)
+        }
+    }
+
+    @ViewBuilder private var sections: some View {
         if appleActive || !inUse.isEmpty {
             Section("In Use") {
                 if appleActive { AppleModelRow(controller: controller, availability: apple) }
@@ -125,9 +215,6 @@ struct ModelsScreen: View {
             }
         }
 
-        Section("Storage") {
-            StorageSummary(usedBytes: usedBytes, freeBytes: freeBytes)
-        }
     }
 
     #if os(macOS)

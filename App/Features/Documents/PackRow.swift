@@ -49,9 +49,10 @@ struct PackRow: View {
         } else if row.indexing {
             Text("Preparing for search…")
                 .foregroundStyle(.secondary)
-        } else if row.error != nil {
-            Text("Download failed")
+        } else if let error = row.error {
+            Text(verbatim: error)
                 .foregroundStyle(.red)
+                .fixedSize(horizontal: false, vertical: true)
         } else {
             Text(verbatim: "\(pack.plainPurpose) · \(FeatureFormat.megabytes(pack.sizeBytes))")
                 .foregroundStyle(.secondary)

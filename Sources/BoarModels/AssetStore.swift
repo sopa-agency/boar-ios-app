@@ -43,7 +43,8 @@ public final class AssetStore: @unchecked Sendable {
     public enum DownloadError: Error, Equatable, LocalizedError, Sendable {
         case noSource(label: String)
         case offlineBuild
-        case storage(message: String)
+        /// `refused`: the budget check's numbers, nil for a disk error while writing.
+        case storage(message: String, refused: StorageBudget.Refused? = nil)
         case sizeChanged(label: String, expectedBytes: Int64, serverBytes: Int64)
         case paused(label: String, bytesDone: Int64, idleSeconds: Int)
         case checksum(label: String)
@@ -55,7 +56,7 @@ public final class AssetStore: @unchecked Sendable {
             switch self {
             case .noSource(let label): return "\(label) isn't available for download yet. Import the file instead."
             case .offlineBuild: return "This build of BOAR has no network permission. Import the file instead."
-            case .storage(let message): return message
+            case .storage(let message, _): return message
             case .sizeChanged(let label, let expected, let server):
                 return "The download server now serves \(server) bytes for \(label), not the \(expected) this version of BOAR expects. " +
                     "Skip it for now, import the file, or update the app."
@@ -160,8 +161,8 @@ public final class AssetStore: @unchecked Sendable {
             downloadBytes: asset.sizeBytes,
             alreadyDownloadedBytes: partialBytes,
             freeDiskBytes: DiskSpace.freeBytes(at: filesDir),
-            budgetBytes: catalog.storageBudgetBytes))
-        if case .refused(_, _, let message) = check { throw DownloadError.storage(message: message) }
+            budgetBytes: StorageBudget.limit(catalogBudget: catalog.storageBudgetBytes)))
+        if case .refused(let r) = check { throw DownloadError.storage(message: r.message, refused: r) }
 
         if partialBytes == asset.sizeBytes {
             log("\(asset.id): complete file already on disk, verifying instead of downloading")
