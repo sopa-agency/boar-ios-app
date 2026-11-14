@@ -5333,6 +5333,16 @@
         }
       }
     },
+    "No connection to the download server. Check your connection and retry." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sem conexão com o servidor de download. Verifique a conexão e tente de novo."
+          }
+        }
+      }
+    },
     "No files BOAR can use in this model." : {
       "localizations" : {
         "pt" : {
@@ -5409,6 +5419,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Memória insuficiente"
+          }
+        }
+      }
+    },
+    "Not available for download yet. Import the file instead." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ainda não disponível para download. Importe o arquivo."
           }
         }
       }
@@ -7899,12 +7919,52 @@
         }
       }
     },
+    "The download paused (no data). Check your connection and try again." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O download pausou (sem dados). Verifique a conexão e tente de novo."
+          }
+        }
+      }
+    },
+    "The download server didn't answer. Retry later." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O servidor de download não respondeu. Tente mais tarde."
+          }
+        }
+      }
+    },
+    "The download stopped. Retry." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O download parou. Tente de novo."
+          }
+        }
+      }
+    },
     "The fastest answers, with more heat and battery use." : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "As respostas mais rápidas, com mais calor e uso de bateria."
+          }
+        }
+      }
+    },
+    "The file didn't match its checksum and was removed. Retry the download." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O arquivo não bateu com o checksum e foi removido. Tente o download de novo."
           }
         }
       }
@@ -8019,6 +8079,16 @@
         }
       }
     },
+    "The server now has a different file than this version of BOAR expects. Import the file or update the app." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O servidor agora tem um arquivo diferente do que esta versão do BOAR espera. Importe o arquivo ou atualize o app."
+          }
+        }
+      }
+    },
     "The style button in the chat, or Settings → Answers" : {
       "localizations" : {
         "pt" : {
@@ -8089,6 +8159,16 @@
         }
       }
     },
+    "This %@ doesn't have enough free space for the download. Free some space and retry." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este %@ não tem espaço livre suficiente para o download. Libere espaço e tente de novo."
+          }
+        }
+      }
+    },
     "This %@ has %@ of memory, so Fast is recommended." : {
       "localizations" : {
         "pt" : {
@@ -8135,6 +8215,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Este artigo não está mais neste %@: o pacote ou a coleção foi removido."
+          }
+        }
+      }
+    },
+    "This build of BOAR has no network access. Import the file instead." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esta versão do BOAR não tem acesso à rede. Importe o arquivo."
           }
         }
       }
@@ -8205,6 +8295,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Este modelo não está baixado. Você pode adicioná-lo de novo em Encontrar mais modelos."
+          }
+        }
+      }
+    },
+    "This model needs a Hugging Face account and its license accepted. BOAR downloads without an account, so it can't get this one." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este modelo exige uma conta no Hugging Face e aceitar a licença. O BOAR baixa sem conta, então não consegue baixar este."
           }
         }
       }

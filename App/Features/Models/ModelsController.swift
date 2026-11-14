@@ -396,10 +396,33 @@ extension ModelsController {
 #endif
 
 /// A failed download's text (android `UserErrors.downloadKey`): BOAR's own limit and a full phone read differently,
-/// since the phone may have plenty of room when the limit is hit. Other failures keep the engine's message.
+/// since the phone may have plenty of room when the limit is hit. Every cause has its own text: the engine's messages are
+/// English and name the file, which the row already does.
 enum DownloadErrorText {
     static func message(_ error: Error) -> String {
-        guard case .storage(_, let refused?) = error as? AssetStore.DownloadError else { return error.localizedDescription }
+        guard let error = error as? AssetStore.DownloadError else {
+            // No route, DNS, a dropped or timed-out connection (Kotlin's bare IOException).
+            if error is URLError { return String(localized: "No connection to the download server. Check your connection and retry.") }
+            return String(localized: "The download stopped. Retry.")
+        }
+        switch error {
+        case .noSource: return String(localized: "Not available for download yet. Import the file instead.")
+        case .offlineBuild: return String(localized: "This build of BOAR has no network access. Import the file instead.")
+        case .storage(_, let refused?): return storage(refused)
+        // A disk error while writing: no budget numbers to show.
+        case .storage(_, nil): return String(localized: "This \(Platform.deviceNoun) doesn't have enough free space for the download. Free some space and retry.")
+        case .sizeChanged: return String(localized: "The server now has a different file than this version of BOAR expects. Import the file or update the app.")
+        case .paused: return String(localized: "The download paused (no data). Check your connection and try again.")
+        case .checksum: return String(localized: "The file didn't match its checksum and was removed. Retry the download.")
+        // 401/403: the file needs an account (a gated Hugging Face model): retrying won't help.
+        case .http(_, let code) where code == 401 || code == 403:
+            return String(localized: "This model needs a Hugging Face account and its license accepted. BOAR downloads without an account, so it can't get this one.")
+        case .http: return String(localized: "The download server didn't answer. Retry later.")
+        case .network: return String(localized: "No connection to the download server. Check your connection and retry.")
+        }
+    }
+
+    private static func storage(_ refused: StorageBudget.Refused) -> String {
         func size(_ bytes: Int64) -> String { bytes.formatted(.byteCount(style: .file)) }
         let budget = size(refused.budgetBytes), used = size(refused.usedBytes), needed = size(refused.neededBytes)
         let device = Platform.deviceNoun

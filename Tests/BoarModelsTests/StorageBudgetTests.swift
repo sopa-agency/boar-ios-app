@@ -25,7 +25,9 @@ import Testing
     @Test func countsTheFullSizeOfOtherDownloadsStillRunning() {
         #expect(!StorageBudget.check(with { $0.usedBytes = 30 * gb; $0.reservedBytes = 12 * gb; $0.downloadBytes = 8 * gb }).isOk)
         #expect(StorageBudget.check(with { $0.usedBytes = 30 * gb; $0.reservedBytes = 12 * gb; $0.downloadBytes = 7 * gb }).isOk)
-        guard case .refused(let r) = StorageBudget.check(with { $0.usedBytes = 30 * gb; $0.reservedBytes = 12 * gb; $0.downloadBytes = 8 * gb }) else { return }
+        guard case .refused(let r) = StorageBudget.check(with { $0.usedBytes = 30 * gb; $0.reservedBytes = 12 * gb; $0.downloadBytes = 8 * gb }) else {
+            Issue.record("expected refusal"); return
+        }
         #expect(r.downloadingBytes == 12 * gb)
     }
 
