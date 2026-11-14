@@ -2806,6 +2806,26 @@
         }
       }
     },
+    "Copied" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copiado"
+          }
+        }
+      }
+    },
+    "Copies the address" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copia o endereço"
+          }
+        }
+      }
+    },
     "Copy" : {
       "localizations" : {
         "pt" : {
@@ -2822,6 +2842,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Copiar o trecho"
+          }
+        }
+      }
+    },
+    "Core Team" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Equipe principal"
           }
         }
       }
@@ -2902,6 +2932,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Não foi possível ler \"%@\"."
+          }
+        }
+      }
+    },
+    "Credits" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Créditos"
           }
         }
       }
@@ -3272,6 +3312,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Não confie na App Store. Compile o BOAR com as próprias mãos."
+          }
+        }
+      }
+    },
+    "Don't trust, verify." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não confie, verifique."
           }
         }
       }
@@ -4607,6 +4657,16 @@
         }
       }
     },
+    "Hugging Face (where BOAR's models download from)" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hugging Face (de onde os modelos do BOAR são baixados)"
+          }
+        }
+      }
+    },
     "Hugging Face answered %lld" : {
       "localizations" : {
         "pt" : {
@@ -5017,6 +5077,16 @@
         }
       }
     },
+    "Knowledge Packs" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pacotes de conhecimento"
+          }
+        }
+      }
+    },
     "Knowledge packs you collect, keep and open on this %@: whole libraries, offline." : {
       "localizations" : {
         "pt" : {
@@ -5413,6 +5483,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Javali Lunar"
+          }
+        }
+      }
+    },
+    "MIT. The code of this app and of the Android app, the model list and the scripts that build the knowledge packs." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MIT. O código deste app e do app de Android, a lista de modelos e os scripts que montam os pacotes de conhecimento."
           }
         }
       }
@@ -5953,6 +6033,16 @@
         }
       }
     },
+    "News comes only from these addresses. Check the address before you download anything that says it is BOAR." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "As novidades saem só destes endereços. Confira o endereço antes de baixar qualquer coisa que diga ser o BOAR."
+          }
+        }
+      }
+    },
     "Next" : {
       "localizations" : {
         "pt" : {
@@ -6383,6 +6473,16 @@
         }
       }
     },
+    "Official Site" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Site oficial"
+          }
+        }
+      }
+    },
     "Offline research" : {
       "localizations" : {
         "pt" : {
@@ -6419,6 +6519,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Neste %@"
+          }
+        }
+      }
+    },
+    "On X. Tap an address to copy it." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No X. Toque num endereço para copiar."
           }
         }
       }
@@ -6649,6 +6759,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Outras versões (%lld)"
+          }
+        }
+      }
+    },
+    "Packs from R4to's R&D Lab." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pacotes do R&D Lab do R4to."
           }
         }
       }
@@ -8411,16 +8531,6 @@
         }
       }
     },
-    "Source code, model lists and the scripts that build the offline library." : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Código-fonte, listas de modelos e os scripts que montam a biblioteca offline."
-          }
-        }
-      }
-    },
     "Source found" : {
       "localizations" : {
         "pt" : {
@@ -8587,6 +8697,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Dividindo sua pergunta…"
+          }
+        }
+      }
+    },
+    "Standing on open work, each under its own license." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Feito sobre trabalho aberto, cada um com sua licença."
           }
         }
       }
@@ -10332,6 +10452,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Wikipedia"
+          }
+        }
+      }
+    },
+    "Wikipedia (the built-in library and the Vital Articles pack)" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wikipédia (a biblioteca embutida e o pacote Vital Articles)"
           }
         }
       }
