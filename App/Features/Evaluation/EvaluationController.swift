@@ -49,6 +49,16 @@ final class EvaluationController {
     /// Per-model and per-category numbers of the shown results.
     var summary: EvalSummary { EvalSummary(rows: rows) }
 
+    /// Each model's score v1 from the shown results, best first (android ScoreSection).
+    var scores: [EvalScore.ModelScore] { EvalScore.scoreRun(json: rows) }
+
+    /// The answers the run asks for: every model times every question (at least the answers shown).
+    var expectedAnswers: Int {
+        if let p = progress { return p.configCount * p.queryCount }
+        let questions = sets.first { $0.kind == resultSetKind }?.queries.count ?? 0
+        return max(rows.count, questions * Set(rows.compactMap { $0["configId"]?.stringValue }).count)
+    }
+
     func load() {
         guard configs == nil else { return }
         if sets.isEmpty { sets = EvalQuestionSet.bundled() }
