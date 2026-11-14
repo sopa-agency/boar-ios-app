@@ -255,6 +255,16 @@
         }
       }
     },
+    "%@ · %@" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · %@"
+          }
+        }
+      }
+    },
     "%@ · %@ downloads" : {
       "localizations" : {
         "en" : {
@@ -809,6 +819,16 @@
         }
       }
     },
+    "Added by You" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adicionados por você"
+          }
+        }
+      }
+    },
     "Address" : {
       "localizations" : {
         "pt" : {
@@ -855,6 +875,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Javali Airgap"
+          }
+        }
+      }
+    },
+    "All" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Todos"
           }
         }
       }
@@ -4407,6 +4437,16 @@
         }
       }
     },
+    "Last Used" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usados por último"
+          }
+        }
+      }
+    },
     "Last quarter" : {
       "localizations" : {
         "pt" : {
@@ -5289,6 +5329,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nenhuma fonte correspondente"
+          }
+        }
+      }
+    },
+    "No models here. Pick All to see every model." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nenhum modelo aqui. Escolha Todos para ver todos."
           }
         }
       }
@@ -6279,6 +6329,16 @@
         }
       }
     },
+    "Recently Added" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adicionados por último"
+          }
+        }
+      }
+    },
     "Recognizing text…" : {
       "localizations" : {
         "pt" : {
@@ -7155,6 +7215,16 @@
         }
       }
     },
+    "Smart" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inteligente"
+          }
+        }
+      }
+    },
     "Snow Boar" : {
       "localizations" : {
         "pt" : {
@@ -7211,6 +7281,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ordenar"
+          }
+        }
+      }
+    },
+    "Sort and Filter" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ordenar e filtrar"
           }
         }
       }

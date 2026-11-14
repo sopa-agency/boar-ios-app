@@ -99,7 +99,11 @@ final class BoarServices: @unchecked Sendable {
     func addDiscovered(_ asset: CatalogAsset) {
         catalogLock.withLock { current in
             var all = Self.readDiscovered()
-            if !all.contains(where: { $0.id == asset.id }) { all.append(asset) }
+            // Stamped only when new (android BoarServices.addDiscovered): adding it again keeps its place in Recently Added.
+            if !all.contains(where: { $0.id == asset.id }) {
+                all.append(asset)
+                settings.stampModel(AppSettings.modelAdded, asset.id)
+            }
             Self.writeDiscovered(all)
             current = Self.withDiscovered(baseCatalog)
         }

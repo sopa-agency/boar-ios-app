@@ -47,6 +47,30 @@ public final class AppSettings: @unchecked Sendable {
         }
     }
 
+    /// When each model was last loaded to answer (`modelLastUsed`) or added/downloaded (`modelAdded`): epoch ms by id.
+    public func modelTimes(_ key: String) -> [String: Int64] {
+        var out: [String: Int64] = [:]
+        for (k, v) in store.value(forKey: key)?.objectValue ?? [:] {
+            if let t = v.int64Value { out[k] = t }
+        }
+        return out
+    }
+
+    public func stampModel(_ key: String, _ id: String, at: Int64 = Int64(Date().timeIntervalSince1970 * 1000)) {
+        writeLock.withLock {
+            var m = store.value(forKey: key)?.objectValue ?? [:]
+            m[id] = .int(at)
+            store.setValue(.object(m), forKey: key)
+        }
+    }
+
+    public static let modelLastUsed = "modelLastUsedAt"
+    public static let modelAdded = "modelAddedAt"
+
+    /// The Models screen's sort and filter (`ModelOrder` raw values); nil is the default (Smart, All).
+    public var modelSort: String? { get { str("modelCatalogSort") } set { set("modelCatalogSort", newValue.map(JSONValue.string)) } }
+    public var modelFilter: String? { get { str("modelCatalogFilter") } set { set("modelCatalogFilter", newValue.map(JSONValue.string)) } }
+
     /// modelRoleAssignments: role ("fast", "general"…) to model id.
     public func modelRoleAssignments() -> [String: String] {
         var out: [String: String] = [:]
