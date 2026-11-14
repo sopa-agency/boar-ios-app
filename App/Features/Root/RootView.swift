@@ -42,6 +42,10 @@ struct RootView: View {
             #endif
             .onChange(of: IntentInbox.shared.question) { _, _ in model.drainInbox() }
             .onChange(of: IntentInbox.shared.sessionId) { _, _ in model.drainInbox() }
+            // The debug log's foreground and background records (inactive, a passing state, isn't one).
+            .onChange(of: scenePhase) { _, phase in
+                if phase != .inactive { DebugLog.foreground(phase == .active) }
+            }
     }
 
     private enum CoverKind { case lock, privacy }

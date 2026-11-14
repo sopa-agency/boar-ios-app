@@ -140,6 +140,8 @@ actor SessionHost: ModelHost {
             mark.end("ok")
         } catch {
             mark.end("failed")
+            DebugLog.modelLoad(id: asset.id, ms: Int(start.duration(to: .now) / .milliseconds(1)), ok: false, threads: params.threads,
+                               nCtx: params.nCtx, repack: repack)
             loadGuard.end(meta, loaded: false)
             Self.log.error("\(asset.id, privacy: .public) failed to load: \(String(describing: error), privacy: .public)")
             return nil
@@ -155,6 +157,8 @@ actor SessionHost: ModelHost {
         }
         let elapsed = start.duration(to: .now)
         loadTime.withLock { $0 = Double(elapsed.components.seconds) * 1000 + Double(elapsed.components.attoseconds) / 1e15 }
+        DebugLog.modelLoad(id: asset.id, ms: Int(elapsed / .milliseconds(1)), ok: true, threads: params.threads, nCtx: params.nCtx,
+                           repack: repack)
 
         llama = loaded
         filename = asset.filename
@@ -168,6 +172,7 @@ actor SessionHost: ModelHost {
         // A finished answer proves the model fits: the load guard's marker can go.
         let session: any TextModelSession = MetricsObservingSession(loaded) { [weak self] m in
             self?.settle(load: thisLoad)
+            DebugLog.generation(id: id, m, nCtx: nCtx)
             if repack, LoadGuard.isDecodeStall(generatedTokens: m.generatedTokens, decodeMs: m.decodeMs) {
                 let added = keep.withLock { $0.insert(id).inserted }
                 if added { Self.log.warning("\(id, privacy: .public) stalled with repacked weights: mapped from the next answer") }
@@ -228,7 +233,10 @@ actor SessionHost: ModelHost {
         settleResident()
         resident.withLock { $0 = nil }
         context.withLock { $0 = nil }
-        if let llama { await llama.close() }
+        if let llama {
+            await llama.close()
+            DebugLog.modelUnload(id: residentId)
+        }
         if let apple { await apple.close() }
         if let remote { await remote.close() }
         llama = nil

@@ -155,6 +155,7 @@ final class Labs {
     var labsOn: Bool {
         get { LabsBuild.experimental && on }
         set {
+            DebugLog.settingChanged("labs.on", old: on, new: newValue)
             on = newValue
             defaults.set(newValue, forKey: "labs.on")
         }
