@@ -77,9 +77,11 @@ struct CatalogRow: View {
     @ViewBuilder private var status: some View {
         if row.downloading {
             CatalogDownloadProgress(asset: asset, row: row, showSpeed: controller.services.settings.showLiveStats)
-        } else if row.error != nil {
-            Text("Download failed")
+        } else if let error = row.error {
+            // The reason, as Android's card shows it: BOAR's storage limit reads differently from a full phone.
+            Text(verbatim: error)
                 .foregroundStyle(.boar(.danger))
+                .fixedSize(horizontal: false, vertical: true)
         } else if loading {
             Text("Loading…")
                 .foregroundStyle(.boar(.success))

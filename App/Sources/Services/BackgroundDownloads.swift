@@ -68,8 +68,8 @@ final class BackgroundDownloads: NSObject, URLSessionDownloadDelegate, @unchecke
         let check = StorageBudget.check(StorageBudget.Input(
             usedBytes: store.usedBytes(excluding: [dest.standardizedFileURL.path]),
             reservedBytes: 0, downloadBytes: asset.sizeBytes, alreadyDownloadedBytes: min(partial, asset.sizeBytes),
-            freeDiskBytes: DiskSpace.freeBytes(at: filesDir), budgetBytes: catalog.storageBudgetBytes))
-        if case .refused(_, _, let message) = check { throw AssetStore.DownloadError.storage(message: message) }
+            freeDiskBytes: DiskSpace.freeBytes(at: filesDir), budgetBytes: StorageBudget.limit(catalogBudget: catalog.storageBudgetBytes)))
+        if case .refused(let r) = check { throw AssetStore.DownloadError.storage(message: r.message, refused: r) }
 
         if partial != asset.sizeBytes {
             try await transfer(asset, url: url, dest: dest, onProgress: onProgress)
