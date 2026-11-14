@@ -278,7 +278,8 @@ final class ChatController {
         services.host.cancel()
     }
 
-    func send(_ query: String) {
+    /// `limit` overrides the answer's token limit (the "Allow more and redo" note); nil uses the setting.
+    func send(_ query: String, limit: Int? = nil) {
         let q = query.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !q.isEmpty, job == nil else { return }
         stopFlag.set(false)
@@ -292,9 +293,15 @@ final class ChatController {
                 self.job = nil
                 return
             }
-            await self.answer(q)
+            await self.answer(q, limit: limit)
             self.job = nil
         }
+    }
+
+    /// Asks `answerId`'s question again with a higher token limit, for this answer only (the setting stays as it is).
+    func redo(_ answerId: String, limit: Int) {
+        guard job == nil, let q = question(for: answerId) else { return }
+        send(q, limit: limit)
     }
 
     /// "Ask BOAR instead": the question of a Labs tool's answer again, with the Labs tools skipped so the model answers.
@@ -362,7 +369,7 @@ final class ChatController {
         case activity(ChatActivity)
     }
 
-    private func answer(_ q: String, savedQuestionId: String? = nil) async {
+    private func answer(_ q: String, savedQuestionId: String? = nil, limit: Int? = nil) async {
         await stopBackground()
         let services = services
         let settings = services.settings
@@ -464,6 +471,10 @@ final class ChatController {
         /// Reasoning models: when the reasoning started, and whether it is still to be checked for.
         var thinkingAt: ContinuousClock.Instant?
         var thinkingOpen = true
+        /// The limit the answer could hit, set once the model is loaded (an instant answer has none), and the context it
+        /// was opened with.
+        var limited: Int?
+        var openedContext: Int?
 
         let mark = BoarPerf.begin("answer", way.rawValue)
 
@@ -510,10 +521,11 @@ final class ChatController {
                 throw ChatError.noModel
             }
             loadMs = services.host.lastLoadMs
-            let openedContext = session.capabilities.contextTokens ?? services.host.openedContext
-            var maxTokens = settings.answerTokens(openedContext: openedContext)
+            openedContext = session.capabilities.contextTokens ?? services.host.openedContext
+            var maxTokens = limit ?? settings.answerTokens(openedContext: openedContext)
             // A thank-you or greeting: Succinct's length in any style.
             if smallTalk { maxTokens = min(maxTokens, AppSettings.defaultMaxTokens) }
+            limited = maxTokens
             if way != .pipeline {
                 let (events, sink) = AsyncStream<Event>.makeStream()
                 let stop = stopFlag
@@ -589,12 +601,27 @@ final class ChatController {
         }
 
         mark.end("\(tokens) tokens\(failure == nil ? "" : ", failed")")
+        // One source per article, best first; the answer's numbers follow (a reused list is already grouped).
+        let grouped = SourceGroups.group(sources.map { ChatSource(number: 0, chunk: $0) },
+                                         key: { SourceGroups.articleKey(source: $0.source, docId: $0.docId, title: $0.title) },
+                                         score: { $0.similarity ?? $0.relevance }) { g in
+            var first = g[0]
+            first.similarity = g.compactMap(\.similarity).max()
+            first.relevance = g.compactMap(\.relevance).max()
+            first.body = g.map(\.body).joined(separator: "\n…\n")
+            return first
+        }
+        if reusedSources == nil { text = SourceGroups.renumber(text, map: grouped.renumber) }
         // A model that opens with the not-found line and then answers from the files keeps only the answer.
         if personal {
             let kept = PersonalFiles.dropHedge(text)
             if kept != text { text = kept }
         }
-        let shown = reusedSources ?? sources.enumerated().map { ChatSource(number: $0.offset + 1, chunk: $0.element) }
+        let shown = reusedSources ?? grouped.items.enumerated().map { i, s in
+            var s = s
+            s.number = i + 1
+            return s
+        }
         let stopped = stopFlag.value
         // The check slot (Boar Labs): a model's finished answer on the default or adaptive path may be repaired; not one
         // that was stopped, timed out or failed part way, nor one from the user's own files.
@@ -620,6 +647,13 @@ final class ChatController {
                 styleNote: shortReason == ShortAnswer.smallTalk ? nil : shortReason, tool: toolCodes.isEmpty ? nil : toolCodes,
                 path: path)
         }
+        // Ended at its token limit rather than by itself: a note, and a redo at the next length that fits.
+        let generated = (metrics?.generatedTokens ?? 0) > 0 ? metrics!.generatedTokens : tokens
+        let cutAt = limited.flatMap { l in
+            !stopped && !timedOut && !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+                && AnswerLimit.reached(generated: generated, limit: l) ? l : nil
+        }
+        let nextLimit = cutAt.flatMap { AnswerLimit.next(after: $0, options: services.personalities.maxTokensOptions, openedContext: openedContext) }
         let finalText = text
         let meta = (!shown.isEmpty || receipt != nil) ? MessageMeta.encode(shown, receipt) : nil
         let maxSessions = settings.maxSavedSessions
@@ -646,6 +680,8 @@ final class ChatController {
             if messages[i].steps.contains(where: { $0.kind == .searching }) { messages[i].sourceCount = shown.count }
             messages[i].stopped = stopped
             messages[i].timedOut = timedOut
+            messages[i].cutAt = cutAt
+            messages[i].nextLimit = nextLimit
             messages[i].receipt = receipt
             messages[i].answerSeconds = Self.seconds(startAt.duration(to: clock.now))
             if let failure {
