@@ -163,6 +163,7 @@ actor SessionHost: ModelHost {
         let nCtx = params.nCtx
         context.withLock { $0 = nCtx }
         settings.lastLoadedModelId = asset.id
+        settings.stampModel(AppSettings.modelLastUsed, asset.id)
         let id = asset.id
         let keep = keepMapped
         // A finished answer proves the model fits: the load guard's marker can go.
