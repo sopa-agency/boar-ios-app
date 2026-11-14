@@ -26,8 +26,6 @@ final class BackgroundDownloads: NSObject, URLSessionDownloadDelegate, @unchecke
         var dest: URL
         /// Bytes already in a partial file the Range request continues.
         var rangeStart: Int64
-        /// Bytes this transfer wrote so far (on top of `rangeStart`).
-        var written: Int64 = 0
         var onProgress: @Sendable (Progress) -> Void
         var continuation: CheckedContinuation<Void, Error>?
         var finishedFile: Bool
@@ -48,11 +46,12 @@ final class BackgroundDownloads: NSObject, URLSessionDownloadDelegate, @unchecke
 
     private override init() { super.init() }
 
-    /// What the running downloads still have to fetch (android `AssetStore.downloadingBytes`): they count against
-    /// BOAR's storage limit before they land, as the sidebar's storage bar shows.
+    /// What the running downloads still have to land in BOAR's folder (android `AssetStore.downloadingBytes`): they count
+    /// against BOAR's storage limit before they land, as the sidebar's storage bar shows. Only a resumed partial file is
+    /// already there: what this transfer wrote waits in URLSession's own temporary file until it finishes.
     func downloadingBytes() -> Int64 {
         lock.withLock { jobs in
-            jobs.values.filter { !$0.finishedFile }.reduce(0) { $0 + max($1.asset.sizeBytes - $1.rangeStart - $1.written, 0) }
+            jobs.values.filter { !$0.finishedFile }.reduce(0) { $0 + max($1.asset.sizeBytes - $1.rangeStart, 0) }
         }
     }
 
@@ -147,10 +146,7 @@ final class BackgroundDownloads: NSObject, URLSessionDownloadDelegate, @unchecke
     // MARK: URLSessionDownloadDelegate
 
     func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
-        guard let job = lock.withLock({ jobs -> Job? in
-            jobs[downloadTask.taskIdentifier]?.written = totalBytesWritten
-            return jobs[downloadTask.taskIdentifier]
-        }) else { return }
+        guard let job = lock.withLock({ $0[downloadTask.taskIdentifier] }) else { return }
         job.onProgress(Progress(bytesDone: job.rangeStart + totalBytesWritten, bytesTotal: job.asset.sizeBytes, verifying: false))
     }
 

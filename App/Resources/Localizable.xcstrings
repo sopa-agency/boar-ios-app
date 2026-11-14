@@ -2596,6 +2596,16 @@
         }
       }
     },
+    "DISK" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DISCO"
+          }
+        }
+      }
+    },
     "Daily Quiz" : {
       "localizations" : {
         "pt" : {
@@ -6285,6 +6295,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Qwen 7B"
+          }
+        }
+      }
+    },
+    "RAM" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "RAM"
           }
         }
       }

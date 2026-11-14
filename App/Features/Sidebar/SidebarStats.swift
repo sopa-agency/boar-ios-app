@@ -48,11 +48,11 @@ struct SidebarStats: View {
     @ViewBuilder private var memory: some View {
         // iOS doesn't tell an app what the others use: BOAR against what it can still take before iOS ends it.
         if let available {
-            UsageBar(title: "Memory", used: footprint, total: footprint + available,
+            UsageBar(title: "RAM", used: footprint, total: footprint + available,
                      caption: String(localized: "BOAR \(footprint.formatted(.byteCount(style: .memory))) · \(available.formatted(.byteCount(style: .memory))) more before \(Platform.systemName) closes it"),
                      compact: true)
         } else {
-            UsageBar(title: "Memory", used: footprint, total: DeviceStorage.physicalMemoryBytes,
+            UsageBar(title: "RAM", used: footprint, total: DeviceStorage.physicalMemoryBytes,
                      caption: String(localized: "BOAR \(footprint.formatted(.byteCount(style: .memory))) of this \(Platform.deviceNoun)'s memory"),
                      compact: true)
         }
@@ -69,7 +69,7 @@ struct SidebarStats: View {
         } else {
             String(localized: "BOAR's storage limit, not the \(Platform.deviceNoun)'s")
         }
-        return UsageBar(title: "Storage", used: storage, total: noLimit ? storage + fetching + free : limit, caption: caption,
+        return UsageBar(title: "DISK", used: storage, total: noLimit ? storage + fetching + free : limit, caption: caption,
                         kind: .storage, pending: fetching, compact: true)
     }
 }
