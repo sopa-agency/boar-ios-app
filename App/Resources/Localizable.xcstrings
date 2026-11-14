@@ -899,6 +899,16 @@
         }
       }
     },
+    "Animals" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Animais"
+          }
+        }
+      }
+    },
     "Answer Length" : {
       "localizations" : {
         "pt" : {
@@ -1102,6 +1112,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Responde com este modelo a partir de agora"
+          }
+        }
+      }
+    },
+    "Antibiotic resistance: why bacteria adapt, and what slows it" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resistência a antibióticos: por que as bactérias se adaptam, e o que freia isso"
           }
         }
       }
@@ -1696,16 +1716,6 @@
         }
       }
     },
-    "Back to topics" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Voltar aos temas"
-          }
-        }
-      }
-    },
     "Balanced size and quality" : {
       "localizations" : {
         "pt" : {
@@ -1772,6 +1782,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Modelos maiores podem responder melhor, mas precisam de mais memória."
+          }
+        }
+      }
+    },
+    "Biology" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Biologia"
           }
         }
       }
@@ -1956,6 +1976,16 @@
         }
       }
     },
+    "Brazil and Russia compared: population, area and economy" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Brasil e Rússia comparados: população, área e economia"
+          }
+        }
+      }
+    },
     "Built into %@, nothing to download" : {
       "localizations" : {
         "pt" : {
@@ -2022,6 +2052,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Can we bring the propane heater into the camper overnight?"
+          }
+        }
+      }
+    },
+    "Canberra: why Australia built a new capital" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Canberra: por que a Austrália construiu uma nova capital"
           }
         }
       }
@@ -2296,6 +2336,16 @@
         }
       }
     },
+    "Climate" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clima"
+          }
+        }
+      }
+    },
     "Close" : {
       "localizations" : {
         "pt" : {
@@ -2556,6 +2606,16 @@
         }
       }
     },
+    "Darwin, Wallace and the discovery of natural selection" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Darwin, Wallace e a descoberta da seleção natural"
+          }
+        }
+      }
+    },
     "Data Nomad" : {
       "localizations" : {
         "pt" : {
@@ -2712,6 +2772,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Apagar…"
+          }
+        }
+      }
+    },
+    "Dengue fever: symptoms, how it spreads, and why a second infection is riskier" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dengue: sintomas, transmissão e por que a segunda infecção é mais arriscada"
           }
         }
       }
@@ -2996,12 +3066,12 @@
         }
       }
     },
-    "Earth and nature" : {
+    "Earth science" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Terra e natureza"
+            "value" : "Ciências da Terra"
           }
         }
       }
@@ -3012,6 +3082,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Editar"
+          }
+        }
+      }
+    },
+    "Edit Before Asking" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Editar antes de perguntar"
           }
         }
       }
@@ -3176,16 +3256,6 @@
         }
       }
     },
-    "Ethereum and tech" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ethereum e tecnologia"
-          }
-        }
-      }
-    },
     "Evaluation" : {
       "localizations" : {
         "pt" : {
@@ -3242,6 +3312,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Exemplo"
+          }
+        }
+      }
+    },
+    "Exercise and health: how much adults need, and why" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exercício e saúde: quanto um adulto precisa, e por quê"
           }
         }
       }
@@ -3507,6 +3587,26 @@
         }
       }
     },
+    "First aid" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Primeiros socorros"
+          }
+        }
+      }
+    },
+    "First aid for nosebleeds: what works and what to avoid" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Primeiros socorros para sangramento nasal: o que funciona e o que evitar"
+          }
+        }
+      }
+    },
     "First quarter" : {
       "localizations" : {
         "pt" : {
@@ -3737,6 +3837,16 @@
         }
       }
     },
+    "Geography" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geografia"
+          }
+        }
+      }
+    },
     "Get Your Library" : {
       "localizations" : {
         "pt" : {
@@ -3807,6 +3917,16 @@
         }
       }
     },
+    "Health" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saúde"
+          }
+        }
+      }
+    },
     "Heat" : {
       "localizations" : {
         "pt" : {
@@ -3857,6 +3977,16 @@
         }
       }
     },
+    "History of science" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "História da ciência"
+          }
+        }
+      }
+    },
     "How BOAR Answers" : {
       "localizations" : {
         "pt" : {
@@ -3867,12 +3997,42 @@
         }
       }
     },
+    "How Earth's tilt creates the seasons, and why they flip between hemispheres" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Como a inclinação da Terra cria as estações, e por que elas se invertem entre os hemisférios"
+          }
+        }
+      }
+    },
+    "How black holes form, and what happens at the event horizon" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Como os buracos negros se formam, e o que acontece no horizonte de eventos"
+          }
+        }
+      }
+    },
     "How busy each core is. %@ doesn't give apps the clock speed." : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Quanto cada núcleo está ocupado. O %@ não passa o clock para os apps."
+          }
+        }
+      }
+    },
+    "How cheetahs reach top speed, and how long they can keep it" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Como os guepardos chegam à velocidade máxima, e por quanto tempo a mantêm"
           }
         }
       }
@@ -3923,6 +4083,36 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "How long would it take to bike from Vienna to Budapest?"
+          }
+        }
+      }
+    },
+    "How monsoons form, and why they matter for farming in South Asia" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Como as monções se formam, e por que importam para a agricultura no sul da Ásia"
+          }
+        }
+      }
+    },
+    "How mosquitoes spread disease, and why HIV isn't one of them" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Como os mosquitos transmitem doenças, e por que o HIV não é uma delas"
+          }
+        }
+      }
+    },
+    "How vaccines train the immune system, from smallpox to mRNA" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Como as vacinas treinam o sistema imune, da varíola ao mRNA"
           }
         }
       }
@@ -3983,16 +4173,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "EM TESTE · SEM DATA DE LANÇAMENTO"
-          }
-        }
-      }
-    },
-    "Ideas and money" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ideias e dinheiro"
           }
         }
       }
@@ -4217,6 +4397,16 @@
         }
       }
     },
+    "Japan and Germany compared: population density and an aging society" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Japão e Alemanha comparados: densidade populacional e envelhecimento"
+          }
+        }
+      }
+    },
     "Judged on a computer" : {
       "localizations" : {
         "pt" : {
@@ -4347,6 +4537,16 @@
         }
       }
     },
+    "Kyoto's role in Japanese history and culture" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O papel de Kyoto na história e na cultura do Japão"
+          }
+        }
+      }
+    },
     "LEAKED" : {
       "localizations" : {
         "pt" : {
@@ -4443,16 +4643,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Licença"
-          }
-        }
-      }
-    },
-    "Life and health" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vida e saúde"
           }
         }
       }
@@ -4767,6 +4957,16 @@
         }
       }
     },
+    "Medicine" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Medicina"
+          }
+        }
+      }
+    },
     "Medium" : {
       "localizations" : {
         "pt" : {
@@ -4953,6 +5153,16 @@
         }
       }
     },
+    "Mount Kilimanjaro: how a volcano became Africa's highest peak" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Monte Kilimanjaro: como um vulcão virou o pico mais alto da África"
+          }
+        }
+      }
+    },
     "Move down" : {
       "localizations" : {
         "pt" : {
@@ -4983,6 +5193,16 @@
         }
       }
     },
+    "Myths" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mitos"
+          }
+        }
+      }
+    },
     "Name" : {
       "localizations" : {
         "pt" : {
@@ -4999,6 +5219,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Dê um nome a esta coleção"
+          }
+        }
+      }
+    },
+    "Napoleon Bonaparte: his rise, his wars and his legacy in Europe" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Napoleão Bonaparte: sua ascensão, suas guerras e seu legado na Europa"
           }
         }
       }
@@ -5733,6 +5963,16 @@
         }
       }
     },
+    "Pandemics and epidemics: how outbreaks spread and how they're classified" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pandemias e epidemias: como os surtos se espalham e como são classificados"
+          }
+        }
+      }
+    },
     "Parameters" : {
       "localizations" : {
         "pt" : {
@@ -5779,6 +6019,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pico de memória"
+          }
+        }
+      }
+    },
+    "People" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pessoas"
           }
         }
       }
@@ -5833,6 +6083,16 @@
         }
       }
     },
+    "Photosynthesis step by step: from sunlight to sugar" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fotossíntese passo a passo: da luz do sol ao açúcar"
+          }
+        }
+      }
+    },
     "Pick a library once. BOAR reads it to answer your questions, even with no signal." : {
       "localizations" : {
         "pt" : {
@@ -5849,16 +6109,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Escolha um tema. Ele muda na hora, e dá para trocar de novo quando quiser."
-          }
-        }
-      }
-    },
-    "Pick a topic for ideas, or type your own question below." : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Escolha um tema para ter ideias ou digite sua pergunta abaixo."
           }
         }
       }
@@ -5923,6 +6173,16 @@
         }
       }
     },
+    "Plate tectonics: how moving plates build mountains and cause earthquakes" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tectônica de placas: como as placas em movimento formam montanhas e causam terremotos"
+          }
+        }
+      }
+    },
     "Point the camera at a sign or a menu: read and translated, offline." : {
       "localizations" : {
         "pt" : {
@@ -5939,6 +6199,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Aponta para o norte magnético, calculado neste %@ sem internet. O norte verdadeiro difere alguns graus conforme onde você está; precisaria da sua localização, que o BOAR não pede. Segure o %@ na horizontal."
+          }
+        }
+      }
+    },
+    "Polar bears and grizzlies compared: size, diet and habitat" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ursos-polares e ursos-pardos comparados: tamanho, dieta e habitat"
           }
         }
       }
@@ -6199,6 +6469,16 @@
         }
       }
     },
+    "Quick math" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conta rápida"
+          }
+        }
+      }
+    },
     "Qwen 7B" : {
       "localizations" : {
         "pt" : {
@@ -6385,6 +6665,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Banco de pesquisa v0.1"
+          }
+        }
+      }
+    },
+    "Research Topics" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Temas de pesquisa"
           }
         }
       }
@@ -6665,6 +6955,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Páginas digitalizadas"
+          }
+        }
+      }
+    },
+    "Science" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ciência"
           }
         }
       }
@@ -7035,16 +7335,6 @@
         }
       }
     },
-    "Shows questions to ask" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mostra perguntas para fazer"
-          }
-        }
-      }
-    },
     "Shows the details and the answer" : {
       "localizations" : {
         "pt" : {
@@ -7301,12 +7591,12 @@
         }
       }
     },
-    "Space and physics" : {
+    "Space" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Espaço e física"
+            "value" : "Espaço"
           }
         }
       }
@@ -7789,12 +8079,42 @@
         }
       }
     },
+    "The Berlin Wall: why it was built and how it fell" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Muro de Berlim: por que foi erguido e como caiu"
+          }
+        }
+      }
+    },
     "The English speech model couldn't be downloaded. Try again when online." : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Não foi possível baixar o modelo de fala em inglês. Tente de novo quando estiver online."
+          }
+        }
+      }
+    },
+    "The French and Industrial Revolutions compared: causes and lasting effects" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "As Revoluções Francesa e Industrial comparadas: causas e efeitos duradouros"
+          }
+        }
+      }
+    },
+    "The Great Wall of China: its history, its length and the Moon myth" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A Muralha da China: sua história, seu tamanho e o mito da Lua"
           }
         }
       }
@@ -7855,6 +8175,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "A floresta fica mais quieta entre 2h e 4h."
+          }
+        }
+      }
+    },
+    "The greenhouse effect: which gases trap heat, and how" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O efeito estufa: quais gases retêm calor, e como"
           }
         }
       }
@@ -8380,6 +8710,26 @@
         }
       }
     },
+    "Travel" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Viagem"
+          }
+        }
+      }
+    },
+    "Travelling in Brazil: plugs, voltage and emergency numbers" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Viajar pelo Brasil: tomadas, voltagem e números de emergência"
+          }
+        }
+      }
+    },
     "Trending" : {
       "localizations" : {
         "pt" : {
@@ -8756,6 +9106,16 @@
         }
       }
     },
+    "Weather" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tempo"
+          }
+        }
+      }
+    },
     "Weather & Climate" : {
       "localizations" : {
         "pt" : {
@@ -8816,12 +9176,12 @@
         }
       }
     },
-    "What do you want to know?" : {
+    "What is 30 °C in Fahrenheit?" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O que você quer saber?"
+            "value" : "Quanto é 30 °C em Fahrenheit?"
           }
         }
       }
@@ -8902,6 +9262,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Which is more densely populated, Japan or Germany, and by how much?"
+          }
+        }
+      }
+    },
+    "Why the Western Roman Empire fell: the main theories" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Por que o Império Romano do Ocidente caiu: as principais teorias"
           }
         }
       }
