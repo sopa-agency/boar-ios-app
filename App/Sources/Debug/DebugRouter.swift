@@ -1,9 +1,11 @@
 #if DEBUG
+import BoarModels
 import SwiftUI
 
 /// `-uiScreen <name>`: puts the running app on that screen once it is ready, without a tap.
 ///
-/// setup, setup-model, setup-knowledge, setup-install, setup-index, chat-empty, chat-error, chat-no-model, chat-load-crash, chat, chat-top, chat-streaming, chat-retrieving, chat-research,
+/// setup, setup-model, setup-knowledge, setup-install, setup-index, setup-guide-<page> (look, answers, ask, first, pin, privacy,
+/// labs, ready), chat-empty, chat-error, chat-no-model, chat-load-crash, chat, chat-top, chat-streaming, chat-retrieving, chat-research,
 /// sidebar, citation-sheet, source-reader, receipt, tone-sheet, models, model-detail, models-downloading, models-browse, documents,
 /// settings, settings-advanced, settings-engine, device-info, evaluation, about, lock, tour-<card>.
 @MainActor
@@ -74,8 +76,17 @@ enum DebugRouter {
         // Not a fresh phone (no -uiDemo): the wizard again, as Settings → Recovery opens it.
         if case .ready = model.phase { model.reopenSetup() }
         try? await Task.sleep(for: .milliseconds(500))
+        // The download's details, as a tap on the guide's strip opens them.
         if screen == "setup-install" || screen == "setup-index" {
             model.setup?.debugShowInstall(indexing: screen == "setup-index")
+            model.setup?.showDetails(true)
+            return
+        }
+        // The guide on that page, over a download in progress.
+        if screen.hasPrefix("setup-guide-"), let page = SetupGuide.Page(rawValue: screen.dropFirst(12).uppercased()) {
+            model.setup?.debugShowInstall(indexing: false)
+            model.setup?.guideTo(page)
+            model.setup?.files.add(DebugLaunch.setupFiles)
             return
         }
         let steps = screen == "setup-model" ? 1 : screen == "setup-knowledge" ? 2 : 0

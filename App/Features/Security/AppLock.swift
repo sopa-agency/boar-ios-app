@@ -177,6 +177,8 @@ final class AppLock {
             try await services.background { s in
                 try s.knowledgeBase.eraseAllCollections()
                 try s.chats.clearAll()
+                // Files picked in setup and not imported yet: they're Personal Files too.
+                try SetupFiles.eraseFolder(s.filesDir)
             }
         } catch {
             Self.log.error("erase failed: \(String(describing: error), privacy: .public)")

@@ -143,6 +143,12 @@ public final class AppSettings: @unchecked Sendable {
     public var historyTurnThreshold: Int { get { int("historyTurnThreshold") ?? 6 } set { set("historyTurnThreshold", JSONValue(newValue)) } }
     public var maxSavedSessions: Int { get { int("maxSavedSessions") ?? 10 } set { set("maxSavedSessions", JSONValue(newValue)) } }
     public var autoGenerateTitles: Bool { get { bool("autoGenerateTitles") ?? true } set { set("autoGenerateTitles", .bool(newValue)) } }
+    /// The question picked or written on setup's first-question page: it waits in the chat's field when BOAR opens, once.
+    /// A blank one is no question.
+    public var pendingFirstQuestion: String? {
+        get { str("pendingFirstQuestion") }
+        set { set("pendingFirstQuestion", newValue.flatMap { $0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? nil : .string($0) }) }
+    }
 
     // MARK: engine
 

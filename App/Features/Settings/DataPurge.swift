@@ -17,7 +17,7 @@ enum DataPurge {
             for c in try s.knowledgeBase.collections() { try s.knowledgeBase.deleteCollection(c.id) }
             _ = try s.knowledgeBase.deleteSeedChunksWithPrefix("wiki-")
             let fm = FileManager.default
-            for name in AppPaths.downloadDirs + ["integrity.json", "setup_progress.json", "discovered_models.json", "model-load.marker.json"] {
+            for name in AppPaths.downloadDirs + ["integrity.json", "setup_progress.json", "discovered_models.json", "model-load.marker.json", "setup-imports"] {
                 try? fm.removeItem(at: s.filesDir.appending(path: name))
             }
             // On the Mac the download folders are excluded one by one: recreate them excluded before the next download.

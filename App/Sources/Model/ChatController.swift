@@ -41,6 +41,8 @@ final class ChatController {
     var loadCrash: LoadGuard.Crash?
     /// A short message over the chat (Toast.tsx): the new tone, a reused question.
     var toast: String?
+    /// Setup's first question (android ChatViewModel prefill): the chat puts it in the field, unsent, and clears this.
+    var prefill: String?
 
     @ObservationIgnored let services: BoarServices
     /// Called after a session is created, renamed by the model, or pruned (the sidebar reloads).
@@ -93,11 +95,19 @@ final class ChatController {
         deepResearch = services.settings.deepResearchMode
         technicalDetails = services.settings.showLiveStats
         refreshModel()
+        takeFirstQuestion()
         // The open chat was erased (Clear all chat history, a forgotten PIN): start a new one.
         if let open = sessionId {
             let exists = (try? await services.background { try $0.chats.listSessions().contains { $0.id == open } }) ?? true
             if !exists { newChat() }
         }
+    }
+
+    /// The question picked in setup's guide, once: read and cleared, so it doesn't come back on the next launch.
+    private func takeFirstQuestion() {
+        guard let q = services.settings.pendingFirstQuestion else { return }
+        services.settings.pendingFirstQuestion = nil
+        prefill = q
     }
 
     /// After setup or a model change: the answering model's name, or that there's none.

@@ -363,6 +363,16 @@
         }
       }
     },
+    "%lld of %lld" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld de %lld"
+          }
+        }
+      }
+    },
     "%lld of %lld articles" : {
       "localizations" : {
         "en" : {
@@ -749,6 +759,26 @@
         }
       }
     },
+    "Add Files" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adicionar arquivos"
+          }
+        }
+      }
+    },
+    "Add More Files" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adicionar mais arquivos"
+          }
+        }
+      }
+    },
     "Add a model from Hugging Face." : {
       "localizations" : {
         "pt" : {
@@ -765,6 +795,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Adicione arquivos ou fotos de páginas. O BOAR os lê neste %@ e nunca os envia para fora."
+          }
+        }
+      }
+    },
+    "Add notes, PDFs or spreadsheets now and ask about them later. They stay on this %@." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adicione notas, PDFs ou planilhas agora e pergunte sobre eles depois. Ficam neste %@."
           }
         }
       }
@@ -789,6 +829,26 @@
         }
       }
     },
+    "Add your files first?" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adicionar seus arquivos primeiro?"
+          }
+        }
+      }
+    },
+    "Added" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adicionado"
+          }
+        }
+      }
+    },
     "Added %@" : {
       "localizations" : {
         "pt" : {
@@ -805,6 +865,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ adicionado aos Modelos."
+          }
+        }
+      }
+    },
+    "Adding…" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adicionando…"
           }
         }
       }
@@ -849,6 +919,26 @@
         }
       }
     },
+    "After the index" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Depois do índice"
+          }
+        }
+      }
+    },
+    "After the search model" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Depois do modelo de busca"
+          }
+        }
+      }
+    },
     "Airgap Boar" : {
       "localizations" : {
         "pt" : {
@@ -875,6 +965,46 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Todas as respostas"
+          }
+        }
+      }
+    },
+    "All of these are in Settings too." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tudo isso também está nas Configurações."
+          }
+        }
+      }
+    },
+    "Almost there" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quase lá"
+          }
+        }
+      }
+    },
+    "Alpha: early, less tested" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alpha: no começo, menos testados"
+          }
+        }
+      }
+    },
+    "Already added: %@" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Já adicionado: %@"
           }
         }
       }
@@ -1071,6 +1201,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Responde sozinha"
+          }
+        }
+      }
+    },
+    "Answers only from your own files. Tap to add some first." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Responde só com seus próprios arquivos. Toque para adicionar alguns primeiro."
           }
         }
       }
@@ -1272,6 +1412,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Perguntar antes de apagar um chat"
+          }
+        }
+      }
+    },
+    "Ask a whole question: \"How do I make water safe to drink?\" finds more than \"water\"." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Faça a pergunta inteira: \"Como deixar a água boa para beber?\" encontra mais que \"água\"."
           }
         }
       }
@@ -1596,6 +1746,16 @@
         }
       }
     },
+    "BOAR is ready" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O BOAR está pronto"
+          }
+        }
+      }
+    },
     "BOAR needs the microphone for dictation. Allow it in Settings → Privacy & Security → Microphone." : {
       "localizations" : {
         "pt" : {
@@ -1612,6 +1772,36 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "O BOAR precisa desta parte da biblioteca."
+          }
+        }
+      }
+    },
+    "BOAR opens as soon as the download and the index are done." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O BOAR abre assim que o download e o índice terminarem."
+          }
+        }
+      }
+    },
+    "BOAR reads .txt, .md, .csv, .json and .pdf, scanned ones too." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O BOAR lê .txt, .md, .csv, .json e .pdf, inclusive digitalizados."
+          }
+        }
+      }
+    },
+    "BOAR searches its library for your question, then answers from what it found." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O BOAR busca sua pergunta na biblioteca e responde com o que encontrou."
           }
         }
       }
@@ -1686,6 +1876,16 @@
         }
       }
     },
+    "Back to Setup" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voltar à configuração"
+          }
+        }
+      }
+    },
     "Back to the App" : {
       "localizations" : {
         "pt" : {
@@ -1742,6 +1942,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Execuções do benchmark"
+          }
+        }
+      }
+    },
+    "Beta: tested on phones" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beta: testados em celulares"
           }
         }
       }
@@ -1952,6 +2162,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ferva por pelo menos um minuto [1] e deixe esfriar tampada [2]."
+          }
+        }
+      }
+    },
+    "Building the index · %@ of %@" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Montando o índice · %@ de %@"
           }
         }
       }
@@ -2716,12 +2936,32 @@
         }
       }
     },
+    "Deleting a chat from the menu asks first. Off: one tap deletes it." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apagar uma conversa pelo menu pergunta antes. Desligado: um toque apaga."
+          }
+        }
+      }
+    },
     "Details" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Detalhes"
+          }
+        }
+      }
+    },
+    "Details %@" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Detalhes %@"
           }
         }
       }
@@ -2932,6 +3172,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Baixando o modelo de fala"
+          }
+        }
+      }
+    },
+    "Downloading · %lld%%" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Baixando · %lld%%"
           }
         }
       }
@@ -3246,6 +3496,16 @@
         }
       }
     },
+    "Experiments, labelled beta or alpha. They all start off: switch on the ones you want." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Experimentos, marcados beta ou alpha. Todos começam desligados: ligue os que quiser."
+          }
+        }
+      }
+    },
     "Experiments, labelled beta or alpha. They all start off: switch on the ones you want.\n\nAlso try Boar Press, which turns answers into a PDF.\n\nIf one misbehaves, switch it off and, if you can, open an issue on GitHub." : {
       "localizations" : {
         "pt" : {
@@ -3507,6 +3767,26 @@
         }
       }
     },
+    "First Question" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Primeira pergunta"
+          }
+        }
+      }
+    },
+    "First aid for nosebleeds: what works and what to avoid" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Primeiros socorros para sangramento nasal: o que funciona e o que evitar"
+          }
+        }
+      }
+    },
     "First quarter" : {
       "localizations" : {
         "pt" : {
@@ -3563,6 +3843,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Flash attention"
+          }
+        }
+      }
+    },
+    "Follow up as you would with a person: \"and if I can't boil it?\" keeps the subject." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continue como faria com uma pessoa: \"e se eu não puder ferver?\" mantém o assunto."
           }
         }
       }
@@ -3767,6 +4057,16 @@
         }
       }
     },
+    "Go back to change any of them, or later in Settings." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Volte para mudar qualquer uma, ou depois nas Configurações."
+          }
+        }
+      }
+    },
     "Google's on-device model, needs more memory" : {
       "localizations" : {
         "pt" : {
@@ -3867,6 +4167,26 @@
         }
       }
     },
+    "How BOAR answers" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Como o BOAR responde"
+          }
+        }
+      }
+    },
+    "How BOAR treats your chats and your %@'s memory." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Como o BOAR trata suas conversas e a memória do %@."
+          }
+        }
+      }
+    },
     "How busy each core is. %@ doesn't give apps the clock speed." : {
       "localizations" : {
         "pt" : {
@@ -3923,6 +4243,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "How long would it take to bike from Vienna to Budapest?"
+          }
+        }
+      }
+    },
+    "How monsoons form, and why they matter for farming in South Asia" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Como as monções se formam, e por que importam para a agricultura no sul da Ásia"
+          }
+        }
+      }
+    },
+    "How to ask" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Como perguntar"
           }
         }
       }
@@ -4117,6 +4457,16 @@
         }
       }
     },
+    "In the chat, the style button next to where you type shows this icon and switches it any time." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Na conversa, o botão de estilo ao lado de onde você digita mostra este ícone e troca quando quiser."
+          }
+        }
+      }
+    },
     "In use" : {
       "localizations" : {
         "pt" : {
@@ -4257,6 +4607,16 @@
         }
       }
     },
+    "Keep Going" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continuar"
+          }
+        }
+      }
+    },
     "Keep using BOAR and you’ll keep unlocking avatars: each one is a boar to wear, and some unlock new themes. Finding out what unlocks them is part of the fun." : {
       "localizations" : {
         "pt" : {
@@ -4377,6 +4737,16 @@
         }
       }
     },
+    "Labs don't slow the answers. The ones that load a model use extra memory while they run. All of them are in Settings → Advanced → Boar Labs." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Os Labs não deixam as respostas mais lentas. Os que carregam um modelo usam memória extra enquanto rodam. Todos ficam em Configurações → Avançado → Boar Labs."
+          }
+        }
+      }
+    },
     "Large" : {
       "localizations" : {
         "pt" : {
@@ -4413,6 +4783,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Quarto minguante"
+          }
+        }
+      }
+    },
+    "Later: Knowledge → Personal Files" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Depois: Conhecimento → Arquivos pessoais"
           }
         }
       }
@@ -4547,6 +4927,16 @@
         }
       }
     },
+    "Lock" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bloqueio"
+          }
+        }
+      }
+    },
     "Lock BOAR" : {
       "localizations" : {
         "pt" : {
@@ -4563,6 +4953,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tranque o BOAR."
+          }
+        }
+      }
+    },
+    "Lock BOAR?" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bloquear o BOAR?"
+          }
+        }
+      }
+    },
+    "Lock on. BOAR asks for %@ from now on." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bloqueio ligado. O BOAR pede %@ a partir de agora."
           }
         }
       }
@@ -5003,6 +5413,16 @@
         }
       }
     },
+    "Names new chats from your first message" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nomeia novas conversas com base na primeira mensagem"
+          }
+        }
+      }
+    },
     "Near full quality, large" : {
       "localizations" : {
         "pt" : {
@@ -5353,6 +5773,16 @@
         }
       }
     },
+    "Not Now" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Agora não"
+          }
+        }
+      }
+    },
     "Not checked by BOAR. Look at the model's page for its license before you use it." : {
       "localizations" : {
         "pt" : {
@@ -5409,6 +5839,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nada aqui sai do seu %@."
+          }
+        }
+      }
+    },
+    "Notifications" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notificações"
           }
         }
       }
@@ -5563,6 +6003,26 @@
         }
       }
     },
+    "One notification, only while BOAR answers." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uma notificação, só enquanto o BOAR responde."
+          }
+        }
+      }
+    },
+    "Only for BOAR: your %@'s own lock doesn't change." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Só para o BOAR: o bloqueio do seu %@ não muda."
+          }
+        }
+      }
+    },
     "Open Article" : {
       "localizations" : {
         "pt" : {
@@ -5713,6 +6173,16 @@
         }
       }
     },
+    "Or write your own…" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ou escreva a sua…"
+          }
+        }
+      }
+    },
     "Other Models" : {
       "localizations" : {
         "pt" : {
@@ -5729,6 +6199,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Outras versões (%lld)"
+          }
+        }
+      }
+    },
+    "Page %lld of %lld" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Página %lld de %lld"
+          }
+        }
+      }
+    },
+    "Pandemics and epidemics: how outbreaks spread and how they're classified" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pandemias e epidemias: como os surtos se espalham e como são classificados"
           }
         }
       }
@@ -5803,6 +6293,16 @@
         }
       }
     },
+    "Personal Files answers only from your own files. Add some on the files page, then come back and pick it here.\n\n%@" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arquivos pessoais responde só com seus próprios arquivos. Adicione alguns na página de arquivos, depois volte e escolha aqui.\n\n%@"
+          }
+        }
+      }
+    },
     "Phi 3.5 Mini" : {
       "localizations" : {
         "pt" : {
@@ -5853,6 +6353,16 @@
         }
       }
     },
+    "Pick a theme. It changes right away, and you can change it again in Settings." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolha um tema. Ele muda na hora, e dá para mudar de novo nas Configurações."
+          }
+        }
+      }
+    },
     "Pick a topic for ideas, or type your own question below." : {
       "localizations" : {
         "pt" : {
@@ -5869,6 +6379,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Escolha como o BOAR responde"
+          }
+        }
+      }
+    },
+    "Pick one, or write your own. It will be waiting in the chat when BOAR opens; you send it." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolha uma ou escreva a sua. Ela vai estar esperando na conversa quando o BOAR abrir; você envia."
           }
         }
       }
@@ -5979,6 +6499,16 @@
         }
       }
     },
+    "Preparing the index…" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preparando o índice…"
+          }
+        }
+      }
+    },
     "Preparing the library for search…" : {
       "localizations" : {
         "pt" : {
@@ -6045,6 +6575,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Privacidade"
+          }
+        }
+      }
+    },
+    "Privacy and memory" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Privacidade e memória"
           }
         }
       }
@@ -6305,6 +6845,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Remover"
+          }
+        }
+      }
+    },
+    "Remove %@" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remover %@"
           }
         }
       }
@@ -6725,6 +7275,16 @@
         }
       }
     },
+    "Searches in several steps and writes a longer answer. It takes longer; you can also turn it on just for one question." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pesquisa em várias etapas e escreve uma resposta mais longa. Demora mais; dá para ligar só para uma pergunta também."
+          }
+        }
+      }
+    },
     "Searching" : {
       "localizations" : {
         "pt" : {
@@ -6761,6 +7321,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Estações, tempestades, monções"
+          }
+        }
+      }
+    },
+    "See the Download" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ver o download"
           }
         }
       }
@@ -6905,12 +7475,32 @@
         }
       }
     },
+    "Setup files" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arquivos da configuração"
+          }
+        }
+      }
+    },
     "Setup finished. BOAR is ready." : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Configuração concluída. O BOAR está pronto."
+          }
+        }
+      }
+    },
+    "Setup paused · tap to see it" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configuração pausada · toque para ver"
           }
         }
       }
@@ -7025,6 +7615,16 @@
         }
       }
     },
+    "Show the microphone button in the chat to dictate messages." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostra o botão de microfone no chat para ditar mensagens."
+          }
+        }
+      }
+    },
     "Shows performance details" : {
       "localizations" : {
         "pt" : {
@@ -7051,6 +7651,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mostra os detalhes e a resposta"
+          }
+        }
+      }
+    },
+    "Shows the download's details" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostra os detalhes do download"
           }
         }
       }
@@ -7819,6 +8429,16 @@
         }
       }
     },
+    "The articles an answer used are listed under it: tap one to read it. Hold your question to copy it back." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Os artigos que a resposta usou aparecem embaixo dela: toque em um para ler. Segure sua pergunta para copiá-la de volta."
+          }
+        }
+      }
+    },
     "The basket is empty." : {
       "localizations" : {
         "pt" : {
@@ -7955,6 +8575,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "O modelo de busca está faltando. Rode a configuração de novo em Ajustes → Recuperação."
+          }
+        }
+      }
+    },
+    "The style BOAR starts with. In the chat, the style button switches it for any question." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O estilo com que o BOAR começa. Na conversa, o botão de estilo troca para qualquer pergunta."
           }
         }
       }
@@ -8270,6 +8900,26 @@
         }
       }
     },
+    "To answer only from your own files, pick the Personal Files style with the style button." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para responder só com seus arquivos, escolha o estilo Arquivos pessoais no botão de estilo."
+          }
+        }
+      }
+    },
+    "To ask about them, switch the chat's style to Personal Files (the style button, next to where you type). Then BOAR answers only from your files, and says so when they don't have the answer." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para perguntar sobre eles, mude o estilo da conversa para Arquivos pessoais (o botão de estilo, ao lado de onde você digita). Aí o BOAR responde só com seus arquivos, e avisa quando eles não têm a resposta."
+          }
+        }
+      }
+    },
     "Too big" : {
       "localizations" : {
         "pt" : {
@@ -8556,6 +9206,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Liberado em %@"
+          }
+        }
+      }
+    },
+    "Up Next" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A seguir"
           }
         }
       }
@@ -8926,6 +9586,16 @@
         }
       }
     },
+    "With the light model you picked, a Deep Research answer can take a few minutes." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Com o modelo leve que você escolheu, uma resposta da Pesquisa Profunda pode levar alguns minutos."
+          }
+        }
+      }
+    },
     "Words written" : {
       "localizations" : {
         "pt" : {
@@ -9117,6 +9787,16 @@
         }
       }
     },
+    "Your Files" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seus arquivos"
+          }
+        }
+      }
+    },
     "Your Mac stays awake while it runs." : {
       "localizations" : {
         "pt" : {
@@ -9137,12 +9817,42 @@
         }
       }
     },
+    "Your choices" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suas escolhas"
+          }
+        }
+      }
+    },
+    "Your first question" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sua primeira pergunta"
+          }
+        }
+      }
+    },
     "Your library: an encyclopedia plus topics like first aid and weather." : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sua biblioteca: uma enciclopédia mais temas como primeiros socorros e tempo."
+          }
+        }
+      }
+    },
+    "Your own files" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seus arquivos"
           }
         }
       }
