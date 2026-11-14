@@ -148,6 +148,12 @@ struct ChatView: View {
         .onChange(of: chat.messages.isEmpty) { _, empty in
             if empty { focusIfEmpty() }
         }
+        // Setup's first question waits in the field; the user sends it.
+        .onChange(of: chat.prefill, initial: true) { _, q in
+            guard let q else { return }
+            fill(q)
+            chat.prefill = nil
+        }
     }
 
     #if os(macOS)
