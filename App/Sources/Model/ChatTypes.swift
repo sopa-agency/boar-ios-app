@@ -112,6 +112,9 @@ struct ChatItem: Identifiable, Hashable, Sendable {
     var feedback: String?
     var stopped = false
     var timedOut = false
+    /// It ended at this token limit, not by itself (a note with a redo at `nextLimit`). Live answers only, as on Android.
+    var cutAt: Int?
+    var nextLimit: Int?
     var receipt: Receipt?
     /// The steps the answer actually went through, in order (live answers only; a reopened chat has none).
     var steps: [AnswerStep] = []
@@ -184,6 +187,13 @@ enum ChatActivity: Hashable, Sendable {
         case .researching(.synthesizing, _, _): .writing
         }
     }
+}
+
+/// The chat's "may not fit" note: the answer model is RED for this device and the user hasn't chosen to load it anyway
+/// (android LoadNote.Risky). `onlyModel`: no other model is installed.
+struct RiskyLoad: Hashable, Sendable {
+    var modelId: String
+    var onlyModel: Bool
 }
 
 /// The meta JSON stored with an answer (same keys as android ChatViewModel.metaOf).
