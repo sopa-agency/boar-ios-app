@@ -429,6 +429,36 @@
         }
       }
     },
+    "%lld/%lld answered" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld/%lld respondidas"
+          }
+        }
+      }
+    },
+    "%lld/%lld answers" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld/%lld respostas"
+          }
+        }
+      }
+    },
+    "%lld/%lld found" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld/%lld achadas"
+          }
+        }
+      }
+    },
     "%lld° %@" : {
       "localizations" : {
         "pt" : {
@@ -6299,6 +6329,16 @@
         }
       }
     },
+    "Reliability" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Confiabilidade"
+          }
+        }
+      }
+    },
     "Remove" : {
       "localizations" : {
         "pt" : {
@@ -6599,6 +6639,16 @@
         }
       }
     },
+    "Running · %lld/%lld answers" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rodando · %lld/%lld respostas"
+          }
+        }
+      }
+    },
     "Sanctuary" : {
       "localizations" : {
         "pt" : {
@@ -6665,6 +6715,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Páginas digitalizadas"
+          }
+        }
+      }
+    },
+    "Score" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nota"
           }
         }
       }
@@ -7281,6 +7341,16 @@
         }
       }
     },
+    "Sources found" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fontes achadas"
+          }
+        }
+      }
+    },
     "Southern hemisphere" : {
       "localizations" : {
         "pt" : {
@@ -7357,6 +7427,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Velocidade"
+          }
+        }
+      }
+    },
+    "Speed 60 %%, reliability 25 %%, sources found 15 %%, measured on this %@. It doesn't say whether the answers are right." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Velocidade 60 %%, confiabilidade 25 %%, fontes achadas 15 %%, medidas neste %@. Não diz se as respostas estão certas."
           }
         }
       }
@@ -9586,6 +9666,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "sem recuperação"
+          }
+        }
+      }
+    },
+    "none expected" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "nenhuma esperada"
           }
         }
       }
