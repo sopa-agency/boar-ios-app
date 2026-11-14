@@ -80,6 +80,27 @@ struct AnswerView: View {
                     .disabled(chat.isAnswering)
                     .frame(maxWidth: .infinity, alignment: .trailing)
                 }
+                // The cut is a note; the way to run it again with more tokens is its own button on the next line, so the
+                // two never squeeze into one row (android ChatScreen).
+                if let limit = message.cutAt {
+                    VStack(alignment: .leading, spacing: 6) {
+                        MessageNote(symbol: Symbols.cutAtLimit, text: "Stopped at the \(String(limit))-token limit", warning: false)
+                        if let next = message.nextLimit, !chat.isAnswering {
+                            // In the accent, as Android's ActionButton: emerald text on a subtle emerald fill and border.
+                            Button {
+                                chat.redo(message.id, limit: next)
+                            } label: {
+                                Label("Allow \(String(next)) and redo", icon: Symbols.retry)
+                                    .padding(.horizontal, 14)
+                                    .padding(.vertical, 9)
+                                    .background(Color(palette.emeraldBgSubtle), in: .rect(cornerRadius: 10))
+                                    .overlay(RoundedRectangle(cornerRadius: 10).strokeBorder(Color(palette.emeraldBorder)))
+                            }
+                            .buttonStyle(.plain)
+                            .foregroundStyle(Color(palette.textAccentEmerald))
+                        }
+                    }
+                }
                 if !message.text.isEmpty && !streaming {
                     AnswerFooter(message: message, chat: chat, shown: shown)
                 }

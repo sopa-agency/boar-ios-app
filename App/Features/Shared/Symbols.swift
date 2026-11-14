@@ -20,6 +20,8 @@ enum Symbols {
     static let caution = AppIcon.pack(.settingsRecovery)
     /// A Detailed pick answered short (ShortAnswer: health, seed phrases).
     static let shortAnswer: AppIcon = "text.append"
+    /// An answer that ended at its token limit (android "✂").
+    static let cutAtLimit: AppIcon = "scissors"
     static let tooBig: AppIcon = "xmark.circle"
     static let error = AppIcon.pack(.settingsRecovery)
     static let retry = AppIcon.pack(.refresh)
