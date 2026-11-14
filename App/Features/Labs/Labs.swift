@@ -1,4 +1,5 @@
 import BoarAnswer
+import BoarModels
 import SwiftUI
 
 /// Boar Labs (android `src/labs`): unfinished experiments, hidden until the user turns on Settings → Advanced → Boar
@@ -141,6 +142,7 @@ final class Labs {
     private var unlockedIds: Set<String>
     /// Classified tiles leaked with the easter egg: they last while Boar Labs is open (Android, Oct 19).
     private var revealedIds: Set<String> = []
+    private var storageLimitChoice: String
 
     init(defaults: UserDefaults, labs: [any LabPlugin] = Labs.registry) {
         self.defaults = defaults
@@ -149,6 +151,7 @@ final class Labs {
         on = defaults.object(forKey: "labs.on") as? Bool ?? true
         enabledIds = Set(all.map(\.id).filter { defaults.bool(forKey: "labs.enabled.\($0)") })
         unlockedIds = Set(all.map(\.id).filter { defaults.bool(forKey: "labs.unlocked.\($0)") })
+        storageLimitChoice = defaults.string(forKey: Self.storageLimitKey) ?? "auto"
     }
 
     /// The master switch at the bottom of Advanced: off, no lab shows anywhere.
@@ -157,6 +160,28 @@ final class Labs {
         set {
             on = newValue
             defaults.set(newValue, forKey: "labs.on")
+        }
+    }
+
+    /// BOAR's storage limit while Boar Labs is on (android `LabHooks` STORAGE_LIMIT): "auto" (the catalog's 50 GB), a
+    /// number of GB, or "none" (only the phone's free space).
+    var storageLimit: String {
+        get { storageLimitChoice }
+        set {
+            storageLimitChoice = newValue
+            defaults.set(newValue, forKey: Self.storageLimitKey)
+        }
+    }
+
+    static let storageLimitChoices = ["auto", "25", "100", "200", "none"]
+    nonisolated private static let storageLimitKey = "labs.storageLimit"
+
+    /// Hands the downloads the user's limit, read at each download: theirs while Boar Labs is on, else nil (the catalog's).
+    nonisolated static func installStorageLimit() {
+        StorageBudget.userLimit = {
+            let defaults = AppPaths.defaults
+            guard LabsBuild.experimental, defaults.object(forKey: "labs.on") as? Bool ?? true else { return nil }
+            return StorageBudget.limitBytes(choice: defaults.string(forKey: storageLimitKey))
         }
     }
 

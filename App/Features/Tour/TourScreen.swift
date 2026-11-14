@@ -164,7 +164,7 @@ private struct TourCardView: View {
 }
 
 /// The theme card's chips (android ThemePicker): the same choices and the same write as Settings → Display.
-private struct TourThemePicker: View {
+struct TourThemePicker: View {
     @Environment(AppModel.self) private var model
     @Environment(\.palette) private var palette
 

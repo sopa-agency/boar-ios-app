@@ -68,10 +68,11 @@ struct GgufFileRow: View {
     @ViewBuilder private var status: some View {
         if row.downloading, let asset {
             CatalogDownloadProgress(asset: asset, row: row, showSpeed: controller.services.settings.showLiveStats)
-        } else if row.error != nil {
-            Text("Download failed")
+        } else if let error = row.error {
+            Text(verbatim: error)
                 .font(.boar("ui.caption"))
                 .foregroundStyle(.boar(.danger))
+                .fixedSize(horizontal: false, vertical: true)
         } else {
             HStack(spacing: 4) {
                 if let level = quant.flatMap(HfQuery.quantLevel) {
