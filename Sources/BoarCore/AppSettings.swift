@@ -9,6 +9,13 @@ import Foundation
 public final class AppSettings: @unchecked Sendable {
     public let store: KeyValueStore
     private let writeLock = NSLock()
+    private var changeHook: (@Sendable (String, JSONValue?, JSONValue?) -> Void)?
+
+    /// Called after a setting changes, with its key, old and new value (android AppSettings.onChange: the debug log).
+    public var onChange: (@Sendable (String, JSONValue?, JSONValue?) -> Void)? {
+        get { writeLock.withLock { changeHook } }
+        set { writeLock.withLock { changeHook = newValue } }
+    }
 
     public init(store: KeyValueStore) {
         self.store = store
@@ -22,7 +29,15 @@ public final class AppSettings: @unchecked Sendable {
     private func str(_ key: String) -> String? { store.value(forKey: key)?.stringValue }
     private func int(_ key: String) -> Int? { store.value(forKey: key)?.intValue }
     private func bool(_ key: String) -> Bool? { store.value(forKey: key)?.boolValue }
-    private func set(_ key: String, _ value: JSONValue?) { writeLock.withLock { store.setValue(value, forKey: key) } }
+    private func set(_ key: String, _ value: JSONValue?) {
+        let (old, hook) = writeLock.withLock { () -> (JSONValue?, (@Sendable (String, JSONValue?, JSONValue?) -> Void)?) in
+            let old = store.value(forKey: key)
+            store.setValue(value, forKey: key)
+            return (old, changeHook)
+        }
+        let new = value.flatMap { $0.isNull ? nil : $0 }
+        if let hook, old != new { hook(key, old, new) }
+    }
     private func strings(_ key: String) -> [String] { store.value(forKey: key)?.arrayValue?.compactMap(\.stringValue) ?? [] }
     private func setStrings(_ key: String, _ v: [String]) { set(key, v.isEmpty ? nil : JSONValue(strings: v)) }
 
@@ -135,6 +150,8 @@ public final class AppSettings: @unchecked Sendable {
     public var freeMemoryAfterMinutes: Int? { get { int("freeMemoryAfterMinutes") } set { set("freeMemoryAfterMinutes", newValue.map { JSONValue($0) }) } }
     public var hidePromptIdeas: Bool { get { bool("hidePromptIdeas") ?? false } set { set("hidePromptIdeas", .bool(newValue)) } }
     /// Advanced tweaks → Show technical details. On by default: the bounty's judges and early users want the numbers.
+    /// Settings → Engine Tweaks → Debug Log (android `debugLogEnabled`).
+    public var debugLogEnabled: Bool { get { bool("debugLogEnabled") ?? false } set { set("debugLogEnabled", .bool(newValue)) } }
     public var showLiveStats: Bool { get { bool("showLiveStats") ?? true } set { set("showLiveStats", .bool(newValue)) } }
 
     // MARK: chat memory (DEFAULT_MEMORY_SETTINGS when unset)

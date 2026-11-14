@@ -1,4 +1,5 @@
 import Foundation
+import Synchronization
 import Testing
 @testable import BoarCore
 
@@ -190,5 +191,20 @@ import Testing
         #expect(JSONValue(jsonString: v.jsonString) == v)
         #expect(JSONValue(jsonString: "{nope") == nil)
         #expect(v["b"]?.arrayValue?.count == 3)
+    }
+
+    @Test func onChangeSeesEachRealChangeWithItsOldAndNewValue() {
+        let s = AppSettings(store: InMemoryKeyValueStore())
+        let seen = Mutex<[String]>([])
+        s.onChange = { key, old, new in
+            seen.withLock { $0.append("\(key) \(old?.jsonString ?? "unset")>\(new?.jsonString ?? "unset")") }
+        }
+        s.debugLogEnabled = true
+        s.debugLogEnabled = true
+        s.showLiveStats = false
+        s.lastLoadedModelId = "a"
+        s.lastLoadedModelId = nil
+        #expect(seen.withLock { $0 } == ["debugLogEnabled unset>true", "showLiveStats unset>false",
+                                         "lastLoadedModelId unset>\"a\"", "lastLoadedModelId \"a\">unset"])
     }
 }
