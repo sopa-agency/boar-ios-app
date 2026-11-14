@@ -22,6 +22,22 @@ struct DebugLogSection: View {
                 Text("Debug Log")
             }
             .accessibilityIdentifier("debugLog.toggle")
+            // On the always-present row, not the Section: in a Form a Section's modifiers can be copied to each row.
+            .fileExporter(isPresented: $exporting, document: document, contentType: .log, defaultFilename: Self.filename) { result in
+                switch result {
+                case .success: status = "Log saved"
+                case .failure: status = "Couldn't save the log"
+                }
+                document = nil
+            }
+            .task(id: on) {
+                // The size grows while the log is on: read it again every few seconds while the screen is open.
+                while !Task.isCancelled {
+                    refresh()
+                    guard on else { break }
+                    try? await Task.sleep(for: .seconds(5))
+                }
+            }
             if on || size > 0 {
                 Button("Save Log…", systemImage: "square.and.arrow.down") {
                     document = DebugLogDocument(data: DebugLog.savedContents())
@@ -50,21 +66,6 @@ struct DebugLogSection: View {
                         Text(status)
                     }
                 }
-            }
-        }
-        .fileExporter(isPresented: $exporting, document: document, contentType: .log, defaultFilename: Self.filename) { result in
-            switch result {
-            case .success: status = "Log saved"
-            case .failure: status = "Couldn't save the log"
-            }
-            document = nil
-        }
-        .task(id: on) {
-            // The size grows while the log is on: read it again every few seconds while the screen is open.
-            while !Task.isCancelled {
-                refresh()
-                guard on else { break }
-                try? await Task.sleep(for: .seconds(5))
             }
         }
     }

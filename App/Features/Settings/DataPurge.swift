@@ -9,6 +9,9 @@ import Foundation
 enum DataPurge {
     @MainActor
     static func eraseAll(services: BoarServices, lock: AppLock?) async {
+        // The debug log first: off (so the erase isn't logged) and its files gone, as Android's app data wipe takes them.
+        DebugLog.setEnabled(false)
+        DebugLog.clear()
         await services.host.unload()
         await services.embedder.unload()
         services.packs.reload()

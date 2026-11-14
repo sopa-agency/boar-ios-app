@@ -149,9 +149,9 @@ public final class AppSettings: @unchecked Sendable {
     /// Advanced → "Free memory after", in minutes; nil is Auto (at once).
     public var freeMemoryAfterMinutes: Int? { get { int("freeMemoryAfterMinutes") } set { set("freeMemoryAfterMinutes", newValue.map { JSONValue($0) }) } }
     public var hidePromptIdeas: Bool { get { bool("hidePromptIdeas") ?? false } set { set("hidePromptIdeas", .bool(newValue)) } }
-    /// Advanced tweaks → Show technical details. On by default: the bounty's judges and early users want the numbers.
     /// Settings → Engine Tweaks → Debug Log (android `debugLogEnabled`).
     public var debugLogEnabled: Bool { get { bool("debugLogEnabled") ?? false } set { set("debugLogEnabled", .bool(newValue)) } }
+    /// Advanced tweaks → Show technical details. On by default: the bounty's judges and early users want the numbers.
     public var showLiveStats: Bool { get { bool("showLiveStats") ?? true } set { set("showLiveStats", .bool(newValue)) } }
 
     // MARK: chat memory (DEFAULT_MEMORY_SETTINGS when unset)
