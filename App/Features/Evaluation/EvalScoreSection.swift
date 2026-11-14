@@ -47,6 +47,9 @@ private struct ScoreRow: View {
     let score: EvalScore.ModelScore
     let name: String
     @Environment(\.palette) private var palette
+    /// The ring and its number grow with the text size.
+    @ScaledMetric(relativeTo: .headline) private var ring = 64
+    @ScaledMetric(relativeTo: .headline) private var number = 18
 
     /// Real traffic-light colors for the ring only, as Android: a theme's "emerald" is gold in some themes, so a 96 would
     /// look like a warning.
@@ -66,10 +69,10 @@ private struct ScoreRow: View {
                     .stroke(tone, style: StrokeStyle(lineWidth: 6, lineCap: .round))
                     .rotationEffect(.degrees(-90))
                 Text(score.score, format: .number)
-                    .font(.system(size: 18, weight: .bold))
+                    .font(.system(size: number, weight: .bold))
                     .foregroundStyle(.boar(.heading))
             }
-            .frame(width: 64, height: 64)
+            .frame(width: ring, height: ring)
             .padding(3)
             VStack(alignment: .leading, spacing: 4) {
                 Text(verbatim: name)

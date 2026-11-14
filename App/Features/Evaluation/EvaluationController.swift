@@ -17,6 +17,8 @@ final class EvaluationController {
     var setKind: EvalQuestionSet.Kind = .quick
     /// The set the shown results came from.
     private(set) var resultSetKind: EvalQuestionSet.Kind?
+    /// What the last run started here set out to answer (models × questions); nil for results it didn't run.
+    private var runAnswers: Int?
     private(set) var running = false
     private(set) var stopping = false
     private(set) var progress: EvalRunner.Progress?
@@ -55,6 +57,8 @@ final class EvaluationController {
     /// The answers the run asks for: every model times every question (at least the answers shown).
     var expectedAnswers: Int {
         if let p = progress { return p.configCount * p.queryCount }
+        // A run stopped early still counts what it set out to answer (5/10, not 5/5).
+        if let runAnswers { return max(rows.count, runAnswers) }
         let questions = sets.first { $0.kind == resultSetKind }?.queries.count ?? 0
         return max(rows.count, questions * Set(rows.compactMap { $0["configId"]?.stringValue }).count)
     }
@@ -106,6 +110,7 @@ final class EvaluationController {
                        onDone: (@MainActor (EvalRunner.RunResult?, Error?) -> Void)? = nil) {
         running = true
         resultSetKind = setKind
+        runAnswers = configs.count * queries.count
         stopping = false
         rows = []
         runId = nil
