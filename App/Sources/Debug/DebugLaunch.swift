@@ -52,7 +52,12 @@ enum DebugLaunch {
     /// `-uiScroll <points>` or `-uiScroll end`.
     static let scroll: String? = UserDefaults.standard.string(forKey: "uiScroll")
     /// iPhone 13 memory: the demo shows the owner's phone numbers, not the Mac's.
-    static let ramBytes: Int64? = demo ? 4 * 1_073_741_824 : nil
+    /// `-uiRamMB <n>`: a device with that much memory, to see the "may not fit" note (StartLoad) on the simulator.
+    static let ramBytes: Int64? = {
+        let mb = UserDefaults.standard.integer(forKey: "uiRamMB")
+        if mb > 0 { return Int64(mb) * 1_048_576 }
+        return demo ? 4 * 1_073_741_824 : nil
+    }()
 
     static func isScreen(_ name: String) -> Bool { screen == name }
     /// `-uiScreen lab-<id>`: that lab's page, pushed over Boar Labs.

@@ -147,6 +147,26 @@
         }
       }
     },
+    "%@ may not fit in this %@'s memory." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ pode não caber na memória deste %@."
+          }
+        }
+      }
+    },
+    "%@ may not fit in this %@'s memory. A smaller model, such as %@ (about 1 GB), fits better." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ pode não caber na memória deste %@. Um modelo menor, como o %@ (cerca de 1 GB), cabe melhor."
+          }
+        }
+      }
+    },
     "%@ more before %@ closes it" : {
       "localizations" : {
         "pt" : {
@@ -875,6 +895,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Todas as respostas"
+          }
+        }
+      }
+    },
+    "Allow %@ and redo" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permitir %@ e refazer"
           }
         }
       }
@@ -1712,6 +1742,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Voltar ao app"
+          }
+        }
+      }
+    },
+    "Bad Answer" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resposta ruim"
           }
         }
       }
@@ -3877,6 +3917,16 @@
         }
       }
     },
+    "Good Answer" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Boa resposta"
+          }
+        }
+      }
+    },
     "Google's on-device model, needs more memory" : {
       "localizations" : {
         "pt" : {
@@ -4327,6 +4377,16 @@
         }
       }
     },
+    "Interrupted: BOAR was closed while answering." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Interrompida: o BOAR foi fechado enquanto respondia."
+          }
+        }
+      }
+    },
     "Is it safe to use a camping stove inside the tent to cook?" : {
       "localizations" : {
         "pt" : {
@@ -4667,6 +4727,16 @@
         }
       }
     },
+    "Load Anyway" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Carregar mesmo assim"
+          }
+        }
+      }
+    },
     "Load More" : {
       "localizations" : {
         "pt" : {
@@ -4903,6 +4973,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Correspondência %@"
+          }
+        }
+      }
+    },
+    "May Not Fit" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pode não caber"
           }
         }
       }
@@ -6093,6 +6173,16 @@
         }
       }
     },
+    "Pick Another Model" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolher outro modelo"
+          }
+        }
+      }
+    },
     "Pick a library once. BOAR reads it to answer your questions, even with no signal." : {
       "localizations" : {
         "pt" : {
@@ -6925,6 +7015,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Conversas salvas a manter"
+          }
+        }
+      }
+    },
+    "Saved on this %@ only. Nothing is sent. BOAR doesn't learn from it yet." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salvo só neste %@. Nada é enviado. O BOAR ainda não aprende com isso."
           }
         }
       }
@@ -7871,6 +7971,16 @@
         }
       }
     },
+    "Stopped at the %@-token limit" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Parou no limite de %@ tokens"
+          }
+        }
+      }
+    },
     "Stopped early. Partial results saved to %@." : {
       "localizations" : {
         "pt" : {
@@ -8215,6 +8325,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "A biblioteca ainda não está pronta: termine a configuração e volte."
+          }
+        }
+      }
+    },
+    "The model stopped without writing an answer." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O modelo parou sem escrever uma resposta."
           }
         }
       }

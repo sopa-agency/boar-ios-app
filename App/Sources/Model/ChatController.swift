@@ -40,8 +40,13 @@ final class ChatController {
     private(set) var deepResearch = false
     /// A failure before the answer row exists (the chat couldn't be created).
     var error: String?
-    /// CR-2, shown once: the model that closed the app and the one answering instead.
+    /// CR-2, shown once: the model that closed the app and the one answering instead. Also the note for a model that
+    /// closed the app and that no other model can stand in for (StartLoad.noFallback), shown at each start.
     var loadCrash: LoadGuard.Crash?
+    /// The answer model may not fit this device's memory (StartLoad.askRisky): it isn't loaded until the user chooses.
+    var riskyLoad: RiskyLoad?
+    /// A question asked while the memory note's model wasn't loaded: sent once the user loads it.
+    @ObservationIgnored private var heldQuestion: String?
     /// A short message over the chat (Toast.tsx): the new tone, a reused question.
     var toast: String?
 
@@ -128,6 +133,10 @@ final class ChatController {
         // In BOAR's language: the ideas are written and tested per language.
         ideaPool = services.suggestions.ideaPool(m?.id, language: Bundle.main.preferredLocalizations.first, installed: installed)
         suggestions = pickIdeas()
+        // A may-not-fit note that no longer holds (the model was loaded anyway, or replaced) goes away.
+        if let risky = riskyLoad, services.startDecision() != .askRisky(modelId: risky.modelId, onlyModel: risky.onlyModel) {
+            riskyLoad = nil
+        }
     }
 
     /// A few of the ideas at random, drawn again for each new chat (android pickIdeas).
@@ -135,28 +144,87 @@ final class ChatController {
         Array(ideaPool.shuffled().prefix(Suggestions.ideasShown))
     }
 
-    /// Loads the model when the chat opens, so the first answer doesn't wait for it.
+    /// Loads the model when the chat opens, so the first answer doesn't wait for it. Not a model whose last load closed
+    /// the app with no other to stand in, nor one that may not fit this device's memory: the chat asks first (StartLoad).
     func preload() {
         guard services.activeModel() != nil || services.backend != .llama, !loadingModel else { return }
+        switch services.startDecision() {
+        case .askRisky(let id, let only):
+            _ = services.loadGuard.consume()
+            riskyLoad = RiskyLoad(modelId: id, onlyModel: only)
+            return
+        case .noFallback(let id, _):
+            loadCrash = services.loadGuard.consume() ?? blockedNote(id)
+            return
+        default: break
+        }
+        load(held: nil)
+    }
+
+    /// Loads the answer model now; then the held question, if any, is sent. A load that returns without a model (not a
+    /// closed app) brings the may-not-fit note back, so the user can still choose.
+    private func load(held: String?, risky: RiskyLoad? = nil) {
         loadingModel = true
         let services = services
         Task {
-            _ = await services.activeSession()
+            let loaded = await services.activeSession() != nil
             let crash = services.loadGuard.consume()
             self.loadingModel = false
             self.loadCrash = crash
             if crash != nil || services.backend == .remote { self.refreshModel() }
+            if !loaded, crash == nil, let risky { self.riskyLoad = risky }
+            if loaded, let held { self.send(held) }
         }
+    }
+
+    /// The note for a blocked model with nothing to answer instead: a crash record with no fallback.
+    private func blockedNote(_ modelId: String) -> LoadGuard.Crash {
+        LoadGuard.Crash(crashedModelId: modelId, crashedLabel: services.catalog.byId(modelId)?.label ?? modelId,
+                        fallbackModelId: "", fallbackLabel: "", at: 0)
+    }
+
+    /// The note a question gets instead of an answer: the user's model may not fit, or closed the app last time and
+    /// nothing can stand in. Nil when it may load, or is already loaded (picked in Models).
+    private func gate() async -> (risky: RiskyLoad?, crash: LoadGuard.Crash?)? {
+        let id: String
+        var note: (risky: RiskyLoad?, crash: LoadGuard.Crash?)
+        switch services.startDecision() {
+        case .askRisky(let m, let only): (id, note) = (m, (RiskyLoad(modelId: m, onlyModel: only), nil))
+        case .noFallback(let m, _): (id, note) = (m, (nil, blockedNote(m)))
+        default: return nil
+        }
+        if let file = services.catalog.byId(id)?.filename, await services.host.residentFilename() == file, services.host.current != nil {
+            return nil
+        }
+        return note
+    }
+
+    /// The may-not-fit note's "Load Anyway": loads the model now, and at start from now on without asking.
+    func loadAnyway(_ modelId: String) {
+        services.rememberLoadAnyway(modelId)
+        let risky = riskyLoad
+        riskyLoad = nil
+        load(held: heldQuestion.take(), risky: risky)
     }
 
     /// The crash note's "Try Again with Less Memory": the model is unblocked and loaded now, keeping the mapped file
     /// instead of repacking it (LoadGuard.retryMapped). It answers from then on.
     func retryWithLessMemory(_ modelId: String) {
         services.loadGuard.retryMapped(modelId)
+        // The user's call: a model that may not fit isn't asked about again at start.
+        if let m = services.catalog.byId(modelId), services.isRisky(m) { services.rememberLoadAnyway(modelId) }
         services.settings.setActiveModelId("llm", modelId)
         loadCrash = nil
         refreshModel()
-        preload()
+        guard !loadingModel else { return }
+        load(held: heldQuestion.take())
+    }
+
+    /// The memory note's "Pick Another Model" / "Choose a Model" and its OK: the held question is dropped.
+    func dismissLoadNote() {
+        heldQuestion = nil
+        riskyLoad = nil
+        loadCrash = nil
     }
 
     // MARK: sessions
@@ -174,7 +242,11 @@ final class ChatController {
         Task {
             let records = (try? await services.background { try $0.chats.messages(sessionId: id) }) ?? []
             self.messages = records.map { r in
-                ChatItem(id: r.id, role: r.role, text: r.text, sources: MessageMeta.sources(r.meta), feedback: r.feedback, receipt: MessageMeta.receipt(r.meta))
+                var item = ChatItem(id: r.id, role: r.role, text: r.text, sources: MessageMeta.sources(r.meta), feedback: r.feedback, receipt: MessageMeta.receipt(r.meta))
+                if MessageMeta.error(r.meta) == MessageMeta.interrupted {
+                    item.failure = String(localized: "Interrupted: BOAR was closed while answering.")
+                }
+                return item
             }
             self.sessionId = id
             self.error = nil
@@ -200,6 +272,11 @@ final class ChatController {
         guard let i = messages.firstIndex(where: { $0.id == messageId }) else { return }
         let next = messages[i].feedback == rating ? nil : rating
         messages[i].feedback = next
+        // Once, on the first rating: ratings stay on the device and nothing uses them yet.
+        if next != nil && !services.settings.ratingNoteShown {
+            services.settings.ratingNoteShown = true
+            toast = String(localized: "Saved on this \(Platform.deviceNoun) only. Nothing is sent. BOAR doesn't learn from it yet.")
+        }
         Task { _ = try? await services.background { try $0.chats.setFeedback(messageId: messageId, rating: next) } }
     }
 
@@ -221,14 +298,30 @@ final class ChatController {
         services.host.cancel()
     }
 
-    func send(_ query: String) {
+    /// `limit` overrides the answer's token limit (the "Allow more and redo" note); nil uses the setting.
+    func send(_ query: String, limit: Int? = nil) {
         let q = query.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !q.isEmpty, job == nil else { return }
         stopFlag.set(false)
         job = Task {
-            await self.answer(q)
+            // A model that may not fit, or closed the app with nothing to stand in, isn't loaded for a question: the
+            // question waits for the user's choice in the note.
+            if let note = await self.gate() {
+                self.heldQuestion = q
+                self.riskyLoad = note.risky
+                if let crash = note.crash { self.loadCrash = crash }
+                self.job = nil
+                return
+            }
+            await self.answer(q, limit: limit)
             self.job = nil
         }
+    }
+
+    /// Asks `answerId`'s question again with a higher token limit, for this answer only (the setting stays as it is).
+    func redo(_ answerId: String, limit: Int) {
+        guard job == nil, let q = question(for: answerId) else { return }
+        send(q, limit: limit)
     }
 
     /// "Ask BOAR instead": the question of a Labs tool's answer again, with the Labs tools skipped so the model answers.
@@ -254,7 +347,10 @@ final class ChatController {
         let question = messages[i - 1]
         messages.remove(at: i)
         stopFlag.set(false)
+        let services = services
         job = Task {
+            // An answer BOAR was closed in the middle of is saved: the new one replaces it.
+            _ = try? await services.background { try $0.chats.deleteMessage(id: answerId) }
             await self.answer(question.text, savedQuestionId: question.id)
             self.job = nil
         }
@@ -296,7 +392,7 @@ final class ChatController {
         case activity(ChatActivity)
     }
 
-    private func answer(_ q: String, savedQuestionId: String? = nil) async {
+    private func answer(_ q: String, savedQuestionId: String? = nil, limit: Int? = nil) async {
         await stopBackground()
         let services = services
         let settings = services.settings
@@ -320,8 +416,13 @@ final class ChatController {
         }
         let userId = savedQuestionId ?? services.chats.newId()
         let answerId = services.chats.newId()
-        if savedQuestionId == nil {
-            _ = try? await services.background { try $0.chats.addMessage(sessionId: sid, role: "user", text: q, id: userId) }
+        // The answer is saved as it's written, marked interrupted until it ends: if iOS closes BOAR mid-answer, the chat
+        // reopens with what was written and the note, not a lost answer (android ChatViewModel.savePartial).
+        let interruptedMeta = MessageMeta.encode([], nil, error: MessageMeta.interrupted)
+        _ = try? await services.background { s in
+            if savedQuestionId == nil { try s.chats.addMessage(sessionId: sid, role: "user", text: q, id: userId) }
+            try s.chats.upsertMessage(sessionId: sid, role: "assistant", text: "", id: answerId)
+            try s.chats.setMessageMeta(messageId: answerId, meta: interruptedMeta)
         }
         sessionId = sid
         error = nil
@@ -398,8 +499,16 @@ final class ChatController {
         /// Reasoning models: when the reasoning started, and whether it is still to be checked for.
         var thinkingAt: ContinuousClock.Instant?
         var thinkingOpen = true
+        /// The limit the answer could hit, set once the model is loaded (an instant answer has none), and the context it
+        /// was opened with.
+        var limited: Int?
+        var openedContext: Int?
 
         let mark = BoarPerf.begin("answer", way.rawValue)
+
+        /// The partial answer's saves, every few seconds, one after the other; the final save waits for them.
+        var partialSave: Task<Void, Never>?
+        var savedAt = clock.now
 
         func onPiece(_ piece: String) {
             tokens += 1
@@ -409,6 +518,14 @@ final class ChatController {
                 BoarPerf.event("answer.firstToken")
             }
             text += piece
+            if savedAt.duration(to: now) > Self.partialSaveEvery {
+                savedAt = now
+                let partial = text
+                partialSave = Task { [previous = partialSave] in
+                    await previous?.value
+                    _ = try? await services.background { try $0.chats.upsertMessage(sessionId: sid, role: "assistant", text: partial, id: answerId) }
+                }
+            }
             let elapsed = Self.seconds(firstAt!.duration(to: now))
             if elapsed > 0.5 { liveTokPerSec = Double(tokens) / elapsed }
             guard let i = messages.lastIndex(where: { $0.id == answerId }) else { return }
@@ -444,10 +561,11 @@ final class ChatController {
                 throw ChatError.noModel
             }
             loadMs = services.host.lastLoadMs
-            let openedContext = session.capabilities.contextTokens ?? services.host.openedContext
-            var maxTokens = settings.answerTokens(openedContext: openedContext)
+            openedContext = session.capabilities.contextTokens ?? services.host.openedContext
+            var maxTokens = limit ?? settings.answerTokens(openedContext: openedContext)
             // A thank-you or greeting: Succinct's length in any style.
             if smallTalk { maxTokens = min(maxTokens, AppSettings.defaultMaxTokens) }
+            limited = maxTokens
             if way != .pipeline {
                 let (events, sink) = AsyncStream<Event>.makeStream()
                 let stop = stopFlag
@@ -521,14 +639,33 @@ final class ChatController {
         } catch {
             failure = error
         }
+        // Ended without a word, no error and not stopped: say so (with Try Again) instead of an empty answer.
+        if failure == nil, !stopFlag.value, text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            failure = ChatError.emptyAnswer
+        }
 
         mark.end("\(tokens) tokens\(failure == nil ? "" : ", failed")")
+        // One source per article, best first; the answer's numbers follow (a reused list is already grouped).
+        let grouped = SourceGroups.group(sources.map { ChatSource(number: 0, chunk: $0) },
+                                         key: { SourceGroups.articleKey(source: $0.source, docId: $0.docId, title: $0.title) },
+                                         score: { $0.similarity ?? $0.relevance }) { g in
+            var first = g[0]
+            first.similarity = g.compactMap(\.similarity).max()
+            first.relevance = g.compactMap(\.relevance).max()
+            first.body = g.map(\.body).joined(separator: "\n…\n")
+            return first
+        }
+        if reusedSources == nil { text = SourceGroups.renumber(text, map: grouped.renumber) }
         // A model that opens with the not-found line and then answers from the files keeps only the answer.
         if personal {
             let kept = PersonalFiles.dropHedge(text)
             if kept != text { text = kept }
         }
-        let shown = reusedSources ?? sources.enumerated().map { ChatSource(number: $0.offset + 1, chunk: $0.element) }
+        let shown = reusedSources ?? grouped.items.enumerated().map { i, s in
+            var s = s
+            s.number = i + 1
+            return s
+        }
         let stopped = stopFlag.value
         // The check slot (Boar Labs): a model's finished answer on the default or adaptive path may be repaired; not one
         // that was stopped, timed out or failed part way, nor one from the user's own files.
@@ -554,15 +691,26 @@ final class ChatController {
                 styleNote: shortReason == ShortAnswer.smallTalk ? nil : shortReason, tool: toolCodes.isEmpty ? nil : toolCodes,
                 path: path)
         }
+        // Ended at its token limit rather than by itself: a note, and a redo at the next length that fits.
+        let generated = (metrics?.generatedTokens ?? 0) > 0 ? metrics!.generatedTokens : tokens
+        let cutAt = limited.flatMap { l in
+            !stopped && !timedOut && !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+                && AnswerLimit.reached(generated: generated, limit: l) ? l : nil
+        }
+        let nextLimit = cutAt.flatMap { AnswerLimit.next(after: $0, options: services.personalities.maxTokensOptions, openedContext: openedContext) }
         let finalText = text
-        let meta = (!shown.isEmpty || receipt != nil) ? MessageMeta.encode(shown, receipt) : nil
+        // Written over the interrupted mark, which an answer that ended no longer has.
+        let meta = MessageMeta.encode(shown, receipt)
         let maxSessions = settings.maxSavedSessions
         // A failed answer with no text stays on screen (with Try Again) but is not saved.
         let keep = failure == nil || !finalText.isEmpty
+        await partialSave?.value
         let saved = (try? await services.background { s -> Bool in
             if keep {
                 try s.chats.upsertMessage(sessionId: sid, role: "assistant", text: finalText, id: answerId)
-                if let meta { try s.chats.setMessageMeta(messageId: answerId, meta: meta) }
+                try s.chats.setMessageMeta(messageId: answerId, meta: meta)
+            } else {
+                try s.chats.deleteMessage(id: answerId)
             }
             try s.chats.prune(maxSessions: maxSessions)
             return keep
@@ -580,6 +728,8 @@ final class ChatController {
             if messages[i].steps.contains(where: { $0.kind == .searching }) { messages[i].sourceCount = shown.count }
             messages[i].stopped = stopped
             messages[i].timedOut = timedOut
+            messages[i].cutAt = cutAt
+            messages[i].nextLimit = nextLimit
             messages[i].receipt = receipt
             messages[i].answerSeconds = Self.seconds(startAt.duration(to: clock.now))
             if let failure {
@@ -679,6 +829,9 @@ final class ChatController {
         await session.prewarm(input, enableThinking: thinking)
     }
 
+    /// How often an answer being written is saved (android PARTIAL_SAVE_NS).
+    private static let partialSaveEvery = Duration.seconds(3)
+
     private static func seconds(_ d: Duration) -> Double {
         Double(d.components.seconds) + Double(d.components.attoseconds) / 1e18
     }
@@ -689,12 +842,15 @@ private struct InstantAnswer: Error {}
 
 enum ChatError: LocalizedError {
     case noModel
+    /// The answer ended without a word, without an error and without Stop.
+    case emptyAnswer
     case adaptive(String)
     case remoteUnreachable(String)
 
     var errorDescription: String? {
         switch self {
         case .noModel: String(localized: "No answer model is installed.")
+        case .emptyAnswer: String(localized: "The model stopped without writing an answer.")
         case .adaptive(let w): String(localized: "Adaptive routing produced no answer: \(w)")
         case .remoteUnreachable(let why): why
         }
