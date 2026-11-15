@@ -87,18 +87,10 @@ struct AnswerView: View {
                     VStack(alignment: .leading, spacing: 6) {
                         MessageNote(symbol: Symbols.cutAtLimit, text: "Stopped at the \(String(limit))-token limit", warning: false)
                         if let next = message.nextLimit, !chat.isAnswering {
-                            // In the accent, as Android's ActionButton: emerald text on a subtle emerald fill and border.
-                            Button {
+                            Button("Allow \(String(next)) and redo", icon: Symbols.retry) {
                                 chat.redo(message.id, limit: next)
-                            } label: {
-                                Label("Allow \(String(next)) and redo", icon: Symbols.retry)
-                                    .padding(.horizontal, 14)
-                                    .padding(.vertical, 9)
-                                    .background(Color(palette.emeraldBgSubtle), in: .rect(cornerRadius: 10))
-                                    .overlay(RoundedRectangle(cornerRadius: 10).strokeBorder(Color(palette.emeraldBorder)))
                             }
-                            .buttonStyle(.plain)
-                            .foregroundStyle(Color(palette.textAccentEmerald))
+                            .buttonStyle(.boarAction)
                         }
                     }
                 }
