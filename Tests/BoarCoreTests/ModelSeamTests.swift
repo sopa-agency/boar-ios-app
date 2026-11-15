@@ -28,9 +28,11 @@ final class FakeSession: TextModelSession, @unchecked Sendable {
             let task = Task {
                 var n = 0
                 var reason = "eos"
-                for p in pieces {
+                for (i, p) in pieces.enumerated() {
                     if isCancelled { reason = "cancelled"; break }
-                    if pieceDelay != .zero { try? await Task.sleep(for: pieceDelay) }
+                    // Between pieces, not before the first: a time limit always has something written to keep, even when
+                    // a loaded CI runner starts the stream late.
+                    if i > 0, pieceDelay != .zero { try? await Task.sleep(for: pieceDelay) }
                     if isCancelled { reason = "cancelled"; break }
                     c.yield(.piece(p)); n += 1
                 }

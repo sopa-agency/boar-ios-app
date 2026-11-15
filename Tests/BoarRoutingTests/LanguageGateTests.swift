@@ -228,18 +228,21 @@ struct LanguageGateTests {
         // GitHub's shared macOS VMs run this about twice as slow as a Mac mini (9.8 ms best of four on 2026-11-06),
         // so CI gets three times the budget; a real slowdown is still caught on the build Mac.
         let budget = ProcessInfo.processInfo.environment["GITHUB_ACTIONS"] == "true" ? 3.0 : 1.0
-        func worstOfLong() -> Duration {
-            long.map { s in clock.measure { _ = LanguageGate.decide(s, sure("fr")) } }.max() ?? .zero
+        // Each input keeps its fastest of up to four passes: a burst of load on a shared machine or a slow CI runner hits
+        // one input in one pass, not the same input every time, so it doesn't fail the test. A real slowdown stays over
+        // the limit in every pass. (Keeping the fastest pass's worst input, as before, still failed on CI at 20 ms.)
+        func fastest(_ inputs: [String], limit: Duration) -> [Duration] {
+            func pass() -> [Duration] { inputs.map { s in clock.measure { _ = LanguageGate.decide(s, sure("fr")) } } }
+            var best = pass()
+            for _ in 0..<3 where best.contains(where: { $0 >= limit }) { best = zip(best, pass()).map { min($0, $1) } }
+            return best
         }
-        // Over the limit: measured again (up to three more times, keeping the fastest), so a burst of load on a shared
-        // machine or a slow CI runner doesn't fail it. A real slowdown stays over the limit every time.
-        var worst = worstOfLong()
-        for _ in 0..<3 where worst >= .milliseconds(5) * budget { worst = min(worst, worstOfLong()) }
+        let worst = fastest(long, limit: .milliseconds(5) * budget).max() ?? .zero
         #expect(worst < .milliseconds(5) * budget, "worst \(worst)")
         // Adversarial: unmatched quotes and backticks everywhere.
-        for s in [String(repeating: "«", count: 2_000), String(repeating: "'a", count: 1_000), String(repeating: "`", count: 2_001),
-                  String(repeating: "\"x ", count: 700), String(repeating: "{;", count: 1_000), String(repeating: "Ab ", count: 700)] {
-            let d = clock.measure { _ = LanguageGate.decide(s, sure("fr")) }
+        let adversarial = [String(repeating: "«", count: 2_000), String(repeating: "'a", count: 1_000), String(repeating: "`", count: 2_001),
+                           String(repeating: "\"x ", count: 700), String(repeating: "{;", count: 1_000), String(repeating: "Ab ", count: 700)]
+        for (s, d) in zip(adversarial, fastest(adversarial, limit: .milliseconds(20) * budget)) {
             #expect(d < .milliseconds(20) * budget, "slow on \(s.prefix(6))")
         }
     }
