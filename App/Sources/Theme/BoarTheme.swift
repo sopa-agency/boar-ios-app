@@ -372,6 +372,7 @@ struct BoarActionButtonStyle: ButtonStyle {
 
         var body: some View {
             configuration.label
+                .font(.boar("ui.titleSm"))
                 .padding(.horizontal, 14)
                 .padding(.vertical, 9)
                 .foregroundStyle(Color(palette.textAccentEmerald))

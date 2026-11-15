@@ -28,10 +28,14 @@ final class FakeSession: TextModelSession, @unchecked Sendable {
             let task = Task {
                 var n = 0
                 var reason = "eos"
-                for p in pieces {
-                    if isCancelled { reason = "cancelled"; break }
-                    if pieceDelay != .zero { try? await Task.sleep(for: pieceDelay) }
-                    if isCancelled { reason = "cancelled"; break }
+                for (i, p) in pieces.enumerated() {
+                    // The first piece goes out before any check or delay: a time limit always has something written to
+                    // keep, even when a loaded CI runner starts the stream after the limit has passed.
+                    if i > 0 {
+                        if isCancelled { reason = "cancelled"; break }
+                        if pieceDelay != .zero { try? await Task.sleep(for: pieceDelay) }
+                        if isCancelled { reason = "cancelled"; break }
+                    }
                     c.yield(.piece(p)); n += 1
                 }
                 c.yield(.done(GenerationMetrics(generatedTokens: n, stopReason: reason)))
