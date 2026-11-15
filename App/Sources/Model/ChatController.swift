@@ -351,10 +351,16 @@ final class ChatController {
     }
 
     /// Try Again on a failed answer: the failed row goes away and the same question is answered again, under the same
-    /// saved question (a failed answer with no text was never saved).
+    /// saved question (a failed answer with no text was never saved). An answer with others after it (an interrupted one
+    /// in the middle of the chat) is asked again at the end instead, as on Android, and stays: a new answer can't take
+    /// its place, it would land after the later ones.
     func retry(_ answerId: String) {
         guard job == nil, let i = messages.firstIndex(where: { $0.id == answerId }), i > 0, messages[i - 1].isUser else { return }
         let question = messages[i - 1]
+        guard i == messages.count - 1 else {
+            send(question.text)
+            return
+        }
         messages.remove(at: i)
         stopFlag.set(false)
         let services = services
