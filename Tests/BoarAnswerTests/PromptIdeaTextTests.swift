@@ -13,7 +13,8 @@ struct PromptIdeaTextTests {
         #expect(keys.count > Suggestions.benchIdeas.count)
 
         let source = try Fixtures.text(Fixtures.root.appending(path: "App/Sources/Model/ChatTypes.swift"))
-        let body = try #require(source.components(separatedBy: "enum PromptIdea {").last)
+        let start = try #require(source.range(of: "enum PromptIdea {"), "PromptIdea moved out of ChatTypes.swift")
+        let body = source[start.upperBound...]
         // case "q1": (String(localized: "Science"), String(localized: "How Earth's tilt …"))
         let line = /case "([a-z0-9]+)": \(String\(localized: "([^"]+)"\), String\(localized: "([^"]+)"\)\)/
         var texts: [String: (topic: String, question: String)] = [:]

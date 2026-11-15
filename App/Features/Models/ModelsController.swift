@@ -436,7 +436,16 @@ enum DownloadErrorText {
         switch DownloadFailure(error) {
         case .noSource: return String(localized: "Not available for download yet. Import the file instead.")
         case .offlineBuild: return String(localized: "This build of BOAR has no network access. Import the file instead.")
-        case .disk(let refused?), .budget(let refused), .budgetWithDownloads(let refused): return storage(refused)
+        case .disk(let refused?):
+            let free = refused.freeDiskBytes.map(size) ?? "?", needed = size(refused.neededBytes)
+            return String(localized: "This \(Platform.deviceNoun) has only \(free) free and the download needs \(needed). Free some space and retry.")
+        case .budgetWithDownloads(let refused):
+            let budget = size(refused.budgetBytes), used = size(refused.usedBytes), downloading = size(refused.downloadingBytes)
+            let device = Platform.deviceNoun
+            return String(localized: "BOAR's \(budget) storage limit is reached: BOAR stores \(used), with \(downloading) downloading. Remove a model or cancel a download. The \(device) itself may still have room.")
+        case .budget(let refused):
+            let budget = size(refused.budgetBytes), used = size(refused.usedBytes), device = Platform.deviceNoun
+            return String(localized: "BOAR's \(budget) storage limit is reached: BOAR already stores \(used). Remove a model first. The \(device) itself may still have room.")
         // A disk error while writing: no budget numbers to show.
         case .disk(nil): return String(localized: "This \(Platform.deviceNoun) doesn't have enough free space for the download. Free some space and retry.")
         case .sizeChanged: return String(localized: "The server now has a different file than this version of BOAR expects. Import the file or update the app.")
@@ -450,19 +459,5 @@ enum DownloadErrorText {
         }
     }
 
-    private static func storage(_ refused: StorageBudget.Refused) -> String {
-        func size(_ bytes: Int64) -> String { bytes.formatted(.byteCount(style: .file)) }
-        let budget = size(refused.budgetBytes), used = size(refused.usedBytes), needed = size(refused.neededBytes)
-        let device = Platform.deviceNoun
-        switch refused.reason {
-        case .disk:
-            let free = refused.freeDiskBytes.map(size) ?? "?"
-            return String(localized: "This \(device) has only \(free) free and the download needs \(needed). Free some space and retry.")
-        case .budget where refused.downloadingBytes > 0:
-            let downloading = size(refused.downloadingBytes)
-            return String(localized: "BOAR's \(budget) storage limit is reached: BOAR stores \(used), with \(downloading) downloading. Remove a model or cancel a download. The \(device) itself may still have room.")
-        case .budget:
-            return String(localized: "BOAR's \(budget) storage limit is reached: BOAR already stores \(used). Remove a model first. The \(device) itself may still have room.")
-        }
-    }
+    private static func size(_ bytes: Int64) -> String { bytes.formatted(.byteCount(style: .file)) }
 }
