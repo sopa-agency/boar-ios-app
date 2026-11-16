@@ -383,8 +383,10 @@ final class AppModel {
     /// kept). A Mac keeps answering behind other windows and while minimized.
     func didEnterBackground() {
         inForeground = false
-        // A kill from now on is iOS reclaiming a background app, not the model's load (LoadGuard).
+        // A kill from now on is iOS reclaiming a background app, not the model's load (LoadGuard); also for a load still
+        // in flight, which isn't resident yet (BOAR-36).
         services?.host.settleResident()
+        services?.exits.enteredBackground()
         #if !os(macOS)
         chat?.stopForBackground()
         scheduleMemoryRelease()
@@ -438,8 +440,18 @@ final class AppModel {
     }
     #endif
 
+    /// Not active, still on screen or in the app switcher (where a swipe ends BOAR without a background step): LoadGuard
+    /// excuses a load kill from here once (BOAR-36). A Mac app is inactive behind every other app's window, and ⌘Q already
+    /// clears the marker, so this is iPhone-only.
+    func didResignActive() {
+        #if !os(macOS)
+        services?.exits.resignedActive()
+        #endif
+    }
+
     func didBecomeActive() {
         inForeground = true
+        services?.exits.becameActive()
         memoryRelease?.cancel()
         memoryRelease = nil
         setup?.onForeground()

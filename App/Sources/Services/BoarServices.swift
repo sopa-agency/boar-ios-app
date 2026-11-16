@@ -26,6 +26,8 @@ final class BoarServices: @unchecked Sendable {
     let knowledgeBase: KnowledgeBase
     let chats: ChatStore
     let loadGuard: LoadGuard
+    /// What the last process's end tells LoadGuard (updated, reinstalled, or ended off screen).
+    let exits: ExitRecord
     let packs: PackRegistry
     let embedder: EmbedderHost
     let lexicon: LexiconStore
@@ -58,6 +60,10 @@ final class BoarServices: @unchecked Sendable {
         knowledgeBase = try KnowledgeBase(db: kbDb)
         chats = try ChatStore(db: kbDb)
         loadGuard = LoadGuard(store: FileMarkerStore(url: AppPaths.loadMarker), ledger: SettingsLoadLedger(settings: settings))
+        // An update, a reinstall or a swipe during a load isn't a load kill (android ExitReason, BOAR-36).
+        let exits = ExitRecord(defaults: AppPaths.defaults, install: Bundle.main.bundlePath)
+        self.exits = exits
+        loadGuard.exitWasNotLoadKill = { exits.notALoadKill(since: $0) }
 
         let catalog = Self.withDiscovered(baseCatalog)
         catalogLock.withLock { $0 = catalog }
