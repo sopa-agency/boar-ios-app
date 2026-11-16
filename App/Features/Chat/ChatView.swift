@@ -146,12 +146,15 @@ struct ChatView: View {
             voice.onRecognized = { vault.record { $0.voice = true } }
         }
         .onChange(of: chat.messages.isEmpty) { _, empty in
-            if empty { focusIfEmpty() }
+            // A question the memory note held is sent by the chat itself once its model loads: the answer gets the
+            // screen, as after `send`.
+            if empty { focusIfEmpty() } else { composerFocused = false }
         }
         // A memory note that comes in once the chat is open (the start load decides after `onAppear`) closes the keyboard,
-        // which would push its title and message under the header; once it is answered, the field is ready again.
+        // which would push its title and message under the header. Dismissed without loading anything (OK), the field
+        // is ready again; "Load Anyway" or "Try Again" starts a load, which may send a held question.
         .onChange(of: showsMemoryNote) { _, shown in
-            if shown { composerFocused = false } else { focusIfEmpty() }
+            if shown { composerFocused = false } else if !chat.loadingModel { focusIfEmpty() }
         }
         // Setup's first question waits in the field; the user sends it.
         .onChange(of: chat.prefill, initial: true) { _, q in
