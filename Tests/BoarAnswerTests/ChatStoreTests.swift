@@ -111,12 +111,18 @@ struct ChatStoreTests {
         store.cipher = aes
         try store.addMessage(sessionId: s.id, role: "user", text: "And a taxi?", id: "u2")
         let raw = try db.query("SELECT text FROM chat_messages") { $0.string(0) ?? "" }
-            + db.query("SELECT title || ' ' || summary FROM chat_sessions") { $0.string(0) ?? "" }
+            + db.query("SELECT title FROM chat_sessions") { $0.string(0) ?? "" }
+            + db.query("SELECT summary FROM chat_sessions") { $0.string(0) ?? "" }
             + db.query("SELECT meta FROM chat_message_meta") { $0.string(0) ?? "" }
-        #expect(!raw.isEmpty)
-        #expect(!raw.contains { r in
-            ["Lisbon", "SIM", "taxi", "airport"].contains { r.contains($0) } || r.localizedCaseInsensitiveContains("trip")
+        // Every stored value is a sealed box (prefix + base64, which has no spaces, so no sentence can sit in it) that
+        // opens to one of the texts above. Searching the base64 for words like "SIM" failed now and then by chance.
+        #expect(raw.allSatisfy { r in
+            AesTextCipher.isSealed(r) && Data(base64Encoded: String(r.dropFirst(AesTextCipher.prefix.count))) != nil
         })
+        #expect(Set(raw.map(aes.open)) == [
+            "Where can I buy a SIM card?", "At the airport.", "And a taxi?", "Trip to Lisbon", "Planning a trip.",
+            #"{"sources":[{"title":"Lisbon"}]}"#,
+        ])
         #expect(try store.messages(sessionId: s.id).map(\.text) == ["Where can I buy a SIM card?", "At the airport.", "And a taxi?"])
         #expect(try store.listSessions().map(\.title) == ["Trip to Lisbon"])
         // Without the key (the app before the PIN is entered) the text stays locked.
