@@ -148,6 +148,11 @@ struct ChatView: View {
         .onChange(of: chat.messages.isEmpty) { _, empty in
             if empty { focusIfEmpty() }
         }
+        // A memory note that comes in once the chat is open (the start load decides after `onAppear`) closes the keyboard,
+        // which would push its title and message under the header; once it is answered, the field is ready again.
+        .onChange(of: showsMemoryNote) { _, shown in
+            if shown { composerFocused = false } else { focusIfEmpty() }
+        }
         // Setup's first question waits in the field; the user sends it.
         .onChange(of: chat.prefill, initial: true) { _, q in
             guard let q else { return }
@@ -175,8 +180,13 @@ struct ChatView: View {
     }
     #endif
 
+    /// The "May Not Fit" or "Not Enough Memory" note sits on the empty chat (LoadCrashNotice).
+    private var showsMemoryNote: Bool { chat.riskyLoad != nil || chat.loadCrash != nil }
+
+    /// Not while a memory note is up: the keyboard would push the note's title and message out of sight, leaving only
+    /// its buttons (iPhone test, Nov 16). Android doesn't focus the field at all.
     private func focusIfEmpty() {
-        guard chat.messages.isEmpty, !chat.noModel else { return }
+        guard chat.messages.isEmpty, !chat.noModel, !showsMemoryNote else { return }
         composerFocused = true
     }
 
