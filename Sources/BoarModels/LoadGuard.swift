@@ -87,7 +87,7 @@ public final class LoadGuard: @unchecked Sendable {
     private var checked = false
 
     /// True when the last process is known to have ended for a reason that isn't a load kill (Android reads its exit
-    /// record; iOS has none per launch, so every leftover marker counts). Given the marker's time.
+    /// record; iOS has none, so the app wires in `ExitRecord`). Given the marker's time. By default every leftover marker counts.
     public var exitWasNotLoadKill: @Sendable (_ markerAt: Int64) -> Bool = { _ in false }
 
     public init(store: MarkerStore, ledger: Ledger, now: @escaping @Sendable () -> Int64 = { Int64(Date().timeIntervalSince1970 * 1000) }) {

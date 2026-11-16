@@ -80,6 +80,7 @@ struct BoarApp: App {
         switch phase {
         case .background: model.didEnterBackground()
         case .active: model.didBecomeActive()
+        case .inactive: model.didResignActive()
         default: break
         }
     }
