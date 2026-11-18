@@ -46,7 +46,10 @@ struct SessionsSidebar: View {
                     SessionRow(session: session)
                         .tag(SidebarItem.session(session.id))
                         .swipeActions(edge: .trailing) {
-                            Button("Delete", icon: Symbols.delete, role: .destructive) { askDelete(session) }
+                            // A swipe and its Delete are already deliberate, as in Mail: no dialog after them (Biel,
+                            // BOAR-58). Android's one-tap trash icon is what "Ask Before Deleting a Chat" guards; here it
+                            // guards the context menu and the Mac's Delete key.
+                            Button("Delete", icon: Symbols.delete, role: .destructive) { delete(session) }
                                 .disabled(isAnswering(in: session))
                             Button("Rename", systemImage: "pencil") { startRename(session) }
                         }
