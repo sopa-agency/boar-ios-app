@@ -17,7 +17,21 @@ final class ChatDeleteUITests: BoarUITestCase {
         XCTAssertEqual(chatTitles(), before.filter { !$0.hasPrefix(first) }, "other chats changed")
     }
 
-    func testContextMenuDeleteAsksFirst() {
+    /// A long drag only opens the buttons: deleting takes the tap on Delete.
+    func testFullSwipeDoesNotDelete() {
+        launch()
+        openChats()
+        let before = chatTitles()
+        let row = app.collectionViews.firstMatch.cells.containing(.staticText, identifier: first).firstMatch
+        let start = row.coordinate(withNormalizedOffset: CGVector(dx: 0.9, dy: 0.5))
+        let end = row.coordinate(withNormalizedOffset: CGVector(dx: 0, dy: 0.5)).withOffset(CGVector(dx: -60, dy: 0))
+        start.press(forDuration: 0.01, thenDragTo: end, withVelocity: .fast, thenHoldForDuration: 0)
+        XCTAssertFalse(gone(first), "a long drag deleted the chat")
+        XCTAssertFalse(app.staticTexts[L("Delete this chat?")].exists, "a long drag asked to delete")
+        XCTAssertEqual(chatTitles(), before, "a long drag changed the chats")
+    }
+
+    func testContextMenuDeleteAsksFirst() throws {
         launch()
         openChats()
         let before = chatTitles()
@@ -25,7 +39,8 @@ final class ChatDeleteUITests: BoarUITestCase {
         tap(app.buttons[L("Delete")].firstMatch, "the context menu's Delete")
         XCTAssertTrue(app.staticTexts[L("Delete this chat?")].firstMatch.waitForExistence(timeout: 3), "no dialog before deleting")
         XCTAssertEqual(chatTitles(), before, "a chat left the list before the dialog's answer")
-        let confirm = app.buttons.matching(NSPredicate(format: "label == %@", L("Delete"))).allElementsBoundByIndex.last!
+        let confirm = try XCTUnwrap(app.buttons.matching(NSPredicate(format: "label == %@", L("Delete"))).allElementsBoundByIndex.last,
+                                    "the dialog has no Delete")
         confirm.tap()
         XCTAssertTrue(gone(first), "the chat is still listed after Delete")
         XCTAssertEqual(chatTitles(), before.filter { !$0.hasPrefix(first) }, "other chats changed")
