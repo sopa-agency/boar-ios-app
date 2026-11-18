@@ -11,6 +11,8 @@ struct ChatEmptyState: View {
     let chat: ChatController
     let onAsk: (String) -> Void
     let onFill: (String) -> Void
+    /// Puts the keyboard away (a tap beside the ideas).
+    let onDismissKeyboard: () -> Void
     @Environment(AppModel.self) private var model
     @Environment(\.palette) private var palette
 
@@ -22,10 +24,15 @@ struct ChatEmptyState: View {
         #if os(macOS)
         // A Mac window has room: the ideas sit in the middle.
         .defaultScrollAnchor(.center, for: .alignment)
+        .scrollBounceBehavior(.basedOnSize)
         #else
         .defaultScrollAnchor(noModel ? .center : .bottom, for: .alignment)
+        // With the keyboard up the mascot steps aside and the ideas fit, so a scroll that bounced only when the content
+        // overflows had nothing to drag: the keyboard couldn't be pulled down (BOAR-57). It drags while typing.
+        .scrollBounceBehavior(typing ? .always : .basedOnSize)
+        // A tap beside the ideas puts the keyboard away, as in Messages; an idea's own tap and long press come first.
+        .gesture(TapGesture().onEnded(onDismissKeyboard), isEnabled: typing)
         #endif
-        .scrollBounceBehavior(.basedOnSize)
         .scrollDismissesKeyboard(.interactively)
         .onAppear { BuiltinLibraryRefresh.run(services: chat.services) }
     }
