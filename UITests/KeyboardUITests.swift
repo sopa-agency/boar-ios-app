@@ -9,7 +9,9 @@ final class KeyboardUITests: BoarUITestCase {
         // The empty space over the ideas (they rest on the composer while typing).
         app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.2)).tap()
         XCTAssertTrue(keyboardGone(), "a tap beside the ideas left the keyboard up")
-        XCTAssertTrue(app.textFields[L("Ask BOAR")].exists, "the question field went away")
+        // Still the empty chat: the tap didn't land on an idea (asking one closes the keyboard too).
+        XCTAssertTrue(app.descendants(matching: .any).matching(identifier: "promptIdea").firstMatch.exists,
+                      "the tap asked an idea instead of landing beside them")
     }
 
     func testDragDownClosesTheKeyboard() {
