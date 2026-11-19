@@ -10,6 +10,10 @@ public enum PersonalFiles {
     /// The answer when nothing in the user's files matched (the chat shows its own language's line).
     public static let notFound = "I couldn't find this in your Personal Files."
 
+    /// The same line in Portuguese (t9 0420), as Android's chat says it (its "Arquivos locais"; this app's own
+    /// translation still says "Arquivos pessoais" until the rename comes over). AnswerLanguage.ptFilesOnly asks for it.
+    public static let notFoundPT = "Não encontrei isso nos seus Arquivos locais."
+
     public static func isOn(_ style: String?) -> Bool { style == Self.style }
 
     /// A Labs tool's answer is kept only from a safety card (`safety-*`), as under Deep Research.
@@ -36,7 +40,7 @@ public enum PersonalFiles {
 
     /// An answer this long after the not-found line is a real answer, not a sign-off.
     public static let answerAfterHedgeChars = 40
-    private static let lead = Rx("^(however|but|that said|still|nevertheless)[,:]?[ \\t\\n\\x0B\\f\\r]+", ignoreCase: true)
+    private static let lead = Rx("^(however|but|that said|still|nevertheless|por[ée]m|mas|no entanto|ainda assim|contudo|entretanto)[,:]?[ \\t\\n\\x0B\\f\\r]+", ignoreCase: true)
     private static let citation = Rx("\\[[0-9]+]")
 
     /// A small model sometimes opens with `notFound` "to be safe" and then answers from the files anyway ("I couldn't find
@@ -45,8 +49,8 @@ public enum PersonalFiles {
     /// line stays as the honest signal; so does a line on its own or with a short sign-off.
     public static func dropHedge(_ answer: String) -> String {
         let t = String(answer.drop(while: \.isWhitespace))
-        if !t.hasPrefix(notFound) { return answer }
-        let rest = String(t.dropFirst(notFound.count).drop(while: \.isWhitespace))
+        guard let hedge = [notFound, notFoundPT].first(where: { t.hasPrefix($0) }) else { return answer }
+        let rest = String(t.dropFirst(hedge.count).drop(while: \.isWhitespace))
         if rest.u16 < answerAfterHedgeChars || !citation.containsMatch(in: rest) { return answer }
         let body = lead.replaceFirst(rest, with: "")
         guard let first = body.first else { return body }

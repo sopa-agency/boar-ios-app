@@ -1,5 +1,6 @@
 import BoarAnswer
 import BoarCore
+import BoarRAG
 import Foundation
 import Observation
 
@@ -224,7 +225,10 @@ final class EvaluationController {
             let total = JSONValue(configs.count * queries.count)
             runner.writeStatus(request.requestId, [("state", "accepted"), ("configs", ids), ("total", total), ("completed", 0), ("installedModels", installedIds)])
             let rid = request.requestId
+            // The language arm for this run only (t9 0420), back to what users get when it ends.
+            AnswerLanguage.arm = request.languageArm ?? 1
             start(configs, queries, setKind: nil, requestId: rid) { result, error in
+                AnswerLanguage.arm = 1
                 if let result {
                     runner.writeStatus(rid, [("state", "done"), ("configs", ids), ("total", total), ("completed", JSONValue(result.rows.count)),
                                              ("runId", .string(result.runId)), ("resultPath", .string("Documents/eval/\(result.runId).jsonl")),
