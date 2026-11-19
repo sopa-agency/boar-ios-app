@@ -57,6 +57,12 @@ import Testing
     }
 
     @Test func promptsAndChatMessagesAreIdentical() throws {
+        // The recordings are English prompts: the phone's language decides a question that can't tell ("hi"), so it is
+        // set here, not read from the Mac running the tests (AnswerLanguage).
+        try AnswerLanguage.$scoped.withValue(AnswerLanguage.Setting(phone: "en-US")) { try promptsAndChatMessages() }
+    }
+
+    private func promptsAndChatMessages() throws {
         let prompts = try req(g["prompts"]).arr
         #expect(!prompts.isEmpty)
         for o in prompts {

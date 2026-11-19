@@ -16,6 +16,12 @@ struct SummarizeTests {
     }
 
     @Test func promptsAndSettingsAsSummarizeTs() async throws {
+        // The recorded title input is English's: the phone's language decides a message that can't tell (AnswerLanguage),
+        // so it is set here, not read from the Mac running the tests.
+        try await AnswerLanguage.$scoped.withValue(AnswerLanguage.Setting(phone: "en-US")) { try await promptsAndSettings() }
+    }
+
+    private func promptsAndSettings() async throws {
         let calls = Log<[String]>()
         let gen = ClosureStageGenerator { system, user, n, temp, _, _ in
             calls.add([system, user, String(n), String(temp)])

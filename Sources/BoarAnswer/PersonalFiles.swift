@@ -10,9 +10,10 @@ public enum PersonalFiles {
     /// The answer when nothing in the user's files matched (the chat shows its own language's line).
     public static let notFound = "I couldn't find this in your Personal Files."
 
-    /// The same line in Portuguese (t9 0420), as Android's chat says it (its "Arquivos locais"; this app's own
-    /// translation still says "Arquivos pessoais" until the rename comes over). AnswerLanguage.ptFilesOnly asks for it.
-    public static let notFoundPT = "Não encontrei isso nos seus Arquivos locais."
+    /// The same line in Portuguese (t9 0420), as the chat's own translation says it, so the model and the app name the
+    /// files alike. Android says "Arquivos locais", its new name for them; this app keeps "Arquivos pessoais" until that
+    /// rename comes over. AnswerLanguage.ptFilesOnly asks for it.
+    public static let notFoundPT = "Não encontrei isso nos seus Arquivos pessoais."
 
     public static func isOn(_ style: String?) -> Bool { style == Self.style }
 

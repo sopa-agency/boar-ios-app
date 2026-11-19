@@ -53,7 +53,7 @@ public enum AnswerLanguage {
     /// Personal Files' fixed line, in Portuguese, said exactly when the files don't hold it. It ends with
     /// PersonalFiles.notFoundPT (BoarAnswer) word for word; a test keeps the two equal.
     public static let ptFilesOnly = "Responda em Português e cite o arquivo pelo número, como [1]. Se o contexto não tiver a resposta, diga exatamente: "
-        + "Não encontrei isso nos seus Arquivos locais."
+        + "Não encontrei isso nos seus Arquivos pessoais."
 
     // Kotlin's Regex(IGNORE_CASE) on ICU: Unicode case folding, as Kotlin adds UNICODE_CASE.
     private static func re(_ pattern: String) -> Rx { Rx(pattern, .caseInsensitive) }

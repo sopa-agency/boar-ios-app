@@ -53,6 +53,11 @@ private let seawater = [Chunk(chunkId: "c1", docId: "d1", title: "Seawater", bod
             #expect(p.hasSuffix(AnswerLanguage.ptFilesOnly) && p.contains(PersonalFiles.notFoundPT))
             #expect(AnswerLanguage.ptFilesOnly.hasSuffix(": " + PersonalFiles.notFoundPT))
         }
+        // The model's line names the files as the app's own Portuguese line does (App/Resources/Localizable.xcstrings).
+        let catalogURL = URL(fileURLWithPath: #filePath).deletingLastPathComponent().appendingPathComponent("../../App/Resources/Localizable.xcstrings")
+        let catalog = JSONValue(jsonString: (try? String(contentsOf: catalogURL, encoding: .utf8)) ?? "")
+        let appLine = catalog?["strings"]?[PersonalFiles.notFound]?["localizations"]?["pt"]?["stringUnit"]?["value"]?.stringValue
+        #expect(appLine == PersonalFiles.notFoundPT)
         let a = PersonalFiles.notFoundPT + " Porém, seu exame mostra tipo O positivo [1], segundo o laudo de março de 2026 que você salvou."
         #expect(PersonalFiles.dropHedge(a) == "Seu exame mostra tipo O positivo [1], segundo o laudo de março de 2026 que você salvou.")
     }
