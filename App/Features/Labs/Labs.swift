@@ -256,7 +256,7 @@ final class Labs {
     func speaker(tool: String) -> Speaker? {
         let code = tool.split(separator: "+", maxSplits: 1).first.map(String.init) ?? tool
         let id: String? = switch code {
-        case "safety-fact-co-hazard": "cohazard"
+        case "safety-fact-co-hazard", LabTools.coAcute: "cohazard"
         case _ where code.hasPrefix("calculator-travel-distance"): "distance"
         case _ where code.hasPrefix("calculator-"): "calc"
         case _ where code.hasPrefix("facts-"): "facts"

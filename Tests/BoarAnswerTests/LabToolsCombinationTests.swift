@@ -104,12 +104,12 @@ enum LabCombos {
     }
 
     static let toolPrefix = ["calc": ["calculator-", "temperature-"], "distance": ["calculator-travel-distance"], "facts": ["facts-"],
-                             "cohazard": ["safety-fact-co-hazard"]]
+                             "cohazard": ["safety-fact-co-hazard", "safety-fact-co-acute"]]
 
     static func owner(_ hit: LabTools.Hit) -> String {
         if hit.tool == "calculator-travel-distance" { return "distance" }
         if hit.tool.hasPrefix("facts-") { return "facts" }
-        if hit.tool == "safety-fact-co-hazard" { return "cohazard" }
+        if hit.tool == "safety-fact-co-hazard" || hit.tool == LabTools.coAcute { return "cohazard" }
         return "calc"
     }
 

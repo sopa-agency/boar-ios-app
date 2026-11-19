@@ -50,14 +50,28 @@ struct CoHazardPtEsTests {
         }
     }
 
-    @Test func symptomsAlarmsAndOtherQuestionsInPortugueseAndSpanishDont() {
+    @Test func withCarbonMonoxideNamedAnAlarmOrSymptomsGetTheAcuteCardInTheirLanguage() {
+        #expect(firstLine(LabTools.coHazard("O alarme de monóxido está apitando no porão, o que eu faço?")) == CoHazard.coAcutePt)
+        #expect(firstLine(LabTools.coHazard("La alarma de CO está sonando en el sótano, ¿qué hago?")) == CoHazard.coAcuteEs)
+    }
+
+    /// Golden change: these four got no card before (CO had to be named). adam's decision 3 of the review: this is the
+    /// classic poisoning case, people often don't know it's carbon monoxide.
+    @Test func aSymptomWithAFuelBurningDeviceGetsTheAcuteCardCarbonMonoxideNotNamed() {
+        for (q, text) in [
+            ("estou com dor de cabeça perto do gerador", CoHazard.coAcutePt),
+            ("Liguei o gerador na garagem e agora estou com tontura, o que faço?", CoHazard.coAcutePt),
+            ("Usamos o fogareiro na barraca e meu filho está vomitando", CoHazard.coAcutePt),
+            ("me duele la cabeza, el generador está en el garaje", CoHazard.coAcuteEs),
+        ] {
+            #expect(firstLine(LabTools.coHazard(q)) == text, "\(q)")
+        }
+    }
+
+    private func firstLine(_ hit: LabTools.Hit?) -> String? { hit.map { String($0.text.prefix { $0 != "\n" }) } }
+
+    @Test func otherQuestionsInPortugueseAndSpanishDont() {
         for q in [
-            "estou com dor de cabeça perto do gerador",
-            "Liguei o gerador na garagem e agora estou com tontura, o que faço?",
-            "O alarme de monóxido está apitando no porão, o que eu faço?",
-            "Usamos o fogareiro na barraca e meu filho está vomitando",
-            "me duele la cabeza, el generador está en el garaje",
-            "La alarma de CO está sonando en el sótano, ¿qué hago?",
             "qual a capital do Quênia",
             "Qual é a distância de Paris a Roma?",
             "¿Cuál es la capital de Kenia?",

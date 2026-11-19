@@ -23,6 +23,16 @@ import Testing
             "Which countries are bigger than India by area?",
         ] { #expect(!QueryContext.isHealthQuestion(q), "\(q)") }
     }
+
+    /// The F3 checks: "My CO alarm keeps chirping every minute" ran a Detailed answer. Card or not, it is kept short.
+    @Test func carbonMonoxideNamedIsAHealthQuestionKeptShortCardOrNot() {
+        for q in ["My CO alarm keeps chirping every minute", "my CO detector says error", "Is 50 ppm of carbon monoxide dangerous?",
+                  "O detector de monóxido mostra erro"] {
+            #expect(ShortAnswer.reason(chosenStyle: "detailed", question: q, previousQuestion: nil) == "health", "\(q)")
+        }
+        #expect(!QueryContext.isHealthQuestion("CO2 levels in the office are high"))
+        #expect(!QueryContext.isHealthQuestion("Who is the CO of the company?"))
+    }
 }
 
 /// Seed-phrase and wallet-backup questions answer in Succinct even when Detailed is picked (SeedPhraseQuestionTest.kt).
