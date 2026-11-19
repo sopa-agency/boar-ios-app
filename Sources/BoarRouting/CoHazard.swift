@@ -377,8 +377,8 @@ public enum CoHazard {
     // card is the planning card's own last sentence in each language, nothing new, then the emergency number line.
     //
     // Android writes coNamed, ppm, reads and "monóxido" as plain Kotlin regexes (IGNORE_CASE), not JsRegex; here they go
-    // through JsRegex "iu" like the rest of the file. The patterns use only explicit classes, ASCII `\d` and `\b` after a
-    // digit run, so the two read them the same.
+    // through JsRegex "iu" like the rest of the file. That matches a little more than the JVM does: an accented capital
+    // ("MONÓXIDO") and Unicode spaces in `\s`, the safe side for a safety card.
 
     /// Carbon monoxide named: never "CO" alone (CO2, Colorado, a company), never a smoke alarm.
     private static let coNamed = re(
