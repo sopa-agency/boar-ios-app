@@ -87,9 +87,10 @@ final class SetupFlow {
 
     @ObservationIgnored let services: BoarServices
     /// A UI audit's setup (`-uiScreen setup…`, DEBUG): drawn and walked like the real one, but it never downloads,
-    /// builds the index, resumes an unfinished setup, or writes or removes setup_progress.json. On a phone that is
-    /// already set up, a page of the guide opened this way used to save step 4, and the next launch resumed a real
-    /// download of the recommended model.
+    /// builds the index, resumes an unfinished setup, or writes or removes setup_progress.json. Step 3's download
+    /// button does nothing here: step 4 opens only through `setup-install`, `setup-index` and `setup-guide-*`. On a
+    /// phone that is already set up, a page of the guide opened this way used to save step 4, and the next launch
+    /// resumed a real download of the recommended model.
     @ObservationIgnored let preview: Bool
     @ObservationIgnored private var job: Task<Void, Never>?
     @ObservationIgnored private var stallWatch: Task<Void, Never>?
@@ -105,7 +106,7 @@ final class SetupFlow {
     init(services: BoarServices, preview: Bool = DebugLaunch.previewsSetup) {
         self.services = services
         self.preview = preview
-        files = SetupFiles(services: services)
+        files = SetupFiles(services: services, preview: preview)
         totalRamBytes = services.totalRamBytes
         // Only the built-in suggested models: models added from Hugging Face come in through Models.
         let added = Set(services.discovered().map(\.id))
