@@ -184,8 +184,9 @@ final class AppModel {
                 phase = .ready
                 // The demo's "installed" models are empty files: nothing may try to load them. The load starts 600 ms
                 // after the chat appears, past its first render: on the iPhone 13 (2 performance cores) loading
-                // alongside that render made a ~0.3 s launch microhang.
-                if !DebugLaunch.demo || services.backend == .remote {
+                // alongside that render made a ~0.3 s launch microhang. A setup preview (`-uiScreen setup…`) loads
+                // nothing either: ending that run mid-load would block the model as a load kill.
+                if (!DebugLaunch.demo || services.backend == .remote) && !DebugLaunch.previewsSetup {
                     Task {
                         try? await Task.sleep(for: .milliseconds(600))
                         chat.preload()

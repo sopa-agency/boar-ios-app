@@ -22,12 +22,16 @@ final class SetupFiles {
     private(set) var notes: [String] = []
 
     @ObservationIgnored private let services: BoarServices
+    /// Setup is a preview (`SetupFlow.preview`): it never saves setup_progress.json, so a finished import can't read
+    /// that file's absence as "setup ended" and erase the picks.
+    @ObservationIgnored private let preview: Bool
     @ObservationIgnored private var job: Task<Void, Never>?
     /// Whether setup's index is building now: no import while it runs (SetupGuide.canImport).
     @ObservationIgnored var indexBuilding: () -> Bool = { false }
 
-    init(services: BoarServices) {
+    init(services: BoarServices, preview: Bool = false) {
         self.services = services
+        self.preview = preview
         reload()
     }
 
@@ -215,7 +219,7 @@ final class SetupFiles {
             errors += newErrors
             reload()
             // Setup ended meanwhile: the copies aren't needed once everything is in.
-            if !FileManager.default.fileExists(atPath: AppPaths.setupProgress.path(percentEncoded: false)) && pending.isEmpty {
+            if !preview && !FileManager.default.fileExists(atPath: AppPaths.setupProgress.path(percentEncoded: false)) && pending.isEmpty {
                 try? Self.eraseFolder(services.filesDir)
                 reload()
             } else if !pending.isEmpty && newErrors.isEmpty {

@@ -86,6 +86,12 @@ final class SetupFlow {
     let files: SetupFiles
 
     @ObservationIgnored let services: BoarServices
+    /// A UI audit's setup (`-uiScreen setup…`, DEBUG): drawn and walked like the real one, but it never downloads,
+    /// builds the index, resumes an unfinished setup, or writes or removes setup_progress.json. Step 3's download
+    /// button does nothing here: step 4 opens only through `setup-install`, `setup-index` and `setup-guide-*`. On a
+    /// phone that is already set up, a page of the guide opened this way used to save step 4, and the next launch
+    /// resumed a real download of the recommended model.
+    @ObservationIgnored let preview: Bool
     @ObservationIgnored private var job: Task<Void, Never>?
     @ObservationIgnored private var stallWatch: Task<Void, Never>?
     @ObservationIgnored private var packageChosen = false
@@ -97,9 +103,10 @@ final class SetupFlow {
     @ObservationIgnored private var plansToken = 0
     private static let stallSeconds: TimeInterval = 60
 
-    init(services: BoarServices) {
+    init(services: BoarServices, preview: Bool = DebugLaunch.previewsSetup) {
         self.services = services
-        files = SetupFiles(services: services)
+        self.preview = preview
+        files = SetupFiles(services: services, preview: preview)
         totalRamBytes = services.totalRamBytes
         // Only the built-in suggested models: models added from Hugging Face come in through Models.
         let added = Set(services.discovered().map(\.id))
@@ -111,7 +118,7 @@ final class SetupFlow {
         restore()
         // Process killed in step 4: pick up there, once the plans settled the package. Files already in are skipped and
         // the index skips what it has.
-        unfinished = step == .install
+        unfinished = step == .install && !preview
         let resume = unfinished
         Task {
             await updatePlans()
@@ -202,7 +209,7 @@ final class SetupFlow {
     /// Setup is over (finished, or left from Settings): the next start doesn't resume it.
     func forget() {
         stallWatch?.cancel()
-        try? FileManager.default.removeItem(at: AppPaths.setupProgress)
+        if !preview { try? FileManager.default.removeItem(at: AppPaths.setupProgress) }
         files.setupEnded()
     }
 
@@ -259,7 +266,7 @@ final class SetupFlow {
 
     /// Step 3 → 4: downloads what is missing, then builds the index.
     func install() {
-        if job != nil { return }
+        if job != nil || preview { return }
         let assets = assetsOf(package)
         if let id = chosenId { services.settings.setActiveModelId("llm", id) }
         job = Task {
@@ -380,7 +387,7 @@ final class SetupFlow {
 
     /// Runs the index again after it failed.
     func retryIndex() {
-        if job != nil { return }
+        if job != nil || preview { return }
         job = Task {
             defer { self.job = nil }
             await index()
@@ -490,6 +497,7 @@ final class SetupFlow {
     }
 
     private func save() {
+        if preview { return }
         let o: JSONValue = .object([
             "step": JSONValue(step.rawValue), "packageId": .string(package.rawValue), "chosenId": .string(chosenId ?? ""),
             "packageChosen": .bool(packageChosen), "answerChosen": .bool(answerChosen),
