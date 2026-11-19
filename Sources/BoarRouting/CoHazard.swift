@@ -243,7 +243,7 @@ public enum CoHazard {
         ),
         engine: re(
             #"\#(b)(?:carros?|caminhonetes?|caminh[ãa]o|ve[íi]culos?|motor(?:es)?|motos?|motocicletas?|cortador(?:es)? de grama|ro[çc]adeiras?|motosserras?|quadriciclos?|vans?|suvs?)\#(e).{0,40}\#(b)(?:ligad[oa]s?|funcionando|rodando|em ponto morto|em marcha lenta|esquentando|aquecendo|ligar|ligando)\#(e)"# +
-                #"|\#(b)(?:ligar|ligando|esquentar|aquecer|dar partida)\#(e).{0,25}\#(b)(?:carros?|caminhonetes?|ve[íi]culos?|motor(?:es)?|motos?|motocicletas?|cortador(?:es)? de grama|suvs?)\#(e)"#,
+                #"|\#(b)(?:ligar|ligando|liguei|ligamos|ligou|ligaram|deixei ligado|deixamos ligado|esquentar|aquecer|dar partida|dei partida)\#(e).{0,25}\#(b)(?:carros?|caminhonetes?|ve[íi]culos?|motor(?:es)?|motos?|motocicletas?|cortador(?:es)? de grama|suvs?)\#(e)"#,
         ),
         engineSpace: re(#"\#(b)(?:garage(?:m|ns)|abrigos?|por[ãa]o|dep[óo]sito|galp[ãa]o|fechad[oa]s?)\#(e)"#),
         placement: re(
@@ -370,6 +370,139 @@ public enum CoHazard {
 
     // The country table has no Spanish lines, so a Spanish answer always ends with this one.
     private static let emergencyLineEs = "En una emergencia, llama al número de emergencias local (911 en EE. UU., 112 en Europa)."
+
+    // ---- The acute card (adam: "send co safety fix", Nov 14) ----
+    // The planning card above stays out of an alarm going off or symptoms (`acute`: "not this planning answer"); until now
+    // nothing else answered them, so the most urgent carbon monoxide question had the model alone, not kept short. This
+    // card is the planning card's own last sentence in each language, nothing new, then the emergency number line.
+    //
+    // Android writes coNamed, ppm, reads and "monóxido" as plain Kotlin regexes (IGNORE_CASE), not JsRegex; here they go
+    // through JsRegex "iu" like the rest of the file. The patterns use only explicit classes, ASCII `\d` and `\b` after a
+    // digit run, so the two read them the same.
+
+    /// Carbon monoxide named: never "CO" alone (CO2, Colorado, a company), never a smoke alarm.
+    private static let coNamed = re(
+        #"(?<![\p{L}\p{N}])(?:carbon[ -]?mon[oi]x(?:i|y)?de?s?|mon[óo]xido de carbono|mon[oi]xide (?:poisoning|alarms?|detectors?|monitors?|sensors?|levels?|readings?)|(?:co|c\.o\.?) (?:poisoning|alarms?|detectors?|monitors?|sensors?|levels?|readings?)|(?:alarmes?|alarmas?|detector(?:es)?|sensor(?:es)?|intoxica[çc][ãa]o|intoxicaci[óo]n|envenenamento|envenenamiento|n[íi]vel|nivel) (?:de|por) (?:co|mon[óo]xido))(?![\p{L}\p{N}])"#,
+    )
+
+    /// Carbon monoxide named (coNamed): a health question even when no card answers it ("kept short").
+    public static func namesCarbonMonoxide(_ query: String) -> Bool { coNamed.containsMatch(in: quotes.replace(in: query, with: "'")) }
+
+    public static let coAcuteEn = "Get everyone out into fresh air right away, call emergency services, and don't go back inside until you're told it's safe."
+    public static let coAcutePt = "Leve todos para o ar livre imediatamente, ligue para o serviço de emergência e não volte para dentro até que digam que é seguro."
+    public static let coAcuteEs = "Saca a todos al aire libre de inmediato, llama a los servicios de emergencia y no vuelvas a entrar hasta que te digan que es seguro."
+
+    // What fires the acute card (adam, Nov 15, decisions 2 and 3 of the review). Its own patterns: `acute` above keeps the
+    // planning card out of these questions and stays as it was.
+
+    /// A symptom, per language: `acute`'s, pt.acute's and es.acute's symptom words.
+    private static let symptomEn = re(
+        #"\#(b)(?:headaches?|head (?:hurts|is (?:pounding|killing me|splitting))|pounding head|dizz\w*|nause\w*|vomit\w*|throwing up|threw up|throw(?:s|n)? up|passed out|faint\w*|unconscious|confus\w*|drowsy|sleepy|chest pain|can'?t breathe|short of breath|barely waking|(?:won'?t|can'?t|hard to|not) wak(?:e|ing)(?: up)?|slurr\w*|woozy|(?:head|room)(?: is|'s) spinning|flu-like|sick to (?:my|his|her|their|our) stomachs?|(?:feel(?:s|ing)?|felt) (?:sick(?! of)|ill|weird|woozy|weak|dizzy|faint|nauseous|lightheaded|light-headed|awful|terrible|horrible|off|unwell|groggy))\#(e)"#,
+    )
+    private static let symptomPt = re(
+        #"\#(b)(?:dor(?:es)? de cabe[çc]a|cabe[çc]a (?:d[óo]i|doendo|latejando|explodindo)|tontu\p{L}*|tont[oa]s?|zonz[oa]s?|enjo\p{L}*|n[áa]usea\p{L}*|vomit\p{L}*|v[ôo]mito\p{L}*|desmai\p{L}*|inconscient\p{L}*|confus\p{L}*|sonol[êe]n\p{L}*|dor no peito|falta de ar|sem ar|n[ãa]o (?:consigo|consegue) respirar|n[ãa]o (?:acorda|consegue acordar)|dif[íi]cil de acordar|fala enrolada|passando mal|(?:me )?sentindo (?:mal|estranh\p{L}*|frac[oa])|(?:me )?senti(?:-me)? (?:mal|estranh\p{L}*|frac[oa]|tont[oa]))\#(e)"#,
+    )
+    private static let symptomEs = re(
+        #"\#(b)(?:dolor(?:es)? de cabeza|(?:me )?duele la cabeza|mare\p{L}*|n[áa]usea\p{L}*|v[óo]mit\p{L}*|vomit\p{L}*|desmay\p{L}*|inconsciente\p{L}*|confundid\p{L}*|confusi[óo]n|somnolen\p{L}*|dolor (?:en el|de) pecho|falta de aire|no (?:puedo|puede) respirar|no (?:despierta|puede despertar)|dif[íi]cil de despertar|(?:me )?siento (?:mal|rar[oa]|d[ée]bil)|(?:me )?sentí (?:mal|rar[oa]|d[ée]bil|maread[oa])|muy dormid[oa]s?)\#(e)"#,
+    )
+
+    /// An alarm going off, beeping or sounding, per language. Not chirping (a low battery or an alarm at its end of life),
+    /// not "says", "reads", "shows", "error" or "is on": the model answers those (review decision 2).
+    private static let alarmOffEn = re(
+        #"\#(b)(?:alarm[!.,]*\s+alarm\#(e)|(?:alarms?|detectors?|sensors?)\#(e).{0,60}\#(b)(?:going off|goes off|went off|gone off|go off|be{2,}p(?:ing|s|ed)?|sounding|sounds|sounded|alarming|blaring|screaming|shrieking|ringing|rings|rang|buzzing|buzzes|buzzed|wailing|triggered|activated|won'?t stop|keeps? (?:going|beeping|sounding|ringing))\#(e))"#,
+    )
+    private static let alarmOffPt = re(
+        #"\#(b)(?:alarmes?|detector(?:es)?|sensor(?:es)?)\#(e).{0,60}\#(b)(?:tocando|tocou|toca|disparou|disparando|dispara|apitando|apitou|apita|bipando|bipou|soando|soou|n[ãa]o para de (?:apitar|tocar|bipar|disparar))\#(e)"#,
+    )
+    private static let alarmOffEs = re(
+        #"\#(b)(?:alarmas?|detector(?:es)?|sensor(?:es)?)\#(e).{0,60}\#(b)(?:sonando|son[óo]|suena|pitando|pit[óo]|pita|se activ[óo]|se dispar[óo]|se est[áa] disparando|no (?:para|deja) de (?:sonar|pitar))\#(e)"#,
+    )
+
+    /// A reading: "50 ppm", or an alarm that reads, says or shows a number. Above 0 only ("reads 0 ppm" is normal).
+    private static let ppm = reAll(#"(?<![\d.,])(\d+(?:[.,]\d+)?)\s*ppm\b"#)
+    private static let reads = reAll(
+        #"(?<![\p{L}])(?:alarms?|detectors?|sensors?|monitors?|alarmes?|alarmas?|detector(?:es)?)(?![\p{L}]).{0,40}?(?<![\p{L}])(?:reads?|reading|says|shows|showing|displays?|is at|at|marca|marcando|mostra|mostrando|indica|lee|muestra)(?![\p{L}])\s*:?\s*(\d+(?:[.,]\d+)?)"#,
+    )
+    private static func readingAboveZero(_ q: String) -> Bool {
+        (ppm.findAll(in: q) + reads.findAll(in: q)).contains { (Double($0.groupValue(1).replacingOccurrences(of: ",", with: ".")) ?? 0) > 0 }
+    }
+
+    /// Fuel appliances in the home (validator R-C1): the planning card leaves installed and vented ones out ("not this
+    /// hazard" when planning), but with symptoms they are the commonest cause: "we all have headaches, the gas furnace was
+    /// running all night". Counted for the acute card only, never when the question says electric, solar or battery.
+    private static let homeAppliance = re(
+        #"\#(b)(?:furnaces?|boilers?|water heaters?|(?:gas|propane|kerosene|oil|space|portable|patio) heaters?|heaters?|wood ?stoves?|wood[- ]burning stoves?|pellet stoves?|log ?burners?|fireplaces?|chimneys?|gas (?:hob|stove|oven|range|cooker|fire)s?|coal stoves?|camp(?:ing)? stoves?|fire ?pits?|braziers?|fornalhas?|caldeiras?|aquecedor(?:es)?(?: a g[áa]s| de [áa]gua| a lenha)?|lareiras?|fog[ãa]o a (?:lenha|g[áa]s)|fog[õo]es a (?:lenha|g[áa]s)|salamandras?|calderas?|calentador(?:es)?|chimeneas?|estufas?(?: de le[ñn]a| a gas)?|horno (?:a|de) gas|cocina (?:a|de) gas|estufa de gas)\#(e)"#,
+    )
+    /// Money, not air (validator Q-A2): "a headache from the bill". Only when the symptom is blamed on the money (CodeRabbit):
+    /// "I cannot pay for heating, so I ran the generator inside and now I have a headache" is an exposure, and a money word
+    /// elsewhere must not veto the card. Only when CO isn't named.
+    private static let money = re(
+        #"\#(b)(?:headaches?|sick|ill|dizzy|nause\w*|stressed)\#(e)[^.!?]{0,12}?\#(b)(?:from|after|over|about|because of|due to)\#(e)(?:\s+[\p{L}'-]+){0,4}?\s+(?:bills?|invoices?|quotes?|estimates?|costs?|prices?)\#(e)"#,
+    )
+    /// Carbon dioxide named: a CO2 alarm going off is not this card's (Q-A2); only when CO itself isn't named.
+    private static let co2 = re(#"\#(b)(?:co2|co₂|carbon dioxide|di[óo]xido de carbono)\#(e)"#)
+    private static let electric = re(#"\#(b)(?:electric\w*|el[ée]tric\w*|el[ée]ctric\w*|solar|battery|bateria|bater[íi]a|induction|indu[çc][ãa]o|inducci[óo]n|heat pump|bomba de calor)\#(e)"#)
+
+    private static let esOnly = re(#"\#(b)(?:el|mi|mis|sótano|s[óo]tano|est[áa] en|hay|tengo|estoy|tenemos|qué|cómo|garaje|cocina|habitaci[óo]n)\#(e)"#)
+    private static let monoxido = re("mon[óo]xido")
+
+    /// Smoke or fire named: an alarm going off with a symptom is then the smoke alarm's question, not this card's (R-C1b).
+    private static let smoke = re(#"\#(b)(?:smoke|fire|burning smell|fuma[çc]a|fogo|inc[êe]ndio|humo|fuego|incendio)\#(e)"#)
+
+    /// A fuel-burning device named, with or without a space: the planning card's device words in each language (electric,
+    /// solar and battery generators stay out, as `device` and pt/es device already leave them), and the home appliances.
+    private static func fuelDevice(_ query: String) -> Bool {
+        var q = quotes.replace(in: query, with: "'")
+        if homeAppliance.containsMatch(in: q) && !electric.containsMatch(in: q) { return true }
+        q = generatorTypo.replace(in: q, with: "generator")
+        q = propaneTypo.replace(in: q, with: "propane")
+        q = keroseneTypo.replace(in: q, with: "kerosene")
+        if device.containsMatch(in: q) || ovenHeat.containsMatch(in: q) || engine.containsMatch(in: q) { return true }
+        if heater.containsMatch(in: appliance.replace(in: q, with: " ")) && !installed.containsMatch(in: q) { return true }
+        if propaneStove.containsMatch(in: q) && space.containsMatch(in: kitchen.replace(in: q, with: " ")) { return true }
+        return [pt, es].contains { w in
+            w.device.containsMatch(in: q) || w.ovenHeat.containsMatch(in: q) || w.engine.containsMatch(in: q)
+                || (w.heater.containsMatch(in: w.appliance.replace(in: q, with: " ")) && !w.installed.containsMatch(in: q))
+        }
+    }
+
+    /// The acute card's language ("en", "pt", "es"), or nil. It fires for carbon monoxide named with an alarm going off, a
+    /// reading above 0 or a symptom; or for a symptom with a fuel-burning device, carbon monoxide not named ("I ran the
+    /// generator in the garage and now I have a headache": people often don't know it's carbon monoxide). The language whose
+    /// own alarm or symptom words matched decides; else the question's.
+    public static func acuteLanguage(_ query: String) -> String? {
+        let q = quotes.replace(in: query, with: "'")
+        let sEn = symptomEn.containsMatch(in: q), sPt = symptomPt.containsMatch(in: q), sEs = symptomEs.containsMatch(in: q)
+        let aEn = alarmOffEn.containsMatch(in: q), aPt = alarmOffPt.containsMatch(in: q), aEs = alarmOffEs.containsMatch(in: q)
+        let symptom = sEn || sPt || sEs
+        let alarm = aEn || aPt || aEs
+        let fires = coNamed.containsMatch(in: q)
+            ? symptom || alarm || readingAboveZero(q)
+            // An alarm going off and someone feeling ill, nothing named (R-C1b): carbon monoxide until shown otherwise,
+            // unless it's smoke or fire.
+            : symptom && !money.containsMatch(in: q) && (fuelDevice(query) || (alarm && !smoke.containsMatch(in: q) && !co2.containsMatch(in: q)))
+        if !fires { return nil }
+        let isPt = sPt || aPt, isEs = sEs || aEs
+        // The generic detectors read Spanish shared words ("de", "está") as Portuguese: a language's own words decide first.
+        if isEs && !isPt { return "es" }
+        if isPt && !isEs { return "pt" }
+        if QueryContext.isSpanishQuestion(query) { return "es" }
+        // A reading alone ("el detector de monóxido marca 60 ppm") has no alarm or symptom words: Spanish's own small words
+        // decide before the Portuguese detector and the shared "monóxido" (R-C4).
+        if esOnly.containsMatch(in: q) { return "es" }
+        if QueryContext.isPortugueseQuestion(query) { return "pt" }
+        if monoxido.containsMatch(in: q) { return "pt" }
+        return "en"
+    }
+
+    /// The acute card in `lang`: the planning card's own advice, then the emergency number line it uses.
+    public static func acuteAnswer(_ query: String, language lang: String) -> String {
+        switch lang {
+        case "pt": "\(coAcutePt)\n\n\(EmergencyNumbers.emergencyNumbersLine(query, pt: true) ?? emergencyLinePt)"
+        case "es": "\(coAcuteEs)\n\n\(emergencyLineEs)"
+        default: "\(coAcuteEn)\n\n\(EmergencyNumbers.emergencyNumbersLine(query, pt: false) ?? emergencyLineEn)"
+        }
+    }
 
     /// The language of a Portuguese or Spanish CO planning question ("pt" or "es"), or nil. Both match (shared words like
     /// "dentro" with each one's device): the Spanish detector decides.

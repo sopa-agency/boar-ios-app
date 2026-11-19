@@ -47,10 +47,16 @@ public enum LabTools {
         return table?.answer(query).map { Hit(tool: "facts-\($0.template)", text: $0.text) }
     }
 
-    /// Boar Cohazard: planning questions about a fuel-burning device in an enclosed space. English as before; then the
-    /// Portuguese and Spanish patterns (draft answers in the question's language), whatever the language detectors say:
-    /// "gerador na garagem fechada" has none of their words.
+    /// The acute carbon monoxide card's tool id: Cohazard's, no bypass, never merged (as the planning card).
+    public static let coAcute = "safety-fact-co-acute"
+
+    /// Boar Cohazard: the acute card first, then planning questions about a fuel-burning device in an enclosed space.
+    /// English as before; then the Portuguese and Spanish patterns (draft answers in the question's language), whatever the
+    /// language detectors say: "gerador na garagem fechada" has none of their words.
     public static func coHazard(_ query: String) -> Hit? {
+        // An alarm going off, a reading above 0 or a symptom with carbon monoxide named, or a symptom with a fuel-burning
+        // device: the acute card first, in any of the three languages.
+        if let lang = CoHazard.acuteLanguage(query) { return Hit(tool: coAcute, text: CoHazard.acuteAnswer(query, language: lang)) }
         if !notEnglish(query) && CoHazard.isCoHazardQuestion(query) { return Hit(tool: "safety-fact-co-hazard", text: CoHazard.coHazardAnswer(query)) }
         return CoHazard.coHazardLanguage(query).map { Hit(tool: "safety-fact-co-hazard", text: CoHazard.coHazardAnswer(query, language: $0)) }
     }

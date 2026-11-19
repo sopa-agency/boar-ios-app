@@ -47,6 +47,9 @@ public enum QueryContext {
             || frostbite.containsMatch(in: query)
             || (chestPain.containsMatch(in: query) && !chestPainMetaphor.containsMatch(in: query))
             || headInjury.containsMatch(in: query)
+            // Carbon monoxide named: an alarm chirping or reading 0 gets no card, but its answer is kept short ("My CO alarm
+            // keeps chirping every minute" ran a Detailed answer).
+            || CoHazard.namesCarbonMonoxide(query)
             // A phrase to translate that carries health content stays on the health path.
             || (phraseAsk.containsMatch(in: query) && phraseHealthContent.containsMatch(in: query))
     }
