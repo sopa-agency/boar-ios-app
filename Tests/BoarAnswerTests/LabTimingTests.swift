@@ -9,7 +9,9 @@ import Testing
 /// (`swift test --skip LabTimingTests`), then these (`swift test --filter LabTimingTests`). Under the full parallel run
 /// the measuring thread gets up to six times less CPU while the fuzz and combination suites run, and the 400 ms debug
 /// limit failed now and then (BOAR-66); alone they keep about 3x headroom, and a quadratic pattern still goes over 100x.
-/// Bodies and limits are the ones Android's tests have (times scaled by `LabCombos.timeFactor`).
+/// Bodies and limits are the ones Android's tests have (times scaled by `LabCombos.timeFactor`). Serialized: the two
+/// don't run in parallel with each other either.
+@Suite(.serialized)
 struct LabTimingTests {
     typealias C = LabCombos
 
