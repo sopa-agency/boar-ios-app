@@ -639,7 +639,8 @@ final class ChatController {
                 case .cards(let chunks, _, let ms):
                     sources = chunks
                     retrievalMs = ms
-                    show(e, sources: Self.groupSources(chunks).items)
+                    // Numbered as in the prompt, so a [n] tapped while the answer streams opens its source; grouped at the end.
+                    show(e, sources: Self.numberedSources(chunks))
                 case .piece(let step, let piece):
                     afterLoad()
                     // The intro and the details kept apart and shown joined, as they're saved: one paragraph break between
@@ -655,7 +656,7 @@ final class ChatController {
                     if let i = messages.lastIndex(where: { $0.id == answerId }) { messages[i].text = "" }
                 case .moreSources(let added):
                     sources += added
-                    show(e, sources: Self.groupSources(sources).items)
+                    show(e, sources: Self.numberedSources(sources))
                 case .checked:
                     show(e)
                 case .done(let d):
@@ -770,7 +771,7 @@ final class ChatController {
                         sources = chunks
                         // Numbered now, so the citations are tappable while the answer streams.
                         if let i = messages.lastIndex(where: { $0.id == answerId }) {
-                            messages[i].sources = chunks.enumerated().map { ChatSource(number: $0.offset + 1, chunk: $0.element) }
+                            messages[i].sources = Self.numberedSources(chunks)
                             messages[i].sourceCount = chunks.count
                         }
                     case .piece(let p): onPiece(p)
@@ -886,6 +887,11 @@ final class ChatController {
             afterAnswer(sessionId: sid, isNewSession: isNewSession, stopped: stopped, all: all, systemPrompt: systemPrompt, hadSources: !sources.isEmpty, filesOnly: personal)
         }
         onSessionsChanged?()
+    }
+
+    /// The sources as the prompt numbers them, from 1: what the answer's [n] point at while it streams.
+    private static func numberedSources(_ sources: [Chunk]) -> [ChatSource] {
+        sources.enumerated().map { ChatSource(number: $0.offset + 1, chunk: $0.element) }
     }
 
     /// One source per article, best first, numbered from 1; `renumber` maps the answer's old [n] to the new ones.
