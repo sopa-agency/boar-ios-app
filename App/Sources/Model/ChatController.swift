@@ -459,8 +459,15 @@ final class ChatController {
         // Health and seed-phrase questions answer in Succinct even under Detailed: a padded detail there can hurt (r4to's
         // audits: 20 % of Detailed's first-aid claims wrong). A follow-up in such a chat too ("and for how long?").
         let shortReason = ShortAnswer.reason(chosenStyle: chosenStyle, question: q, previousQuestion: prior.last { $0.isUser }?.text)
-        let style = shortReason != nil ? "succinct" : chosenStyle
-        let (systemPrompt, styleReminder) = services.personalities.promptFor(style, customPrompt: settings.customSystemPrompt, smallModel: smallModel)
+        // Personal Files keeps its files-only prompt: kept short by a reminder instead.
+        let style = shortReason != nil && !personal ? "succinct" : chosenStyle
+        let (systemPrompt, baseReminder) = services.personalities.promptFor(style, customPrompt: settings.customSystemPrompt, smallModel: smallModel)
+        // A Personal Files summary: in the model's words, each result with the mark the code gave it (LabRanges).
+        let ptQ = AnswerLanguage.of(q) == .pt
+        let summaryLine = personal && PersonalFiles.asksSummary(q) ? (ptQ ? PersonalFiles.summaryPT : PersonalFiles.summaryEN) : nil
+        let reminderParts = [baseReminder, personal && shortReason != nil ? ShortAnswer.personalShort : nil, summaryLine].compactMap { $0 }
+        let joinedReminder = reminderParts.joined(separator: " ")
+        let styleReminder: String? = joinedReminder.allSatisfy(\.isWhitespace) ? nil : joinedReminder
         // The answer a meta follow-up ("summary", "continue") is written from: the last one with text.
         let lastAnswer = prior.last { !$0.isUser && !$0.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
         // Every answered question so far, oldest first: what "summarize our conversation" is written from.
@@ -621,7 +628,17 @@ final class ChatController {
                 if outcome.metrics != nil { metrics = outcome.metrics }
                 if outcome.fromPreviousAnswer { reusedSources = lastAnswer?.sources }
             } else {
-                let pipeline = AnswerPipeline(session: session, retriever: services.retriever, params: personal ? PersonalFiles.retrieval() : .default)
+                // A user's file with results and ranges gets each one marked in code, given to the model with the passage
+                // (the 1.7B read 231 against "below 190" as fine).
+                let pipeline = AnswerPipeline(
+                    session: session, retriever: services.retriever, params: personal ? PersonalFiles.retrieval() : .default,
+                    annotate: { c in
+                        guard c.collectionId != nil, let n = LabRanges.note(c.body, pt: ptQ) else { return c }
+                        var marked = c
+                        marked.body = c.body + "\n\n" + n
+                        return marked
+                    }
+                )
                 var request = AnswerRequest(query: q, systemPrompt: toolPrompt, styleReminder: styleReminder, maxTokens: maxTokens,
                                             history: history, enableThinking: tweaks.thinkingEnabled)
                 if personal {

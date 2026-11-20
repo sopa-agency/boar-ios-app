@@ -149,6 +149,9 @@ public enum PtLexicon {
         "o", "os", "que", "como", "porque", "qual", "quais", "uma", "um", "sao", "nao", "e", "das", "dos", "nas", "nos", "numa", "num",
         "pelo", "pela", "onde", "quando", "quanto", "quantos", "existem", "fazer", "faco", "devo", "entre", "diferenca", "depois", "antes",
         "em", "para", "com", "se", "posso", "pode", "tem", "funciona",
+        // "resuma meu exame de sangue" (no accent, 5 words) read as not Portuguese, so the English pass ("Blood test") never
+        // ran and the user's English file wasn't found. A possessive is never English.
+        "meu", "minha", "meus", "minhas", "resuma",
     ] // "por que" can't match a single word, as in the TS regex
     private static let asciiWord = Rx("[a-z0-9]+")
     private static let accented = Rx("(^|[^\\p{L}])[a-z\u{00E0}-\u{00FF}]*[\u{00E3}\u{00F5}\u{00E7}\u{00E2}\u{00EA}\u{00F4}\u{00E1}\u{00E9}\u{00ED}\u{00F3}\u{00FA}]\\p{L}*")
