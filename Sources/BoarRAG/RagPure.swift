@@ -233,6 +233,26 @@ public enum RagPure {
         return s.isEmpty ? "" : "\n\n(Response style: \(s))"
     }
 
+    /// The answer's language for `query` (AnswerLanguage, t9 0420), from the user's earlier turns when it can't tell.
+    private static func langOf(_ query: String, _ history: ConversationHistory?) -> AnswerLanguage.Lang {
+        AnswerLanguage.of(query, earlier: (history?.turns ?? []).filter { $0.role == "user" }.map(\.text))
+    }
+
+    /// The answer's language, next to the question: nothing for English, so its prompt is as it was; r4to's Portuguese
+    /// line for a Portuguese question.
+    private static func languageSection(_ lang: AnswerLanguage.Lang, withSources: Bool, filesOnly: Bool) -> String {
+        AnswerLanguage.line(lang, withSources: withSources, filesOnly: filesOnly).map { "\n\n\($0)" } ?? ""
+    }
+
+    /// Arms 2 and 3 (bench only): the style reminder, then also the style prompt, in Portuguese for a Portuguese question.
+    private static func reminderFor(_ reminder: String?, _ lang: AnswerLanguage.Lang) -> String? {
+        lang == .pt && AnswerLanguage.arm >= 2 ? StylePt.of(reminder) : reminder
+    }
+
+    private static func promptFor(_ systemPrompt: String?, _ lang: AnswerLanguage.Lang) -> String? {
+        lang == .pt && AnswerLanguage.arm >= 3 ? StylePt.of(systemPrompt) : systemPrompt
+    }
+
     private static func contextOf(_ chunks: [Chunk]) -> String {
         chunks.enumerated().map { "[\($0.offset + 1)] \($0.element.title)\n\($0.element.body)" }.joined(separator: "\n\n")
     }
@@ -254,7 +274,8 @@ public enum RagPure {
         _ userQuery: String, _ chunks: [Chunk], systemPrompt: String? = nil, history: ConversationHistory? = nil, styleReminder: String? = nil,
         filesOnly: Bool = false, filesNote: String? = nil
     ) -> String {
-        let instruction = instructionOf(systemPrompt)
+        let lang = langOf(userQuery, history)
+        let instruction = instructionOf(promptFor(systemPrompt, lang))
         let summary = nonEmptyTrimmed(history?.summary).map { "Summary of earlier conversation:\n\($0)\n\n" } ?? ""
         var turns = ""
         if let t = history?.turns, !t.isEmpty {
@@ -264,7 +285,8 @@ public enum RagPure {
         let hasContext = !chunks.isEmpty
         let ctxInstr = hasContext ? contextInstruction(filesOnly) : ""
         let ctx = hasContext ? "Context:\n\(contextOf(chunks))\n\n" : ""
-        return "\(instruction)\(ctxInstr) \(groundingInstruction)\n\n\(summary)\(turns)\(filesSection(filesNote, "\n\n"))\(ctx)Question: \(userQuery)\(styleSection(styleReminder))\n\nAnswer:"
+        let language = languageSection(lang, withSources: hasContext, filesOnly: filesOnly)
+        return "\(instruction)\(ctxInstr) \(groundingInstruction)\n\n\(summary)\(turns)\(filesSection(filesNote, "\n\n"))\(ctx)Question: \(userQuery)\(styleSection(reminderFor(styleReminder, lang)))\(language)\n\nAnswer:"
     }
 
     /// The fixed start of every sourced answer prompt for a tone, kept prefilled in the KV cache.
@@ -279,7 +301,8 @@ public enum RagPure {
         _ userQuery: String, _ chunks: [Chunk], systemPrompt: String? = nil, history: ConversationHistory? = nil, styleReminder: String? = nil,
         filesOnly: Bool = false, filesNote: String? = nil
     ) -> [PromptMessage] {
-        let instruction = instructionOf(systemPrompt)
+        let lang = langOf(userQuery, history)
+        let instruction = instructionOf(promptFor(systemPrompt, lang))
         let hasContext = !chunks.isEmpty
         let ctxInstr = hasContext ? contextInstruction(filesOnly) : ""
         let ctx = hasContext ? "\n\nContext:\n\(contextOf(chunks))" : ""
@@ -289,6 +312,7 @@ public enum RagPure {
         let files = filesRaw.isEmpty ? "" : "\n\n\(filesRaw)"
         let system = PromptMessage(role: "system", content: "\(instruction)\(ctxInstr) \(groundingInstruction)\(summary)\(files)\(ctx)")
         let past = (history?.turns ?? []).map { PromptMessage(role: $0.role, content: $0.text) }
-        return [system] + past + [PromptMessage(role: "user", content: userQuery + styleSection(styleReminder))]
+        let language = languageSection(lang, withSources: hasContext, filesOnly: filesOnly)
+        return [system] + past + [PromptMessage(role: "user", content: userQuery + styleSection(reminderFor(styleReminder, lang)) + language)]
     }
 }

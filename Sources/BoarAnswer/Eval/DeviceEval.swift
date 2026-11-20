@@ -61,10 +61,14 @@ public struct EvalRequest: Sendable, Equatable {
     public var pipeline: String?
     /// Pipeline "answer" fields, kept as sent: this build runs the legacy pipeline only.
     public var answerOnly: [String: JSONValue]
+    /// The language fix's arm for this run (t9 0420 item 5): 0 no language line (the "before"), 1 the line (users), 2 also
+    /// the style reminder in Portuguese, 3 also the style prompt. Nil: as the build ships (1). Bench only.
+    public var languageArm: Int?
 
-    public init(requestId: String, models: [String]? = nil, adaptive: Bool? = nil, queries: [String]? = nil, pipeline: String? = nil, answerOnly: [String: JSONValue] = [:]) {
+    public init(requestId: String, models: [String]? = nil, adaptive: Bool? = nil, queries: [String]? = nil, pipeline: String? = nil, answerOnly: [String: JSONValue] = [:],
+                languageArm: Int? = nil) {
         self.requestId = requestId; self.models = models; self.adaptive = adaptive; self.queries = queries
-        self.pipeline = pipeline; self.answerOnly = answerOnly
+        self.pipeline = pipeline; self.answerOnly = answerOnly; self.languageArm = languageArm
     }
 }
 
@@ -150,10 +154,18 @@ public enum DeviceEval {
         }
         var adaptive: Bool?
         if case .bool(let b) = member("adaptive") { adaptive = b }
+        // Kotlin `(raw["languageArm"] as? JsonPrimitive)?.content?.toIntOrNull()`: a whole number or a string of one;
+        // anything else is no arm (a fractional number's content "1.0" doesn't read as an Int either).
+        let languageArm: Int? = switch member("languageArm") {
+        case .int(let v)?: Int(exactly: v)
+        case .string(let s)?: Int(s)
+        default: nil
+        }
+        if let a = languageArm, !(0...3).contains(a) { throw EvalRequestError("\"languageArm\" must be 0, 1, 2 or 3") }
         return EvalRequest(
             requestId: id, models: try stringList(member("models"), "models"), adaptive: adaptive,
             queries: try stringList(member("queries"), "queries"), pipeline: pipe,
-            answerOnly: Dictionary(uniqueKeysWithValues: present.map { ($0, o[$0]!) })
+            answerOnly: Dictionary(uniqueKeysWithValues: present.map { ($0, o[$0]!) }), languageArm: languageArm
         )
     }
 

@@ -18,8 +18,15 @@ public enum Summarize {
     }
 
     public static func title(_ generator: any StageGenerator, firstUserMessage: String, timeoutMs: Int64? = nil) async throws -> String {
-        let r = try await generator.generate(system: titleInstruction, user: "\"\(firstUserMessage)\"", nPredict: 16, temperature: 0.3, timeoutMs: timeoutMs, onToken: nil)
+        let r = try await generator.generate(system: titleInstruction, user: titleInput(firstUserMessage), nPredict: 16, temperature: 0.3, timeoutMs: timeoutMs, onToken: nil)
         return cleanTitle(r.text)
+    }
+
+    /// The title's input: the quoted message, and for a Portuguese chat r4to's short line after it (t9 0420: what the user
+    /// reads is in the user's language; the drawer shows the title). English input is as before.
+    public static func titleInput(_ firstUserMessage: String) -> String {
+        let line = AnswerLanguage.line(AnswerLanguage.of(firstUserMessage), withSources: false)
+        return "\"\(firstUserMessage)\"" + (line.map { "\n\n\($0)" } ?? "")
     }
 
     public static func summary(_ generator: any StageGenerator, turns: [ConversationTurn], previousSummary: String?, timeoutMs: Int64? = nil) async throws -> String {

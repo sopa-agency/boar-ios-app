@@ -449,6 +449,8 @@ final class ChatController {
         messages.append(ChatItem(id: answerId, role: "assistant", text: ""))
         if isNewSession { onSessionsChanged?() }
 
+        // The app's language is the answer's last word when the question can't tell (AnswerLanguage, t9 0420).
+        AnswerLanguage.appLanguage = settings.languageId
         let chosenStyle = settings.personalityId ?? services.personalities.defaultId
         // Personal Files: only the user's own files, whole; no Deep Research, router or recap of the library.
         let personal = PersonalFiles.isOn(chosenStyle)
@@ -586,6 +588,10 @@ final class ChatController {
                 let (events, sink) = AsyncStream<Event>.makeStream()
                 let stop = stopFlag
                 let previousAnswer = lastAnswer.map { AnswerText.stripThinking($0.text) }
+                // The write-up in the question's language (t9 0420): DeepResearch had the slot, nothing filled it.
+                let answerLanguage = AnswerLanguage.line(
+                    AnswerLanguage.of(q, earlier: prior.filter(\.isUser).map(\.text)), withSources: way == .research
+                )
                 let work = Task.detached { () throws -> Outcome in
                     defer { sink.finish() }
                     if way == .research || way == .recap {
@@ -596,7 +602,7 @@ final class ChatController {
                                      sink.yield(.activity(research
                                          ? .researching(p.stage, index: p.subQuestionIndex.map { $0 + 1 }, count: p.subQuestionCount) : .thinking))
                                  },
-                                 onToken: { sink.yield(.piece($0)) }, shouldStop: { stop.value },
+                                 onToken: { sink.yield(.piece($0)) }, shouldStop: { stop.value }, answerLanguage: answerLanguage,
                                  previousAnswer: previousAnswer, conversation: conversation)
                         return Outcome(sources: r.citations, timedOut: r.timedOut, metrics: r.metrics, fromPreviousAnswer: r.fromPreviousAnswer)
                     }
