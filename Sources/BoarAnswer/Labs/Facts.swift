@@ -116,6 +116,29 @@ public final class Facts: Sendable {
     /// Entities the question names, in question order, longest n-gram first; a word inside a found name never counts again.
     public func factEntities(_ query: String) -> [Entity] { resolve(query).ents }
 
+    /// The table's dated figures for the countries `query` names, as one more source for the model, when it names two or
+    /// more (t9 0110 item 5: "Compare Brazil and Russia" got the model's own figures). Population with its year, area and
+    /// capital, each country on its line, and the table's date. Nil for fewer than two countries.
+    public func countryContext(_ query: String) -> Chunk? {
+        var seen = Set<String>()
+        let countries = factEntities(query).filter { $0.k == "country" && seen.insert($0.q).inserted }
+        if countries.count < 2 { return nil }
+        let lines: [String] = countries.compactMap { e in
+            var parts: [String] = []
+            if let (n, y) = e.pop { parts.append("population \(Self.fmt(n))" + (y.map { " (\(JsNumber.toString($0)))" } ?? "")) }
+            if let a = e.area { parts.append("area \(Self.fmt(a)) km\u{00B2}") }
+            if let c = e.cap, !c.isEmpty { parts.append("capital \(Self.list(c))") }
+            return parts.isEmpty ? nil : "\(e.n): \(parts.joined(separator: "; "))."
+        }
+        if lines.count < 2 { return nil }
+        return Chunk(
+            chunkId: "facts:countries:" + countries.map(\.q).joined(separator: ","), docId: "facts:table",
+            title: "Facts: " + Self.list(countries.map(\.n)),
+            body: lines.joined(separator: "\n") + "\nFigures from Wikidata (CC0), offline table as of \(snapshot).",
+            source: "Wikidata (CC0), offline table as of \(snapshot)"
+        )
+    }
+
     private static func sub(_ s: String, _ from: Int, _ to: Int) -> String {
         (s as NSString).substring(with: NSRange(location: from, length: max(0, to - from)))
     }

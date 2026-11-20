@@ -915,21 +915,11 @@
   {
    "q": "Qual é a diferença entre pandemia e epidemia?",
    "out": {
-    "match": "\"qual\" OR \"diferenca\" OR \"entre\" OR \"pandemia\" OR \"epidemia\"",
+    "match": "\"diferenca\" OR \"pandemia\" OR \"epidemia\"",
     "terms": [
      {
       "forms": [
-       "qual"
-      ]
-     },
-     {
-      "forms": [
        "diferenca"
-      ]
-     },
-     {
-      "forms": [
-       "entre"
       ]
      },
      {
@@ -4027,7 +4017,7 @@
    "q": "Por que o céu é azul?",
    "looksPt": true,
    "names": [
-    "Blue"
+    "Diffuse sky radiation"
    ],
    "key": "por que o ceu e azul?"
   },

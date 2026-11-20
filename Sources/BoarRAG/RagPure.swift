@@ -1,3 +1,4 @@
+import BoarRouting
 import Foundation
 
 /// A passage the retrieval found (ChunkRecord + RetrievedChunk of src/rag).
@@ -128,12 +129,23 @@ public enum RagPure {
         return [token.u16DropLast(1)]
     }
 
+    /// An English question ("What is Na?"): a short one reads as Portuguese to `looksPortuguese`.
+    private static let enQuestion = Rx("(?<![\\p{L}])(?:what|who|whom|which|how|why|when|where|is|are|was|were|does|do|did|the|of|and)(?![\\p{L}])", .caseInsensitive)
+
+    /// Portuguese function words (t9 0226): "para" matched the article Pará. Only for a Portuguese question (validator R-D4:
+    /// "What is DOS?", "What is Na?", "Uma Thurman" keep their keyword). Folded forms, as `tokenize` gives them.
+    private static let ptStopwords: Set<String> = [
+        "para", "por", "pelo", "pela", "como", "que", "uma", "um", "das", "dos", "da", "do", "de", "em", "no", "na", "nos", "nas",
+        "ao", "aos", "sem", "se", "seu", "sua", "qual", "quais", "quando", "onde", "porque", "entre", "sobre",
+    ]
+
     /// The question's content words as an FTS5 OR query, each quoted; nil when only filler is left.
     public static func buildLexicalQuery(_ query: String) -> LexicalQuery? {
         var seen = Set<String>()
         var terms: [LexicalTerm] = []
+        let pt = (PtLexicon.looksPortuguese(query) || QueryContext.isPortugueseQuestion(query)) && !enQuestion.contains(query)
         for token in tokenize(query) {
-            if token.u16Count < 2 || stopwords.contains(token) { continue }
+            if token.u16Count < 2 || stopwords.contains(token) || (pt && ptStopwords.contains(token)) { continue }
             let forms = [token] + singularsOf(token)
             if forms.contains(where: { seen.contains($0) }) { continue }
             seen.formUnion(forms)

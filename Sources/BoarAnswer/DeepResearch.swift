@@ -70,9 +70,9 @@ public struct DeepResearch: Sendable {
     }
 
     /// Deep Research with a `Retriever` and the user's engine tweaks for the time limits.
-    public init(generator: any StageGenerator, retriever: Retriever, tweaks: EngineTweaks = EngineTweaks()) {
+    public init(generator: any StageGenerator, retriever: Retriever, tweaks: EngineTweaks = EngineTweaks(), stages: [any SearchStage] = []) {
         self.init(
-            generator: generator, retrieve: { q, k in try await retriever.retrieve(q, topK: k) },
+            generator: generator, retrieve: { q, k in try await SearchStages.search(stages, query: q, topK: k) { try await retriever.retrieve($0, topK: $1) } },
             timeoutFor: { tweaks.stageTimeoutMs(nPredict: $0) }, writeUpTimeoutFor: { tweaks.writeUpTimeoutMs(nPredict: $0) }
         )
     }

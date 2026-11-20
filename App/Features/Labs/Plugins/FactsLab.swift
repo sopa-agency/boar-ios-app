@@ -17,6 +17,7 @@ struct FactsLab: LabPlugin {
     var title: String { String(localized: "Boar Facts") }
     var body: String { String(localized: "One fact about a country, city, mountain, river, landmark or award, from a Wikidata table, without the model.") }
     var answerTool: (any AnswerTool)? { Tool() }
+    var searchStage: (any SearchStage)? { Stage() }
 
     /// The fact table, read on the first question (780 KB of JSON).
     nonisolated static let table: Facts? = {
@@ -33,6 +34,16 @@ struct FactsLab: LabPlugin {
         func run(query: String, history: [ConversationTurn]) -> ToolResult? {
             LabTools.facts(FactsLab.table, query, userTurns: history.filter { $0.role == "user" }.map(\.text))
                 .map { .instant(tool: $0.tool, text: $0.text) }
+        }
+    }
+
+    /// A question naming two or more countries (and not answered at once above): the table's dated figures for them go to
+    /// the model as one more numbered source, after the search's own (t9 0110 item 5). English names, as the table.
+    struct Stage: SearchStage {
+        func process(query: String, chunks: [Chunk], topK: Int) throws -> [Chunk] {
+            let kept = Array(chunks.prefix(topK))
+            guard let extra = FactsLab.table?.countryContext(query) else { return kept }
+            return kept + [extra]
         }
     }
 

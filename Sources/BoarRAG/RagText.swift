@@ -149,6 +149,9 @@ public enum PtLexicon {
         "o", "os", "que", "como", "porque", "qual", "quais", "uma", "um", "sao", "nao", "e", "das", "dos", "nas", "nos", "numa", "num",
         "pelo", "pela", "onde", "quando", "quanto", "quantos", "existem", "fazer", "faco", "devo", "entre", "diferenca", "depois", "antes",
         "em", "para", "com", "se", "posso", "pode", "tem", "funciona",
+        // "resuma meu exame de sangue" (no accent, 5 words) read as not Portuguese, so the English pass ("Blood test") never
+        // ran and the user's English file wasn't found. A possessive is never English.
+        "meu", "minha", "meus", "minhas", "resuma",
     ] // "por que" can't match a single word, as in the TS regex
     private static let asciiWord = Rx("[a-z0-9]+")
     private static let accented = Rx("(^|[^\\p{L}])[a-z\u{00E0}-\u{00FF}]*[\u{00E3}\u{00F5}\u{00E7}\u{00E2}\u{00EA}\u{00F4}\u{00E1}\u{00E9}\u{00ED}\u{00F3}\u{00FA}]\\p{L}*")
@@ -179,15 +182,51 @@ public enum PtLexicon {
         for i in words.indices {
             for s in singularsPt(words[i]) { out.append((Array(words[0..<i]) + [s] + Array(words[(i + 1)...])).joined(separator: " ")) }
         }
+        // "oferta e a demanda" is the lexicon's "oferta e demanda": an article inside a phrase doesn't change it.
+        if words.count >= 3 {
+            let bare = [words[0]] + words[1..<(words.count - 1)].filter { !innerArticles.contains($0) } + [words[words.count - 1]]
+            if bare.count != words.count { out.append(bare.joined(separator: " ")) }
+        }
         return out
+    }
+    private static let innerArticles: Set<String> = ["a", "o", "as", "os"]
+
+    /// Readings the lexicon gets wrong for a question (t9 0226), checked before it; "" reads as no name at all (the words
+    /// are used up, so no shorter name is looked up for them either). Keys are folded. "aparelho" is a device, not
+    /// Brickwork; a time unit names no article to search; "inclinação da Terra" is the axial tilt; "céu azul" is why the sky
+    /// is blue. "capital" keeps the lexicon's Capital city (the re-measure lost Canberra without it).
+    private static let readings: [String: String] = [
+        "aparelho": "", "aparelhos": "",
+        "minuto": "", "minutos": "", "hora": "", "horas": "", "segundo": "", "segundos": "",
+        "inclinacao da terra": "Axial tilt", "inclinacao do eixo": "Axial tilt", "inclinacao do eixo da terra": "Axial tilt", "eixo da terra": "Axial tilt",
+        "ceu azul": "Diffuse sky radiation", "ceu e azul": "Diffuse sky radiation",
+        // Lab and health terms the lexicon lacks (t9 0026). Bare "receita" stays out: in the packs it's also a recipe.
+        "triglicerideos": "Triglyceride", "triglicerides": "Triglyceride", "creatinina": "Creatinine",
+        "receita medica": "Prescription", "receitas medicas": "Prescription",
+    ]
+
+    /// "marés" -> "maré" (Tide) before the folded "mares" -> "mar" (Sea): an accented word's own singular first.
+    private static func accentedSingulars(_ word: String) -> [String] {
+        word.u16Count > 3 && word.u16EndsWith("s") ? [word.u16DropLast(1)] : []
     }
 
     private static let foldedWord = Rx("[a-z0-9]+(?:-[a-z0-9]+)*")
     private static let originalWord = Rx("[\\p{L}\\p{N}]+(?:-[\\p{L}\\p{N}]+)*")
     private static let upperStart = Rx("^\\p{Lu}")
 
+    /// "na natureza", "em meio à natureza", "em plena natureza", "no meio da natureza": "in the wild", a place, not the article
+    /// Nature. "a natureza", "da natureza" still name it, and "na natureza humana" keeps Human nature.
+    private static let inTheWild = Rx("(?<![\\p{L}])(?:na|em plena|em meio [\u{00E0}a]|no meio da|em contato com a|ao ar livre na) natureza(?![\\p{L}])(?!\\s+human[ao])", .caseInsensitive)
+    /// "In the wild" is something done there: survive, camp, purify, find... (validator R-D2).
+    private static let wildAction = Rx("(?<![\\p{L}])(?:como|sobreviver|acampar|acampamento|purificar|filtrar|achar|encontrar|cozinhar|dormir|caminhar|trilha|fazer fogo|acender|perdid[oa]|passo a passo|seguro)(?![\\p{L}])", .caseInsensitive)
+    /// "céu azul" is the sky's light only in a why or how question (R-D3: not "Céu Azul Futebol Clube", not Photoshop).
+    private static let whyHow = Rx("(?<![\\p{L}])(?:por ?que|porqu[e\u{00EA}]|como|o que (?:faz|torna|deixa)|explique|explica)(?![\\p{L}])", .caseInsensitive)
+    private static let photoOrName = Rx("(?<![\\p{L}])(?:photoshop|desenhar|pintar|clube|futebol|bras[\u{00ED}i]lia)(?![\\p{L}])", .caseInsensitive)
+
     /// English article names a Portuguese question mentions, longest names first, each word used once.
-    public static func englishNamesIn(_ query: String, _ lexicon: Lexicon, max: Int = 4, maxLen: Int = 5) -> [String] {
+    public static func englishNamesIn(_ asked: String, _ lexicon: Lexicon, max: Int = 4, maxLen: Int = 5) -> [String] {
+        let sky = whyHow.contains(asked) && !photoOrName.contains(asked)
+        let query = wildAction.contains(asked) ? inTheWild.replace(asked, with: " ") : asked
         let words = foldedWord.all(Js.fold(query)).map(\.value)
         let original = originalWord.all(query).map(\.value)
         let accentedWords: [String]? = original.count == words.count ? original.map { Js.nfc($0).lowercased() } : nil
@@ -203,7 +242,19 @@ public enum PtLexicon {
                 if (i..<(i + len)).contains(where: { used[$0] }) { continue }
                 if stop.contains(gram[0]) || stop.contains(gram[len - 1]) { continue }
                 if len == 1 && (gram[0].u16Count < 4 || !specific(i)) { continue }
+                var reading: String? = nil
+                for v in variants(gram) { if let r = readings[v] { reading = r; break } }
+                if reading == "Diffuse sky radiation" && !sky { reading = nil }
+                if let reading {
+                    for j in i..<(i + len) { used[j] = true }
+                    if reading.isEmpty { continue }
+                    if !names.contains(reading) { names.append(reading) }
+                    continue
+                }
                 var hit: String? = accentedWords.flatMap { lexicon[$0[i..<(i + len)].joined(separator: " ")] }
+                if hit == nil, len == 1, let a = accentedWords {
+                    for s in accentedSingulars(a[i]) { if let x = lexicon[s], !x.isEmpty { hit = x; break } }
+                }
                 if hit == nil {
                     for v in variants(gram) {
                         if let x = lexicon[v], !x.isEmpty { hit = x; break }

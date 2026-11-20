@@ -5,7 +5,7 @@ import Foundation
 /// and a heat warning wrong). Pure: the question in, the answer text out (or nil). Numbers are printed as JavaScript's
 /// toLocaleString does for en-US / pt-BR.
 public enum Calculators {
-    /// kind: "temperature" | "fuel-economy" | "naismith" | "currency" | "battery" | "water".
+    /// kind: "temperature" | "fuel-economy" | "naismith" | "currency" | "battery" | "water" | "conversion".
     public struct Calculation: Sendable, Equatable {
         public var kind: String
         public var text: String
@@ -47,6 +47,65 @@ public enum Calculators {
         return JsNumber.parse(s)
     }
 
+    /// The question's decimal mark, read from its own numbers before its language (t9 0330: "27.000 mAh 3,7 V no avião"
+    /// wasn't detected as Portuguese and 27.000 read as 27). A comma before 1, 2 or 4+ digits ("3,7") or after a dot
+    /// ("1.200,5") says the comma is decimal; the same for the dot ("3.7", "1,200.5"). Exactly one of the two decides
+    /// every "N.NNN" and "N,NNN" in the question; both or neither: nil, the language decides.
+    public static func decimalMark(_ q: String) -> Character? {
+        var marks = Set<Character>()
+        for m in numberToken.findAll(in: q) {
+            let t = m.value
+            if isDate(q, m) { continue }
+            let seps = t.filter { $0 == "." || $0 == "," }
+            if Set(seps).count == 2 { marks.insert(seps.last!); continue }
+            if seps.count == 1 {
+                let after = t.drop { $0 != seps.first! }.dropFirst()
+                if after.count != 3 { marks.insert(seps.first!) }
+            }
+        }
+        return marks.count == 1 ? marks.first : nil
+    }
+
+    /// Longer than any calculator question; the number patterns cost too much past it (validator B-5).
+    public static let maxQuery = 2000
+
+    /// A date, never a decimal mark (validator B-1: "2.450 baht no dia 14.11" read 2.45): "14.11.2026", or
+    /// "14.11" right after a date word ("no dia 14.11", "on 14.11", "until 3.12"). A day up to 31, a month up to 12.
+    /// "3.7 V" and "on 12.50" are not dates.
+    private static func isDate(_ q: String, _ m: JavaRegex.Match) -> Bool {
+        guard let d = dateRe.matchEntire(m.value) else { return false }
+        let day = Int(d.groupValue(1))!
+        let month = Int(d.groupValue(2))!
+        if !(1...31).contains(day) || !(1...12).contains(month) { return false }
+        if !d.groupValue(3).isEmpty { return true }
+        let units = Array((q as NSString).substring(to: m.range.location).utf16)
+        let before = String(decoding: units.suffix(14), as: UTF16.self)
+        let twoDigits = d.groupValue(1).utf16.count == 2 && d.groupValue(2).utf16.count == 2
+        return dayWord.containsMatch(in: before) || (twoDigits && dateWord.containsMatch(in: before))
+    }
+    private static let dateRe = JavaRegex(#"(\d{1,2})\.(\d{1,2})(?:\.(\d{2}|\d{4}))?"#)
+    /// Words that make what follows a date even when it's "3.12".
+    private static let dayWord = JavaRegex(#"(?<![\p{L}])(?:dia|day|date|data|dated|datado|vencimento|due)\s*:?\s*$"#, ignoreCase: true)
+    /// Words that make a two-digit "14.11" a date.
+    private static let dateWord = JavaRegex(#"(?<![\p{L}])(?:on|em|de|until|till|até|from|desde|by|since|before|after|antes de|depois de)\s*$"#, ignoreCase: true)
+
+    /// Read "N,NNN" / "N.NNN" with a decimal comma: the question's own mark first ([decimalMark]), else [pt].
+    public static func readsComma(_ q: String, pt: Bool) -> Bool { decimalMark(q).map { $0 == "," } ?? pt }
+
+    private static let numberToken = JavaRegex(#"(?<![\d.,])\d+(?:[.,]\d+)+"#)
+    private static let thousands = JavaRegex(#"\d{1,3}(?:[.,]\d{3})+"#)
+
+    /// A whole count written with thousands marks, "27.000" or "27,000": 27000 in every language (a battery's mAh).
+    private static func wholeNumber(_ raw: String) -> Double? {
+        let t = UnitBridge.kotlinTrim(raw)
+        guard thousands.matches(t) else { return nil }
+        return Double(t.filter { $0.isASCII && $0.isNumber })
+    }
+
+    /// Portuguese in the rules' own words (t9 0330), for the answer's language when the detector misses a short question:
+    /// "27.000 mAh 3,7 V no avião" has no question word. QueryContext is not touched.
+    private static let ptWords = JsRegex(#"\b(?:avi[ãa]o|voo|voar|bagagem|companhia|litros?|milhas?|gal[ãa]o|gal[õo]es|quil[ôo]metros?|quanto|quantos|quantas|posso|pode|levar|meu|minha|tenho|preciso|gorjeta|c[âa]mbio)\b"#, flags: "i")
+
     private static func fmt(_ n: Double, _ pt: Bool, _ digits: Int = 2) -> String { JsNumber.locale(n, pt: pt, maxFractionDigits: digits) }
 
     // (a) Fuel economy: L/100 km <-> miles per gallon (US 235.215, UK 282.481).
@@ -56,12 +115,12 @@ public enum Calculators {
     private static let mpg = JsRegex(#"\#(num)\s*(?:mpg|milhas? por gal[ãa]o|miles? per (?:us |uk |imperial )?gallon)"#, flags: "i")
     private static let asksL100 = JsRegex(#"l\s*\/\s*100|litros? (a cada|por) 100|liters? per 100"#, flags: "i")
 
-    private static func fuelEconomy(_ q: String, _ pt: Bool) -> String? {
+    private static func fuelEconomy(_ q: String, _ pt: Bool, _ rd: Bool) -> String? {
         let isUk = uk.containsMatch(in: q)
         let k = isUk ? 282.481 : 235.215
         let gal = pt ? (isUk ? "galão imperial" : "galão americano") : (isUk ? "UK gallon" : "US gallon")
         if let m = l100.find(in: q), asksMpg.containsMatch(in: q) {
-            let x = parseNumber(m.groupValue(1), pt: pt)
+            let x = parseNumber(m.groupValue(1), pt: rd)
             if !(x > 0) { return nil }
             let v = k / x
             return pt
@@ -69,7 +128,7 @@ public enum Calculators {
                 : "\(fmt(x, pt)) L/100 km = \(fmt(v, pt)) miles per gallon (\(gal)). Formula: mpg = \(fmt(k, pt, 3)) ÷ L/100 km."
         }
         if let m = mpg.find(in: q), asksL100.containsMatch(in: q) {
-            let x = parseNumber(m.groupValue(1), pt: pt)
+            let x = parseNumber(m.groupValue(1), pt: rd)
             if !(x > 0) { return nil }
             return pt
                 ? "\(fmt(x, pt)) milhas por galão (\(gal)) = \(fmt(k / x, pt)) L/100 km. Conta: L/100 km = \(fmt(k, pt, 3)) ÷ mpg."
@@ -83,13 +142,13 @@ public enum Calculators {
     private static let km = JsRegex(#"\#(num)\s*km\b"#, flags: "i")
     private static let meters = JsRegex(#"\#(num)\s*m\b(?![a-z])"#, flags: "i")
 
-    private static func naismith(_ q: String, _ pt: Bool) -> String? {
+    private static func naismith(_ q: String, _ pt: Bool, _ rd: Bool) -> String? {
         if !naismithRe.containsMatch(in: q) { return nil }
         let kmMatch = km.find(in: q)
         let up = meters.find(in: JsString.replacingFirst(q, kmMatch?.value ?? "", with: ""))
         guard let kmMatch else { return nil }
-        let d = parseNumber(kmMatch.groupValue(1), pt: pt)
-        let a = up.map { parseNumber($0.groupValue(1), pt: pt) } ?? 0
+        let d = parseNumber(kmMatch.groupValue(1), pt: rd)
+        let a = up.map { parseNumber($0.groupValue(1), pt: rd) } ?? 0
         let h = d / 5 + a / 600
         let hh = h.rounded(.down)
         let mm = JsNumber.round((h - hh) * 60)
@@ -112,20 +171,20 @@ public enum Calculators {
     private static let spaceDot = JsRegex(#"\s+\."#)
     private static let spaces2 = JsRegex(#"\s{2,}"#)
 
-    private static func currency(_ q: String, _ pt: Bool) -> String? {
+    private static func currency(_ q: String, _ pt: Bool, _ rd: Bool) -> String? {
         guard let rateM = rate.find(in: q) else { return nil }
-        let r = parseNumber(rateM.groupValue(2), pt: pt)
+        let r = parseNumber(rateM.groupValue(2), pt: rd)
         let rest = JsString.replacingFirst(q, rateM.value, with: " ")
         let amountM = amount.find(in: percent.replace(in: rest, with: " "))
         guard let amountM, r > 0 else { return nil }
-        let amountV = parseNumber(amountM.groupValue(1), pt: pt)
+        let amountV = parseNumber(amountM.groupValue(1), pt: rd)
         let unitFrom = JsString.trim(amountM.group(2) ?? rateM.group(3) ?? "")
         let cur = rateM.groupValue(1)
         let unitTo = esEnd.replaceFirst(in: cur, with: "").lowercased().hasPrefix("d") ? (pt ? "dólares" : "US dollars") : cur
         let converted = amountV / r
         var text = "\(fmt(amountV, pt)) \(unitFrom) ÷ \(fmt(r, pt)) = \(fmt(converted, pt)) \(unitTo)."
         if let tipM = percent.find(in: q), tip.containsMatch(in: q) {
-            let t = parseNumber(tipM.groupValue(1), pt: pt)
+            let t = parseNumber(tipM.groupValue(1), pt: rd)
             let total = converted * (1 + t / 100)
             text += pt
                 ? " Com \(fmt(t, pt))% de gorjeta: \(fmt(total, pt)) \(unitTo) (gorjeta de \(fmt(converted * (t / 100), pt)))."
@@ -134,29 +193,23 @@ public enum Calculators {
         return spaces2.replace(in: spaceDot.replace(in: text, with: "."), with: " ")
     }
 
-    // (d) Battery energy: Wh = mAh × V / 1000, with the airline limits (IATA/FAA: up to 100 Wh in carry-on; 100-160 Wh
-    // with the airline's approval; above 160 Wh not allowed; spare batteries never in checked bags).
+    // (d) Battery energy: Wh = mAh × V / 1000. With flight words, one neutral line instead of a verdict (adam, Nov 14; t9
+    // 0143): the limits are set by airlines and IATA and they change (a power bank above 100 Wh is "Forbidden" in IATA's
+    // 2026 guidance, and the 100-160 Wh approval goes from the DGR in 2027); an offline app can't know the rule of the day.
     private static let mah = JsRegex(#"\#(num)\s*mah\b"#, flags: "i")
     private static let volts = JsRegex(#"\#(num)\s*v\b"#, flags: "i")
     private static let flight = JsRegex(#"avi[ãa]o|voo|voar|bagagem|companhia a[ée]rea|plane|flight|fly|airline|carry[- ]on|luggage"#, flags: "i")
 
-    private static func battery(_ q: String, _ pt: Bool) -> String? {
+    public static let flightNoteEN = " Airlines set their battery limits in Wh, and the rules change: check your airline before you fly."
+    public static let flightNotePT = " As companhias aéreas definem os limites de bateria em Wh, e as regras mudam: confira com a sua antes de voar."
+
+    private static func battery(_ q: String, _ pt: Bool, _ rd: Bool) -> String? {
         guard let mahM = mah.find(in: q), let vM = volts.find(in: q) else { return nil }
-        let wh = (parseNumber(mahM.groupValue(1), pt: pt) * parseNumber(vM.groupValue(1), pt: pt)) / 1000
-        var text = "\(fmt(parseNumber(mahM.groupValue(1), pt: pt), pt, 0)) mAh × \(fmt(parseNumber(vM.groupValue(1), pt: pt), pt)) V ÷ 1000 = \(fmt(wh, pt)) Wh."
-        if flight.containsMatch(in: q) {
-            if wh <= 100 {
-                text += pt
-                    ? " Sim, pode levar no avião: até 100 Wh é permitido na bagagem de mão (não na despachada)."
-                    : " Yes, you can take it on a plane: up to 100 Wh is allowed in carry-on baggage (not in checked bags)."
-            } else if wh <= 160 {
-                text += pt
-                    ? " Entre 100 e 160 Wh, só na bagagem de mão e com aprovação da companhia aérea."
-                    : " Between 100 and 160 Wh it needs the airline's approval, in carry-on baggage only."
-            } else {
-                text += pt ? " Acima de 160 Wh, não é permitido em voos de passageiros." : " Above 160 Wh it is not allowed on passenger flights."
-            }
-        }
+        let capacity = wholeNumber(mahM.groupValue(1)) ?? parseNumber(mahM.groupValue(1), pt: rd)
+        let volt = parseNumber(vM.groupValue(1), pt: rd)
+        let wh = (capacity * volt) / 1000
+        var text = "\(fmt(capacity, pt, 0)) mAh × \(fmt(volt, pt)) V ÷ 1000 = \(fmt(wh, pt)) Wh."
+        if flight.containsMatch(in: q) { text += pt ? flightNotePT : flightNoteEN }
         return text
     }
 
@@ -169,8 +222,8 @@ public enum Calculators {
     private static let countSrc =
         #"(\d+|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|um|uma|dois|duas|três|tres|quatro|cinco|seis|sete|oito|nove|dez|onze|doze)"#
 
-    private static func count(_ w: String, _ pt: Bool) -> Double {
-        wordNumbers[w.lowercased()].map(Double.init) ?? parseNumber(w, pt: pt)
+    private static func count(_ w: String, _ rd: Bool) -> Double {
+        wordNumbers[w.lowercased()].map(Double.init) ?? parseNumber(w, pt: rd)
     }
 
     // (f) Water for a trip: people × days × litres per person per day; 1 L of water weighs about 1 kg.
@@ -179,12 +232,12 @@ public enum Calculators {
     private static let people = JsRegex(#"\b(?:somos|we are|we're)\s+\#(countSrc)\b|\b\#(countSrc)\s+(?:of us|people|persons|pessoas|adultos|adults|hikers)\b"#, flags: "i")
     private static let days = JsRegex(#"\b\#(countSrc)[\s-]+(?:days?|dias?)\b"#, flags: "i")
 
-    private static func water(_ q: String, _ pt: Bool) -> String? {
+    private static func water(_ q: String, _ pt: Bool, _ rd: Bool) -> String? {
         if !waterRe.containsMatch(in: q) { return nil }
         guard let perDayM = perDay.find(in: q), let peopleM = people.find(in: q), let daysM = days.find(in: q) else { return nil }
-        let l = parseNumber(perDayM.groupValue(1), pt: pt)
-        let p = count(peopleM.group(1) ?? peopleM.group(2)!, pt)
-        let d = count(daysM.groupValue(1), pt)
+        let l = parseNumber(perDayM.groupValue(1), pt: rd)
+        let p = count(peopleM.group(1) ?? peopleM.group(2)!, rd)
+        let d = count(daysM.groupValue(1), rd)
         if !(l > 0 && p > 0 && d > 0) { return nil }
         let total = l * p * d
         return pt
@@ -194,14 +247,15 @@ public enum Calculators {
 
     // from context.ts; replace with the shared port when context.ts lands
     private static let temperatureRe = JsRegex(
-        #"(?<!\d)(-?\d+(?:[.,]\d+)?)\s*(?:°|º|degrees?|graus?)?\s*(c|celsius|centigrade|f|fahrenheit)\b[^?]*?\b(?:in|to|into|em|para)\s+(?:degrees?\s+|graus?\s+)?(celsius|centigrade|fahrenheit|c|f)\b"#,
+        #"(?<!\d)(-?\d{1,3}(?:[.,]\d{3})+(?:[.,]\d+)?|-?\d+(?:[.,]\d+)?)\s*(?:°|º|degrees?|graus?)?\s*(c|celsius|centigrade|f|fahrenheit)\b[^?]*?\b(?:in|to|into|em|para)\s+(?:degrees?\s+|graus?\s+)?(celsius|centigrade|fahrenheit|c|f)\b"#,
         flags: "i"
     )
 
     /// "What is 30 °C in Fahrenheit?": the conversion with its formula, or nil.
-    private static func temperatureConversion(_ query: String, _ pt: Bool) -> String? {
+    /// [rd]: the question's decimal mark is a comma ([readsComma]); "1,500 °C" is 1500 in English (validator B-6).
+    private static func temperatureConversion(_ query: String, _ pt: Bool, _ rd: Bool) -> String? {
         guard let m = temperatureRe.find(in: query) else { return nil }
-        let value = JsNumber.parse(JsString.replacingFirst(m.groupValue(1), ",", with: "."))
+        let value = parseNumber(m.groupValue(1), pt: rd)
         let from = m.groupValue(2).first!.lowercased() == "f" ? "F" : "C"
         let to = m.groupValue(3).first!.lowercased() == "f" ? "F" : "C"
         if from == to || !value.isFinite { return nil }
@@ -216,11 +270,11 @@ public enum Calculators {
     private static let hasC = JsRegex("°C")
     private static let asksSafe = JsRegex(#"perig|segur|caminh|trilha|correr|exerc|danger|safe|hike|hiking|walk|run|exercise"#, flags: "i")
 
-    private static func temperature(_ q: String, _ pt: Bool) -> String? {
-        guard let base = temperatureConversion(q, pt) else { return nil }
+    private static func temperature(_ q: String, _ pt: Bool, _ rd: Bool) -> String? {
+        guard let base = temperatureConversion(q, pt, rd) else { return nil }
         let piece = JsString.split(base, "=").map(JsString.trim).first { hasC.containsMatch(in: $0) } ?? ""
         let c = celsiusRe.find(in: piece)
-        let celsius = c.map { parseNumber($0.groupValue(1), pt: pt) } ?? Double.nan
+        let celsius = c.map { parseNumber($0.groupValue(1), pt: rd) } ?? Double.nan
         let asks = asksSafe.containsMatch(in: q)
         if !celsius.isFinite || !(asks && celsius >= 32) { return base }
         let note: String
@@ -236,18 +290,26 @@ public enum Calculators {
         return base + note
     }
 
-    /// The exact answer to an arithmetic question, or nil. Order: the most specific first.
+    /// The exact answer to an arithmetic question, or nil. Order: the most specific first. A plain unit conversion
+    /// ("26 miles in km", UnitConversion) is the last try, after the temperature rule (adam, Nov 13).
     public static func calculate(_ query: String, pt: Bool) -> Calculation? {
-        let tries: [(String, (String, Bool) -> String?)] = [
+        // A pasted table of digit groups made each pass quadratic (validator B-5: 16,000 characters, 5 s). No calculator
+        // question is that long: the model takes it.
+        if query.utf16.count > maxQuery { return nil }
+        // The answer's language: the detector, or the rules' own Portuguese words. The numbers: the question's own mark first.
+        let ptText = pt || ptWords.containsMatch(in: query)
+        let rd = readsComma(query, pt: ptText)
+        let tries: [(String, (String, Bool, Bool) -> String?)] = [
             ("battery", battery),
             ("fuel-economy", fuelEconomy),
             ("naismith", naismith),
             ("currency", currency),
             ("water", water),
             ("temperature", temperature),
+            ("conversion", { q, p, _ in UnitConversion.convert(q, pt: p) }),
         ]
         for (kind, fn) in tries {
-            if let text = fn(query, pt), !text.isEmpty { return Calculation(kind: kind, text: text) }
+            if let text = fn(query, ptText, rd), !text.isEmpty { return Calculation(kind: kind, text: text) }
         }
         return nil
     }

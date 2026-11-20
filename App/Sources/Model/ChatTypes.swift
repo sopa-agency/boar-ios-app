@@ -58,6 +58,8 @@ struct Receipt: Hashable, Sendable {
     var tool: String?
     /// How it was answered: nil (the normal answer), "deep" (Deep Research), "chat" (written from this chat), "adaptive".
     var path: String?
+    /// The answer style's id ("succinct", "detailed", "personal", "custom"); nil on answers saved before it was kept.
+    var style: String?
 
     var json: JSONValue {
         var o: [String: JSONValue] = ["totalMs": .double(totalMs), "ttftMs": .double(ttftMs), "tokPerSec": .double(tokPerSec), "tokens": JSONValue(tokens)]
@@ -69,16 +71,18 @@ struct Receipt: Hashable, Sendable {
         if let styleNote { o["styleNote"] = .string(styleNote) }
         if let tool { o["tool"] = .string(tool) }
         if let path { o["path"] = .string(path) }
+        if let style { o["style"] = .string(style) }
         return .object(o)
     }
 
     init(totalMs: Double, ttftMs: Double, tokPerSec: Double, tokens: Int, model: String?, retrievalMs: Double?, prefillMs: Double?, contextTokens: Int?, loadMs: Double?,
-         styleNote: String? = nil, tool: String? = nil, path: String? = nil) {
+         styleNote: String? = nil, tool: String? = nil, path: String? = nil, style: String? = nil) {
         self.totalMs = totalMs; self.ttftMs = ttftMs; self.tokPerSec = tokPerSec; self.tokens = tokens; self.model = model
         self.retrievalMs = retrievalMs; self.prefillMs = prefillMs; self.contextTokens = contextTokens; self.loadMs = loadMs
         self.styleNote = styleNote
         self.tool = tool
         self.path = path
+        self.style = style
     }
 
     init?(json o: JSONValue) {
@@ -87,7 +91,7 @@ struct Receipt: Hashable, Sendable {
         self.init(totalMs: total, ttftMs: ttft, tokPerSec: rate, tokens: Int(tokens), model: o["model"]?.stringValue,
                   retrievalMs: o["retrievalMs"]?.doubleValue, prefillMs: o["prefillMs"]?.doubleValue,
                   contextTokens: o["contextTokens"]?.doubleValue.map { Int($0) }, loadMs: o["loadMs"]?.doubleValue,
-                  styleNote: o["styleNote"]?.stringValue, tool: o["tool"]?.stringValue, path: o["path"]?.stringValue)
+                  styleNote: o["styleNote"]?.stringValue, tool: o["tool"]?.stringValue, path: o["path"]?.stringValue, style: o["style"]?.stringValue)
     }
 
     /// "9.1 s" under a minute, "2 min 5 s" above (ReceiptFormat.seconds).
