@@ -69,8 +69,9 @@ jobs:
 
       # Model smoke tests skip themselves without BOAR_TEST_GGUF; remote tests without BOAR_REMOTE_URL.
       # On GitHub (GITHUB_ACTIONS=true) the Vision OCR and Apple Intelligence checks skip, and timing limits widen.
+      # The timing suite runs alone after the rest (scripts/test.sh), so the parallel suites don't slow it (BOAR-66).
       - name: Engine tests
-        run: swift test --scratch-path .build/ci
+        run: bash scripts/test.sh --scratch-path .build/ci
 
       - name: Save SwiftPM build
         if: always() && steps.spm.outcome == 'success' && steps.spm.outputs.cache-hit != 'true'

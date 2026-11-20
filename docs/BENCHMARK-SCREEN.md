@@ -7,7 +7,7 @@ Trigger: r4to on the UI review page, Evaluation card: "precisamos de um evaluati
 ```sh
 python3 scripts/build-bench.py ../boar-eval/bench/v0.1/questions.public.jsonl   # regenerates Sources/BoarModels/Resources/bench-v0.1.json
 python3 scripts/build-bench.py --golden ../boar-eval/bench/v0.1/questions.public.jsonl ../boar-eval/scorers/vendor/lantern/precheck.py  # Fixtures/bench/precheck-golden.jsonl
-swift test --scratch-path .build/eval --filter BoarAnswerTests
+swift test --scratch-path .build/eval --filter BoarAnswerTests --skip LabTimingTests
 # on the Mac, after Share → Traces for the judge:
 node harness/judge.mjs --traces <file>.traces.jsonl --out <file>.judgments.jsonl --bench bench/v0.1 --floor-errored
 python3 scorers/score.py --traces <file>.traces.jsonl --judgments <file>.judgments.jsonl --bench bench/v0.1

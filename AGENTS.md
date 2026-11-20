@@ -19,6 +19,7 @@ TL;DR: SwiftUI app + a Swift port of the android-native Kotlin engine. The Andro
 export DEVELOPER_DIR=/Applications/Xcode-27.2.0.app/Contents/Developer   # always build with Xcode 27 (iOS 27 SDK)
 bash scripts/fetch-llama.sh                                              # pinned llama.cpp b11010 XCFramework → Vendor/
 swift test --scratch-path .build/<your-name> --filter <Target>Tests      # engine tests on the Mac host
+bash scripts/test.sh --scratch-path .build/<your-name>                  # whole package: timing suite (LabTimingTests) runs alone after the rest
 xcodegen generate && xcodebuild -project Boar.xcodeproj -scheme Boar -destination 'generic/platform=iOS' CODE_SIGNING_ALLOWED=NO -derivedDataPath .build/DerivedData build
 xcodebuild -project Boar.xcodeproj -scheme BoarMac -destination 'platform=macOS' -derivedDataPath .build/DerivedData CODE_SIGN_STYLE=Manual CODE_SIGN_IDENTITY=- DEVELOPMENT_TEAM= build   # native Mac app (ad-hoc signed, sandboxed)
 ```

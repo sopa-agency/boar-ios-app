@@ -92,7 +92,7 @@ git clone https://github.com/sopa-agency/boar-ios-app.git
 git -C boar-app checkout "$(cat boar-ios-app/Fixtures/SOURCE_SHA)"
 cd boar-ios-app
 bash scripts/fetch-llama.sh          # the pinned llama.cpp XCFramework, into Vendor/
-swift test                           # the engine and its golden tests, on the Mac
+bash scripts/test.sh                 # the engine and its golden tests, on the Mac (timing tests alone, last)
 xcodegen generate                    # Boar.xcodeproj from project.yml
 xcodebuild -project Boar.xcodeproj -scheme Boar -destination 'generic/platform=iOS' \
   CODE_SIGNING_ALLOWED=NO build      # the iPhone app

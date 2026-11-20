@@ -9,7 +9,8 @@ import Testing
 /// questions, crazy ones, fake model answers) and 5,000 fuzzed strings. Each invariant names its letter: (a) no
 /// exception (a Swift crash fails the run on its own), (b) one deterministic winner, (c) health, seed, PT and ES kept from
 /// the tools that must not take them, (d) Cohazard wins its questions (EN, PT and ES), (e) Guard only on model answers,
-/// sound and idempotent, (f) each tool decides fast, (g) no leaked placeholders, type names or non-finite numbers.
+/// sound and idempotent, (f) each tool decides fast (in `LabTimingTests`, which runs alone), (g) no leaked placeholders,
+/// type names or non-finite numbers.
 /// Failures are collected and listed in the failing #expect, so one run shows every broken combination.
 enum LabCombos {
     /// The suites' tables (Kotlin prints them to the test log): only with BOAR_TEST_REPORT set, so a normal
@@ -337,34 +338,6 @@ struct LabToolsCombinationTests {
         }
         LabCombos.report("guard: \(questions.count) questions x \(answers.count) answers, \(repaired) repaired; tool answers it would change if it read them: \(wouldTouch)")
         #expect(f.lines.isEmpty, "\(LabCombos.failures(f.lines))")
-    }
-
-    @Test func eachToolDecidesFastWarmEvenOn20000Characters() {
-        var deciders: [(String, (String) -> Any?)] = C.tools.map { id in (id, { q in C.run(id, q) }) }
-        deciders.append(("guard", { q in LabTools.guard(question: q, answer: C.guardAnswers[1].1) }))
-        deciders.append(("guard (20k answer)", { q in LabTools.guard(question: C.take(q, 200), answer: C.guardAnswers.last!.1) }))
-        let qs = C.corpus.map(\.1)
-        let clock = ContinuousClock()
-        var report = "\n== decision time per question, ms (min of 3, warm) ==\n"
-        var slow: [String] = []
-        func ms(_ d: Duration) -> Double { Double(d.components.seconds) * 1000 + Double(d.components.attoseconds) / 1e15 }
-        for (id, d) in deciders {
-            for _ in 0..<2 { qs.forEach { _ = d($0) } }
-            let times = qs.map { q in (q, (1...3).map { _ in ms(clock.measure { _ = d(q) }) }.min()!) }
-            let sorted = times.map(\.1).sorted()
-            let worst = times.max { $0.1 < $1.1 }!
-            report += "\(id.padding(toLength: 20, withPad: " ", startingAt: 0)) median \(String(format: "%.3f", sorted[sorted.count / 2]))  "
-                + "p95 \(String(format: "%.3f", sorted[sorted.count * 95 / 100]))  max \(String(format: "%.2f", worst.1)) "
-                + "(\(worst.0.utf16.count) chars: \(C.take(C.short(worst.0), 50)))\n"
-            // Over the limit: measured again, three more times, so a burst of load from the other suites doesn't fail it.
-            for (q, t0) in times where t0 > 200 * C.timeFactor {
-                let t = min(t0, (1...3).map { _ in ms(clock.measure { _ = d(q) }) }.min()!)
-                if t <= 200 * C.timeFactor { continue }
-                slow.append("\(id) \(String(format: "%.1f", t)) ms on \(q.utf16.count) chars: \(C.short(q))")
-            }
-        }
-        LabCombos.report(report)
-        #expect(slow.isEmpty, "\(LabCombos.failures(slow))")
     }
 
     @Test func fuzzedStringsThroughAllCombinationsKeepBAndG() {
