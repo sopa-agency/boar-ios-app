@@ -176,7 +176,19 @@ public final class ChatStore: @unchecked Sendable {
         }
     }
 
-    /// Keeps the `maxSessions` most recently used sessions.
+    /// The chats a new one would push out under a limit of `maxSessions`, oldest first; none when every chat is kept (0)
+    /// or there is room (android rc3 6a974612).
+    public func pushedOutByNew(maxSessions: Int) throws -> [ChatSession] {
+        maxSessions <= 0 ? [] : try listSessions().dropFirst(maxSessions - 1).reversed()
+    }
+
+    /// The chats a lower limit of `maxSessions` would delete, oldest first. None for 0 (keep all) or when they fit
+    /// (android rc3 e2530996).
+    public func pushedOutAt(maxSessions: Int) throws -> [ChatSession] {
+        maxSessions <= 0 ? [] : try listSessions().dropFirst(maxSessions).reversed()
+    }
+
+    /// Keeps the `maxSessions` most recently used sessions; 0 keeps every chat (the default).
     public func prune(maxSessions: Int) throws {
         if maxSessions <= 0 { return }
         let ids = try db.query("SELECT id FROM chat_sessions ORDER BY updated_at DESC LIMIT -1 OFFSET ?", args: [.integer(Int64(maxSessions))]) { $0.string(0)! }
