@@ -50,6 +50,12 @@ import Testing
         #expect(all.contains { $0.source == "FAQ do BOAR, escrito pela Amandita" })
     }
 
+    @Test func aCrlfGuideSplitsItsHeadingLikeAnLfOne() {
+        let lf = BoarPack.guide("en", markdown: guides["en"]!)
+        let crlf = BoarPack.guide("en", markdown: guides["en"]!.replacingOccurrences(of: "\n", with: "\r\n"))
+        #expect(crlf.map(\.title) == lf.map(\.title))
+    }
+
     @Test func theFaqShipsOnlyTextCheckedAgainstRc3() throws {
         let root = try #require(JSONSerialization.jsonObject(with: Data(faq.utf8)) as? [String: Any])
         let entries = try #require(root["entries"] as? [[String: Any]])

@@ -38,10 +38,12 @@ public enum BoarPack {
     public static func guide(_ lang: String, markdown: String) -> [Passage] {
         let label = guideSource[lang] ?? "BOAR Guide"
         return sections.split(markdown).dropFirst().flatMap { sec -> [Passage] in
-            // Kotlin substringBefore/After('\n') answer the whole string when there is no newline.
-            let nl = sec.firstIndex(of: "\n")
-            let heading = kotlinTrim(nl.map { String(sec[..<$0]) } ?? sec)
-            let body = plain(nl.map { String(sec[sec.index(after: $0)...]) } ?? sec)
+            // Kotlin substringBefore/After('\n') answer the whole string when there is no newline. By scalar, not Character:
+            // a CRLF is one Character in Swift, so `firstIndex(of: "\n")` would miss it.
+            let us = sec.unicodeScalars
+            let nl = us.firstIndex(of: "\n")
+            let heading = kotlinTrim(nl.map { String(us[..<$0]) } ?? sec)
+            let body = plain(nl.map { String(us[us.index(after: $0)...]) } ?? sec)
             if heading.isEmpty || body.isEmpty { return [] }
             return parts(body).enumerated().map { i, b in
                 passage(lang, "guide", heading + (i > 0 ? " (\(i + 1))" : ""), "\(label) · \(heading)", label, b)

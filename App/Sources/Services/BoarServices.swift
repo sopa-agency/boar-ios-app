@@ -251,8 +251,11 @@ final class BoarServices: @unchecked Sendable {
     private func syncBoarPackLocked() async -> Int {
         do {
             var guides: [String: String] = [:]
-            for lang in ["en", "pt"] {
-                if let url = AppPaths.bundled("boar-guide-\(lang)", ext: "md") { guides[lang] = try String(contentsOf: url, encoding: .utf8) }
+            // Every boar-guide-<lang>.md the bundle ships, as Android lists its assets: a new language is just a new file.
+            for url in Bundle.main.urls(forResourcesWithExtension: "md", subdirectory: nil) ?? [] {
+                let name = url.deletingPathExtension().lastPathComponent
+                guard name.hasPrefix("boar-guide-") else { continue }
+                guides[String(name.dropFirst("boar-guide-".count))] = try String(contentsOf: url, encoding: .utf8)
             }
             let faq = AppPaths.bundled("boar-faq", ext: "json").flatMap { try? String(contentsOf: $0, encoding: .utf8) }
             let catalog = catalog, embedder = embedder
