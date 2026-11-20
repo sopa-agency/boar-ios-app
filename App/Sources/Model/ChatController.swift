@@ -698,12 +698,14 @@ final class ChatController {
             ? nil : AnswerChecks.run(Labs.shared.activeChecks, question: q, answer: text)
         if let repair { text = repair.text }
         let toolCodes = [tool?.tool, repair?.tool].compactMap { $0 }.joined(separator: "+")
+        // The style the answer was written in, kept in the receipt (android: Personal Files stays "personal").
+        let receiptStyle = shortReason != nil && !personal ? "succinct" : chosenStyle
         var receipt: Receipt?
         if instant != nil, let firstAt {
             // An instant answer generated nothing: its receipt has the time and the tool, no speed.
             receipt = Receipt(totalMs: Self.seconds(startAt.duration(to: clock.now)) * 1000, ttftMs: Self.seconds(startAt.duration(to: firstAt)) * 1000,
                               tokPerSec: 0, tokens: 0, model: nil, retrievalMs: nil, prefillMs: nil, contextTokens: nil, loadMs: nil,
-                              styleNote: nil, tool: toolCodes, path: path)
+                              styleNote: nil, tool: toolCodes, path: path, style: receiptStyle)
         } else if let firstAt, tokens > 0 {
             let end = clock.now
             let wallRate = Double(tokens) / max(Self.seconds(firstAt.duration(to: end)), 1e-3)
@@ -713,7 +715,7 @@ final class ChatController {
                 tokPerSec: decodeRate > 0 ? decodeRate : wallRate, tokens: (metrics?.generatedTokens ?? 0) > 0 ? metrics!.generatedTokens : tokens,
                 model: modelLabel, retrievalMs: retrievalMs, prefillMs: metrics?.prefillMs, contextTokens: metrics?.promptTokens, loadMs: loadMs,
                 styleNote: shortReason == ShortAnswer.smallTalk ? nil : shortReason, tool: toolCodes.isEmpty ? nil : toolCodes,
-                path: path)
+                path: path, style: receiptStyle)
         }
         // Ended at its token limit rather than by itself: a note, and a redo at the next length that fits.
         let generated = (metrics?.generatedTokens ?? 0) > 0 ? metrics!.generatedTokens : tokens
