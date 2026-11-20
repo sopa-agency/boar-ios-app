@@ -33,6 +33,40 @@ import Testing
         #expect(!QueryContext.isHealthQuestion("CO2 levels in the office are high"))
         #expect(!QueryContext.isHealthQuestion("Who is the CO of the company?"))
     }
+
+    /// "How much paracetamol (acetaminophen) can an adult take in a day?" had none of the health words.
+    @Test func aMedicinesDoseIsAHealthQuestionKeptShort() {
+        for q in ["How much paracetamol (acetaminophen) can an adult take in a day?", "ibuprofen dose for adults", "Is 1000 mg of Tylenol too much?",
+                  "Quantos mg de dipirona posso tomar?", "Qual a dosagem máxima de paracetamol por dia?", "¿Cuánto ibuprofeno puedo tomar al día?",
+                  "What is the maximum daily dose of aspirin?"] {
+            #expect(QueryContext.isHealthQuestion(q), "\(q)")
+            #expect(ShortAnswer.reason(chosenStyle: "detailed", question: q, previousQuestion: nil) == "health", "\(q)")
+        }
+        // A medicine named without a dose word, or a dose word without a medicine, is not this rule.
+        for q in ["Who invented aspirin?", "How much does a car cost?", "What is the history of ibuprofen?"] {
+            #expect(!QueryContext.isHealthQuestion(q), "\(q)")
+        }
+    }
+
+    /// BenchModelsTest.kt over Android's health topic (topics/health.v1.json; the bench isn't on iOS, so its queries are
+    /// here): every question but the CO one, which the acute card answers, is kept short.
+    @Test func everyBenchHealthQuestionIsKeptShort() {
+        for q in ["I just spilled boiling water on my hand. What should I do right now?",
+                  "I got stung by a bee on my arm. How do I treat it, and when is it an emergency?",
+                  "My 2-year-old has a fever of 39 °C. What should I do, and when should we see a doctor?",
+                  "How much paracetamol (acetaminophen) can an adult take in a day?"] {
+            #expect(ShortAnswer.reason(chosenStyle: "detailed", question: q, previousQuestion: nil) == "health", "\(q)")
+        }
+    }
+
+    /// "hows health blood test? summarize" in Personal Files wasn't health. Personal Files is kept short for health too.
+    @Test func labResultsAreHealthAndPersonalFilesKeepsThemShort() {
+        for q in ["hows health blood test? summarize", "summarize my blood test", "resuma meu exame de sangue", "what does my LDL mean?", "meu colesterol está alto?"] {
+            #expect(QueryContext.isHealthQuestion(q), "\(q)")
+        }
+        #expect(ShortAnswer.reason(chosenStyle: "personal", question: "summarize my blood test", previousQuestion: nil) == "health")
+        #expect(ShortAnswer.reason(chosenStyle: "personal", question: "what did my landlord say?", previousQuestion: nil) == nil)
+    }
 }
 
 /// Seed-phrase and wallet-backup questions answer in Succinct even when Detailed is picked (SeedPhraseQuestionTest.kt).
@@ -108,6 +142,8 @@ import Testing
 
     @Test func otherStylesAreLeftAlone() {
         #expect(ShortAnswer.reason(chosenStyle: "succinct", question: "How do I treat a minor kitchen burn?", previousQuestion: nil) == nil)
-        #expect(ShortAnswer.reason(chosenStyle: "personal", question: "And for how long?", previousQuestion: "How do I treat a minor kitchen burn?") == nil)
+        // Golden change (Android aa9b0cc5): Personal Files is kept short for health too, with its own prompt; not for anything else.
+        #expect(ShortAnswer.reason(chosenStyle: "personal", question: "And for how long?", previousQuestion: "How do I treat a minor kitchen burn?") == "health")
+        #expect(ShortAnswer.reason(chosenStyle: "personal", question: "How should I store my seed phrase?", previousQuestion: nil) == nil)
     }
 }

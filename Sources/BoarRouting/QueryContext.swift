@@ -23,7 +23,12 @@ public enum QueryContext {
     private static let frostbite = JsRegex(#"(^|[^\p{L}])(frostbit\p{L}*|frostnip)(?![\p{L}])"#, flags: "iu")
     private static let phraseHealthContent = JsRegex(#"(?<![\p{L}])(al[ée]rg\p{L}*|allerg\p{L}*|anaphyla\p{L}*|epipen|insulin\p{L}*|diabet\p{L}*|epilep\p{L}*|asthma|asma|medicine|medication|pills?|rem[ée]dios?|medicamentos?|rem[ée]dio|disease|illness|sick|doen[çc]a|doente|symptoms?|sintomas?|pain|hurts?|dor(es)?|d[óo]i|blood|sangue|sangr\p{L}*|bleed\p{L}*|doctor|m[ée]dic[oa]|hospital|ambulance|ambul[âa]ncia|pregnant|gr[áa]vida|heart|cora[çc][ãa]o|emergency|emerg[êe]ncia)(?![\p{L}])"#, flags: "iu")
     private static let phraseAsk = JsRegex(#"\b(how (do|would|can|should) (i|you|we) say|how to say|how do (you|i) greet|what('s| is| are) [^?]{1,40} in (\#(languageNames))|translate)\b|(?<![\p{L}])(como (se )?diz|como (eu )?(falo|digo|cumprimento)|como se fala|como se escreve|como [ée] [^?]{1,40} em (\#(languageNames)))(?![\p{L}])"#, flags: "iu")
+    private static let labResults = JsRegex(#"(?<![\p{L}])(blood (?:test|tests|work|results|panel|count)|lab (?:test|tests|results|report)|cholesterol|ldl|hdl|triglycerides?|glucose|hba1c|a1c|hemoglobin|haemoglobin|exames? de sangue|exames? laboratoriais|exames? de laborat[óo]rio|hemograma|colesterol|glicose|glicemia|triglicer[íi]deos?|an[áa]lisis de sangre|an[áa]lisis cl[íi]nicos)(?![\p{L}])"#, flags: "iu")
     private static let aBit = JsRegex(#"\ba (little )?bit\b"#, flags: "gi")
+    // A medicine's dose: "How much paracetamol can an adult take in a day?" had none of the health words, so its answer
+    // wasn't kept short. A common pain or fever medicine named with a dose word.
+    private static let medicine = JsRegex(#"(?<![\p{L}])(paracetamol|acetaminophen|acetaminofen|acetaminofeno|tylenol|panadol|ibuprofen|ibuprofeno|advil|motrin|nurofen|dipirona|metamizol\p{L}*|novalgina|aspirin|aspirina|naproxen|naproxeno)(?![\p{L}])"#, flags: "iu")
+    private static let dose = JsRegex(#"(?<![\p{L}])(how much|how many|mg|milligrams?|dose|doses|dosage|dosing|max(imum)?|per day|a day|daily|every \d+ hours?|quant[oa]s?|quanto|dosagem|dose m[áa]xima|miligramas?|por dia|de quantas em quantas horas|cu[áa]nt[oa]s?|dosis|al d[íi]a|por d[íi]a)(?![\p{L}])"#, flags: "iu")
     private static let seedPhrase = JsRegex(#"(?<![\p{L}\p{N}])(seed[- ]?phrases?|recovery (phrases?|words|seeds?)|mnemonic (phrases?|words|seeds?)|wallet back ?ups?|back(ing|ed)? ?up (my|your|the|a|our) (\p{L}+ )?wallets?|frases?[- ](sementes?|de recupera[çc][ãa]o)|palavras[- ](de recupera[çc][ãa]o|sementes?)|frases?[- ](semillas?|de recuperaci[óo]n)|palabras[- ](semillas?|de recuperaci[óo]n)|copias? de seguridad (de la|de mi|de tu|del) (\p{L}+ )?(cartera|billetera|monedero)s?|backup (da|de|das|de uma|da minha|da sua) (\p{L}+ )?carteiras?)(?![\p{L}\p{N}])"#, flags: "iu")
     private static let seedWords = JsRegex(#"(?<![\p{L}\p{N}])(mnemonic|private keys?|chaves? privadas?|claves? privadas?|(12|24|twelve|twenty[- ]four)[- ]words?|(12|24|doze|vinte e quatro) palavras)(?![\p{L}\p{N}])"#, flags: "iu")
     private static let cryptoContext = JsRegex(#"(?<![\p{L}\p{N}])(wallets?|carteiras?|billeteras?|carteras?|monederos?|crypto\p{L}*|cripto\p{L}*|bitcoins?|btc|ethereum|eth|coins?|moedas?|blockchain|metamask|ledger|trezor|seed|semente|bip ?39)(?![\p{L}\p{N}])"#, flags: "iu")
@@ -47,9 +52,12 @@ public enum QueryContext {
             || frostbite.containsMatch(in: query)
             || (chestPain.containsMatch(in: query) && !chestPainMetaphor.containsMatch(in: query))
             || headInjury.containsMatch(in: query)
+            || (medicine.containsMatch(in: query) && dose.containsMatch(in: query))
             // Carbon monoxide named: an alarm chirping or reading 0 gets no card, but its answer is kept short ("My CO alarm
             // keeps chirping every minute" ran a Detailed answer).
             || CoHazard.namesCarbonMonoxide(query)
+            // Lab results ("hows health blood test? summarize" wasn't health).
+            || labResults.containsMatch(in: query)
             // A phrase to translate that carries health content stays on the health path.
             || (phraseAsk.containsMatch(in: query) && phraseHealthContent.containsMatch(in: query))
     }
