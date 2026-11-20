@@ -591,6 +591,8 @@ final class ChatController {
             // A thank-you or greeting: Succinct's length in any style.
             if smallTalk { maxTokens = min(maxTokens, AppSettings.defaultMaxTokens) }
             limited = maxTokens
+            // The search stages of the labs switched on now (Facts' country figures): every answer path searches through them.
+            let searchStages = Labs.shared.activeSearchStages
             if way != .pipeline {
                 let (events, sink) = AsyncStream<Event>.makeStream()
                 let stop = stopFlag
@@ -603,7 +605,7 @@ final class ChatController {
                     defer { sink.finish() }
                     if way == .research || way == .recap {
                         let research = way == .research
-                        let r = try await DeepResearch(generator: SessionEngine(session, enableThinking: tweaks.thinkingEnabled), retriever: services.retriever, tweaks: tweaks)
+                        let r = try await DeepResearch(generator: SessionEngine(session, enableThinking: tweaks.thinkingEnabled), retriever: services.retriever, tweaks: tweaks, stages: searchStages)
                             .run(q, systemPrompt: systemPrompt, history: history, maxTokens: maxTokens,
                                  onProgress: { p in
                                      sink.yield(.activity(research
@@ -614,7 +616,7 @@ final class ChatController {
                         return Outcome(sources: r.citations, timedOut: r.timedOut, metrics: r.metrics, fromPreviousAnswer: r.fromPreviousAnswer)
                     }
                     let (chunks, timedOut) = try await Self.adaptive(q, systemPrompt: toolPrompt, styleReminder: styleReminder, history: history,
-                                                                      maxTokens: maxTokens, services: services, stop: stop, sink: sink)
+                                                                      maxTokens: maxTokens, services: services, stages: searchStages, stop: stop, sink: sink)
                     return Outcome(sources: chunks, timedOut: timedOut)
                 }
                 for await e in events {
@@ -632,6 +634,7 @@ final class ChatController {
                 // (the 1.7B read 231 against "below 190" as fine).
                 let pipeline = AnswerPipeline(
                     session: session, retriever: services.retriever, params: personal ? PersonalFiles.retrieval() : .default,
+                    stages: searchStages,
                     annotate: { c in
                         guard c.collectionId != nil, let n = LabRanges.note(c.body, pt: ptQ) else { return c }
                         var marked = c
@@ -713,12 +716,14 @@ final class ChatController {
             ? nil : AnswerChecks.run(Labs.shared.activeChecks, question: q, answer: text)
         if let repair { text = repair.text }
         let toolCodes = [tool?.tool, repair?.tool].compactMap { $0 }.joined(separator: "+")
+        // The style the answer was written in, kept in the receipt (android: Personal Files stays "personal").
+        let receiptStyle = shortReason != nil && !personal ? "succinct" : chosenStyle
         var receipt: Receipt?
         if instant != nil, let firstAt {
             // An instant answer generated nothing: its receipt has the time and the tool, no speed.
             receipt = Receipt(totalMs: Self.seconds(startAt.duration(to: clock.now)) * 1000, ttftMs: Self.seconds(startAt.duration(to: firstAt)) * 1000,
                               tokPerSec: 0, tokens: 0, model: nil, retrievalMs: nil, prefillMs: nil, contextTokens: nil, loadMs: nil,
-                              styleNote: nil, tool: toolCodes, path: path)
+                              styleNote: nil, tool: toolCodes, path: path, style: receiptStyle)
         } else if let firstAt, tokens > 0 {
             let end = clock.now
             let wallRate = Double(tokens) / max(Self.seconds(firstAt.duration(to: end)), 1e-3)
@@ -728,7 +733,7 @@ final class ChatController {
                 tokPerSec: decodeRate > 0 ? decodeRate : wallRate, tokens: (metrics?.generatedTokens ?? 0) > 0 ? metrics!.generatedTokens : tokens,
                 model: modelLabel, retrievalMs: retrievalMs, prefillMs: metrics?.prefillMs, contextTokens: metrics?.promptTokens, loadMs: loadMs,
                 styleNote: shortReason == ShortAnswer.smallTalk ? nil : shortReason, tool: toolCodes.isEmpty ? nil : toolCodes,
-                path: path)
+                path: path, style: receiptStyle)
         }
         // Ended at its token limit rather than by itself: a note, and a redo at the next length that fits.
         let generated = (metrics?.generatedTokens ?? 0) > 0 ? metrics!.generatedTokens : tokens
@@ -791,7 +796,7 @@ final class ChatController {
     /// runAdaptiveChat: plan with the installed models and the user's routing settings, then execute.
     nonisolated private static func adaptive(
         _ q: String, systemPrompt: String, styleReminder: String?, history: ConversationHistory, maxTokens: Int,
-        services: BoarServices, stop: StopFlag, sink: AsyncStream<Event>.Continuation
+        services: BoarServices, stages: [any SearchStage], stop: StopFlag, sink: AsyncStream<Event>.Continuation
     ) async throws -> ([Chunk], Bool) {
         let s = services.settings
         let statuses = services.catalog.models.filter { $0.kind == .llm }.map { m in
@@ -806,7 +811,7 @@ final class ChatController {
         let plan = AdaptivePlan.plan(query: q, statuses: statuses, preset: preset, overrides: overrides, activeModelId: s.activeModelId("llm"),
                                      deviceRamBytes: services.totalRamBytes, maxTokens: maxTokens)
         let tweaks = s.engineTweaks
-        let r = try await PlanExecutor(host: services.host, retriever: services.retriever, timeoutFor: { tweaks.stageTimeoutMs(nPredict: $0) })
+        let r = try await PlanExecutor(host: services.host, retriever: services.retriever, stages: stages, timeoutFor: { tweaks.stageTimeoutMs(nPredict: $0) })
             .execute(plan: plan.plan, input: PipelineInput(query: q, systemPrompt: systemPrompt, styleReminder: styleReminder, history: history),
                      onToken: { sink.yield(.piece($0)) },
                      onStepStart: { step in sink.yield(.activity(step.type == .retrieve ? .retrieving : .thinking)) },

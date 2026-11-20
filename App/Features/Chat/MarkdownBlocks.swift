@@ -1,3 +1,4 @@
+import BoarAnswer
 import Foundation
 import SwiftUI
 
@@ -29,7 +30,9 @@ enum MarkdownBlocks {
         return out
     }
 
-    private static func lines(_ s: String) -> [Block] {
+    /// The text between code blocks, a table in it turned into "Test: Result (Reference)" lines: no raw pipes (t9 2200 d).
+    private static func lines(_ text: String) -> [Block] {
+        let s = TableLines.of(text)
         var out: [Block] = []
         var paragraph: [String] = []
         func flush() {

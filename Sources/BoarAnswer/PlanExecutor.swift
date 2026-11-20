@@ -65,11 +65,11 @@ public struct PlanExecutor: Sendable {
 
     /// The executor with BoarRouting's classifier and a `Retriever`.
     public init(
-        host: any ModelHost, retriever: Retriever, clock: @escaping @Sendable () -> Double = monotonicMillis,
+        host: any ModelHost, retriever: Retriever, stages: [any SearchStage] = [], clock: @escaping @Sendable () -> Double = monotonicMillis,
         timeoutFor: @escaping @Sendable (Int) -> Int64? = { EngineTweaks().stageTimeoutMs(nPredict: $0) }
     ) {
         self.init(
-            host: host, retrieve: { q, k in try await retriever.retrieve(q, topK: k) }, classify: { Classify.classifyTask($0).value },
+            host: host, retrieve: { q, k in try await SearchStages.search(stages, query: q, topK: k) { try await retriever.retrieve($0, topK: $1) } }, classify: { Classify.classifyTask($0).value },
             clock: clock, timeoutFor: timeoutFor
         )
     }

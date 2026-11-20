@@ -61,6 +61,11 @@ struct AnswerView: View {
                     default: EmptyView()
                     }
                 }
+                // Nothing in the library backs it: said, not left to guess (t9 0226 point 4).
+                if !streaming, NoSource.shows(searched: message.receipt?.retrievalMs != nil, sources: message.sources.count, instant: message.receipt?.tool != nil,
+                                              question: chat.question(for: message.id) ?? "", answer: message.text, style: message.receipt?.style) {
+                    MessageNote(symbol: Symbols.shortAnswer, text: "No source in this \(Platform.deviceNoun)'s library covers this; the answer is from the model alone.", warning: false)
+                }
                 if message.stopped { MessageNote(symbol: Symbols.stop, text: "Stopped", warning: false) }
                 if message.timedOut { MessageNote(symbol: Symbols.caution, text: "A research step took too long and was cut short", warning: true) }
                 // The plugin answered without the model: the same question, plugins skipped (never the CO safety answer).
