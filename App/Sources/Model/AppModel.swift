@@ -159,6 +159,8 @@ final class AppModel {
             open.end()
             self.services = services
             services.vault.connectivity = connectivity
+            // BOAR's guide and FAQ into the index (a no-op once this build's passages are there).
+            Task.detached(priority: .utility) { _ = await services.syncBoarPack() }
             Self.migrateTechnicalDetails(services)
             #if DEBUG
             await DemoSeed.run(services: services)
