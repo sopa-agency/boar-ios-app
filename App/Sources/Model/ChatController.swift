@@ -256,7 +256,9 @@ final class ChatController {
         Task {
             let records = (try? await services.background { try $0.chats.messages(sessionId: id) }) ?? []
             self.messages = records.map { r in
-                var item = ChatItem(id: r.id, role: r.role, text: r.text, sources: MessageMeta.sources(r.meta), feedback: r.feedback, receipt: MessageMeta.receipt(r.meta))
+                let receipt = MessageMeta.receipt(r.meta)
+                var item = ChatItem(id: r.id, role: r.role, text: r.text, sources: MessageMeta.sources(r.meta), feedback: r.feedback, receipt: receipt)
+                item.staged = MessageMeta.staged(r.meta, receipt: receipt)
                 if MessageMeta.error(r.meta) == MessageMeta.interrupted {
                     item.failure = String(localized: "Interrupted: BOAR was closed while answering.")
                 }
@@ -546,10 +548,15 @@ final class ChatController {
         ).flatMap { !(deep || personal) || PersonalFiles.keepsTool($0.tool) ? $0 : nil }
         let instant = tool?.instantText
         let toolPrompt = AnswerTools.systemPrompt(systemPrompt, tool)
+        // Boar Staged answers (android AnswerModes.staged): the default path only. It loads the model itself, after the
+        // search, so the sources show while a cold model loads.
+        let staged = StagedChat.chooses(enabled: settings.stagedQuotes, instant: instant != nil, personal: personal, deepResearch: deep,
+                                        aboutConversation: aboutConversation, smallTalk: smallTalk)
         // How this answer is written (android Receipt.path), for the check slot and the receipt: Deep Research and recaps
         // are not checked, and a Deep Research answer keeps its border in the history.
         let path: String? = switch way {
         case _ where instant != nil: nil
+        case _ where staged: "staged"
         case .research: "deep"
         case .recap: "chat"
         case .adaptive: "adaptive"
@@ -576,6 +583,17 @@ final class ChatController {
         /// was opened with.
         var limited: Int?
         var openedContext: Int?
+        /// Staged: what the card shows and when each step happened (kept with the answer).
+        var stagedView: StagedView?
+        var stagedTimes: [String: Double]?
+        // A user's file with results and ranges gets each one marked in code, given to the model with the passage (the
+        // 1.7B read 231 against "below 190" as fine).
+        let annotateRanges: @Sendable (Chunk) -> Chunk = { c in
+            guard c.collectionId != nil, let n = LabRanges.note(c.body, pt: ptQ) else { return c }
+            var marked = c
+            marked.body = c.body + "\n\n" + n
+            return marked
+        }
 
         let mark = BoarPerf.begin("answer", way.rawValue)
 
@@ -583,14 +601,16 @@ final class ChatController {
         var partialSave: Task<Void, Never>?
         var savedAt = clock.now
 
-        func onPiece(_ piece: String) {
+        /// One streamed piece; `whole`: the text as it reads now (a staged answer joins its intro and details), instead of
+        /// the piece appended.
+        func onPiece(_ piece: String, whole: String? = nil) {
             tokens += 1
             let now = clock.now
             if firstAt == nil {
                 firstAt = now
                 BoarPerf.event("answer.firstToken")
             }
-            text += piece
+            text = whole ?? text + piece
             if savedAt.duration(to: now) > Self.partialSaveEvery {
                 savedAt = now
                 let partial = text
@@ -619,11 +639,103 @@ final class ChatController {
             if activity?.stepKind != .writing { enter(.generating, answerId: answerId) }
         }
 
+        /// Boar Staged answers (android ChatViewModel's staged path): the sources first, a short intro, the details; the
+        /// engine loads the model itself, after the cards. Stop keeps what is shown.
+        func runStaged() async throws {
+            let stop = stopFlag
+            var view = StagedView(withPassages: shortReason != nil)
+            var intro = ""
+            var details = ""
+            var afterLoadNoted = false
+            func show(_ event: StagedEvent, sources shown: [ChatSource]? = nil) {
+                view.apply(event, query: q)
+                stagedView = view
+                guard let i = messages.lastIndex(where: { $0.id == answerId }) else { return }
+                messages[i].staged = view
+                if let shown {
+                    messages[i].sources = shown
+                    messages[i].sourceCount = shown.count
+                }
+            }
+            /// Known once the model is open: what the load took, and the context Auto fits the length to.
+            func afterLoad() {
+                guard !afterLoadNoted else { return }
+                afterLoadNoted = true
+                loadMs = services.host.lastLoadMs
+                openedContext = services.host.openedContext
+                limited = limit ?? settings.answerTokens(openedContext: openedContext)
+            }
+            let budget = limit ?? settings.answerTokens(openedContext: services.host.openedContext)
+            limited = budget
+            let succinct = services.personalities.promptFor("succinct", customPrompt: nil, smallModel: smallModel).styleReminder
+            let picked = services.personalities.promptFor(style, customPrompt: settings.customSystemPrompt, smallModel: smallModel).styleReminder
+            let reminders = StagedChat.reminders(style: style, succinct: succinct, picked: picked)
+            let request = StagedRequest(query: q, systemPrompt: toolPrompt, introReminder: reminders.intro, detailsReminder: reminders.details,
+                                        maxTokens: budget, history: history, enableThinking: tweaks.thinkingEnabled)
+            let engine = StagedAnswer(retriever: services.retriever, stages: Labs.shared.activeSearchStages, annotate: annotateRanges)
+            for try await e in engine.answer(request, load: { await services.activeSession() }, shouldStop: { stop.value }) {
+                switch e {
+                case .step(let step):
+                    show(e)
+                    if stopping { break }
+                    if step == .sources {
+                        enter(.retrieving, answerId: answerId)
+                    } else if text.isEmpty {
+                        // The model loads right after this step starts.
+                        enter(step == .intro && services.host.current == nil ? .loadingModel : .thinking, answerId: answerId)
+                    }
+                case .cards(let chunks, _, let ms):
+                    sources = chunks
+                    retrievalMs = ms
+                    // Numbered as in the prompt, so a [n] tapped while the answer streams opens its source; grouped at the end.
+                    show(e, sources: Self.numberedSources(chunks))
+                case .piece(let step, let piece):
+                    afterLoad()
+                    // The intro and the details kept apart and shown joined, as they're saved: one paragraph break between
+                    // them, not one per piece (one token per line, X6, Nov 9).
+                    if step == .details { details += piece } else { intro += piece }
+                    onPiece(piece, whole: StagedAnswer.join(intro, details))
+                case .restart:
+                    intro = ""
+                    details = ""
+                    text = ""
+                    thinkingOpen = true
+                    thinkingAt = nil
+                    if let i = messages.lastIndex(where: { $0.id == answerId }) { messages[i].text = "" }
+                case .moreSources(let added):
+                    sources += added
+                    show(e, sources: Self.numberedSources(sources))
+                case .checked:
+                    show(e)
+                case .done(let d):
+                    afterLoad()
+                    sources = d.sources
+                    metrics = d.metrics
+                    stagedTimes = d.times.toMap()
+                    // The saved text: the intro, then the details, thinking left out.
+                    text = d.text
+                    show(e)
+                    if let i = messages.lastIndex(where: { $0.id == answerId }) { messages[i].text = text }
+                    if d.noModel {
+                        if services.backend == .remote {
+                            throw ChatError.remoteUnreachable(services.host.lastRemoteError ?? String(localized: "Add the Mac's address in Settings → Advanced → Engine."))
+                        }
+                        noModel = true
+                        throw ChatError.noModel
+                    }
+                }
+            }
+        }
+
         do {
             if let instant {
                 // An instant answer doesn't load the model.
                 onPiece(instant)
                 throw InstantAnswer()
+            }
+            if staged {
+                try await runStaged()
+                throw StagedAnswerRan()
             }
             if services.host.current == nil { enter(.loadingModel, answerId: answerId) }
             guard let session = await services.activeSession() else {
@@ -678,17 +790,10 @@ final class ChatController {
                 if outcome.metrics != nil { metrics = outcome.metrics }
                 if outcome.fromPreviousAnswer { reusedSources = lastAnswer?.sources }
             } else {
-                // A user's file with results and ranges gets each one marked in code, given to the model with the passage
-                // (the 1.7B read 231 against "below 190" as fine).
                 let pipeline = AnswerPipeline(
                     session: session, retriever: services.retriever, params: personal ? PersonalFiles.retrieval() : .default,
                     stages: searchStages,
-                    annotate: { c in
-                        guard c.collectionId != nil, let n = LabRanges.note(c.body, pt: ptQ) else { return c }
-                        var marked = c
-                        marked.body = c.body + "\n\n" + n
-                        return marked
-                    }
+                    annotate: annotateRanges
                 )
                 var request = AnswerRequest(query: q, systemPrompt: toolPrompt, styleReminder: styleReminder, maxTokens: maxTokens,
                                             history: history, enableThinking: tweaks.thinkingEnabled)
@@ -714,7 +819,7 @@ final class ChatController {
                         sources = chunks
                         // Numbered now, so the citations are tappable while the answer streams.
                         if let i = messages.lastIndex(where: { $0.id == answerId }) {
-                            messages[i].sources = chunks.enumerated().map { ChatSource(number: $0.offset + 1, chunk: $0.element) }
+                            messages[i].sources = Self.numberedSources(chunks)
                             messages[i].sourceCount = chunks.count
                         }
                     case .piece(let p): onPiece(p)
@@ -726,6 +831,7 @@ final class ChatController {
             }
         } catch is CancellationError {
         } catch is InstantAnswer {
+        } catch is StagedAnswerRan {
         } catch {
             failure = error
         }
@@ -736,26 +842,14 @@ final class ChatController {
 
         mark.end("\(tokens) tokens\(failure == nil ? "" : ", failed")")
         // One source per article, best first; the answer's numbers follow (a reused list is already grouped).
-        let grouped = SourceGroups.group(sources.map { ChatSource(number: 0, chunk: $0) },
-                                         key: { SourceGroups.articleKey(source: $0.source, docId: $0.docId, title: $0.title) },
-                                         score: { $0.similarity ?? $0.relevance }) { g in
-            var first = g[0]
-            first.similarity = g.compactMap(\.similarity).max()
-            first.relevance = g.compactMap(\.relevance).max()
-            first.body = g.map(\.body).joined(separator: "\n…\n")
-            return first
-        }
+        let grouped = Self.groupSources(sources)
         if reusedSources == nil { text = SourceGroups.renumber(text, map: grouped.renumber) }
         // A model that opens with the not-found line and then answers from the files keeps only the answer.
         if personal {
             let kept = PersonalFiles.dropHedge(text)
             if kept != text { text = kept }
         }
-        let shown = reusedSources ?? grouped.items.enumerated().map { i, s in
-            var s = s
-            s.number = i + 1
-            return s
-        }
+        let shown = reusedSources ?? grouped.items
         let stopped = stopFlag.value
         // The check slot (Boar Labs): a model's finished answer on the default or adaptive path may be repaired; not one
         // that was stopped, timed out or failed part way, nor one from the user's own files.
@@ -781,7 +875,7 @@ final class ChatController {
                 tokPerSec: decodeRate > 0 ? decodeRate : wallRate, tokens: (metrics?.generatedTokens ?? 0) > 0 ? metrics!.generatedTokens : tokens,
                 model: modelLabel, retrievalMs: retrievalMs, prefillMs: metrics?.prefillMs, contextTokens: metrics?.promptTokens, loadMs: loadMs,
                 styleNote: shortReason == ShortAnswer.smallTalk ? nil : shortReason, tool: toolCodes.isEmpty ? nil : toolCodes,
-                path: path, style: receiptStyle)
+                path: path, style: receiptStyle, stages: stagedTimes)
         }
         // Ended at its token limit rather than by itself: a note, and a redo at the next length that fits.
         let generated = (metrics?.generatedTokens ?? 0) > 0 ? metrics!.generatedTokens : tokens
@@ -792,7 +886,8 @@ final class ChatController {
         let nextLimit = cutAt.flatMap { AnswerLimit.next(after: $0, options: services.personalities.maxTokensOptions, openedContext: openedContext) }
         let finalText = text
         // Written over the interrupted mark, which an answer that ended no longer has.
-        let meta = MessageMeta.encode(shown, receipt)
+        stagedView?.step = nil
+        let meta = MessageMeta.encode(shown, receipt, staged: stagedView)
         let maxSessions = settings.maxSavedSessions
         // A failed answer with no text stays on screen (with Try Again) but is not saved.
         let keep = failure == nil || !finalText.isEmpty
@@ -823,6 +918,7 @@ final class ChatController {
             messages[i].cutAt = cutAt
             messages[i].nextLimit = nextLimit
             messages[i].receipt = receipt
+            messages[i].staged = stagedView
             messages[i].answerSeconds = Self.seconds(startAt.duration(to: clock.now))
             if let failure {
                 messages[i].failureNoModel = { if case ChatError.noModel = failure { true } else { false } }()
@@ -839,6 +935,30 @@ final class ChatController {
             afterAnswer(sessionId: sid, isNewSession: isNewSession, stopped: stopped, all: all, systemPrompt: systemPrompt, hadSources: !sources.isEmpty, filesOnly: personal)
         }
         onSessionsChanged?()
+    }
+
+    /// The sources as the prompt numbers them, from 1: what the answer's [n] point at while it streams.
+    private static func numberedSources(_ sources: [Chunk]) -> [ChatSource] {
+        sources.enumerated().map { ChatSource(number: $0.offset + 1, chunk: $0.element) }
+    }
+
+    /// One source per article, best first, numbered from 1; `renumber` maps the answer's old [n] to the new ones.
+    private static func groupSources(_ sources: [Chunk]) -> (items: [ChatSource], renumber: [Int: Int]) {
+        let grouped = SourceGroups.group(sources.map { ChatSource(number: 0, chunk: $0) },
+                                         key: { SourceGroups.articleKey(source: $0.source, docId: $0.docId, title: $0.title) },
+                                         score: { $0.similarity ?? $0.relevance }) { g in
+            var first = g[0]
+            first.similarity = g.compactMap(\.similarity).max()
+            first.relevance = g.compactMap(\.relevance).max()
+            first.body = g.map(\.body).joined(separator: "\n…\n")
+            return first
+        }
+        let items = grouped.items.enumerated().map { i, s in
+            var s = s
+            s.number = i + 1
+            return s
+        }
+        return (items, grouped.renumber)
     }
 
     /// runAdaptiveChat: plan with the installed models and the user's routing settings, then execute.
@@ -931,6 +1051,9 @@ final class ChatController {
 
 /// A Boar Labs tool answered: leaves the generation block without a model.
 private struct InstantAnswer: Error {}
+
+/// The staged answer ran to its end (it loads the model and writes its own steps): skips the other paths.
+private struct StagedAnswerRan: Error {}
 
 enum ChatError: LocalizedError {
     case noModel

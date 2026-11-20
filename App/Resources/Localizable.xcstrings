@@ -519,6 +519,26 @@
         }
       }
     },
+    "+%lld sources" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld fontes"
+          }
+        }
+      }
+    },
+    "+%lld sources found while answering" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+%lld fontes encontradas durante a resposta"
+          }
+        }
+      }
+    },
     ", Deep Research" : {
       "localizations" : {
         "pt" : {
@@ -945,6 +965,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Adicionados por você"
+          }
+        }
+      }
+    },
+    "Adding the details…" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acrescentando os detalhes…"
           }
         }
       }
@@ -2606,6 +2636,16 @@
         }
       }
     },
+    "Checking the numbers…" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conferindo os números…"
+          }
+        }
+      }
+    },
     "Checking…" : {
       "localizations" : {
         "pt" : {
@@ -3826,6 +3866,16 @@
         }
       }
     },
+    "Every number in this answer is in its sources." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Todos os números desta resposta estão nas fontes."
+          }
+        }
+      }
+    },
     "Every saved chat and message on this %@ is deleted. Models, documents and settings stay." : {
       "localizations" : {
         "pt" : {
@@ -3942,6 +3992,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Estendido"
+          }
+        }
+      }
+    },
+    "FROM THE SOURCES (%lld)" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DAS FONTES (%lld)"
           }
         }
       }
@@ -4083,6 +4143,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Dê ao BOAR um documento seu."
+          }
+        }
+      }
+    },
+    "Fewer sources ‹" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Menos fontes ‹"
           }
         }
       }
@@ -4243,6 +4313,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Flash attention"
+          }
+        }
+      }
+    },
+    "Folds the quotes" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recolhe as citações"
           }
         }
       }
@@ -5647,6 +5727,16 @@
         }
       }
     },
+    "Looking for more sources…" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Procurando mais fontes…"
+          }
+        }
+      }
+    },
     "Low accuracy: move the %@ in a figure 8 a few times, away from metal and magnets." : {
       "localizations" : {
         "pt" : {
@@ -5863,6 +5953,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Faltando: %@"
+          }
+        }
+      }
+    },
+    "Mode" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modo"
           }
         }
       }
@@ -6539,6 +6639,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Não baixado"
+          }
+        }
+      }
+    },
+    "Not found in the sources: %@. Check them before you rely on them." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não encontrado nas fontes: %@. Confira antes de confiar."
           }
         }
       }
@@ -7559,6 +7669,16 @@
         }
       }
     },
+    "Quoted from the sources, not BOAR's answer. Tap one for its passage." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Citado das fontes, não é a resposta do BOAR. Toque em uma para ver o trecho."
+          }
+        }
+      }
+    },
     "Qwen 7B" : {
       "localizations" : {
         "pt" : {
@@ -8205,6 +8325,16 @@
         }
       }
     },
+    "Searching the library…" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buscando na biblioteca…"
+          }
+        }
+      }
+    },
     "Searching your library…" : {
       "localizations" : {
         "pt" : {
@@ -8535,6 +8665,16 @@
         }
       }
     },
+    "Show the quotes from the sources before the answer. Turn it off if answers look wrong on your model." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostra as citações das fontes antes da resposta. Desligue se as respostas parecerem erradas no seu modelo."
+          }
+        }
+      }
+    },
     "Shows performance details" : {
       "localizations" : {
         "pt" : {
@@ -8581,6 +8721,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mostra o trecho que o BOAR leu"
+          }
+        }
+      }
+    },
+    "Shows the quotes" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostra as citações"
           }
         }
       }
@@ -8957,6 +9107,36 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Dividindo sua pergunta…"
+          }
+        }
+      }
+    },
+    "Staged Quotes" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Citações em etapas"
+          }
+        }
+      }
+    },
+    "Staged answer" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resposta em etapas"
+          }
+        }
+      }
+    },
+    "Staged steps" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Etapas"
           }
         }
       }
@@ -10797,6 +10977,16 @@
         }
       }
     },
+    "Writing a short answer…" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escrevendo uma resposta curta…"
+          }
+        }
+      }
+    },
     "Writing speed" : {
       "localizations" : {
         "pt" : {
@@ -11167,6 +11357,16 @@
         }
       }
     },
+    "details" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "detalhes"
+          }
+        }
+      }
+    },
     "device" : {
       "localizations" : {
         "pt" : {
@@ -11223,6 +11423,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "manual-de-campo.pdf"
+          }
+        }
+      }
+    },
+    "first word" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "primeira palavra"
           }
         }
       }
@@ -11506,6 +11716,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "fonte de referência não encontrada"
+          }
+        }
+      }
+    },
+    "sources" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "fontes"
           }
         }
       }
