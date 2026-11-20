@@ -25,7 +25,7 @@ struct SettingsScreen: View {
         BoarForm {
             SettingsToneSection(services: services, bridge: bridge)
             SettingsLibrarySection(services: services)
-            SettingsMemorySection(bridge: bridge)
+            SettingsMemorySection(services: services, bridge: bridge)
             #if !os(macOS)
             SettingsFreeMemorySection(bridge: bridge)
             #endif

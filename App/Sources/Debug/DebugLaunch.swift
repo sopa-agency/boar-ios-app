@@ -13,6 +13,7 @@ import Foundation
 ///     -uiStyle <id>      pick that answer style (succinct, detailed, personal, custom) on launch
 ///     -uiTheme <id>      show that theme (system, or any palette id: campfire, moonlight, paper, tactical_red…) for this
 ///                        run, without saving it; a Boar Avatars theme needs -uiBoarverse YES
+///     -uiDialog <name>   with -uiScreen settings, open a delete dialog: lower-<n> (Saved Chats to Keep n) or clear-history
 ///     -uiAsk "<q1> || <q2>"  after any -uiImport, ask the questions in one new chat, each after the previous answer
 ///     -uiVault <json>    store that Boar Avatars state (`truffleVault`, Android's JSON) before the vault opens; junk
 ///                        stores an empty one. e.g. -uiVault '{"facts":{"answers":9},"unlocked":{"tactical":1}}'
@@ -34,6 +35,8 @@ enum DebugLaunch {
     static let importFile: String? = UserDefaults.standard.string(forKey: "uiImport")
     /// `-uiStyle <id>`: the answer style to pick on launch.
     static let style: String? = UserDefaults.standard.string(forKey: "uiStyle")
+    /// `-uiDialog <name>`: a Settings dialog opened on appear, for screenshots.
+    static let dialog: String? = UserDefaults.standard.string(forKey: "uiDialog")
     /// `-uiTheme <id>`: the theme to show for this run (the stored choice is left alone).
     static let theme: String? = UserDefaults.standard.string(forKey: "uiTheme")
     /// `-uiAsk "<q1> || <q2>"`: questions asked in a new chat on launch, each after the previous answer ends.
@@ -75,6 +78,7 @@ enum DebugLaunch {
     /// `-uiScreen setup…`: setup is a preview this run (`SetupFlow.preview`): no download, no saved progress.
     static var previewsSetup: Bool { screen?.hasPrefix("setup") ?? false }
     #else
+    static let dialog: String? = nil
     static let demo = false
     static let ramBytes: Int64? = nil
     static func isScreen(_ name: String) -> Bool { false }

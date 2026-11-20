@@ -1,4 +1,5 @@
 import BoarAnswer
+import BoarCore
 import BoarModels
 import SwiftUI
 
@@ -70,7 +71,7 @@ protocol LabPlugin {
     func headerBadge(open: @escaping () -> Void) -> AnyView?
     /// Erases what this lab made from the user's chats (android `eraseUserData`): runs with the chats' erase, even while
     /// the lab is switched off.
-    func eraseUserData()
+    func eraseUserData(_ scope: UserDataScope)
 }
 
 /// A finished answer, as the answer slots see it (android `plugins.AnswerRef`).
@@ -107,7 +108,7 @@ extension LabPlugin {
     func presenter() -> AnyView? { nil }
     func answerActions(_ answer: AnswerRef) -> [LabAnswerAction] { [] }
     func headerBadge(open: @escaping () -> Void) -> AnyView? { nil }
-    func eraseUserData() {}
+    func eraseUserData(_ scope: UserDataScope) {}
     /// A lab under review (frozen) shows the ice boar, whatever its own art.
     var shownArt: String? { status == .review ? "lab_frozen" : art }
 }
@@ -227,7 +228,10 @@ final class Labs {
     func answerActions(_ answer: AnswerRef) -> [LabAnswerAction] { active.flatMap { $0.answerActions(answer) } }
 
     /// The chat erased: every lab drops what it made from it, switched on or not (android `UserData.Scope.CHATS`).
-    func eraseUserData() { all.forEach { $0.eraseUserData() } }
+    func eraseUserData(_ scope: UserDataScope = .chats) { all.forEach { $0.eraseUserData(scope) } }
+
+    /// What Press holds that "Also delete Press" would delete: the basket's answers (android `UserData.pressProjects`).
+    var pressItems: Int { BasketModel.shared.items.count }
 
     func enabled(_ id: String) -> Bool { enabledIds.contains(id) }
 

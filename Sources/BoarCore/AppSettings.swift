@@ -187,7 +187,11 @@ public final class AppSettings: @unchecked Sendable {
 
     public var autoSummarize: Bool { get { bool("autoSummarize") ?? true } set { set("autoSummarize", .bool(newValue)) } }
     public var historyTurnThreshold: Int { get { int("historyTurnThreshold") ?? 6 } set { set("historyTurnThreshold", JSONValue(newValue)) } }
-    public var maxSavedSessions: Int { get { int("maxSavedSessions") ?? 10 } set { set("maxSavedSessions", JSONValue(newValue)) } }
+    /// How many chats are kept; 0 (`keepAllChats`) keeps them all, the default (android rc3 6a974612). Only Settings writes it,
+    /// so a stored value was the user's choice and stays; an install that never chose had 10 and now keeps all.
+    public var maxSavedSessions: Int { get { int("maxSavedSessions") ?? Self.keepAllChats } set { set("maxSavedSessions", JSONValue(newValue)) } }
+    /// `maxSavedSessions`: every chat is kept.
+    public static let keepAllChats = 0
     public var autoGenerateTitles: Bool { get { bool("autoGenerateTitles") ?? true } set { set("autoGenerateTitles", .bool(newValue)) } }
     /// The question picked or written on setup's first-question page: it waits in the chat's field when BOAR opens, once.
     /// A blank one is no question.

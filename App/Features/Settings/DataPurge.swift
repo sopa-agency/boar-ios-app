@@ -27,7 +27,7 @@ enum DataPurge {
             AppPaths.markFilesDir(s.filesDir)
             return ()
         }
-        Labs.shared.eraseUserData()
+        Labs.shared.eraseUserData(.everything)
         // Boar Designer's pictures (android EVERYTHING scope deletes them too; Clear Chats keeps them).
         DesignerGallery.shared.erase()
         if let lock, lock.enabled { await lock.eraseChatsAndReset() }

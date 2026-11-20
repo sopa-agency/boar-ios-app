@@ -47,6 +47,10 @@ final class ChatController {
     var riskyLoad: RiskyLoad?
     /// A question asked while the memory note's model wasn't loaded: sent once the user loads it.
     @ObservationIgnored private var heldQuestion: String?
+    /// A new chat under a limit the user set: asked before it deletes the oldest (PruneNote); the first question waits.
+    var pruneNote: PruneNote?
+    @ObservationIgnored private var prunedQuestion: PrunedQuestion?
+    @ObservationIgnored private var pruneAccepted = false
     /// A short message over the chat (Toast.tsx): the new tone, a reused question.
     var toast: String?
     /// Setup's first question (android ChatViewModel prefill): the chat puts it in the field, unsent, and clears this.
@@ -325,9 +329,53 @@ final class ChatController {
                 self.job = nil
                 return
             }
+            if await self.holdForPrune(q, limit: limit) {
+                self.job = nil
+                return
+            }
+            self.pruneAccepted = false
             await self.answer(q, limit: limit)
             self.job = nil
         }
+    }
+
+    /// The first question of a new chat under a limit: the dialog names the oldest chat before it goes (android rc3).
+    private func holdForPrune(_ q: String, limit: Int?) async -> Bool {
+        guard sessionId == nil, !pruneAccepted, pruneNote == nil else { return false }
+        let max = services.settings.maxSavedSessions
+        let going = (try? await services.background { try $0.chats.pushedOutByNew(maxSessions: max) }) ?? []
+        guard let first = going.first else { return false }
+        prunedQuestion = PrunedQuestion(text: q, limit: limit)
+        pruneNote = PruneNote(title: first.title, more: going.count - 1, max: max)
+        return true
+    }
+
+    /// The prune note's "Keep All Chats": nothing is deleted, now or later; the question goes.
+    func pruneKeepAll() {
+        services.settings.maxSavedSessions = AppSettings.keepAllChats
+        resumePruned()
+    }
+
+    /// The prune note's "Delete It": the question goes, and the oldest chat with it after the answer, as before.
+    func pruneDelete() {
+        pruneAccepted = true
+        resumePruned()
+    }
+
+    /// The prune note closed: the question is dropped, unasked.
+    func pruneCancel() {
+        // The alert also reports "closed" after Keep All or Delete It already took the question: nothing to drop then.
+        guard pruneNote != nil else { return }
+        prunedQuestion = nil
+        skipToolsOnce = false
+        pruneNote = nil
+    }
+
+    private func resumePruned() {
+        let held = prunedQuestion
+        prunedQuestion = nil
+        pruneNote = nil
+        if let held { send(held.text, limit: held.limit) } else { pruneAccepted = false }
     }
 
     /// Asks `answerId`'s question again with a higher token limit, for this answer only (the setting stays as it is).

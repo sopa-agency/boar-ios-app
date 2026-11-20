@@ -1089,6 +1089,16 @@
         }
       }
     },
+    "All Chats" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Todas"
+          }
+        }
+      }
+    },
     "All of these are in Settings too." : {
       "localizations" : {
         "pt" : {
@@ -2756,6 +2766,16 @@
         }
       }
     },
+    "Clear and Also Delete Press Basket (%lld)" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Limpar e apagar também a cesta do Press (%lld)"
+          }
+        }
+      }
+    },
     "Click a numbered citation in an answer to read the passage BOAR used." : {
       "localizations" : {
         "pt" : {
@@ -3226,12 +3246,32 @@
         }
       }
     },
+    "Delete It" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apagar"
+          }
+        }
+      }
+    },
     "Delete Model" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Apagar modelo"
+          }
+        }
+      }
+    },
+    "Delete Them" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apagar"
           }
         }
       }
@@ -3252,6 +3292,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Apagar esta coleção?"
+          }
+        }
+      }
+    },
+    "Delete your oldest chat?" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apagar sua conversa mais antiga?"
+          }
+        }
+      }
+    },
+    "Delete your oldest chats?" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apagar suas conversas mais antigas?"
           }
         }
       }
@@ -5137,6 +5197,16 @@
         }
       }
     },
+    "Keep All Chats" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guardar todas"
+          }
+        }
+      }
+    },
     "Keep Auto" : {
       "localizations" : {
         "pt" : {
@@ -5163,6 +5233,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Continue usando o BOAR e você vai liberar avatares: cada um é um javali para usar, e alguns liberam novos temas. Descobrir o que libera cada um faz parte da graça."
+          }
+        }
+      }
+    },
+    "Keeping %lld chats deletes “%@” and %lld more." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guardar %lld conversas apaga “%@” e mais %lld."
+          }
+        }
+      }
+    },
+    "Keeping %lld chats deletes “%@”." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guardar %lld conversas apaga “%@”."
           }
         }
       }
@@ -6189,6 +6279,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Novo avatar: %@"
+          }
+        }
+      }
+    },
+    "New chats are named from your first message. BOAR keeps every chat unless you set a limit; then it asks before it deletes your oldest ones. Off, one tap deletes a chat." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chats novos ganham o nome da sua primeira mensagem. O BOAR guarda todos os chats, a menos que você defina um limite; aí ele pergunta antes de apagar os mais antigos. Desligado, um toque apaga um chat."
           }
         }
       }
@@ -10983,6 +11083,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Dá para ver este tour de novo nas Configurações."
+          }
+        }
+      }
+    },
+    "You keep %lld chats, so starting this one deletes “%@” and %lld more." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Você guarda %lld conversas, então começar esta apaga “%@” e mais %lld."
+          }
+        }
+      }
+    },
+    "You keep %lld chats, so starting this one deletes “%@”." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Você guarda %lld conversas, então começar esta apaga “%@”."
           }
         }
       }
