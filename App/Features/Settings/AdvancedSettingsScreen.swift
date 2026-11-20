@@ -46,6 +46,18 @@ struct AdvancedSettingsScreen: View {
                 }
             }
 
+            // Android: Settings → Advanced tweaks → Staged quotes (core since Nov 12, on by default; there are no profiles here yet).
+            Section {
+                Toggle(isOn: bridge.binding({ $0.stagedQuotes }, { $0.stagedQuotes = $1 })) {
+                    SettingsLabel("Staged Quotes", symbol: "text.quote")
+                }
+                .accessibilityIdentifier("settings.stagedQuotes")
+            } footer: {
+                BoarFooter {
+                    Text("Show the quotes from the sources before the answer. Turn it off if answers look wrong on your model.")
+                }
+            }
+
             if model.backend == .remote {
                 RemoteServerSection(settings: services.settings) {
                     Task { await services.host.unload(); model.chat?.refreshModel() }
