@@ -1,9 +1,9 @@
 import Foundation
 
 /// Kotlin's plain `Regex` (java.util.regex), for the Kotlin routing files that do not use `JsRegex.re`: `\d` is ASCII, `\s` is
-/// only `[ \t\n\x0B\f\r]`, `$` is the end (or before a final line terminator, as ICU), `\p{L}` is Unicode. Differences
-/// kept: `IGNORE_CASE` is ASCII-only in Java and Unicode simple folding under ICU (a capital accented letter such as "PÉS"
-/// matches "pés" here and not on Android). Offsets are UTF-16, as in Kotlin.
+/// only `[ \t\n\x0B\f\r]`, `$` is the end (or before a final line terminator, as ICU), `\p{L}` is Unicode.
+/// `IGNORE_CASE` is Unicode-aware on both sides: Kotlin's `Regex` adds `UNICODE_CASE` to it, as ICU's `.caseInsensitive`
+/// does ("PÉS" matches "pés"). Offsets are UTF-16, as in Kotlin.
 struct JavaRegex: @unchecked Sendable {
     struct Match {
         /// UTF-16 range of the whole match.
