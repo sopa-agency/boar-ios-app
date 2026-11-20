@@ -444,6 +444,8 @@ final class SetupFlow {
                 }, shouldStop: { stop.value })
                 services.packs.reload()
                 await embedder.close()
+                // BOAR's own guide and FAQ: the search model is here now (BoarServices.syncBoarPack).
+                _ = await services.syncBoarPack()
                 return .success(())
             } catch {
                 await embedder.close()

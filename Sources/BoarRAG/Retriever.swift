@@ -42,7 +42,17 @@ public final class Retriever: Sendable {
     public func retrieve(
         _ query: String, topK: Int = 6, queryVec: [Float]? = nil, includeWikiPacks: Bool = true, params: RetrievalParams = .default
     ) async throws -> [Chunk] {
-        if !params.ownOnly { return OwnFiles.dropCoveredCards(try await retrieveAll(query, topK, queryVec, includeWikiPacks, params)) }
+        if !params.ownOnly {
+            // A question about BOAR itself: its own passages (guide and FAQ, BoarPack) first, then the search as before.
+            if !BoarPack.aboutBoar(query) { return OwnFiles.dropCoveredCards(try await retrieveAll(query, topK, queryVec, includeWikiPacks, params)) }
+            let vec: [Float]
+            if let queryVec { vec = queryVec } else { vec = try await embed(query) }
+            let lang = AnswerLanguage.of(query) == .pt ? "pt" : "en"
+            let boar = Array(BoarPack.rank(try kb.boarSearch(query, queryVec: vec, limit: topK * 2), lang: lang).prefix(Self.boarMax))
+            let rest = OwnFiles.dropCoveredCards(try await retrieveAll(query, topK, vec, includeWikiPacks, params))
+            var seen = Set<String>()
+            return Array((boar + rest).filter { seen.insert($0.chunkId).inserted }.prefix(max(0, topK)))
+        }
         // Personal Files: a file the question names is searched alone; a question about all the files brings each one's
         // opening part after what the search found, since no single passage is close to "summarize my files".
         let files = try kb.ownFiles()
@@ -155,6 +165,8 @@ public final class Retriever: Sendable {
         return result
     }
 
+    /// BOAR's own passages an answer about it gets at most, before the rest of the search.
+    public static let boarMax = 3
     private static let disambigTitle = Rx("(?i)\\(disambiguation\\)\\z")
     private static let refers = Rx("(?i)\(Js.b0)may (also )?refer to\(Js.b1)")
 

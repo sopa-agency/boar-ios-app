@@ -235,6 +235,36 @@ final class BoarServices: @unchecked Sendable {
         return await host.loadSession(m.id)
     }
 
+    private let boarSync = BoarSyncLock()
+
+    /// BOAR's own passages (the guide and the FAQ, every language, BoarPack) in the index, as this build ships them
+    /// (android syncBoarPack): removed when gone or changed, embedded when new. Nothing to embed after the first start of a
+    /// build. Returns how many it embedded; 0 when the search model isn't installed yet (setup calls it again after its
+    /// index). One at a time.
+    func syncBoarPack() async -> Int {
+        await boarSync.acquire()
+        let n = await syncBoarPackLocked()
+        await boarSync.release()
+        return n
+    }
+
+    private func syncBoarPackLocked() async -> Int {
+        do {
+            var guides: [String: String] = [:]
+            // Every boar-guide-<lang>.md the bundle ships, as Android lists its assets: a new language is just a new file.
+            for url in Bundle.main.urls(forResourcesWithExtension: "md", subdirectory: nil) ?? [] {
+                let name = url.deletingPathExtension().lastPathComponent
+                guard name.hasPrefix("boar-guide-") else { continue }
+                guides[String(name.dropFirst("boar-guide-".count))] = try String(contentsOf: url, encoding: .utf8)
+            }
+            let faq = AppPaths.bundled("boar-faq", ext: "json").flatMap { try? String(contentsOf: $0, encoding: .utf8) }
+            let catalog = catalog, embedder = embedder
+            return try await knowledgeBase.syncBoar(try BoarPack.passages(guides: guides, faqJson: faq)) { try await embedder.embed($0, catalog: catalog) }
+        } catch {
+            return 0
+        }
+    }
+
     /// Runs blocking work (SQLite, file scans) off the main actor.
     func background<T: Sendable>(_ body: @escaping @Sendable (BoarServices) throws -> T) async throws -> T {
         try await Task.detached(priority: .userInitiated) { try body(self) }.value
@@ -363,5 +393,20 @@ final class LexiconStore: @unchecked Sendable {
             current = parsed
             return parsed
         }
+    }
+}
+
+/// A mutex held across awaits (android's Mutex): BOAR's pack syncs one at a time.
+actor BoarSyncLock {
+    private var held = false
+    private var waiting: [CheckedContinuation<Void, Never>] = []
+
+    func acquire() async {
+        if !held { held = true; return }
+        await withCheckedContinuation { waiting.append($0) }
+    }
+
+    func release() {
+        if waiting.isEmpty { held = false } else { waiting.removeFirst().resume() }
     }
 }

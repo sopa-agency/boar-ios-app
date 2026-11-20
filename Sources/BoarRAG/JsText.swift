@@ -56,6 +56,20 @@ func kotlinTrim(_ s: String) -> String {
     return a == u.startIndex && b == u.endIndex ? s : String(s[a..<b])
 }
 
+/// Kotlin `String.trimEnd()` (same whitespace as `kotlinTrim`).
+func kotlinTrimEnd(_ s: String) -> String {
+    let u = s.utf16
+    var b = u.endIndex
+    func ws(_ c: UInt16) -> Bool {
+        switch c {
+        case 0x09...0x0D, 0x1C...0x1F, 0x20, 0xA0, 0x1680, 0x2000...0x200A, 0x2028, 0x2029, 0x202F, 0x205F, 0x3000: return true
+        default: return false
+        }
+    }
+    while b > u.startIndex, ws(u[u.index(before: b)]) { b = u.index(before: b) }
+    return b == u.endIndex ? s : String(s[u.startIndex..<b])
+}
+
 extension String {
     /// Length in UTF-16 code units (Kotlin/JS `length`).
     var u16Count: Int { utf16.count }
