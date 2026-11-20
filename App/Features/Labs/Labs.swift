@@ -57,6 +57,8 @@ protocol LabPlugin {
     var answerTool: (any AnswerTool)? { get }
     /// The check slot: reads a model's finished answer and may repair it.
     var answerCheck: (any AnswerCheck)? { get }
+    /// The search slot (android `PipelineStages.search`): looks at what the search found and returns the passages the model reads.
+    var searchStage: (any SearchStage)? { get }
     /// The experiment's page, below the shared header.
     func content() -> AnyView
     /// The page's sheets, behind the whole page rather than on one of its rows: a row the list recycles (it leaves the
@@ -100,6 +102,7 @@ extension LabPlugin {
     var review: String? { nil }
     var answerTool: (any AnswerTool)? { nil }
     var answerCheck: (any AnswerCheck)? { nil }
+    var searchStage: (any SearchStage)? { nil }
     func content() -> AnyView { AnyView(EmptyView()) }
     func presenter() -> AnyView? { nil }
     func answerActions(_ answer: AnswerRef) -> [LabAnswerAction] { [] }
@@ -216,6 +219,9 @@ final class Labs {
     }
 
     var activeChecks: [any AnswerCheck] { active.compactMap(\.answerCheck) }
+
+    /// The search stages of the labs switched on now, in grid order.
+    var activeSearchStages: [any SearchStage] { active.compactMap(\.searchStage) }
 
     /// The More menu's lab rows for a finished answer, in grid order.
     func answerActions(_ answer: AnswerRef) -> [LabAnswerAction] { active.flatMap { $0.answerActions(answer) } }

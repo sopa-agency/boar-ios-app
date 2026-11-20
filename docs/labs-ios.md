@@ -16,7 +16,7 @@ Where each Android lab stands on iOS (2026-11-05), and what the rest would take.
 | Boar Polyglot | `polyglot` | tool | `BoarRouting/LanguageGate`, detector: NaturalLanguage | `LanguageGateTests` |
 | Boar Calculator | `calc` | tool | `BoarRouting/Arithmetic`, `NumGuard`, `CalcShortcut` | `ArithmeticTests`, `NumGuardTests` |
 | Boar Distance | `distance` | tool | `BoarRouting/TravelDistance` | `TravelDistanceTests` |
-| Boar Facts | `facts` | tool | `BoarAnswer/Labs/Facts` | `FactsTests` |
+| Boar Facts | `facts` | tool + search stage (two or more countries: the table's dated figures as one more source, `SearchStages`) | `BoarAnswer/Labs/Facts` | `FactsTests`, `FactsCountryContextTests` |
 | Boar Guard | `guard` | check | `BoarRouting/VerdictGuard` | `VerdictGuardTests` |
 | Boar Cohazard | `cohazard` | tool (first) | `BoarRouting/CoHazard` | `CoHazardTests`, `CoHazardPtEsTests` |
 | Daily Quiz | `dailyQuiz` | page, behind its classified tile | `BoarRAG/DailyQuiz`, `KnowledgeBase.seedArticles`, `BoarCore/KotlinRandom` | `DailyQuizTests`, `KotlinRandomTests` |

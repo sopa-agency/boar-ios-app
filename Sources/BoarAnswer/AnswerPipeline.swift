@@ -102,10 +102,12 @@ public final class AnswerPipeline: Sendable {
     /// The pipeline with BoarRouting's classifier and a `Retriever`; `params`: its ranking (Personal Files keeps it to the
     /// user's own files).
     public convenience init(
-        session: any TextModelSession, retriever: Retriever, params: RetrievalParams = .default, clock: @escaping @Sendable () -> Double = monotonicMillis
+        session: any TextModelSession, retriever: Retriever, params: RetrievalParams = .default, stages: [any SearchStage] = [],
+        clock: @escaping @Sendable () -> Double = monotonicMillis
     ) {
         self.init(
-            session: session, retrieve: { q, k in try await retriever.retrieve(q, topK: k, params: params) },
+            session: session,
+            retrieve: { q, k in try await SearchStages.search(stages, query: q, topK: k) { try await retriever.retrieve($0, topK: $1, params: params) } },
             classify: { Classify.classifyTask($0).value }, retrievalIrrelevant: { name in TaskType(rawValue: name).map(Classify.isRetrievalIrrelevant) ?? false },
             clock: clock
         )

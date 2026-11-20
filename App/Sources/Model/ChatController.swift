@@ -584,6 +584,8 @@ final class ChatController {
             // A thank-you or greeting: Succinct's length in any style.
             if smallTalk { maxTokens = min(maxTokens, AppSettings.defaultMaxTokens) }
             limited = maxTokens
+            // The search stages of the labs switched on now (Facts' country figures): every answer path searches through them.
+            let searchStages = Labs.shared.activeSearchStages
             if way != .pipeline {
                 let (events, sink) = AsyncStream<Event>.makeStream()
                 let stop = stopFlag
@@ -596,7 +598,7 @@ final class ChatController {
                     defer { sink.finish() }
                     if way == .research || way == .recap {
                         let research = way == .research
-                        let r = try await DeepResearch(generator: SessionEngine(session, enableThinking: tweaks.thinkingEnabled), retriever: services.retriever, tweaks: tweaks)
+                        let r = try await DeepResearch(generator: SessionEngine(session, enableThinking: tweaks.thinkingEnabled), retriever: services.retriever, tweaks: tweaks, stages: searchStages)
                             .run(q, systemPrompt: systemPrompt, history: history, maxTokens: maxTokens,
                                  onProgress: { p in
                                      sink.yield(.activity(research
@@ -607,7 +609,7 @@ final class ChatController {
                         return Outcome(sources: r.citations, timedOut: r.timedOut, metrics: r.metrics, fromPreviousAnswer: r.fromPreviousAnswer)
                     }
                     let (chunks, timedOut) = try await Self.adaptive(q, systemPrompt: toolPrompt, styleReminder: styleReminder, history: history,
-                                                                      maxTokens: maxTokens, services: services, stop: stop, sink: sink)
+                                                                      maxTokens: maxTokens, services: services, stages: searchStages, stop: stop, sink: sink)
                     return Outcome(sources: chunks, timedOut: timedOut)
                 }
                 for await e in events {
@@ -621,7 +623,7 @@ final class ChatController {
                 if outcome.metrics != nil { metrics = outcome.metrics }
                 if outcome.fromPreviousAnswer { reusedSources = lastAnswer?.sources }
             } else {
-                let pipeline = AnswerPipeline(session: session, retriever: services.retriever, params: personal ? PersonalFiles.retrieval() : .default)
+                let pipeline = AnswerPipeline(session: session, retriever: services.retriever, params: personal ? PersonalFiles.retrieval() : .default, stages: searchStages)
                 var request = AnswerRequest(query: q, systemPrompt: toolPrompt, styleReminder: styleReminder, maxTokens: maxTokens,
                                             history: history, enableThinking: tweaks.thinkingEnabled)
                 if personal {
@@ -774,7 +776,7 @@ final class ChatController {
     /// runAdaptiveChat: plan with the installed models and the user's routing settings, then execute.
     nonisolated private static func adaptive(
         _ q: String, systemPrompt: String, styleReminder: String?, history: ConversationHistory, maxTokens: Int,
-        services: BoarServices, stop: StopFlag, sink: AsyncStream<Event>.Continuation
+        services: BoarServices, stages: [any SearchStage], stop: StopFlag, sink: AsyncStream<Event>.Continuation
     ) async throws -> ([Chunk], Bool) {
         let s = services.settings
         let statuses = services.catalog.models.filter { $0.kind == .llm }.map { m in
@@ -789,7 +791,7 @@ final class ChatController {
         let plan = AdaptivePlan.plan(query: q, statuses: statuses, preset: preset, overrides: overrides, activeModelId: s.activeModelId("llm"),
                                      deviceRamBytes: services.totalRamBytes, maxTokens: maxTokens)
         let tweaks = s.engineTweaks
-        let r = try await PlanExecutor(host: services.host, retriever: services.retriever, timeoutFor: { tweaks.stageTimeoutMs(nPredict: $0) })
+        let r = try await PlanExecutor(host: services.host, retriever: services.retriever, stages: stages, timeoutFor: { tweaks.stageTimeoutMs(nPredict: $0) })
             .execute(plan: plan.plan, input: PipelineInput(query: q, systemPrompt: systemPrompt, styleReminder: styleReminder, history: history),
                      onToken: { sink.yield(.piece($0)) },
                      onStepStart: { step in sink.yield(.activity(step.type == .retrieve ? .retrieving : .thinking)) },
