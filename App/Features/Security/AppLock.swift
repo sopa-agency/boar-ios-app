@@ -185,7 +185,7 @@ final class AppLock {
             self.error = String(localized: "Couldn't erase everything. The lock stays on: try again.")
             return
         }
-        Labs.shared.eraseUserData()
+        Labs.shared.eraseUserData(.everything)
         // Boar Designer's pictures too: they can show what the chats were about (android PinLock erases EVERYTHING).
         DesignerGallery.shared.erase()
         services.chats.cipher = PlainCipher()

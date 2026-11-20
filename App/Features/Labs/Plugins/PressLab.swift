@@ -40,8 +40,10 @@ struct PressLab: LabPlugin {
         BasketModel.shared.items.isEmpty ? nil : AnyView(PressBadge(open: open))
     }
 
-    /// The basket holds answers' text: it goes with the chats.
-    func eraseUserData() { BasketModel.shared.eraseAll() }
+    /// The basket holds answers' text: it goes with the chats, except when Clear Chat History keeps Press.
+    func eraseUserData(_ scope: UserDataScope) {
+        if scope.erasesPress { BasketModel.shared.eraseAll() }
+    }
 }
 
 /// The basket the app shows (Basket.kt's state flow): the list in memory, the file written whole after each change.

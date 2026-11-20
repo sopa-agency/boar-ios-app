@@ -36,7 +36,7 @@ private struct MacSettingsTabs: View {
             Tab("General", systemImage: "gearshape") {
                 BoarForm {
                     SettingsToneSection(services: services, bridge: bridge)
-                    SettingsMemorySection(bridge: bridge)
+                    SettingsMemorySection(services: services, bridge: bridge)
                     SettingsDisplaySection(bridge: bridge)
                     SettingsAvatarsSection(vault: services.vault)
                     SettingsVoiceSection(bridge: bridge)

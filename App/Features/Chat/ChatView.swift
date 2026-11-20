@@ -55,6 +55,14 @@ struct ChatView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         // Android's chat background (bgTerminal), under the bars too.
         .background(Color(palette.bgTerminal).ignoresSafeArea())
+        .alert("Delete your oldest chat?", isPresented: Binding(get: { chat.pruneNote != nil }, set: { if !$0 { chat.pruneCancel() } }),
+               presenting: chat.pruneNote) { _ in
+            Button("Keep All Chats") { chat.pruneKeepAll() }
+            Button("Delete It", role: .destructive) { chat.pruneDelete() }
+            Button("Cancel", role: .cancel) {}
+        } message: { n in
+            Text(PruneText.of(Self.pruneMessage(n), "", pluginsOn: false))
+        }
         .bottomBar {
             Composer(text: $input, focused: $composerFocused, toneSymbol: chat.currentTone.symbol, toneLabel: chat.currentTone.label,
                      deepResearch: chat.deepResearch, answering: chat.isAnswering, stopping: chat.stopping,
@@ -183,6 +191,14 @@ struct ChatView: View {
         return chat.messages.last(where: { !$0.isUser && !$0.sources.isEmpty })?.sources ?? []
     }
     #endif
+
+    /// "You keep 10 chats, so starting this one deletes “A” and 2 more."
+    private static func pruneMessage(_ n: PruneNote) -> String {
+        if n.more > 0 {
+            return String(localized: "You keep \(n.max) chats, so starting this one deletes “\(n.title)” and \(n.more) more.")
+        }
+        return String(localized: "You keep \(n.max) chats, so starting this one deletes “\(n.title)”.")
+    }
 
     /// The "May Not Fit" or "Not Enough Memory" note sits on the empty chat (LoadCrashNotice).
     private var showsMemoryNote: Bool { chat.riskyLoad != nil || chat.loadCrash != nil }
