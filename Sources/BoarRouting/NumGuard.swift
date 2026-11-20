@@ -73,10 +73,11 @@ public enum NumGuard {
 
 /// The calculator shortcuts of r4to's src/routing/answer.ts (PR #85, BOAR R&D, MIT), through android
 /// `routing/CalcShortcut.kt`, in its order: the exact calculators (Calculators: battery, fuel economy, Naismith,
-/// currency, water, temperature; EN and PT), then the word problems (Arithmetic; EN only). NumGuard's health lexicon
+/// currency, water, temperature, then a plain unit conversion, adam's Nov 13 addition; EN and PT), then the word
+/// problems (Arithmetic; EN only). NumGuard's health lexicon
 /// over this turn and the earlier user turns keeps them off health.
 public enum CalcShortcut {
-    /// `code`: the receipt code answer.ts gives ("calculator-battery", "temperature-conversion", "calculator-rate-time").
+    /// `code`: the receipt code answer.ts gives ("calculator-battery", "temperature-conversion", "calculator-conversion", "calculator-rate-time").
     public struct Hit: Sendable, Equatable {
         public let code: String
         public let text: String
@@ -89,6 +90,10 @@ public enum CalcShortcut {
             return Hit(code: c.kind == "temperature" ? "temperature-conversion" : "calculator-\(c.kind)", text: c.text)
         }
         if pt || QueryContext.isSpanishQuestion(query) { return nil }
-        return Arithmetic.answer(query).map { Hit(code: "calculator-\($0.kind)", text: $0.text) }
+        // Miles and kilometres mixed in a rate-and-time question: converted first, the conversion said (UnitBridge).
+        let bridged = UnitBridge.prepare(query)
+        return Arithmetic.answer(bridged.query).map {
+            Hit(code: "calculator-\($0.kind)", text: bridged.note != nil ? "\($0.text) (\(bridged.note!).)" : $0.text)
+        }
     }
 }
