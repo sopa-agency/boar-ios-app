@@ -77,13 +77,16 @@ struct SettingsMemorySection: View {
         }
     }
 
-    /// Sets the limit and deletes now, as the chat's own prune does after an answer.
+    /// Sets the limit and deletes now, as the chat's own prune does after an answer. The open chat, when it goes, becomes a
+    /// new chat, as a deleted one does: opening an old chat doesn't make it newer.
     private func deleteNow(_ l: Lowering) {
         bridge.settings.maxSavedSessions = l.max
         bridge.touch()
         let max = l.max
+        let going = Set(l.going.map(\.id))
         Task {
             _ = try? await services.background { try $0.chats.prune(maxSessions: max) }
+            if let open = model.chat?.sessionId, going.contains(open) { model.newChat() }
             model.reloadSessions()
         }
     }
