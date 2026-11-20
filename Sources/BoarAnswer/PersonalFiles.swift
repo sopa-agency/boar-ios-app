@@ -17,6 +17,18 @@ public enum PersonalFiles {
 
     public static func isOn(_ style: String?) -> Bool { style == Self.style }
 
+    /// The question asks for a summary: "summarize", "summary", "overview", "resuma", "resumo", "em resumo".
+    private static let summary = Rx("(?<![\\p{L}])(?:summari[sz]e|summary|overview|sum up|resum[aeo]|resumir|em resumo|sintetize|panorama)(?![\\p{L}])", ignoreCase: true)
+    public static func asksSummary(_ question: String) -> Bool { summary.containsMatch(in: question) }
+
+    /// What a summary of the user's file asks of the model: its own words, never the file copied ("summarize" pasted a
+    /// blood test, table and all), the file's numbers as written, and each result with the mark the code gave it
+    /// (LabRanges), never its own comparison.
+    public static let summaryEN = "This is a request for a summary: write 3 to 5 sentences in your own words; never copy the file or its table. "
+        + "Give the file's numbers as it writes them. For each result that has a mark (WITHIN, ABOVE or BELOW its range), say that mark exactly; never compare numbers yourself."
+    public static let summaryPT = "Isto é um pedido de resumo: escreva de 3 a 5 frases com suas palavras; nunca copie o arquivo ou a tabela. "
+        + "Dê os números como o arquivo escreve. Para cada resultado com marcação (DENTRO, ACIMA ou ABAIXO da faixa), diga essa marcação exatamente; nunca compare números você mesmo."
+
     /// A Labs tool's answer is kept only from a safety card (`safety-*`), as under Deep Research.
     public static func keepsTool(_ toolId: String) -> Bool { toolId.hasPrefix("safety-") }
 
