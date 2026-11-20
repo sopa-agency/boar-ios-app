@@ -56,10 +56,12 @@ struct Receipt: Hashable, Sendable {
     /// The Boar Labs tool that answered instead of the model and/or the check that repaired it ("calculator-battery",
     /// "facts-population+verdict-guard-date"); nil when the model wrote it as is.
     var tool: String?
-    /// How it was answered: nil (the normal answer), "deep" (Deep Research), "chat" (written from this chat), "adaptive".
+    /// How it was answered: nil (the normal answer), "deep" (Deep Research), "chat" (written from this chat), "adaptive", "staged".
     var path: String?
     /// The answer style's id ("succinct", "detailed", "personal", "custom"); nil on answers saved before it was kept.
     var style: String?
+    /// A Staged answer: when each step happened, in ms from the question ("sources", "introFirst", "detailsFirst", "total"…).
+    var stages: [String: Double]?
 
     var json: JSONValue {
         var o: [String: JSONValue] = ["totalMs": .double(totalMs), "ttftMs": .double(ttftMs), "tokPerSec": .double(tokPerSec), "tokens": JSONValue(tokens)]
@@ -72,17 +74,19 @@ struct Receipt: Hashable, Sendable {
         if let tool { o["tool"] = .string(tool) }
         if let path { o["path"] = .string(path) }
         if let style { o["style"] = .string(style) }
+        if let stages { o["stages"] = .object(stages.mapValues { .double($0) }) }
         return .object(o)
     }
 
     init(totalMs: Double, ttftMs: Double, tokPerSec: Double, tokens: Int, model: String?, retrievalMs: Double?, prefillMs: Double?, contextTokens: Int?, loadMs: Double?,
-         styleNote: String? = nil, tool: String? = nil, path: String? = nil, style: String? = nil) {
+         styleNote: String? = nil, tool: String? = nil, path: String? = nil, style: String? = nil, stages: [String: Double]? = nil) {
         self.totalMs = totalMs; self.ttftMs = ttftMs; self.tokPerSec = tokPerSec; self.tokens = tokens; self.model = model
         self.retrievalMs = retrievalMs; self.prefillMs = prefillMs; self.contextTokens = contextTokens; self.loadMs = loadMs
         self.styleNote = styleNote
         self.tool = tool
         self.path = path
         self.style = style
+        self.stages = stages
     }
 
     init?(json o: JSONValue) {
@@ -91,7 +95,8 @@ struct Receipt: Hashable, Sendable {
         self.init(totalMs: total, ttftMs: ttft, tokPerSec: rate, tokens: Int(tokens), model: o["model"]?.stringValue,
                   retrievalMs: o["retrievalMs"]?.doubleValue, prefillMs: o["prefillMs"]?.doubleValue,
                   contextTokens: o["contextTokens"]?.doubleValue.map { Int($0) }, loadMs: o["loadMs"]?.doubleValue,
-                  styleNote: o["styleNote"]?.stringValue, tool: o["tool"]?.stringValue, path: o["path"]?.stringValue, style: o["style"]?.stringValue)
+                  styleNote: o["styleNote"]?.stringValue, tool: o["tool"]?.stringValue, path: o["path"]?.stringValue, style: o["style"]?.stringValue,
+                  stages: o["stages"].flatMap { if case .object(let m) = $0 { m.compactMapValues(\.doubleValue) } else { nil } })
     }
 
     /// "9.1 s" under a minute, "2 min 5 s" above (ReceiptFormat.seconds).
@@ -120,6 +125,8 @@ struct ChatItem: Identifiable, Hashable, Sendable {
     var cutAt: Int?
     var nextLimit: Int?
     var receipt: Receipt?
+    /// Boar Staged answers: the steps and what they found (the quotes over the text); nil for an answer written the usual way.
+    var staged: StagedView?
     /// The steps the answer actually went through, in order (live answers only; a reopened chat has none).
     var steps: [AnswerStep] = []
     /// How many sources the search found (nil when the answer didn't search).
@@ -206,7 +213,7 @@ enum MessageMeta {
     /// mid-answer (android UserErrors.INTERRUPTED_KEY).
     static let interrupted = "native.chat.errorInterrupted"
 
-    static func encode(_ sources: [ChatSource], _ receipt: Receipt?, error: String? = nil) -> String {
+    static func encode(_ sources: [ChatSource], _ receipt: Receipt?, error: String? = nil, staged: StagedView? = nil) -> String {
         var o: [String: JSONValue] = [
             "sources": .array(sources.map { s in
                 var e: [String: JSONValue] = ["title": .string(s.title), "body": .string(s.body)]
@@ -219,6 +226,7 @@ enum MessageMeta {
         ]
         if let receipt { o["receipt"] = receipt.json }
         if let error { o["error"] = .string(error) }
+        if let staged { o["staged"] = StagedChat.json(staged) }
         return JSONValue.object(o).jsonString
     }
 
@@ -234,6 +242,11 @@ enum MessageMeta {
             return ChatSource(number: i + 1, title: title, source: e["source"]?.stringValue, relevance: e["relevance"]?.doubleValue,
                               similarity: e["similarity"]?.doubleValue, docId: e["docId"]?.stringValue, body: e["body"]?.stringValue ?? "")
         }
+    }
+
+    /// A Staged answer's card as it was kept; the times come from the receipt.
+    static func staged(_ meta: String?, receipt: Receipt?) -> StagedView? {
+        StagedChat.view(fromMeta: meta, times: receipt?.stages)
     }
 
     static func receipt(_ meta: String?) -> Receipt? {
