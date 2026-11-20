@@ -60,7 +60,7 @@ public final class KnowledgeBase: Sendable {
 
     /// Seed chunks (bundled corpus and corpus packs, not imported documents).
     public func seedChunkCount() throws -> Int64 {
-        try db.query("SELECT COUNT(*) FROM chunks WHERE collection_id IS NULL") { $0.long(0) }.first ?? 0
+        try db.query("SELECT COUNT(*) FROM chunks WHERE collection_id IS NULL\(Self.notBoar)") { $0.long(0) }.first ?? 0
     }
 
     public func hasChunk(_ chunkId: String) throws -> Bool {
@@ -113,7 +113,7 @@ public final class KnowledgeBase: Sendable {
     public func seedArticles(seed: Int64, limit: Int) throws -> [(title: String, body: String)] {
         // Only the opening: the quiz shows an article's first sentence, and a few thousand bodies would be megabytes.
         let rows = try db.query(
-            "SELECT title, substr(body, 1, 600) AS head FROM chunks WHERE collection_id IS NULL AND title IS NOT NULL ORDER BY chunk_id"
+            "SELECT title, substr(body, 1, 600) AS head FROM chunks WHERE collection_id IS NULL AND title IS NOT NULL\(Self.notBoar) ORDER BY chunk_id"
         ) { (title: try $0.string("title") ?? "", body: try $0.string("head") ?? "") }
         var rnd = KotlinRandom(seed: seed)
         return Array(rnd.shuffled(rows.filter { !$0.title.unicodeScalars.allSatisfy(\.properties.isWhitespace) }).prefix(limit))
@@ -204,7 +204,7 @@ public final class KnowledgeBase: Sendable {
             JOIN chunks c ON c.chunk_id = f.chunk_id
             LEFT JOIN chunk_embeddings e ON e.chunk_id = f.chunk_id
             LEFT JOIN custom_collections cc ON cc.id = c.collection_id
-            WHERE chunks_fts MATCH ? AND (c.collection_id IS NULL OR cc.active = 1)\(ownOnly ? Self.ownOnlyClause : "")
+            WHERE chunks_fts MATCH ? AND (c.collection_id IS NULL OR cc.active = 1)\(ownOnly ? Self.ownOnlyClause : "")\(Self.notBoarC)
             ORDER BY rank LIMIT ?
             """,
             args: [.text(lq.match), .integer(Int64(limit * Self.lexicalCandidateMultiplier))]
@@ -229,7 +229,7 @@ public final class KnowledgeBase: Sendable {
             FROM chunk_embeddings e
             JOIN chunks c ON c.chunk_id = e.chunk_id
             LEFT JOIN custom_collections cc ON cc.id = c.collection_id
-            WHERE (c.collection_id IS NULL OR cc.active = 1)\(ownOnly ? Self.ownOnlyClause : "")
+            WHERE (c.collection_id IS NULL OR cc.active = 1)\(ownOnly ? Self.ownOnlyClause : "")\(Self.notBoarC)
             """,
             args: []
         ) { r in
@@ -286,6 +286,54 @@ public final class KnowledgeBase: Sendable {
         }
         return Array(scored.stableSorted { $0.score > $1.score }.prefix(max(0, limit)))
     }
+
+    /// BOAR's own passages (BoarPack) closest to the question, by meaning and by keyword, each with its similarity and its
+    /// source ("BOAR Guide", "BOAR FAQ, written by Amandita"). No floor here: BoarPack.rank applies its own.
+    public func boarSearch(_ query: String, queryVec: [Float], limit: Int) throws -> [Chunk] {
+        let semantic = try db.query(
+            "SELECT c.chunk_id, c.doc_id, c.title, c.body, c.source, e.embedding FROM chunks c JOIN chunk_embeddings e ON e.chunk_id = c.chunk_id WHERE c.collection_id IS NULL AND c.chunk_id GLOB '\(BoarPack.prefix)*'",
+            args: []
+        ) { r in
+            let sim = RagPure.cosine(queryVec, Self.fromBlob(r.blob(5)!))
+            return Chunk(chunkId: r.string(0)!, docId: r.string(1)!, title: r.string(2) ?? "", body: r.string(3) ?? "", source: r.string(4), score: sim, matchType: .semantic, similarity: sim)
+        }
+        var lexical = Set<String>()
+        if let lq = RagPure.buildLexicalQuery(query) {
+            lexical = Set(try db.query(
+                "SELECT f.chunk_id FROM chunks_fts f JOIN chunks c ON c.chunk_id = f.chunk_id WHERE chunks_fts MATCH ? AND c.collection_id IS NULL AND c.chunk_id GLOB '\(BoarPack.prefix)*' LIMIT ?",
+                args: [.text(lq.match), .integer(Int64(limit * Self.lexicalCandidateMultiplier))]
+            ) { r in r.string(0)! })
+        }
+        // A keyword hit counts as a hybrid hit: the question names what the passage is about.
+        func rank(_ c: Chunk) -> Double { (c.similarity ?? 0.0) + (c.matchType == .hybrid ? 0.05 : 0.0) }
+        let marked = semantic.map { c -> Chunk in
+            var c = c
+            if lexical.contains(c.chunkId) { c.matchType = .hybrid }
+            return c
+        }
+        return Array(marked.stableSorted { rank($0) > rank($1) }.prefix(max(0, limit)))
+    }
+
+    /// Makes BOAR's passages in the index exactly `passages`: removes the ones the app no longer ships (an older text),
+    /// embeds the missing ones. Returns how many it embedded; an empty vector (no search model yet) stops it.
+    public func syncBoar(_ passages: [BoarPack.Passage], embed: (String) async throws -> [Float]) async throws -> Int {
+        let want = Set(passages.map(\.id))
+        let have = Set(try db.query("SELECT chunk_id FROM chunks WHERE collection_id IS NULL AND chunk_id GLOB '\(BoarPack.prefix)*'", args: []) { r in r.string(0)! })
+        let gone = have.subtracting(want)
+        if !gone.isEmpty { try deleteSeedChunks(Array(gone)) }
+        var n = 0
+        for p in passages where !have.contains(p.id) {
+            let v = try await embed("\(p.title)\n\(p.body)")
+            if v.isEmpty { return n }
+            try insertChunk(Chunk(chunkId: p.id, docId: p.id, title: p.title, body: p.body, source: p.source), embedding: v)
+            n += 1
+        }
+        return n
+    }
+
+    /// BOAR's own passages stay out of everything but `boarSearch`: the search, the seed count, the Daily Quiz.
+    private static let notBoar = " AND chunk_id NOT GLOB 'boar-*'"
+    private static let notBoarC = " AND c.chunk_id NOT GLOB 'boar-*'"
 
     /// Keeps a search to the user's own collections (the active ones, as the rest of the WHERE says).
     private static let ownOnlyClause = " AND c.collection_id IS NOT NULL"

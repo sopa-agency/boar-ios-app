@@ -1,0 +1,129 @@
+{
+ "about": "The BOAR FAQ, written by Amandita (@AAmandita_) from her Zebra Talks interview with the BOAR team (https://github.com/rferrari/boar-faq-quiz, MIT). Checked against 2.0.0-rc3 on 16 Nov 2026: entries marked 'corrected for rc3' were updated to the current app (t9 0225).",
+ "source": {
+  "en": "BOAR FAQ, written by Amandita",
+  "pt": "FAQ do BOAR, escrito pela Amandita"
+ },
+ "entries": [
+  {
+   "id": "what",
+   "en": {
+    "q": "What is the BOAR app?",
+    "a": "A local AI assistant and offline search engine for smartphones, starting with Android. The models run 100% on the device, in airplane mode, without sending questions, history or data to outside servers."
+   },
+   "pt": {
+    "q": "O que é o aplicativo BOAR?",
+    "a": "Um assistente de IA local e um motor de pesquisa offline para smartphones, começando pelo Android. Os modelos rodam 100% no próprio aparelho, em modo avião, sem enviar perguntas, histórico ou dados para servidores externos."
+   },
+   "checked": "ok for rc3"
+  },
+  {
+   "id": "offline",
+   "en": {
+    "q": "How does BOAR work without internet?",
+    "a": "The language model runs on the phone's processor (CPU) and RAM. The knowledge comes from the model itself, which is compressed (quantized), and from knowledge packs: local knowledge files such as Wikipedia articles, downloaded once in the app."
+   },
+   "pt": {
+    "q": "Como o BOAR funciona sem internet?",
+    "a": "O modelo de linguagem roda no processador (CPU) e na memória RAM do celular. O conhecimento vem do próprio modelo, que é compactado (quantizado), e dos pacotes de conhecimento: arquivos locais, como artigos da Wikipedia, baixados uma única vez no app."
+   },
+   "checked": "corrected for rc3"
+  },
+  {
+   "id": "hardware",
+   "en": {
+    "q": "What are the hardware requirements?",
+    "a": "BOAR picks the answer model for your phone at setup: Qwen3 4B (about 2.5 GB) on phones with 12 GB of RAM, and Qwen3 1.7B (about 1.1 GB) on phones with less. You can choose another model in the Model Catalog. Only 64-bit ARM phones are supported."
+   },
+   "pt": {
+    "q": "Quais são os requisitos de hardware?",
+    "a": "O BOAR escolhe o modelo de resposta para o seu celular na configuração: Qwen3 4B (cerca de 2,5 GB) em celulares com 12 GB de RAM, e Qwen3 1,7B (cerca de 1,1 GB) nos com menos. Você pode escolher outro modelo no Catálogo de modelos. Só celulares ARM de 64 bits são compatíveis."
+   },
+   "checked": "corrected for rc3"
+  },
+  {
+   "id": "telemetry",
+   "en": {
+    "q": "Does the app send telemetry or track the user?",
+    "a": "No. There is no telemetry, no tracking, no crash reports and no collection servers. Evaluation runs stay on the phone as files."
+   },
+   "pt": {
+    "q": "O app envia telemetria ou rastreia o usuário?",
+    "a": "Não. Não há telemetria, nem rastreamento, relatórios de erro ou servidores de coleta. As avaliações ficam no celular, como arquivos."
+   },
+   "checked": "corrected for rc3"
+  },
+  {
+   "id": "android",
+   "en": {
+    "q": "Why start with Android and an APK?",
+    "a": "The project was born from Vitalik Buterin's challenge (bounty #31 on poidh): a local AI that runs on GrapheneOS without depending on Google Play Services. The APK allows sovereign distribution that doesn't depend on app stores. An iOS version was started in a separate branch and is paused."
+   },
+   "pt": {
+    "q": "Por que começar pelo Android e por um APK?",
+    "a": "O projeto nasceu do desafio do Vitalik Buterin (bounty #31 no poidh): uma IA local que rode no GrapheneOS, sem depender do Google Play Services. O APK permite uma distribuição soberana, que não depende das lojas de aplicativos. Uma versão para iOS foi começada em uma branch separada e está pausada."
+   },
+   "checked": "corrected for rc3"
+  },
+  {
+   "id": "battery",
+   "en": {
+    "q": "Does BOAR drain the battery or heat up the phone?",
+    "a": "Yes. Running a model on the device itself demands a lot from the processor. Battery use and heat are comparable to a heavy game on the phone."
+   },
+   "pt": {
+    "q": "O BOAR gasta muita bateria ou esquenta o celular?",
+    "a": "Sim. Rodar um modelo no próprio aparelho exige muito do processador. O consumo de bateria e o calor são comparáveis aos de um jogo pesado no celular."
+   },
+   "checked": "ok for rc3"
+  },
+  {
+   "id": "hallucinations",
+   "en": {
+    "q": "How does BOAR deal with hallucinations?",
+    "a": "Smaller models can hallucinate on generic or complex questions. To reduce that, BOAR searches the knowledge packs before answering (local RAG), and every answer shows its sources and the excerpt the information came from, so you can check it."
+   },
+   "pt": {
+    "q": "Como o BOAR lida com alucinações?",
+    "a": "Modelos menores podem alucinar em perguntas genéricas ou complexas. Para reduzir isso, o BOAR busca nos knowledge packs antes de responder (RAG local), e cada resposta mostra as fontes e o trecho de onde a informação saiu, para você conferir."
+   },
+   "checked": "ok for rc3"
+  },
+  {
+   "id": "chats",
+   "en": {
+    "q": "Where are my chats kept? Is there a cloud backup?",
+    "a": "The whole history stays on the device only. There is no sync and no automatic cloud backup (Android; on iPhone, app data can be included in your iCloud backup). If you delete the app or its data, the chats are removed from the phone for good."
+   },
+   "pt": {
+    "q": "Onde ficam minhas conversas? Tem backup na nuvem?",
+    "a": "Todo o histórico fica só no aparelho. Não há sincronização nem backup automático na nuvem (no Android; no iPhone, os dados do app podem entrar no backup do iCloud). Se você apagar o app ou os dados dele, as conversas são removidas do celular para sempre."
+   },
+   "checked": "ok for rc3"
+  },
+  {
+   "id": "token",
+   "en": {
+    "q": "Do I need to buy the $BOAR token to use the app?",
+    "a": "No. The app is free and open source (MIT license), with no subscription and no token required."
+   },
+   "pt": {
+    "q": "Preciso comprar o token $BOAR para usar o app?",
+    "a": "Não. O app é gratuito, de código aberto (licença MIT), sem assinatura e sem exigir nenhum token."
+   },
+   "checked": "ok for rc3"
+  },
+  {
+   "id": "styles",
+   "en": {
+    "q": "How do I control the way BOAR answers?",
+    "a": "Pick an answer style in Settings → How BOAR answers: Succinct & Direct is the fastest and the default, Thorough & Detailed explains in more depth, Local Files answers only from your own files, and Custom lets you write your own. Deep Research is a separate switch: it researches in several passes over the knowledge packs, offline, and works with any style."
+   },
+   "pt": {
+    "q": "Como eu controlo o jeito de o BOAR responder?",
+    "a": "Escolha um estilo de resposta em Configurações → Como o BOAR responde: Sucinto e direto é o mais rápido e o padrão, Completo e detalhado explica com mais profundidade, Arquivos locais responde só a partir dos seus arquivos, e Personalizado deixa você escrever o seu. A Pesquisa Profunda é um botão à parte: pesquisa em várias etapas nos pacotes de conhecimento, offline, e funciona com qualquer estilo."
+   },
+   "checked": "corrected for rc3"
+  }
+ ]
+}
