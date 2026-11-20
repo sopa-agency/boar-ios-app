@@ -38,9 +38,17 @@ struct AnswerView: View {
                 Label("Locked Chat", systemImage: "lock.fill")
                     .foregroundStyle(.secondary)
             } else {
+                // Boar Staged answers: what the sources say comes first, above the answer's text, and takes the place of the
+                // sources list under it (one design, adam Nov 12).
+                if let staged = message.staged {
+                    StagedCard(staged: staged, streaming: streaming, written: !message.text.isEmpty, answerId: message.id, onOpen: openQuote)
+                }
                 if streaming {
-                    AnswerStatus(message: message, stopping: chat.stopping)
-                } else if message.failure == nil {
+                    // Once the staged answer has started, the card's step line says what's happening.
+                    if message.staged == nil || message.text.isEmpty {
+                        AnswerStatus(message: message, stopping: chat.stopping)
+                    }
+                } else if message.failure == nil, StagedChat.listsSources(staged: message.staged) {
                     SourcesList(message: message, technicalDetails: chat.technicalDetails, onOpen: onOpenSource)
                 }
                 if split.thinking != nil || split.thinkingInProgress {
@@ -60,6 +68,10 @@ struct AnswerView: View {
                     case "seed": MessageNote(symbol: Symbols.shortAnswer, text: "Short answer: seed-phrase questions are kept brief, for your safety.", warning: false)
                     default: EmptyView()
                     }
+                }
+                // Every number written is in a source (or is not), once the staged answer's check has run.
+                if !streaming, !message.text.isEmpty, !message.sources.isEmpty, let staged = message.staged {
+                    StagedCheck(staged: staged)
                 }
                 // Nothing in the library backs it: said, not left to guess (t9 0226 point 4).
                 if !streaming, NoSource.shows(searched: message.receipt?.retrievalMs != nil, sources: message.sources.count, instant: message.receipt?.tool != nil,
@@ -139,6 +151,14 @@ struct AnswerView: View {
 
     private func openModels() {
         model.selection = .screen(.models)
+    }
+
+    /// A tap on a quote opens its source: the passage it came from, and the article at that passage.
+    private func openQuote(_ fact: KeyFactView) {
+        let number = message.sources.first { $0.docId != nil && $0.docId == fact.docId && $0.title == fact.title }?.number
+            ?? message.sources.first { $0.title == fact.title }?.number ?? 1
+        onOpenSource(ChatSource(number: number, title: fact.title, source: fact.source, relevance: fact.relevance,
+                                similarity: fact.similarity, docId: fact.docId, body: fact.passage))
     }
 
     private func openCitation(_ url: URL) -> OpenURLAction.Result {
