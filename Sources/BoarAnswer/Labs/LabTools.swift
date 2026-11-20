@@ -89,8 +89,8 @@ public enum LabTools {
     }
 
     /// The check slot reads only a model's finished answer: not an instant tool answer, a stopped, timed-out or failed
-    /// one, an empty one, or one written by Deep Research or a recap (`path` other than nil or "adaptive").
+    /// one, an empty one, or one written by Deep Research or a recap (`path` other than nil, "adaptive" or "staged": Staged is the main style, adam Nov 14).
     public static func checksAnswer(instant: Bool, stopped: Bool, timedOut: Bool, failed: Bool, path: String?, blank: Bool) -> Bool {
-        !instant && !stopped && !timedOut && !failed && (path == nil || path == "adaptive") && !blank
+        !instant && !stopped && !timedOut && !failed && (path == nil || path == "adaptive" || path == "staged") && !blank
     }
 }

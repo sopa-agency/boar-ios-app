@@ -118,7 +118,7 @@ public final class AppSettings: @unchecked Sendable {
         "themeId", "fontScale", "personalityId", "maxTokens", "deepResearchMode", "researchBannerHidden",
         "adaptiveRoutingEnabled", "routingPreset", "engineTweaks", "showLiveStats", "voiceInputEnabled", "hapticsEnabled",
         "hidePromptIdeas", "autoSummarize", "historyTurnThreshold", "maxSavedSessions", "autoGenerateTitles",
-        "freeMemoryInBackground", "freeMemoryAfterMinutes", "confirmChatDelete",
+        "freeMemoryInBackground", "freeMemoryAfterMinutes", "confirmChatDelete", "stagedQuotes",
     ]
     public static let defaultMaxTokens = 512
     /// Detailed answers ran past 512 tokens and stopped mid-sentence.
@@ -158,6 +158,9 @@ public final class AppSettings: @unchecked Sendable {
     /// The user closed the "Mixture of agents" line under the header (it stays closed).
     public var researchBannerHidden: Bool { get { bool("researchBannerHidden") ?? false } set { set("researchBannerHidden", .bool(newValue)) } }
     public var adaptiveRoutingEnabled: Bool { get { bool("adaptiveRoutingEnabled") ?? false } set { set("adaptiveRoutingEnabled", .bool(newValue)) } }
+    /// Staged answers, the sources' quotes before the answer (android `stagedQuotes`, core since Nov 12): on by default, and a
+    /// stored off holds.
+    public var stagedQuotes: Bool { get { bool("stagedQuotes") ?? true } set { set("stagedQuotes", .bool(newValue)) } }
     public var routingPreset: String? { get { str("routingPreset") } set { set("routingPreset", newValue.map(JSONValue.string)) } }
     /// A palette id as Android stores it ("campfire", "moonlight", "paper", a Boar Avatars theme like "tactical_red"), or
     /// "system" on iOS; see `ThemeChoice`.
