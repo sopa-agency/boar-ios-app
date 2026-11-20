@@ -281,12 +281,13 @@ public enum RagPure {
     }
 
     /// The completion-style prompt ("Question: …\n\nAnswer:"). `filesOnly`: the Personal Files instruction; `filesNote`: its
-    /// list of the user's files.
+    /// list of the user's files; `languageOf`: the text that sets the answer's language when the query is the app's own
+    /// (Staged's details ask, android b232d3c8); nil: the query.
     public static func assemblePrompt(
         _ userQuery: String, _ chunks: [Chunk], systemPrompt: String? = nil, history: ConversationHistory? = nil, styleReminder: String? = nil,
-        filesOnly: Bool = false, filesNote: String? = nil
+        filesOnly: Bool = false, filesNote: String? = nil, languageOf: String? = nil
     ) -> String {
-        let lang = langOf(userQuery, history)
+        let lang = langOf(languageOf ?? userQuery, history)
         let instruction = instructionOf(promptFor(systemPrompt, lang))
         let summary = nonEmptyTrimmed(history?.summary).map { "Summary of earlier conversation:\n\($0)\n\n" } ?? ""
         var turns = ""
@@ -311,9 +312,9 @@ public enum RagPure {
     /// The same content as role-separated messages, for the model's own chat template.
     public static func assembleChatMessages(
         _ userQuery: String, _ chunks: [Chunk], systemPrompt: String? = nil, history: ConversationHistory? = nil, styleReminder: String? = nil,
-        filesOnly: Bool = false, filesNote: String? = nil
+        filesOnly: Bool = false, filesNote: String? = nil, languageOf: String? = nil
     ) -> [PromptMessage] {
-        let lang = langOf(userQuery, history)
+        let lang = langOf(languageOf ?? userQuery, history)
         let instruction = instructionOf(promptFor(systemPrompt, lang))
         let hasContext = !chunks.isEmpty
         let ctxInstr = hasContext ? contextInstruction(filesOnly) : ""
