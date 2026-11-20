@@ -86,7 +86,9 @@ struct SettingsMemorySection: View {
         let going = Set(l.going.map(\.id))
         Task {
             _ = try? await services.background { try $0.chats.prune(maxSessions: max) }
-            if let open = model.chat?.sessionId, going.contains(open) { model.newChat() }
+            // As AppModel.deleteSession: Settings stays on screen; only a sidebar pointing at a deleted chat moves.
+            if let open = model.chat?.sessionId, going.contains(open) { model.chat?.newChat() }
+            if case .session(let id) = model.selection, going.contains(id) { model.selection = .newChat }
             model.reloadSessions()
         }
     }
