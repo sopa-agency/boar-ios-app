@@ -369,6 +369,8 @@ final class AppModel {
     /// Switches between llama.cpp (a downloaded GGUF) and Apple's on-device model; the next answer loads it.
     func setBackend(_ backend: ModelBackend) async {
         guard let services, services.backend != backend else { return }
+        // The answer being written (and the queue) stop first: the queue must not go on with the other backend.
+        _ = await services.answers.stopAndWait()
         services.backend = backend
         await services.host.unload()
         chat?.refreshModel()

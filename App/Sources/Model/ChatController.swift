@@ -189,8 +189,10 @@ final class ChatController {
     }
 
     /// Loads the answer model now; then the held question, if any, is sent. A load that returns without a model (not a
-    /// closed app) brings the may-not-fit note back, so the user can still choose.
-    private func load(held: String?, risky: RiskyLoad? = nil) {
+    /// closed app) brings the may-not-fit note back, so the user can still choose. `fromNote`: the note's buttons, not the
+    /// preload; only then do the questions waiting behind the note start or go (android `userLoad`; `preload` leaves the
+    /// queue alone).
+    private func load(held: String?, risky: RiskyLoad? = nil, fromNote: Bool = false) {
         loadingModel = true
         let services = services
         Task {
@@ -203,9 +205,9 @@ final class ChatController {
             // The held question keeps its place: first, before any that waited behind it.
             if loaded, let held { self.send(held, limit: nil, fromQueue: true) }
             // Loaded with nothing held: questions waiting behind the note start now (validator Q-3).
-            else if loaded { self.runNext() }
+            else if loaded, fromNote { self.runNext() }
             // A failed load: the waiting questions need that model too, so they go with it, said once.
-            else { self.skipToolsOnce = false; self.dropQueueWithNote() }
+            else if !loaded, fromNote { self.skipToolsOnce = false; self.dropQueueWithNote() }
         }
     }
 
@@ -236,7 +238,7 @@ final class ChatController {
         services.rememberLoadAnyway(modelId)
         let risky = riskyLoad
         riskyLoad = nil
-        load(held: heldQuestion.take(), risky: risky)
+        load(held: heldQuestion.take(), risky: risky, fromNote: true)
     }
 
     /// The crash note's "Try Again with Less Memory": the model is unblocked and loaded now, keeping the mapped file
@@ -249,7 +251,7 @@ final class ChatController {
         loadCrash = nil
         refreshModel()
         guard !loadingModel else { return }
-        load(held: heldQuestion.take())
+        load(held: heldQuestion.take(), fromNote: true)
     }
 
     /// The memory note's "Pick Another Model" / "Choose a Model" and its OK: the held question is dropped.
@@ -351,11 +353,14 @@ final class ChatController {
     /// `BoarServices.stopAnswersAndWait`); false when something still uses the model.
     func stopAllAndWait(timeout: Duration = .seconds(15)) async -> Bool {
         stopAll()
-        await stopBackground()
         let clock = ContinuousClock()
         let until = clock.now + timeout
-        while (job != nil || loadingModel) && clock.now < until { try? await Task.sleep(for: .milliseconds(100)) }
-        return job == nil && !loadingModel
+        // A title or summary counts too (android's busy check), also one that starts during the wait: an answer already past
+        // its stop check ends as not stopped and writes a title after it.
+        while usesModel && clock.now < until {
+            if background != nil { await stopBackground() } else { try? await Task.sleep(for: .milliseconds(100)) }
+        }
+        return !usesModel
     }
 
     // MARK: the queue

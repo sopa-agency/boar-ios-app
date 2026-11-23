@@ -137,8 +137,14 @@ struct PromptQueueWiringTests {
     @Test func aQueueBehindTheLoadNote() throws {
         let c = try controller()
         #expect(c.contains("if loaded, let held { self.send(held, limit: nil, fromQueue: true) }"))
-        #expect(c.contains("else if loaded { self.runNext() }"))
-        #expect(c.contains("else { self.skipToolsOnce = false; self.dropQueueWithNote() }"))
+        #expect(c.contains("else if loaded, fromNote { self.runNext() }"))
+        #expect(c.contains("else if !loaded, fromNote { self.skipToolsOnce = false; self.dropQueueWithNote() }"))
+        // Only the note's buttons move the queue; the preload leaves it alone (android userLoad vs preload).
+        #expect(c.contains("load(held: heldQuestion.take(), risky: risky, fromNote: true)"))
+        #expect(c.contains("load(held: heldQuestion.take(), fromNote: true)"))
+        #expect(c.contains("        load(held: nil)\n    }"))
+        // The wait before an unload counts a title or summary too, also one started during it (android busy check).
+        #expect(try slice(c, after: "func stopAllAndWait(", before: "\n    }").contains("while usesModel && clock.now < until"))
         #expect(try slice(c, after: "func dismissLoadNote() {", before: "\n    }").contains("dropQueueWithNote()"))
         #expect(c.contains("guard job == nil, flow.isEmpty, !noteUp, let q"))
         #expect(try slice(c, after: "func redo(_ answerId: String, limit: Int) {", before: "\n    }").contains("guard job == nil"))

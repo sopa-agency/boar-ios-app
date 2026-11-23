@@ -230,6 +230,13 @@ final class ModelsController {
         activating = "apple"
         let services = services
         Task {
+            // The answer being written (and the queue) stop first, as with Use. Still answering after the wait: nothing is
+            // switched.
+            guard await services.answers.stopAndWait() else {
+                activating = nil
+                toast = String(localized: "BOAR is still answering. Stop the answer, then pick \("Apple Intelligence") again.")
+                return
+            }
             services.backend = .apple
             await services.host.unload()
             let loaded = await services.host.loadApple() != nil
