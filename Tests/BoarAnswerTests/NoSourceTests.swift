@@ -20,9 +20,10 @@ struct NoSourceTests {
         #expect(!NoSource.shows(searched: true, sources: 0, instant: false, question: "How do I change a flat bicycle tyre?", answer: ""))
     }
 
-    /// The Kotlin test reads ChatScreen.kt and the strings XML; here the answer view and the string catalog.
+    /// The Kotlin test reads ChatScreen.kt and the strings XML; here the answer footer and the string catalog.
     @Test func theChatShowsItUnderTheSeparatorInEnAndPt() throws {
-        let view = try Fixtures.text(Fixtures.root.appending(path: "App/Features/Chat/AnswerView.swift"))
+        let view = try Fixtures.text(Fixtures.root.appending(path: "App/Features/Chat/AnswerFooter.swift"))
+        // The note sits under the separator, in the footer (android f4e43f00; BOAR-51).
         #expect(view.contains("NoSource.shows(searched: message.receipt?.retrievalMs != nil, sources: message.sources.count, instant: message.receipt?.tool != nil,"))
         #expect(view.contains("answer: message.text, style: message.receipt?.style)"))
         // The text names this device (Platform.deviceNoun: "iPhone" or "Mac"), as Android's "this phone's".
