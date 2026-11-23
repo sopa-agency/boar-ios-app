@@ -11,12 +11,38 @@ struct SessionsSidebar: View {
     @State private var newTitle = ""
     @State private var query = ""
     @FocusState private var searching: Bool
+    /// A chat deleted a moment ago: hidden, deleted for real after `ChatList.undoMs` unless Undo is tapped (android
+    /// ChatList.UNDO_MS).
+    @State private var pendingDelete: ChatSession?
+    @State private var undoTask: Task<Void, Never>?
+
+    /// The saved chats without the one waiting for its Undo.
+    private var kept: [ChatSession] { model.sessions.filter { $0.id != pendingDelete?.id } }
+
+    /// The search box shows above `ChatList.searchFrom` chats, on every platform (android ChatList).
+    private var searchable: Bool { kept.count > ChatList.searchFrom }
 
     /// The chats whose title matches the sidebar search (all of them with no search).
     private var shownSessions: [ChatSession] {
-        let q = query.trimmingCharacters(in: .whitespaces)
-        guard !q.isEmpty else { return model.sessions }
-        return model.sessions.filter { $0.title.localizedStandardContains(q) }
+        guard searchable else { return kept }
+        return kept.filter { ChatList.matches(query, title: $0.title) }
+    }
+
+    /// Today, Yesterday, Earlier: the non-empty groups, newest first within each (android groupOf, by the calendar day).
+    private var groups: [(group: ChatList.Group, sessions: [ChatSession])] {
+        let now = Int64(Date().timeIntervalSince1970 * 1000)
+        return ChatList.Group.allCases.compactMap { group in
+            let rows = shownSessions.filter { ChatList.groupOf(updatedAt: $0.updatedAt, now: now) == group }
+            return rows.isEmpty ? nil : (group, rows)
+        }
+    }
+
+    private func title(_ group: ChatList.Group) -> LocalizedStringKey {
+        switch group {
+        case .today: "Today"
+        case .yesterday: "Yesterday"
+        case .earlier: "Earlier"
+        }
     }
 
     var body: some View {
@@ -34,46 +60,59 @@ struct SessionsSidebar: View {
                 }
             }
 
-            Section {
-                if model.sessions.isEmpty {
-                    Text("Your chats appear here.")
-                        .foregroundStyle(.secondary)
-                } else if shownSessions.isEmpty {
-                    Text("No chats match.")
-                        .foregroundStyle(.secondary)
+            if searchable {
+                Section {
+                    TextField("Search Chats", text: $query)
+                        .focused($searching)
+                        .submitLabel(.search)
+                        .autocorrectionDisabled()
+                        .accessibilityLabel("Search Chats")
                 }
-                ForEach(shownSessions) { session in
-                    SessionRow(session: session)
-                        .tag(SidebarItem.session(session.id))
-                        // A swipe and then a tap on its Delete are already deliberate: no dialog after them (Biel,
-                        // BOAR-58). No full swipe, which would delete on one long drag with no undo. Android's one-tap
-                        // trash icon is what "Ask Before Deleting a Chat" guards; here it guards the context menu and
-                        // the Mac's Delete key.
-                        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                            Button("Delete", icon: Symbols.delete, role: .destructive) { delete(session) }
-                                .disabled(isAnswering(in: session))
-                            Button("Rename", systemImage: "pencil") { startRename(session) }
-                        }
-                        .contextMenu {
-                            Button("Rename", systemImage: "pencil") { startRename(session) }
-                            Button("Delete", icon: Symbols.delete, role: .destructive) { askDelete(session) }
-                                .disabled(isAnswering(in: session))
-                        }
+            }
+            if groups.isEmpty {
+                Section {
+                    if kept.isEmpty {
+                        Text("Your chats appear here.")
+                            .foregroundStyle(.secondary)
+                    } else {
+                        Text("No chats match.")
+                            .foregroundStyle(.secondary)
+                    }
+                } header: {
+                    Text("Chats")
+                } footer: {
+                    Label("Works without internet", icon: Symbols.offline)
                 }
-            } header: {
-                Text("Chats")
-            } footer: {
-                Label("Works without internet", icon: Symbols.offline)
+            }
+            ForEach(groups, id: \.group) { entry in
+                Section {
+                    ForEach(entry.sessions) { session in
+                        row(session)
+                    }
+                } header: {
+                    Text(title(entry.group))
+                } footer: {
+                    if entry.group == groups.last?.group {
+                        Label("Works without internet", icon: Symbols.offline)
+                    }
+                }
             }
         }
         .listStyle(.sidebar)
         // Android's drawer footer: the bars stay at the bottom while the chats scroll.
         .safeAreaInset(edge: .bottom) {
-            if chat.technicalDetails {
-                SidebarStats(services: chat.services, lastTokPerSec: chat.isAnswering ? nil : chat.liveTokPerSec)
-                    .background(.bar)
+            VStack(spacing: 0) {
+                if let pendingDelete {
+                    UndoBar(title: pendingDelete.title, onUndo: undo)
+                }
+                if chat.technicalDetails {
+                    SidebarStats(services: chat.services, lastTokPerSec: chat.isAnswering ? nil : chat.liveTokPerSec)
+                        .background(.bar)
+                }
             }
         }
+        // Leaving the list ends the wait: the chat is deleted now, not left hidden.
+        .onDisappear { commitDelete() }
         .navigationTitle(Text(verbatim: "BOAR"))
         // One compact bar: Settings on the left, New Chat on the right, the title between them. No large title row
         // and no bottom bar holding a lone button.
@@ -93,8 +132,6 @@ struct SessionsSidebar: View {
         }
         .refreshable { model.reloadSessions() }
         #if os(macOS)
-        .searchable(text: $query, placement: .sidebar, prompt: Text("Search Chats"))
-        .searchFocused($searching)
         // The Delete key on a selected chat, and the Chat menu's Rename / Delete / Find commands.
         .onDeleteCommand {
             if let id = model.selectedSessionId, let session = model.sessions.first(where: { $0.id == id }),
@@ -112,6 +149,26 @@ struct SessionsSidebar: View {
         } message: { session in
             Text("\"\(session.title)\" and its messages are deleted from this \(Platform.deviceNoun).")
         }
+    }
+
+    /// One chat's row: a tap opens it; a swipe or a long press has Rename and Delete (android ChatList's long-press menu; its
+    /// "Add to Press" has no counterpart here, Press is BOAR-55).
+    private func row(_ session: ChatSession) -> some View {
+        SessionRow(session: session)
+            .tag(SidebarItem.session(session.id))
+            // A swipe and then a tap on its Delete are already deliberate: no dialog after them (Biel, BOAR-58). No full
+            // swipe, which would delete on one long drag. Android's one-tap trash icon is what "Ask Before Deleting a
+            // Chat" guards; here it guards the context menu and the Mac's Delete key. Every delete waits for Undo.
+            .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                Button("Delete", icon: Symbols.delete, role: .destructive) { delete(session) }
+                    .disabled(isAnswering(in: session))
+                Button("Rename", systemImage: "pencil") { startRename(session) }
+            }
+            .contextMenu {
+                Button("Rename", systemImage: "pencil") { startRename(session) }
+                Button("Delete", icon: Symbols.delete, role: .destructive) { askDelete(session) }
+                    .disabled(isAnswering(in: session))
+            }
     }
 
     #if os(macOS)
@@ -149,7 +206,51 @@ struct SessionsSidebar: View {
         if chat.services.settings.confirmChatDelete { deleting = session } else { delete(session) }
     }
 
+    /// Hides the chat and shows "Deleted: title · Undo"; after `ChatList.undoMs` it is deleted for real (android ChatList).
+    /// A second delete settles the first at once.
     private func delete(_ session: ChatSession) {
+        commitDelete()
+        withAnimation { pendingDelete = session }
+        undoTask = Task {
+            try? await Task.sleep(for: .milliseconds(ChatList.undoMs))
+            guard !Task.isCancelled else { return }
+            commitDelete()
+        }
+    }
+
+    private func undo() {
+        undoTask?.cancel()
+        undoTask = nil
+        withAnimation { pendingDelete = nil }
+    }
+
+    private func commitDelete() {
+        undoTask?.cancel()
+        undoTask = nil
+        guard let session = pendingDelete else { return }
+        pendingDelete = nil
         Task { await model.deleteSession(session.id) }
+    }
+}
+
+/// "Deleted: title · Undo", under the list for `ChatList.undoMs`.
+private struct UndoBar: View {
+    let title: String
+    let onUndo: () -> Void
+
+    var body: some View {
+        HStack {
+            Text("Deleted: \(title)")
+                .lineLimit(1)
+            Spacer()
+            Button("Undo", action: onUndo)
+                .fontWeight(.semibold)
+        }
+        .font(.subheadline)
+        .padding(.horizontal, 16)
+        .padding(.vertical, 10)
+        .background(.bar)
+        .transition(.move(edge: .bottom).combined(with: .opacity))
+        .accessibilityElement(children: .contain)
     }
 }

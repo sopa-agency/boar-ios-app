@@ -3426,6 +3426,16 @@
         }
       }
     },
+    "Deleted: %@" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apagada: %@"
+          }
+        }
+      }
+    },
     "Delete…" : {
       "localizations" : {
         "pt" : {
@@ -3782,6 +3792,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Desenhe uma ilustração com poucas palavras, com o Image Playground da Apple, neste %@."
+          }
+        }
+      }
+    },
+    "Earlier" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Antes"
           }
         }
       }
@@ -10490,6 +10510,16 @@
         }
       }
     },
+    "Today" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hoje"
+          }
+        }
+      }
+    },
     "Tokens per second, at the top of the chat while BOAR writes." : {
       "localizations" : {
         "pt" : {
@@ -10736,6 +10766,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Embaixo de cada resposta"
+          }
+        }
+      }
+    },
+    "Undo" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desfazer"
           }
         }
       }
@@ -11393,6 +11433,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Escreveu ~%lld palavras"
+          }
+        }
+      }
+    },
+    "Yesterday" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ontem"
           }
         }
       }
