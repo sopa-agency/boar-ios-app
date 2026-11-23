@@ -57,27 +57,17 @@ struct AnswerView: View {
                 }
                 if !shown.isEmpty {
                     MarkdownText(text: shown, sourceCount: message.sources.count, answerId: message.id)
+                        // A tap on an instant answer being typed shows all of it (android skipTyping). Only while the
+                        // answer is written, and beside the text's own taps: a finished answer's [n] links and
+                        // selection never meet it.
+                        .simultaneousGesture(TapGesture().onEnded { chat.skipInstantTyping() },
+                                             including: streaming ? .all : .subviews)
                 }
                 if let failure = message.failure {
                     failureRow(failure)
                 }
-                // Answered in another style than the one picked (a health question under Detailed): said once, under it.
-                if !streaming, let note = message.receipt?.styleNote {
-                    switch note {
-                    case "health": MessageNote(symbol: Symbols.shortAnswer, text: "Short answer: health questions are kept brief.", warning: false)
-                    case "seed": MessageNote(symbol: Symbols.shortAnswer, text: "Short answer: seed-phrase questions are kept brief, for your safety.", warning: false)
-                    default: EmptyView()
-                    }
-                }
-                // Every number written is in a source (or is not), once the staged answer's check has run.
-                if !streaming, !message.text.isEmpty, !message.sources.isEmpty, let staged = message.staged {
-                    StagedCheck(staged: staged)
-                }
-                // Nothing in the library backs it: said, not left to guess (t9 0226 point 4).
-                if !streaming, NoSource.shows(searched: message.receipt?.retrievalMs != nil, sources: message.sources.count, instant: message.receipt?.tool != nil,
-                                              question: chat.question(for: message.id) ?? "", answer: message.text, style: message.receipt?.style) {
-                    MessageNote(symbol: Symbols.shortAnswer, text: "No source in this \(Platform.deviceNoun)'s library covers this; the answer is from the model alone.", warning: false)
-                }
+                // BOAR's own notes (the style it kept, the number check, no source) sit in the footer under the separator,
+                // above the receipt, not against the answer's text (android e1d1ed0f, f4e43f00).
                 if message.stopped { MessageNote(symbol: Symbols.stop, text: "Stopped", warning: false) }
                 if message.timedOut { MessageNote(symbol: Symbols.caution, text: "A research step took too long and was cut short", warning: true) }
                 // No "Ask BOAR instead" pill (t9 0235): it is the "Ask BOAR" step under the latest answer (KeepGoingGroup).

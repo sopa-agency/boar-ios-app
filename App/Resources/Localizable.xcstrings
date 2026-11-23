@@ -469,6 +469,16 @@
         }
       }
     },
+    "%lld tokens per second" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld tokens por segundo"
+          }
+        }
+      }
+    },
     "%lld waiting questions were dropped: they need that model too." : {
       "localizations" : {
         "pt" : {
@@ -1926,6 +1936,16 @@
         }
       }
     },
+    "BOAR doesn't need the internet.\n\nYour library is **on this device**, so ask away." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O BOAR não precisa de internet.\n\nSua biblioteca está **neste aparelho**, pode perguntar."
+          }
+        }
+      }
+    },
     "BOAR is indexing your library so it can search it. No internet needed for this part." : {
       "localizations" : {
         "pt" : {
@@ -2042,6 +2062,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "O BOAR foi fechado: %lld perguntas na fila foram descartadas."
+          }
+        }
+      }
+    },
+    "BOAR works the same with or without signal.\n\nThe connection is only for **downloading models or packs**, **searching Hugging Face** and sharing evaluation results, if you turn that on." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O BOAR funciona igual com ou sem sinal.\n\nA conexão só serve para **baixar modelos ou pacotes**, **buscar no Hugging Face** e compartilhar resultados de avaliação, se você ligar isso."
           }
         }
       }
@@ -3396,6 +3426,16 @@
         }
       }
     },
+    "Deleted: %@" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apagada: %@"
+          }
+        }
+      }
+    },
     "Delete…" : {
       "localizations" : {
         "pt" : {
@@ -3576,6 +3616,16 @@
         }
       }
     },
+    "Double tap for details" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toque duas vezes para ver os detalhes"
+          }
+        }
+      }
+    },
     "Download" : {
       "localizations" : {
         "pt" : {
@@ -3742,6 +3792,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Desenhe uma ilustração com poucas palavras, com o Image Playground da Apple, neste %@."
+          }
+        }
+      }
+    },
+    "Earlier" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Antes"
           }
         }
       }
@@ -6613,6 +6673,16 @@
         }
       }
     },
+    "No answer model on this device yet." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ainda não há modelo de resposta neste aparelho."
+          }
+        }
+      }
+    },
     "No chats match." : {
       "localizations" : {
         "pt" : {
@@ -6863,6 +6933,16 @@
         }
       }
     },
+    "OFFLINE" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OFFLINE"
+          }
+        }
+      }
+    },
     "OK" : {
       "localizations" : {
         "pt" : {
@@ -6879,6 +6959,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "LIGADA · respostas mais profundas e lentas"
+          }
+        }
+      }
+    },
+    "ONLINE" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ONLINE"
           }
         }
       }
@@ -6929,6 +7019,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pesquisa offline"
+          }
+        }
+      }
+    },
+    "Offline, as intended." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Offline, como planejado."
           }
         }
       }
@@ -7009,6 +7109,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Uma notificação, só enquanto o BOAR responde."
+          }
+        }
+      }
+    },
+    "Online, but we don't need it." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Online, mas não precisamos."
           }
         }
       }
@@ -7109,6 +7219,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Código aberto"
+          }
+        }
+      }
+    },
+    "Open the Model Catalog" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir o Catálogo de Modelos"
           }
         }
       }
@@ -8825,6 +8945,16 @@
         }
       }
     },
+    "Show speed while answering" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar a velocidade ao responder"
+          }
+        }
+      }
+    },
     "Show the microphone button in the chat to dictate messages." : {
       "localizations" : {
         "pt" : {
@@ -9789,6 +9919,16 @@
         }
       }
     },
+    "The dot only shows the connection. BOAR answers the same offline." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O ponto só mostra a conexão. O BOAR responde igual offline."
+          }
+        }
+      }
+    },
     "The download paused (no data). Check your connection and try again." : {
       "localizations" : {
         "pt" : {
@@ -10370,6 +10510,26 @@
         }
       }
     },
+    "Today" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hoje"
+          }
+        }
+      }
+    },
+    "Tokens per second, at the top of the chat while BOAR writes." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tokens por segundo, no topo do chat enquanto o BOAR escreve."
+          }
+        }
+      }
+    },
     "Too big" : {
       "localizations" : {
         "pt" : {
@@ -10610,6 +10770,16 @@
         }
       }
     },
+    "Undo" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desfazer"
+          }
+        }
+      }
+    },
     "Unfinished experiments in the menu and under answers. They may be slow, rough or change without notice." : {
       "localizations" : {
         "pt" : {
@@ -10822,6 +10992,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Javali Vazio"
+          }
+        }
+      }
+    },
+    "Wait for the answer to finish to change the model." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Espere a resposta terminar para trocar o modelo."
           }
         }
       }
@@ -11257,6 +11437,16 @@
         }
       }
     },
+    "Yesterday" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ontem"
+          }
+        }
+      }
+    },
     "You" : {
       "localizations" : {
         "pt" : {
@@ -11663,6 +11853,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "iPhone"
+          }
+        }
+      }
+    },
+    "instant" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "instantâneo"
           }
         }
       }

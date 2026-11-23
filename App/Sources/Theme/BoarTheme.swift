@@ -151,6 +151,9 @@ struct BoarStyle: ShapeStyle {
         case dim
         /// borderDefault: rings and baselines drawn in a Canvas.
         case border
+        /// The brand's moon blue (android ChatScreen `MOON`, 0xFF9EC7F0; brand book: moonlight means no signal): the offline ring
+        /// and word. The same in every theme, as on Android.
+        case moon
     }
 
     let role: Role
@@ -179,6 +182,7 @@ struct BoarStyle: ShapeStyle {
         case .muted: Color(p.textMuted)
         case .dim: Color(p.textDim)
         case .border: Color(p.borderDefault)
+        case .moon: Color(red: 0x9E / 255, green: 0xC7 / 255, blue: 0xF0 / 255)
         }
     }
 }

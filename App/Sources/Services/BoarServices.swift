@@ -168,11 +168,19 @@ final class BoarServices: @unchecked Sendable {
         FileManager.default.fileExists(atPath: fileOf(asset).path(percentEncoded: false))
     }
 
-    func installed(_ kind: AssetKind) -> [CatalogAsset] { catalog.models.filter { $0.kind == kind && isPresent($0) } }
+    /// On the device and whole: a download in progress (or stopped half way: the resume keeps its partial file) isn't an
+    /// installed answer model (android `isInstalled`, `StartLoad.complete`).
+    func isInstalled(_ asset: CatalogAsset) -> Bool {
+        guard asset.kind == .llm else { return isPresent(asset) }
+        let size = (try? FileManager.default.attributesOfItem(atPath: fileOf(asset).path(percentEncoded: false))[.size] as? Int64) ?? nil
+        return StartLoad.complete(isFile: size != nil, lengthBytes: size ?? 0, expectedBytes: asset.sizeBytes)
+    }
+
+    func installed(_ kind: AssetKind) -> [CatalogAsset] { catalog.models.filter { $0.kind == kind && isInstalled($0) } }
 
     /// The user's model, else the first installed one (the catalog's order puts the default first).
     func activeModel() -> CatalogAsset? {
-        if let id = settings.activeModelId("llm"), let m = catalog.byId(id), isPresent(m) { return m }
+        if let id = settings.activeModelId("llm"), let m = catalog.byId(id), isInstalled(m) { return m }
         return installed(.llm).first
     }
 
@@ -180,10 +188,10 @@ final class BoarServices: @unchecked Sendable {
     /// before it, else the smallest installed one that isn't blocked.
     func answerModel() -> CatalogAsset? {
         guard let m = activeModel() else { return nil }
-        if !loadGuard.isBlocked(m.id) { return m }
         let llms = installed(.llm)
-        let pick = StartLoad.fallback(installed: llms.map(startModel), isBlocked: loadGuard.isBlocked, lastLoadedId: settings.lastLoadedModelId)
-        return pick.flatMap { p in llms.first { $0.id == p.id } }
+        let pick = StartLoad.answering(active: startModel(m), installed: llms.map(startModel), isBlocked: loadGuard.isBlocked,
+                                       lastLoadedId: settings.lastLoadedModelId)
+        return pick.flatMap { p in p.id == m.id ? m : llms.first { $0.id == p.id } }
     }
 
     private func startModel(_ a: CatalogAsset) -> StartLoad.Model { StartLoad.Model(id: a.id, sizeBytes: a.sizeBytes) }

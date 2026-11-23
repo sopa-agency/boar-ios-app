@@ -48,10 +48,18 @@ public enum StartLoad {
         return .load(modelId: active.id)
     }
 
+    /// The model the chat answers with, the one its header names: the user's `active` model, unless its last load closed the
+    /// app; then `fallback` (android `StartLoad.answering`). Nil: none can answer.
+    public static func answering(active: Model?, installed: [Model], isBlocked: (String) -> Bool, lastLoadedId: String?) -> Model? {
+        if let active, !isBlocked(active.id) { return active }
+        return fallback(installed: installed, isBlocked: isBlocked, lastLoadedId: lastLoadedId)
+    }
+
     /// The model that answers instead of a blocked one: the last that loaded, else the smallest installed, never a
-    /// blocked one.
+    /// blocked one, and never a model an engine streams from storage (android: Big Boar's 35B): that one answers only
+    /// when the user picks it.
     public static func fallback(installed: [Model], isBlocked: (String) -> Bool, lastLoadedId: String?) -> Model? {
-        let ok = installed.filter { !isBlocked($0.id) }
+        let ok = installed.filter { !isBlocked($0.id) && !$0.streamed }
         if let lastLoadedId, let last = ok.first(where: { $0.id == lastLoadedId }) { return last }
         // Kotlin's minByOrNull: the first of equal sizes.
         return ok.reduce(nil) { best, m in best.map { m.sizeBytes < $0.sizeBytes ? m : $0 } ?? m }
@@ -60,5 +68,11 @@ public enum StartLoad {
     /// RED for this phone; unknown RAM, or a model an engine streams from storage, is never risky.
     public static func risky(_ model: Model, totalRamBytes: Int64) -> Bool {
         !model.streamed && Compatibility.compute(sizeBytes: model.sizeBytes, deviceRamBytes: totalRamBytes) == .red
+    }
+
+    /// A model file the chat may load: all of it is there (android `StartLoad.complete`). A file that exists can be half of
+    /// a download. `expectedBytes` 0 or less: the size isn't known (a model copied by hand), any file counts.
+    public static func complete(isFile: Bool, lengthBytes: Int64, expectedBytes: Int64) -> Bool {
+        isFile && (expectedBytes <= 0 || lengthBytes == expectedBytes)
     }
 }

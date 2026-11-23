@@ -14,8 +14,10 @@ struct ReceiptDetails: View {
                     if receipt.path == "staged" { ReceiptRow(label: "Mode", symbol: "text.quote", value: String(localized: "Staged answer")) }
                     ReceiptRow(label: "Total", symbol: "clock", value: Receipt.seconds(receipt.totalMs))
                     ReceiptRow(label: "Time to first word", symbol: "timer", value: Receipt.seconds(receipt.ttftMs))
+                    // An instant answer generated nothing: "instant", never a speed (android receipt rows, rc3 bd041e73).
                     ReceiptRow(label: "Speed", symbol: Symbols.performance,
-                               value: String(localized: "\(Receipt.rate(receipt.tokPerSec)) tok/s (~\(Receipt.words(receipt.tokPerSec)) words/s)"))
+                               value: receipt.instant ? String(localized: "instant")
+                                   : String(localized: "\(Receipt.rate(receipt.tokPerSec)) tok/s (~\(Receipt.words(receipt.tokPerSec)) words/s)"))
                 }
                 Section("Steps") {
                     if let load = receipt.loadMs { ReceiptRow(label: "Loading the model", symbol: "hourglass", value: Receipt.seconds(load)) }
@@ -24,7 +26,7 @@ struct ReceiptDetails: View {
                     if let search = receipt.retrievalMs { ReceiptRow(label: "Searching", symbol: "magnifyingglass", value: Receipt.seconds(search)) }
                     if let prefill = receipt.prefillMs { ReceiptRow(label: "Reading sources", symbol: Symbols.sources, value: Receipt.seconds(prefill)) }
                     if let context = receipt.contextTokens { ReceiptRow(label: "Text read", symbol: "doc.text", value: tokenCount(context)) }
-                    ReceiptRow(label: "Words written", symbol: "pencil.line", value: tokenCount(receipt.tokens))
+                    if !receipt.instant { ReceiptRow(label: "Words written", symbol: "pencil.line", value: tokenCount(receipt.tokens)) }
                 }
             }
             .groupedListStyle()

@@ -21,6 +21,9 @@ struct SettingsDisplaySection: View {
             if let vault, vault.enabled {
                 AvatarPicker(vault: vault)
             }
+            Toggle(isOn: bridge.binding({ $0.showLiveSpeed }, { $0.showLiveSpeed = $1 })) {
+                SettingsLabel("Show speed while answering", symbol: "speedometer")
+            }
             #if !os(macOS)
             Toggle(isOn: bridge.binding({ $0.hapticsEnabled }, { $0.hapticsEnabled = $1 })) {
                 SettingsLabel("Haptics", symbol: "hand.tap.fill")
@@ -33,6 +36,7 @@ struct SettingsDisplaySection: View {
         } footer: {
             BoarFooter {
                 Text("System follows your \(Platform.deviceNoun)'s appearance: Moonlight when dark, Paper when light.")
+                Text("Tokens per second, at the top of the chat while BOAR writes.")
                 // android ThemePicker: how many themes Boar Avatars still keeps closed.
                 if let vault, vault.enabled {
                     // The themes the menu lists (all but System), so a current one outside them (Paper from an older

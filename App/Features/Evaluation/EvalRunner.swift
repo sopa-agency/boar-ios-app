@@ -56,7 +56,7 @@ final class EvalRunner: Sendable {
 
     /// Installed language models from the catalog, in catalog order.
     func installedModels() -> [ModelRef] {
-        services.catalog.models.filter { $0.kind == .llm && services.isPresent($0) }.map { ModelRef(id: $0.id, label: $0.label) }
+        services.catalog.models.filter { $0.kind == .llm && services.isInstalled($0) }.map { ModelRef(id: $0.id, label: $0.label) }
     }
 
     func evalSets() throws -> EvalSets { try EvalSets.bundled() }
@@ -133,7 +133,7 @@ final class EvalRunner: Sendable {
                     if !loaded {
                         loaded = true
                         let start = ContinuousClock.now
-                        if let asset = services.catalog.byId(modelId), services.isPresent(asset) {
+                        if let asset = services.catalog.byId(modelId), services.isInstalled(asset) {
                             session = try? await LlamaSession.load(path: services.fileOf(asset).path(percentEncoded: false), params: params)
                         }
                         loadMs = Self.ms(start.duration(to: .now))

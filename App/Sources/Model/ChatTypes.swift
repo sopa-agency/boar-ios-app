@@ -99,6 +99,9 @@ struct Receipt: Hashable, Sendable {
                   stages: o["stages"].flatMap { if case .object(let m) = $0 { m.compactMapValues(\.doubleValue) } else { nil } })
     }
 
+    /// A tool's instant answer generated nothing (android `Receipt.instant()`): "instant" instead of a speed.
+    var instant: Bool { tool != nil && tokens == 0 }
+
     /// "9.1 s" under a minute, "2 min 5 s" above (ReceiptFormat.seconds).
     static func seconds(_ ms: Double) -> String {
         if ms < 60_000 { return String(format: "%.1f s", ms / 1000) }

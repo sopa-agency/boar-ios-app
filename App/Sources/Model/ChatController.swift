@@ -6,6 +6,11 @@ import BoarRAG
 import BoarRouting
 import Foundation
 import Observation
+#if canImport(UIKit)
+import UIKit
+#else
+import AppKit
+#endif
 import Synchronization
 
 /// The chat (port of android `ChatViewModel`, itself ChatScreen.tsx's send flow): Deep Research when it's on, adaptive
@@ -22,6 +27,9 @@ final class ChatController {
     private(set) var answeringId: String?
     private(set) var activity: ChatActivity?
     private(set) var liveTokPerSec: Double?
+    /// While adaptive routing has another model write the answer: that model's name (android `answeringModel`; the header
+    /// says "→ name"). Nil otherwise.
+    private(set) var answeringModel: String?
     /// The answering model's catalog label (the receipt keeps it).
     private(set) var modelLabel: String?
     /// The answering model's plain name ("Fast", "Accurate"), for the chat's subtitle.
@@ -30,6 +38,8 @@ final class ChatController {
     private(set) var modelPlace = String(localized: "on this \(Platform.deviceNoun)")
     private(set) var noModel = false
     private(set) var technicalDetails = false
+    /// The live tok/s pill at the top of the chat (android showLiveSpeed); its own switch, off by default.
+    private(set) var liveSpeed = false
     private(set) var loadingModel = false
     private(set) var personalityId: String
     private(set) var stopping = false
@@ -65,6 +75,8 @@ final class ChatController {
     /// A chat title or summary still being written; a new question stops it (one model, one generation).
     @ObservationIgnored private var background: Task<Void, Never>?
     @ObservationIgnored private let stopFlag = StopFlag()
+    /// A tap on an instant answer being typed shows all of it (android skipTyping).
+    @ObservationIgnored private var skipTyping = false
     /// The queue and what it decides (PromptQueueFlow); in memory, its size kept so a closed app can say what it dropped.
     @ObservationIgnored private let flow = PromptQueueFlow(store: .defaults(AppPaths.defaults, key: "boar.chat.queueWaiting"))
 
@@ -73,6 +85,7 @@ final class ChatController {
         personalityId = services.settings.personalityId ?? services.personalities.defaultId
         deepResearch = services.settings.deepResearchMode
         technicalDetails = services.settings.showLiveStats
+        liveSpeed = services.settings.showLiveSpeed
         refreshModel()
         flow.onChange = { [weak self] in
             guard let self else { return }
@@ -116,6 +129,7 @@ final class ChatController {
         personalityId = services.settings.personalityId ?? services.personalities.defaultId
         deepResearch = services.settings.deepResearchMode
         technicalDetails = services.settings.showLiveStats
+        liveSpeed = services.settings.showLiveSpeed
         refreshModel()
         takeFirstQuestion()
         // The open chat was erased (Clear all chat history, a forgotten PIN): start a new one.
@@ -292,6 +306,17 @@ final class ChatController {
         }
     }
 
+    /// Delete with Undo starts (android deleteWithUndo): not the chat still being answered (false); the open one is left at
+    /// once, its waiting questions with it, so nothing new lands in a chat about to be deleted.
+    func leaveForDelete(_ id: String) -> Bool {
+        if job != nil && sessionId == id { return false }
+        if sessionId == id {
+            flow.clear()
+            newChat()
+        }
+        return true
+    }
+
     /// The chat and its messages; the open one becomes a new chat. Not the chat still being answered.
     func deleteSession(_ id: String) async {
         if job != nil && sessionId == id { return }
@@ -334,6 +359,25 @@ final class ChatController {
     func stopForBackground() {
         stopAll()
         Task { await stopBackground() }
+    }
+
+    /// A tap on an instant answer being typed: the rest shows at once (android skipTyping).
+    func skipInstantTyping() { skipTyping = true }
+
+    private static var animationsOff: Bool {
+        #if canImport(UIKit)
+        UIAccessibility.isReduceMotionEnabled
+        #else
+        NSWorkspace.shared.accessibilityDisplayShouldReduceMotion
+        #endif
+    }
+
+    private static var screenReader: Bool {
+        #if canImport(UIKit)
+        UIAccessibility.isVoiceOverRunning
+        #else
+        NSWorkspace.shared.isVoiceOverEnabled
+        #endif
     }
 
     /// Stop ends only the answer in progress, never the queue (validator Q-1). `stopAll` is for the paths that end everything
@@ -581,6 +625,8 @@ final class ChatController {
     private enum Event: Sendable {
         case piece(String)
         case activity(ChatActivity)
+        /// Adaptive routing's generate step runs on a model other than the answering one (android `answeringModel`).
+        case routed(String?)
     }
 
     private func answer(_ q: String, savedQuestionId: String? = nil, limit: Int? = nil) async {
@@ -732,6 +778,8 @@ final class ChatController {
 
         /// The partial answer's saves, every few seconds, one after the other; the final save waits for them.
         var partialSave: Task<Void, Never>?
+        /// When the instant answer was ready, before it was typed: the receipt's time (android instantAt).
+        var instantAt: ContinuousClock.Instant?
         var savedAt = clock.now
 
         /// One streamed piece; `whole`: the text as it reads now (a staged answer joins its intro and details), instead of
@@ -863,7 +911,28 @@ final class ChatController {
         do {
             if let instant {
                 // An instant answer doesn't load the model.
-                onPiece(instant)
+                // Shown at typing speed (android InstantTyping), presentation only: a tap or Stop shows the rest at once (the
+                // answer is already whole); the safety answer, Reduce Motion and VoiceOver show it at once. The receipt keeps
+                // the time of the answer, not of the typing.
+                instantAt = clock.now
+                if InstantTyping.typed(tool: tool?.tool ?? "", animationsOff: Self.animationsOff, screenReader: Self.screenReader) {
+                    skipTyping = false
+                    var shownLen = 0
+                    for piece in InstantTyping.pieces(instant) {
+                        if skipTyping || stopFlag.value {
+                            onPiece(String(instant.dropFirst(shownLen)))
+                            shownLen = instant.count
+                            break
+                        }
+                        onPiece(piece)
+                        shownLen += piece.count
+                        try? await clock.sleep(for: .milliseconds(InstantTyping.stepMs))
+                    }
+                    if shownLen < instant.count { onPiece(String(instant.dropFirst(shownLen))) }
+                    skipTyping = false
+                } else {
+                    onPiece(instant)
+                }
                 throw InstantAnswer()
             }
             if staged {
@@ -916,6 +985,7 @@ final class ChatController {
                     switch e {
                     case .piece(let p): onPiece(p)
                     case .activity(let a): if firstAt == nil { enter(a, answerId: answerId) }
+                    case .routed(let name): answeringModel = name
                     }
                 }
                 let outcome = try await work.value
@@ -996,7 +1066,7 @@ final class ChatController {
         var receipt: Receipt?
         if instant != nil, let firstAt {
             // An instant answer generated nothing: its receipt has the time and the tool, no speed.
-            receipt = Receipt(totalMs: Self.seconds(startAt.duration(to: clock.now)) * 1000, ttftMs: Self.seconds(startAt.duration(to: firstAt)) * 1000,
+            receipt = Receipt(totalMs: Self.seconds(startAt.duration(to: instantAt ?? clock.now)) * 1000, ttftMs: Self.seconds(startAt.duration(to: firstAt)) * 1000,
                               tokPerSec: 0, tokens: 0, model: nil, retrievalMs: nil, prefillMs: nil, contextTokens: nil, loadMs: nil,
                               styleNote: nil, tool: toolCodes, path: path, style: receiptStyle)
         } else if let firstAt, tokens > 0 {
@@ -1061,6 +1131,7 @@ final class ChatController {
             }
         }
         answeringId = nil
+        answeringModel = nil
         activity = nil
         stopping = false
         let all = prior + [ChatItem(id: userId, role: "user", text: q), ChatItem(id: answerId, role: "assistant", text: finalText)]
@@ -1104,18 +1175,25 @@ final class ChatController {
             Profiles.AvailableModel(RoutableModel(id: m.id, isLanguageModel: true, sizeBytes: m.sizeBytes, roles: m.capabilities?.roles,
                                                   estimatedMemoryMb: m.capabilities?.estimatedMemoryMb,
                                                   estimatedTokensPerSecond: m.capabilities?.estimatedTokensPerSecond),
-                                    present: services.isPresent(m))
+                                    present: services.isInstalled(m))
         }
         let preset = s.routingPreset.flatMap(RoutingPreset.init(rawValue:)) ?? .default
         var overrides: [ModelRole: String] = [:]
         for (k, v) in s.modelRoleAssignments() { if let role = ModelRole.of(k) { overrides[role] = v } }
-        let plan = AdaptivePlan.plan(query: q, statuses: statuses, preset: preset, overrides: overrides, activeModelId: s.activeModelId("llm"),
+        let plan = AdaptivePlan.plan(query: q, statuses: statuses, preset: preset, overrides: overrides,
+                                     activeModelId: services.answerModel()?.id ?? s.activeModelId("llm"),
                                      deviceRamBytes: services.totalRamBytes, maxTokens: maxTokens)
         let tweaks = s.engineTweaks
         let r = try await PlanExecutor(host: services.host, retriever: services.retriever, stages: stages, timeoutFor: { tweaks.stageTimeoutMs(nPredict: $0) })
             .execute(plan: plan.plan, input: PipelineInput(query: q, systemPrompt: systemPrompt, styleReminder: styleReminder, history: history),
                      onToken: { sink.yield(.piece($0)) },
-                     onStepStart: { step in sink.yield(.activity(step.type == .retrieve ? .retrieving : .thinking)) },
+                     onStepStart: { step in
+                         sink.yield(.activity(step.type == .retrieve ? .retrieving : .thinking))
+                         if step.type == .generate, let id = step.modelId {
+                             let other = id == services.answerModel()?.id ? nil : services.catalog.byId(id)?.friendlyName
+                             sink.yield(.routed(other))
+                         }
+                     },
                      shouldStop: { stop.value })
         if r.answer.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && !stop.value {
             throw ChatError.adaptive(r.warnings.joined(separator: ", "))
