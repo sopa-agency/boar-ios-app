@@ -6,6 +6,11 @@ import BoarRAG
 import BoarRouting
 import Foundation
 import Observation
+#if canImport(UIKit)
+import UIKit
+#else
+import AppKit
+#endif
 import Synchronization
 
 /// The chat (port of android `ChatViewModel`, itself ChatScreen.tsx's send flow): Deep Research when it's on, adaptive
@@ -70,6 +75,8 @@ final class ChatController {
     /// A chat title or summary still being written; a new question stops it (one model, one generation).
     @ObservationIgnored private var background: Task<Void, Never>?
     @ObservationIgnored private let stopFlag = StopFlag()
+    /// A tap on an instant answer being typed shows all of it (android skipTyping).
+    @ObservationIgnored private var skipTyping = false
     /// The queue and what it decides (PromptQueueFlow); in memory, its size kept so a closed app can say what it dropped.
     @ObservationIgnored private let flow = PromptQueueFlow(store: .defaults(AppPaths.defaults, key: "boar.chat.queueWaiting"))
 
@@ -345,6 +352,24 @@ final class ChatController {
 
     /// Stop ends only the answer in progress, never the queue (validator Q-1). `stopAll` is for the paths that end everything
     /// and then unload, switch or erase.
+    func skipInstantTyping() { skipTyping = true }
+
+    private static var animationsOff: Bool {
+        #if canImport(UIKit)
+        UIAccessibility.isReduceMotionEnabled
+        #else
+        NSWorkspace.shared.accessibilityDisplayShouldReduceMotion
+        #endif
+    }
+
+    private static var screenReader: Bool {
+        #if canImport(UIKit)
+        UIAccessibility.isVoiceOverRunning
+        #else
+        NSWorkspace.shared.isVoiceOverEnabled
+        #endif
+    }
+
     func stop() {
         stopFlag.set(true)
         if answeringId != nil { stopping = true }
@@ -741,6 +766,8 @@ final class ChatController {
 
         /// The partial answer's saves, every few seconds, one after the other; the final save waits for them.
         var partialSave: Task<Void, Never>?
+        /// When the instant answer was ready, before it was typed: the receipt's time (android instantAt).
+        var instantAt: ContinuousClock.Instant?
         var savedAt = clock.now
 
         /// One streamed piece; `whole`: the text as it reads now (a staged answer joins its intro and details), instead of
@@ -872,7 +899,27 @@ final class ChatController {
         do {
             if let instant {
                 // An instant answer doesn't load the model.
-                onPiece(instant)
+                // Shown at typing speed (android InstantTyping): a tap shows all, Stop keeps what is typed; the safety answer,
+                // Reduce Motion and VoiceOver show it at once. The receipt keeps the time of the answer, not of the typing.
+                instantAt = clock.now
+                if InstantTyping.typed(tool: tool?.tool ?? "", animationsOff: Self.animationsOff, screenReader: Self.screenReader) {
+                    skipTyping = false
+                    var shownLen = 0
+                    for piece in InstantTyping.pieces(instant) {
+                        if skipTyping || stopFlag.value {
+                            if !stopFlag.value { onPiece(String(instant.dropFirst(shownLen))) }
+                            shownLen = instant.count
+                            break
+                        }
+                        onPiece(piece)
+                        shownLen += piece.count
+                        try? await clock.sleep(for: .milliseconds(InstantTyping.stepMs))
+                    }
+                    if shownLen < instant.count, !stopFlag.value { onPiece(String(instant.dropFirst(shownLen))) }
+                    skipTyping = false
+                } else {
+                    onPiece(instant)
+                }
                 throw InstantAnswer()
             }
             if staged {
@@ -1006,7 +1053,7 @@ final class ChatController {
         var receipt: Receipt?
         if instant != nil, let firstAt {
             // An instant answer generated nothing: its receipt has the time and the tool, no speed.
-            receipt = Receipt(totalMs: Self.seconds(startAt.duration(to: clock.now)) * 1000, ttftMs: Self.seconds(startAt.duration(to: firstAt)) * 1000,
+            receipt = Receipt(totalMs: Self.seconds(startAt.duration(to: instantAt ?? clock.now)) * 1000, ttftMs: Self.seconds(startAt.duration(to: firstAt)) * 1000,
                               tokPerSec: 0, tokens: 0, model: nil, retrievalMs: nil, prefillMs: nil, contextTokens: nil, loadMs: nil,
                               styleNote: nil, tool: toolCodes, path: path, style: receiptStyle)
         } else if let firstAt, tokens > 0 {

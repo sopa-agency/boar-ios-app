@@ -11807,6 +11807,16 @@
         }
       }
     },
+    "instant" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "instantâneo"
+          }
+        }
+      }
+    },
     "keepgoing.ask" : {
       "localizations" : {
         "en" : {
