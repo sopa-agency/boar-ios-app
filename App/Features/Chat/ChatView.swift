@@ -64,9 +64,12 @@ struct ChatView: View {
             Text(PruneText.of(Self.pruneMessage(n), "", pluginsOn: false))
         }
         .bottomBar {
-            Composer(text: $input, focused: $composerFocused, toneSymbol: chat.currentTone.symbol, toneLabel: chat.currentTone.label,
-                     deepResearch: chat.deepResearch, answering: chat.isAnswering, stopping: chat.stopping,
-                     onSend: sendInput, onStop: chat.stop, onTones: showTones, voice: voiceOn ? voice : nil, chat: chat)
+            VStack(spacing: 0) {
+                if !chat.queued.isEmpty { QueueStrip(chat: chat) }
+                Composer(text: $input, focused: $composerFocused, toneSymbol: chat.currentTone.symbol, toneLabel: chat.currentTone.label,
+                         deepResearch: chat.deepResearch, answering: chat.isAnswering, stopping: chat.stopping,
+                         onSend: sendInput, onStop: chat.stop, onTones: showTones, voice: voiceOn ? voice : nil, chat: chat)
+            }
         }
         .navigationTitle(Text(verbatim: title))
         #if os(macOS)
@@ -233,7 +236,8 @@ struct ChatView: View {
     }
 
     private func send(_ text: String) {
-        guard !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty, !chat.isAnswering else { return }
+        // While BOAR answers the question waits its turn (the queue); the chat decides.
+        guard !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
         voice.cancel()
         chat.send(text)
         input = ""
