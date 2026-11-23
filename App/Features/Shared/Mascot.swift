@@ -72,6 +72,8 @@ struct ChatTitle: View {
     let onMascot: () -> Void
     /// A tap on the connection word (android ConnectionLine): the connection sheet.
     let onConnection: () -> Void
+    /// Live tok/s while BOAR writes, when the switch is on (android ChatHeader live pill); nil hides it.
+    var liveSpeed: Double?
     @ScaledMetric(relativeTo: .headline) private var side = 30
 
     var body: some View {
@@ -90,6 +92,12 @@ struct ChatTitle: View {
                 ConnectionLine(online: online, model: subtitle, onDetails: onConnection)
             }
             .lineLimit(1)
+            if let liveSpeed {
+                Text(verbatim: "● " + String(format: "%.1f tok/s", liveSpeed))
+                    .boarText("mono.xs")
+                    .foregroundStyle(.boar(.warning))
+                    .accessibilityLabel(Text("\(Int(liveSpeed.rounded())) tokens per second"))
+            }
         }
     }
 }

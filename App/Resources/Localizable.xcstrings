@@ -469,6 +469,16 @@
         }
       }
     },
+    "%lld tokens per second" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld tokens por segundo"
+          }
+        }
+      }
+    },
     "%lld waiting questions were dropped: they need that model too." : {
       "localizations" : {
         "pt" : {
@@ -8915,6 +8925,16 @@
         }
       }
     },
+    "Show speed while answering" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar a velocidade ao responder"
+          }
+        }
+      }
+    },
     "Show the microphone button in the chat to dictate messages." : {
       "localizations" : {
         "pt" : {
@@ -10466,6 +10486,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Para perguntar sobre eles, mude o estilo da conversa para Arquivos pessoais (o botão de estilo, ao lado de onde você digita). Aí o BOAR responde só com seus arquivos, e avisa quando eles não têm a resposta."
+          }
+        }
+      }
+    },
+    "Tokens per second, at the top of the chat while BOAR writes." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tokens por segundo, no topo do chat enquanto o BOAR escreve."
           }
         }
       }

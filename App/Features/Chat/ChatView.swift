@@ -102,7 +102,8 @@ struct ChatView: View {
             // BOAR's mascot beside the title, as Android's header has it; a tap shows it big (ChatHeader).
             ToolbarItem(placement: .principal) {
                 ChatTitle(title: title, subtitle: subtitle, online: model.connectivity.online,
-                          onMascot: { showingMascot = true }, onConnection: { showingConnection = true })
+                          onMascot: { showingMascot = true }, onConnection: { showingConnection = true },
+                          liveSpeed: chat.liveSpeed && chat.activity == .generating ? (chat.liveTokPerSec ?? 0) : nil)
             }
             ChatToolbar(chat: chat, onNewChat: model.newChat)
             #endif

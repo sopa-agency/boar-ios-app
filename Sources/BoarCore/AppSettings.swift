@@ -116,7 +116,7 @@ public final class AppSettings: @unchecked Sendable {
     /// What "Reset settings" clears (`resetPreferences`).
     public static let preferenceKeys = [
         "themeId", "fontScale", "personalityId", "maxTokens", "deepResearchMode", "researchBannerHidden",
-        "adaptiveRoutingEnabled", "routingPreset", "engineTweaks", "showLiveStats", "voiceInputEnabled", "hapticsEnabled",
+        "adaptiveRoutingEnabled", "routingPreset", "engineTweaks", "showLiveStats", "showLiveSpeed", "voiceInputEnabled", "hapticsEnabled",
         "hidePromptIdeas", "autoSummarize", "historyTurnThreshold", "maxSavedSessions", "autoGenerateTitles",
         "freeMemoryInBackground", "freeMemoryAfterMinutes", "confirmChatDelete", "stagedQuotes",
     ]
@@ -181,6 +181,9 @@ public final class AppSettings: @unchecked Sendable {
     /// Settings → Engine Tweaks → Debug Log (android `debugLogEnabled`).
     public var debugLogEnabled: Bool { get { bool("debugLogEnabled") ?? false } set { set("debugLogEnabled", .bool(newValue)) } }
     /// Advanced tweaks → Show technical details. On by default: the bounty's judges and early users want the numbers.
+    /// Live tokens per second at the top of the chat while BOAR writes; off by default and in every profile (android
+    /// AppSettings.showLiveSpeed, rc3 0978191f). Display & theme has the switch.
+    public var showLiveSpeed: Bool { get { bool("showLiveSpeed") ?? false } set { set("showLiveSpeed", .bool(newValue)) } }
     public var showLiveStats: Bool { get { bool("showLiveStats") ?? true } set { set("showLiveStats", .bool(newValue)) } }
 
     // MARK: chat memory (DEFAULT_MEMORY_SETTINGS when unset)

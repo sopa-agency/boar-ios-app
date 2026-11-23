@@ -33,6 +33,8 @@ final class ChatController {
     private(set) var modelPlace = String(localized: "on this \(Platform.deviceNoun)")
     private(set) var noModel = false
     private(set) var technicalDetails = false
+    /// The live tok/s pill at the top of the chat (android showLiveSpeed); its own switch, off by default.
+    private(set) var liveSpeed = false
     private(set) var loadingModel = false
     private(set) var personalityId: String
     private(set) var stopping = false
@@ -76,6 +78,7 @@ final class ChatController {
         personalityId = services.settings.personalityId ?? services.personalities.defaultId
         deepResearch = services.settings.deepResearchMode
         technicalDetails = services.settings.showLiveStats
+        liveSpeed = services.settings.showLiveSpeed
         refreshModel()
         flow.onChange = { [weak self] in
             guard let self else { return }
@@ -119,6 +122,7 @@ final class ChatController {
         personalityId = services.settings.personalityId ?? services.personalities.defaultId
         deepResearch = services.settings.deepResearchMode
         technicalDetails = services.settings.showLiveStats
+        liveSpeed = services.settings.showLiveSpeed
         refreshModel()
         takeFirstQuestion()
         // The open chat was erased (Clear all chat history, a forgotten PIN): start a new one.
