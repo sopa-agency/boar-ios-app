@@ -35,6 +35,11 @@ struct InstantTypingTests {
         let ctl = try AppSource.text("App/Sources/Model/ChatController.swift")
         #expect(ctl.contains("for piece in InstantTyping.pieces(instant)"))
         #expect(ctl.contains("skipTyping || stopFlag.value"))
+        // Stop shows the rest at once, as a tap does: the answer is already whole, the typing only presents it (android
+        // `if (skipTyping || stopRequested) onPiece(rest(...))`), so it's never saved cut short.
+        let typing = try AppSource.slice(ctl, after: "for piece in InstantTyping.pieces(instant)", before: "throw InstantAnswer()")
+        #expect(!typing.contains("!stopFlag.value"))
+        #expect(typing.contains("if shownLen < instant.count { onPiece(String(instant.dropFirst(shownLen))) }"))
         #expect(ctl.contains("instantAt"))
         let details = try AppSource.text("App/Features/Chat/ReceiptDetails.swift")
         #expect(details.contains("receipt.instant"))

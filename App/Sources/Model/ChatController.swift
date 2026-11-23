@@ -306,6 +306,17 @@ final class ChatController {
         }
     }
 
+    /// Delete with Undo starts (android deleteWithUndo): not the chat still being answered (false); the open one is left at
+    /// once, its waiting questions with it, so nothing new lands in a chat about to be deleted.
+    func leaveForDelete(_ id: String) -> Bool {
+        if job != nil && sessionId == id { return false }
+        if sessionId == id {
+            flow.clear()
+            newChat()
+        }
+        return true
+    }
+
     /// The chat and its messages; the open one becomes a new chat. Not the chat still being answered.
     func deleteSession(_ id: String) async {
         if job != nil && sessionId == id { return }
@@ -900,15 +911,16 @@ final class ChatController {
         do {
             if let instant {
                 // An instant answer doesn't load the model.
-                // Shown at typing speed (android InstantTyping): a tap shows all, Stop keeps what is typed; the safety answer,
-                // Reduce Motion and VoiceOver show it at once. The receipt keeps the time of the answer, not of the typing.
+                // Shown at typing speed (android InstantTyping), presentation only: a tap or Stop shows the rest at once (the
+                // answer is already whole); the safety answer, Reduce Motion and VoiceOver show it at once. The receipt keeps
+                // the time of the answer, not of the typing.
                 instantAt = clock.now
                 if InstantTyping.typed(tool: tool?.tool ?? "", animationsOff: Self.animationsOff, screenReader: Self.screenReader) {
                     skipTyping = false
                     var shownLen = 0
                     for piece in InstantTyping.pieces(instant) {
                         if skipTyping || stopFlag.value {
-                            if !stopFlag.value { onPiece(String(instant.dropFirst(shownLen))) }
+                            onPiece(String(instant.dropFirst(shownLen)))
                             shownLen = instant.count
                             break
                         }
@@ -916,7 +928,7 @@ final class ChatController {
                         shownLen += piece.count
                         try? await clock.sleep(for: .milliseconds(InstantTyping.stepMs))
                     }
-                    if shownLen < instant.count, !stopFlag.value { onPiece(String(instant.dropFirst(shownLen))) }
+                    if shownLen < instant.count { onPiece(String(instant.dropFirst(shownLen))) }
                     skipTyping = false
                 } else {
                     onPiece(instant)

@@ -87,6 +87,7 @@ struct ChatTitle: View {
                 Text(verbatim: title)
                     .font(.headline)
                     .foregroundStyle(.boar(.heading))
+                    .accessibilityAddTraits(.isHeader)
                 // The connection on the model line (android ConnectionLine): the dot, the model as Android's header writes it
                 // (mono.xs, upper case, textDim), and for a moment ONLINE or OFFLINE in its place.
                 ConnectionLine(online: online, model: subtitle, onDetails: onConnection)

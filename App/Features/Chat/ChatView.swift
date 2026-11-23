@@ -152,6 +152,12 @@ struct ChatView: View {
         #endif
         .debugChatSheets(source: $openSource, tones: $showingTones, chat: chat)
         .overlay(alignment: .top) { ToastView(message: $chat.toast) }
+        // The connection sheet's model switch says how it went here, not later in Models (android: one toast for the app).
+        .onChange(of: model.models?.toast) { _, message in
+            guard let message, let models = model.models else { return }
+            chat.toast = message
+            models.toast = nil
+        }
         // Haptic feedback (Settings → Display): a tap on send, a success when the answer is done.
         .sensoryFeedback(.impact(weight: .light), trigger: chat.messages.count) { old, new in
             new > old && chat.services.settings.hapticsEnabled

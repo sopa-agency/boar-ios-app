@@ -215,7 +215,9 @@ struct SessionsSidebar: View {
     /// Hides the chat and shows "Deleted: title · Undo"; after `ChatList.undoMs` it is deleted for real (android ChatList).
     /// A second delete settles the first at once.
     private func delete(_ session: ChatSession) {
+        guard chat.leaveForDelete(session.id) else { return }
         commitDelete()
+        if model.selection == .session(session.id) { model.selection = .newChat }
         withAnimation { pendingDelete = session }
         undoTask = Task {
             try? await Task.sleep(for: .milliseconds(ChatList.undoMs))

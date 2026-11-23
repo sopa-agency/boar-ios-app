@@ -31,6 +31,12 @@ struct ChatListTests {
     /// a delete waits for Undo. The app has no test host, so this reads its source. "Add to Press" is left out: Press is BOAR-55.
     @Test func theSidebarGroupsSearchesAndDeletesWithUndo() throws {
         let side = try AppSource.text("App/Features/Sidebar/SessionsSidebar.swift")
+        // android deleteWithUndo: not the chat being answered; the open one is left at once, with its queue.
+        #expect(try AppSource.slice(side, after: "private func delete(_ session: ChatSession) {", before: "undoTask = Task")
+            .contains("guard chat.leaveForDelete(session.id) else { return }"))
+        let leave = try AppSource.slice(try AppSource.text("App/Sources/Model/ChatController.swift"),
+                                        after: "func leaveForDelete(_ id: String) -> Bool {", before: "return true")
+        #expect(leave.contains("if job != nil && sessionId == id { return false }") && leave.contains("flow.clear()") && leave.contains("newChat()"))
         #expect(side.contains("ChatList.groupOf"))
         #expect(side.contains("ChatList.searchFrom"))
         #expect(side.contains("ChatList.matches"))
