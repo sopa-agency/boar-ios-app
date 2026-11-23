@@ -534,6 +534,9 @@ final class ChatController {
         }
         messages.remove(at: i)
         stopFlag.set(false)
+        // The saved question keeps its step mark, so it's answered the way the bubble says (Detailed, Deep Research, the
+        // Labs tools skipped): what the step set was taken by the first try. Android asks again as a new message instead.
+        once = question.step.map(KeepGoing.Overrides.of) ?? KeepGoing.Overrides()
         let services = services
         job = Task {
             // An answer BOAR was closed in the middle of is saved: the new one replaces it.

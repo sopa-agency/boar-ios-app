@@ -11327,6 +11327,16 @@
         }
       }
     },
+    "You: %@. %@" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Você: %1$@. %2$@"
+          }
+        }
+      }
+    },
     "Your Files" : {
       "localizations" : {
         "pt" : {

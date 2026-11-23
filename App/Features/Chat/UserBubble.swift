@@ -33,7 +33,7 @@ struct UserBubble: View {
                         Button("Ask Again", icon: Symbols.retry, action: reuse)
                         Button("Copy", systemImage: "doc.on.doc", action: copy)
                     }
-                    .accessibilityLabel(Text(shownText == text ? "You: \(text)" : "You: \(shownText). \(text)"))
+                    .accessibilityLabel(accessibilityText)
             }
         }
     }
@@ -46,6 +46,12 @@ struct UserBubble: View {
         case .ask: String(localized: "Ask BOAR: \(text)")
         case .continue, nil: text
         }
+    }
+
+    /// VoiceOver reads the question, after the step's verb when one shows. Two `Text`s, so each key stays localized (a
+    /// ternary of two literals can be typed as `String` and skip the catalog).
+    private var accessibilityText: Text {
+        shownText == text ? Text("You: \(text)") : Text("You: \(shownText). \(text)")
     }
 
     private func reuse() {

@@ -104,7 +104,16 @@ struct KeepGoingWiringTests {
             #expect(b.contains(s), Comment(rawValue: s))
         }
         #expect(b.contains("Button(\"Ask Again\", icon: Symbols.retry, action: reuse)") && b.contains("Platform.copy(text)"))
-        #expect(b.contains("\"You: \\(shownText). \\(text)\""))
+        // Two `Text`s, not a ternary of literals (which can be typed `String` and skip the catalog).
+        #expect(b.contains("shownText == text ? Text(\"You: \\(text)\") : Text(\"You: \\(shownText). \\(text)\")"))
+    }
+
+    /// iOS only (Android asks again as a new message, with no step): Try Again on the latest answer answers the saved
+    /// question again, so what its step set comes back for it, or a "Research this" would run without Deep Research
+    /// while the bubble still says "Research this".
+    @Test func tryAgainAnswersTheSavedQuestionWithItsStepAgain() throws {
+        let retry = try slice(try controller(), after: "func retry(_ answerId: String) {", before: "\n        job = Task {")
+        #expect(retry.contains("once = question.step.map(KeepGoing.Overrides.of) ?? KeepGoing.Overrides()"))
     }
 
     /// under the latest answer only, not while answering or queued, gone with text in the field
@@ -129,7 +138,7 @@ struct KeepGoingWiringTests {
             "Go deeper: ask the same question again, in Detailed.": "Ir mais fundo: a mesma pergunta de novo, em Detalhada.",
             "Research this: ask the same question again, with Deep Research.": "Pesquisar isto: a mesma pergunta de novo, com a Pesquisa Profunda.",
             "Ask BOAR: the model answers this question instead of %@.": "Perguntar ao BOAR: o modelo responde esta pergunta no lugar de %@.",
-            "Ask: %@": "Perguntar: %@",
+            "Ask: %@": "Perguntar: %@", "You: %@. %@": "Você: %1$@. %2$@",
         ]
         for (key, value) in pt {
             #expect(catalog["strings"]?[key]?["localizations"]?["pt"]?["stringUnit"]?["value"]?.str == value, Comment(rawValue: key))
