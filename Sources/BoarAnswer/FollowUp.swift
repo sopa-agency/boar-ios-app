@@ -107,6 +107,9 @@ public enum FollowUp {
     public static func plan(_ query: String, _ history: ConversationHistory?) -> Plan {
         guard let previous = previousQuestion(query, history) else { return Plan() }
         let combined = "\(previous) \(JsString.trim(query))"
+        // "Continue", "go on", "prossiga": more on the previous question, whose words are the search (all75 on the F3: Keep
+        // going's "Continue" searched the word itself and cited a book's "training should continue").
+        if DeepResearch.isMetaFollowUp(query) && !DeepResearch.isSummaryFollowUp(query) { return Plan(direct: previous) }
         if pointsBack.containsMatch(in: query) || thereAsPlace(query) { return Plan(direct: combined, previous: previous) }
         if Compress.tokenizeTerms(query).count <= shortFollowUpTerms && !namesItsOwnSubject(query) { return Plan(fallback: combined) }
         return Plan()

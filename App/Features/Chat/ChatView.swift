@@ -49,7 +49,8 @@ struct ChatView: View {
                 ChatEmptyState(noModel: chat.noModel, typing: composerFocused, chat: chat, onAsk: send, onFill: fill,
                                onDismissKeyboard: { composerFocused = false })
             } else {
-                ChatConversation(chat: chat, onReuse: reuse, onOpenSource: open)
+                ChatConversation(chat: chat, onReuse: reuse, onOpenSource: open,
+                                 typing: !input.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty, onAsk: send, onFill: fill)
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)

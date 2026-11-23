@@ -1,3 +1,4 @@
+import BoarAnswer
 import BoarCore
 import BoarModels
 import SwiftUI
@@ -6,6 +7,8 @@ import SwiftUI
 /// chat shows "Locked Chat".
 struct UserBubble: View {
     let text: String
+    /// The Keep going step that sent it: the bubble shows its verb, everything else (copy, ask again, VoiceOver) keeps the question.
+    var step: KeepGoing.Step?
     let onReuse: (String) -> Void
     @Environment(\.palette) private var palette
 
@@ -19,7 +22,7 @@ struct UserBubble: View {
                 Label("Locked Chat", systemImage: "lock.fill")
                     .foregroundStyle(.secondary)
             } else {
-                Text(text)
+                Text(shownText)
                     .boarText("ui.bodyLg")
                     .foregroundStyle(Color(palette.textPrimary))
                     .textSelection(.enabled)
@@ -30,9 +33,25 @@ struct UserBubble: View {
                         Button("Ask Again", icon: Symbols.retry, action: reuse)
                         Button("Copy", systemImage: "doc.on.doc", action: copy)
                     }
-                    .accessibilityLabel(Text("You: \(text)"))
+                    .accessibilityLabel(accessibilityText)
             }
         }
+    }
+
+    /// The question, or a Keep going step's verb (the text stays the question).
+    private var shownText: String {
+        switch step {
+        case .deeper: String(localized: "Go deeper")
+        case .research: String(localized: "Research this")
+        case .ask: String(localized: "Ask BOAR: \(text)")
+        case .continue, nil: text
+        }
+    }
+
+    /// VoiceOver reads the question, after the step's verb when one shows. Two `Text`s, so each key stays localized (a
+    /// ternary of two literals can be typed as `String` and skip the catalog).
+    private var accessibilityText: Text {
+        shownText == text ? Text("You: \(text)") : Text("You: \(shownText). \(text)")
     }
 
     private func reuse() {

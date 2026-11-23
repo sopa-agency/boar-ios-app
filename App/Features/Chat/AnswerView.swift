@@ -80,24 +80,7 @@ struct AnswerView: View {
                 }
                 if message.stopped { MessageNote(symbol: Symbols.stop, text: "Stopped", warning: false) }
                 if message.timedOut { MessageNote(symbol: Symbols.caution, text: "A research step took too long and was cut short", warning: true) }
-                // The plugin answered without the model: the same question, plugins skipped (never the CO safety answer).
-                // BOAR's mascot on it: a way out of the plugin's answer, not one of its controls (android ChatScreen).
-                if !streaming, speaker?.canBypass == true {
-                    Button {
-                        chat.askModel(message.id)
-                    } label: {
-                        Label {
-                            Text("Ask BOAR instead")
-                        } icon: {
-                            Mascot(size: 20)
-                                .clipShape(.rect(cornerRadius: 4))
-                        }
-                    }
-                    // In the accent, like Android's ActionButton (Try again, Allow more).
-                    .buttonStyle(.boarAction)
-                    .disabled(chat.isAnswering)
-                    .frame(maxWidth: .infinity, alignment: .trailing)
-                }
+                // No "Ask BOAR instead" pill (t9 0235): it is the "Ask BOAR" step under the latest answer (KeepGoingGroup).
                 // The cut is a note; the way to run it again with more tokens is its own button on the next line, so the
                 // two never squeeze into one row (android ChatScreen).
                 if let limit = message.cutAt {

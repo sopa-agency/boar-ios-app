@@ -207,7 +207,7 @@ final class ChatController {
             // Loaded with nothing held: questions waiting behind the note start now (validator Q-3).
             else if loaded, fromNote { self.runNext() }
             // A failed load: the waiting questions need that model too, so they go with it, said once.
-            else if !loaded, fromNote { self.skipToolsOnce = false; self.dropQueueWithNote() }
+            else if !loaded, fromNote { self.dropOnce(); self.dropQueueWithNote() }
         }
     }
 
@@ -257,7 +257,7 @@ final class ChatController {
     /// The memory note's "Pick Another Model" / "Choose a Model" and its OK: the held question is dropped.
     func dismissLoadNote() {
         heldQuestion = nil
-        skipToolsOnce = false
+        dropOnce()
         dropQueueWithNote()
         riskyLoad = nil
         loadCrash = nil
@@ -281,6 +281,7 @@ final class ChatController {
                 let receipt = MessageMeta.receipt(r.meta)
                 var item = ChatItem(id: r.id, role: r.role, text: r.text, sources: MessageMeta.sources(r.meta), feedback: r.feedback, receipt: receipt)
                 item.staged = MessageMeta.staged(r.meta, receipt: receipt)
+                if r.role == "user" { item.step = KeepGoing.step(fromMeta: r.meta) }
                 if MessageMeta.error(r.meta) == MessageMeta.interrupted {
                     item.failure = String(localized: "Interrupted: BOAR was closed while answering.")
                 }
@@ -374,7 +375,7 @@ final class ChatController {
     func mergeQueue() { flow.merge { LabTools.coHazard($0) != nil } }
 
     /// A memory note (may not fit, closed the app) is on screen.
-    private var noteUp: Bool { riskyLoad != nil || loadCrash != nil }
+    var noteUp: Bool { riskyLoad != nil || loadCrash != nil }
 
     /// Starts the oldest waiting question, if any.
     private func runNext() {
@@ -461,7 +462,7 @@ final class ChatController {
         // The alert also reports "closed" after Keep All or Delete It already took the question: nothing to drop then.
         guard pruneNote != nil else { return }
         prunedQuestion = nil
-        skipToolsOnce = false
+        dropOnce()
         pruneNote = nil
     }
 
@@ -483,12 +484,36 @@ final class ChatController {
         // Not queued: the "skip the Labs tools" flag belongs to this question only, so not while others wait either (it
         // would be taken by the next one in line).
         guard job == nil, flow.isEmpty, !noteUp, let q = question(for: answerId) else { return }
-        skipToolsOnce = true
+        once.skipTools = true
         send(q)
     }
 
-    /// Set by `askModel` for the next question only.
-    @ObservationIgnored private var skipToolsOnce = false
+    /// What the next question carries, for that question only: the Labs tools skipped (`askModel`), and a Keep going step's
+    /// style, Deep Research and verb. The user's style and the Deep Research switch are never written.
+    @ObservationIgnored private var once = KeepGoing.Overrides()
+
+    /// The held question went with its note (closed, the catalog opened instead, or the model didn't load): what was set for
+    /// it goes too, or the next typed question would run in Detailed or Deep Research, skip the Labs tools and show a
+    /// step's verb (android `dropOnce`, validator A-2). iOS has no bypassed-plugin context to clear (`AskModelContext`).
+    private func dropOnce() { once.drop() }
+
+    /// A Keep going step under `answerId`: the same question again, for that answer only. Go deeper in Detailed, Research
+    /// this with Deep Research, Ask BOAR as `askModel`. Continue is its own message ("Continue" / "Continuar"), a meta
+    /// follow-up in the same style, with no step mark: the bubble shows what was sent. Not while BOAR answers, questions
+    /// wait or a note is up (the bubbles hide then).
+    func keepGoing(_ answerId: String, _ step: KeepGoing.Step) {
+        guard job == nil, flow.isEmpty, !noteUp, let q = question(for: answerId) else { return }
+        if step == .continue {
+            send(String(localized: "Continue"))
+            return
+        }
+        once = .of(step)
+        switch step {
+        case .deeper, .research: send(q)
+        case .ask: askModel(answerId)
+        case .continue: break
+        }
+    }
 
     /// The question an answer replied to (the user message just before it).
     func question(for answerId: String) -> String? {
@@ -509,6 +534,9 @@ final class ChatController {
         }
         messages.remove(at: i)
         stopFlag.set(false)
+        // The saved question keeps its step mark, so it's answered the way the bubble says (Detailed, Deep Research, the
+        // Labs tools skipped): what the step set was taken by the first try. Android asks again as a new message instead.
+        once = question.step.map(KeepGoing.Overrides.of) ?? KeepGoing.Overrides()
         let services = services
         job = Task {
             // An answer BOAR was closed in the middle of is saved: the new one replaces it.
@@ -556,6 +584,8 @@ final class ChatController {
     }
 
     private func answer(_ q: String, savedQuestionId: String? = nil, limit: Int? = nil) async {
+        // What this question carries is taken before anything can wait (android `send` reads each once and clears it).
+        let carried = once.take()
         await stopBackground()
         let services = services
         let settings = services.settings
@@ -583,7 +613,10 @@ final class ChatController {
         // reopens with what was written and the note, not a lost answer (android ChatViewModel.savePartial).
         let interruptedMeta = MessageMeta.encode([], nil, error: MessageMeta.interrupted)
         _ = try? await services.background { s in
-            if savedQuestionId == nil { try s.chats.addMessage(sessionId: sid, role: "user", text: q, id: userId) }
+            if savedQuestionId == nil {
+                try s.chats.addMessage(sessionId: sid, role: "user", text: q, id: userId)
+                if let step = carried.step { try s.chats.setMessageMeta(messageId: userId, meta: KeepGoing.stepMeta(step)) }
+            }
             try s.chats.upsertMessage(sessionId: sid, role: "assistant", text: "", id: answerId)
             try s.chats.setMessageMeta(messageId: answerId, meta: interruptedMeta)
         }
@@ -592,13 +625,13 @@ final class ChatController {
         answeringId = answerId
         activity = nil
         liveTokPerSec = nil
-        if savedQuestionId == nil { messages.append(ChatItem(id: userId, role: "user", text: q)) }
+        if savedQuestionId == nil { messages.append(ChatItem(id: userId, role: "user", text: q, step: carried.step)) }
         messages.append(ChatItem(id: answerId, role: "assistant", text: ""))
         if isNewSession { onSessionsChanged?() }
 
         // The app's language is the answer's last word when the question can't tell (AnswerLanguage, t9 0420).
         AnswerLanguage.appLanguage = settings.languageId
-        let chosenStyle = settings.personalityId ?? services.personalities.defaultId
+        let chosenStyle = carried.style ?? settings.personalityId ?? services.personalities.defaultId
         // Personal Files: only the user's own files, whole; no Deep Research, router or recap of the library.
         let personal = PersonalFiles.isOn(chosenStyle)
         // A small answer model (the 1.5B) gets Detailed without D4's "Always do what the user asks" (r4to, Oct 18).
@@ -630,15 +663,16 @@ final class ChatController {
         // Small talk never starts a Deep Research or the router: "hi" took minutes on a big model (AnswerPath).
         let smallTalk = AnswerPath.isSmallTalk(q)
         let aboutConversation = Self.aboutConversation(q, history, conversation)
+        // Deep Research for this question: the switch, or a Keep going step's (the switch itself stays as set).
+        let deepOn = carried.deep ?? deepResearch
         let way = AnswerPath.of(
-            deepResearch: deepResearch && !personal, aboutConversation: aboutConversation,
+            deepResearch: deepOn && !personal, aboutConversation: aboutConversation,
             adaptive: !personal && settings.adaptiveRoutingEnabled, smallTalk: smallTalk
         )
         // The tool slot (Boar Labs): an instant answer needs no model, a context is read by it. Not for a recap; under
         // Deep Research or Personal Files only a safety answer (Boar Cohazard).
-        let deep = deepResearch && !personal
-        let skipTools = skipToolsOnce
-        skipToolsOnce = false
+        let deep = deepOn && !personal
+        let skipTools = carried.skipTools
         // A merged queue goes to the model whole: an instant answer would take one question and drop the rest (validator Q-8).
         let tool = skipTools || aboutConversation ? nil : AnswerTools.run(
             Labs.shared.activeTools, query: q,
@@ -1206,6 +1240,21 @@ extension ChatController {
     /// UI audit (`-uiScreen chat-queue`): questions waiting behind the answer in progress.
     func debugQueue(_ questions: [String]) {
         for q in questions { _ = flow.admit(q, running: true, fromQueue: false, behindNote: false, noteUp: false) }
+    }
+
+    /// UI audit (`-uiScreen chat-keep-going`): a new chat whose latest answer is Detailed, after a "Go deeper" step, so the
+    /// bubbles show under it and the step's verb shows on the user's side.
+    func debugShowKeepGoing() {
+        func receipt(_ style: String) -> Receipt {
+            Receipt(totalMs: 4200, ttftMs: 900, tokPerSec: 14, tokens: 60, model: "Qwen3 1.7B", retrievalMs: 80, prefillMs: nil, contextTokens: nil,
+                    loadMs: nil, styleNote: nil, tool: nil, path: nil, style: style)
+        }
+        var first = ChatItem(id: "debug-kg-a1", role: "assistant", text: "The sky is blue because air scatters short wavelengths of sunlight more than long ones.")
+        first.receipt = receipt("succinct")
+        var second = ChatItem(id: "debug-kg-a2", role: "assistant", text: "Sunlight holds every color. Air molecules scatter the short, blue wavelengths about ten times more than red, so blue reaches your eye from every direction (Rayleigh scattering). At sunset the light crosses more air, the blue is scattered away and the reds remain.")
+        second.receipt = receipt("detailed")
+        messages = [ChatItem(id: "debug-kg-q1", role: "user", text: "Why is the sky blue?"), first,
+                    ChatItem(id: "debug-kg-q2", role: "user", text: "Why is the sky blue?", step: .deeper), second]
     }
 
     /// UI audit (`-uiScreen chat-error / chat-no-model`): a question whose answer failed.

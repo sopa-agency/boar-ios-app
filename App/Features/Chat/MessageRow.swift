@@ -9,7 +9,7 @@ struct MessageRow: View {
 
     var body: some View {
         if message.isUser {
-            UserBubble(text: message.text, onReuse: onReuse)
+            UserBubble(text: message.text, step: message.step, onReuse: onReuse)
         } else {
             AnswerView(message: message, chat: chat, onOpenSource: onOpenSource)
         }
