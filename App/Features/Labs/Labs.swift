@@ -67,6 +67,10 @@ protocol LabPlugin {
     func presenter() -> AnyView?
     /// Rows in a finished answer's More menu (android `answerActions`, the 🧩 sheet).
     func answerActions(_ answer: AnswerRef) -> [LabAnswerAction]
+    /// Notes about a finished answer, in the footer under the separator after BOAR's own, before the receipt (android
+    /// `answerNotes`, adam Nov 14): an error, a refusal. No lab here makes one yet (android's only source is Designer's
+    /// "Not enough free memory to draw", and Designer isn't ported); the slot is ready for the first.
+    func answerNotes(_ answer: AnswerRef) -> [LabAnswerNote]
     /// A small badge in the chat's toolbar (android `HeaderBadge`); `open` shows this lab's page.
     func headerBadge(open: @escaping () -> Void) -> AnyView?
     /// Erases what this lab made from the user's chats (android `eraseUserData`): runs with the chats' erase, even while
@@ -97,6 +101,14 @@ struct LabAnswerAction: Identifiable {
     let run: @MainActor () -> Void
 }
 
+/// A plugin's note on an answer (android `AnswerNote`): `error` shows in the error color; `at` (epoch ms) orders the notes.
+struct LabAnswerNote: Identifiable {
+    let id: String
+    let text: String
+    var error = false
+    let at: Int64
+}
+
 extension LabPlugin {
     var art: String? { nil }
     var reviewShort: String? { nil }
@@ -107,6 +119,7 @@ extension LabPlugin {
     func content() -> AnyView { AnyView(EmptyView()) }
     func presenter() -> AnyView? { nil }
     func answerActions(_ answer: AnswerRef) -> [LabAnswerAction] { [] }
+    func answerNotes(_ answer: AnswerRef) -> [LabAnswerNote] { [] }
     func headerBadge(open: @escaping () -> Void) -> AnyView? { nil }
     func eraseUserData(_ scope: UserDataScope) {}
     /// A lab under review (frozen) shows the ice boar, whatever its own art.
@@ -226,6 +239,12 @@ final class Labs {
 
     /// The More menu's lab rows for a finished answer, in grid order.
     func answerActions(_ answer: AnswerRef) -> [LabAnswerAction] { active.flatMap { $0.answerActions(answer) } }
+
+    /// The footer's plugin notes for a finished answer, oldest first, so a new one is always the last line (android
+    /// `LabHooks.AnswerNotes`: `sortedBy { it.at }`, a stable sort).
+    func answerNotes(_ answer: AnswerRef) -> [LabAnswerNote] {
+        active.flatMap { $0.answerNotes(answer) }.enumerated().sorted { ($0.element.at, $0.offset) < ($1.element.at, $1.offset) }.map(\.element)
+    }
 
     /// The chat erased: every lab drops what it made from it, switched on or not (android `UserData.Scope.CHATS`).
     func eraseUserData(_ scope: UserDataScope = .chats) { all.forEach { $0.eraseUserData(scope) } }
