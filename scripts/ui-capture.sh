@@ -78,6 +78,7 @@ chat-top|chat-top|0
 chat-streaming|chat-streaming|
 chat-retrieving|chat-retrieving|
 chat-research|chat-research|
+chat-keep-going|chat-keep-going|end
 sidebar|sidebar|
 citation-sheet|citation-sheet|
 receipt|receipt|

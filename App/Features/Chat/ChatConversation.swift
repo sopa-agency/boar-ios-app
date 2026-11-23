@@ -5,6 +5,10 @@ struct ChatConversation: View {
     let chat: ChatController
     let onReuse: (String) -> Void
     let onOpenSource: (ChatSource) -> Void
+    /// The field has text: the Keep going bubbles step aside.
+    var typing = false
+    var onAsk: (String) -> Void = { _ in }
+    var onFill: (String) -> Void = { _ in }
     @State private var position = ScrollPosition(edge: .bottom)
 
     var body: some View {
@@ -14,6 +18,15 @@ struct ChatConversation: View {
                 ForEach(chat.messages) { message in
                     MessageRow(message: message, chat: chat, onReuse: onReuse, onOpenSource: onOpenSource)
                         .id(message.id)
+                }
+                // "Keep going" under the latest answer, outside its card, on the user's side (t9 0235): not while BOAR answers or
+                // questions wait, gone when the field has text or a newer answer arrives, and not under a load note or the
+                // keep-chats note either: keepGoing refuses then, so a tap did nothing (validator A-3).
+                if let last = chat.messages.last, !last.isUser, !last.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
+                   !chat.isAnswering, chat.queued.isEmpty, !typing, !chat.noteUp, chat.pruneNote == nil {
+                    KeepGoingGroup(last: last, question: chat.question(for: last.id) ?? "", onStep: { chat.keepGoing(last.id, $0) },
+                                   onAsk: onAsk, onFill: onFill)
+                        .id("keep-going-" + last.id)
                 }
                 if let error = chat.error {
                     Label {

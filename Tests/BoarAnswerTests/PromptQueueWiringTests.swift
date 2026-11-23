@@ -138,7 +138,7 @@ struct PromptQueueWiringTests {
         let c = try controller()
         #expect(c.contains("if loaded, let held { self.send(held, limit: nil, fromQueue: true) }"))
         #expect(c.contains("else if loaded, fromNote { self.runNext() }"))
-        #expect(c.contains("else if !loaded, fromNote { self.skipToolsOnce = false; self.dropQueueWithNote() }"))
+        #expect(c.contains("else if !loaded, fromNote { self.dropOnce(); self.dropQueueWithNote() }"))
         // Only the note's buttons move the queue; the preload leaves it alone (android userLoad vs preload).
         #expect(c.contains("load(held: heldQuestion.take(), risky: risky, fromNote: true)"))
         #expect(c.contains("load(held: heldQuestion.take(), fromNote: true)"))

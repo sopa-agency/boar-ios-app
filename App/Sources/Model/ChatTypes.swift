@@ -139,6 +139,8 @@ struct ChatItem: Identifiable, Hashable, Sendable {
     var failure: String?
     /// The failure is "no answer model": the row offers Open Models instead of Try Again.
     var failureNoModel = false
+    /// A user message sent by a Keep going step: its text is the real question, the bubble shows the step's verb.
+    var step: KeepGoing.Step?
 
     var isUser: Bool { role == "user" }
 }

@@ -5,7 +5,7 @@ import SwiftUI
 /// `-uiScreen <name>`: puts the running app on that screen once it is ready, without a tap.
 ///
 /// setup, setup-model, setup-knowledge, setup-install, setup-index, setup-guide-<page> (look, answers, ask, first, pin, privacy,
-/// labs, ready), chat-empty, chat-error, chat-no-model, chat-load-crash, chat, chat-top, chat-streaming, chat-queue, chat-retrieving, chat-research,
+/// labs, ready), chat-empty, chat-error, chat-no-model, chat-load-crash, chat, chat-top, chat-streaming, chat-queue, chat-keep-going, chat-retrieving, chat-research,
 /// sidebar, citation-sheet, source-reader, receipt, tone-sheet, models, model-detail, models-downloading, models-browse, documents,
 /// settings, settings-advanced, settings-engine, device-info, evaluation, about, lock, tour-<card>.
 @MainActor
@@ -38,6 +38,10 @@ enum DebugRouter {
             await openFirstSession(model)
             model.chat?.debugShowAnswering(question: DemoContent.liveQuestion, partial: DemoContent.liveText, activity: .generating, deepResearch: false)
             model.chat?.debugQueue(["Why is the sky blue?", "How far is the sun, in kilometres, and how long does its light take to reach us?", "What is a nebula?"])
+        case "chat-keep-going":
+            await openFirstSession(model)
+            try? await Task.sleep(for: .milliseconds(800))
+            model.chat?.debugShowKeepGoing()
         case "chat-retrieving":
             await openFirstSession(model)
             model.chat?.debugShowAnswering(question: DemoContent.liveQuestion, partial: "", activity: .retrieving, deepResearch: false)

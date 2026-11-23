@@ -1556,22 +1556,32 @@
         }
       }
     },
-    "Ask BOAR instead" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Perguntar ao BOAR"
-          }
-        }
-      }
-    },
     "Ask BOAR your first question." : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Faça sua primeira pergunta ao BOAR."
+          }
+        }
+      }
+    },
+    "Ask BOAR: %@" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Perguntar ao BOAR: %@"
+          }
+        }
+      }
+    },
+    "Ask BOAR: the model answers this question instead of %@." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Perguntar ao BOAR: o modelo responde esta pergunta no lugar de %@."
           }
         }
       }
@@ -1632,6 +1642,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pergunte com 🗂️ Arquivos pessoais"
+          }
+        }
+      }
+    },
+    "Ask: %@" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Perguntar: %@"
           }
         }
       }
@@ -2926,6 +2946,16 @@
         }
       }
     },
+    "Continue: BOAR goes on from its last answer." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continuar: o BOAR segue a partir da última resposta."
+          }
+        }
+      }
+    },
     "Cool Down" : {
       "localizations" : {
         "pt" : {
@@ -3392,6 +3422,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Dengue: sintomas, transmissão e por que a segunda infecção é mais arriscada"
+          }
+        }
+      }
+    },
+    "Detailed" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Detalhada"
           }
         }
       }
@@ -4597,6 +4637,26 @@
         }
       }
     },
+    "Go deeper" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ir mais fundo"
+          }
+        }
+      }
+    },
+    "Go deeper: ask the same question again, in Detailed." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ir mais fundo: a mesma pergunta de novo, em Detalhada."
+          }
+        }
+      }
+    },
     "Good Answer" : {
       "localizations" : {
         "pt" : {
@@ -5263,6 +5323,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Continuar"
+          }
+        }
+      }
+    },
+    "Keep going" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seguir adiante"
+          }
+        }
+      }
+    },
+    "Keep going: what to ask next" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seguir adiante: o que perguntar depois"
           }
         }
       }
@@ -7689,6 +7769,16 @@
         }
       }
     },
+    "Quick" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rápida"
+          }
+        }
+      }
+    },
     "Quick Check" : {
       "localizations" : {
         "pt" : {
@@ -7949,6 +8039,16 @@
         }
       }
     },
+    "Research" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pesquisa"
+          }
+        }
+      }
+    },
     "Research Bench v0.1" : {
       "localizations" : {
         "pt" : {
@@ -7965,6 +8065,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Temas de pesquisa"
+          }
+        }
+      }
+    },
+    "Research this" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pesquisar isto"
+          }
+        }
+      }
+    },
+    "Research this: ask the same question again, with Deep Research." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pesquisar isto: a mesma pergunta de novo, com a Pesquisa Profunda."
           }
         }
       }
@@ -11533,6 +11653,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "iPhone"
+          }
+        }
+      }
+    },
+    "keepgoing.ask" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ask BOAR"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Perguntar ao BOAR"
           }
         }
       }
