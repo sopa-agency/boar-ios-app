@@ -124,11 +124,13 @@ final class EvaluationController {
         let runner = runner
         let services = services
         Task {
-            // One model in memory at a time: the chat's is reloaded on its next message.
-            await services.host.unload()
             var result: EvalRunner.RunResult?
             var failure: Error?
             do {
+                // The chat's answer and its queue stop first; still answering after the wait: the run doesn't start.
+                guard await services.answers.stopAndWait() else { throw EvalError.answerStillWritten }
+                // One model in memory at a time: the chat's is reloaded on its next message.
+                await services.host.unload()
                 result = try await Task.detached(priority: .userInitiated) {
                     try await runner.runConfigs(configs, queries,
                                                 onProgress: { p in Task { @MainActor in self.progress = p } },
@@ -269,4 +271,10 @@ final class EvaluationController {
         resultSetKind = setKind
     }
     #endif
+}
+
+private enum EvalError: LocalizedError {
+    case answerStillWritten
+
+    var errorDescription: String? { "an answer is still being written" }
 }

@@ -21,7 +21,11 @@ struct EngineTweaksScreen: View {
         if !next.isAuto { services.vault.record { $0.tweaksChanged = true } }
         bridge.touch()
         let host = services.host
-        Task { await host.unload() }
+        let answers = services.answers
+        // An answer being written stops first, so the unload doesn't cut it mid-sentence.
+        Task {
+            if await answers.stopAndWait() { await host.unload() }
+        }
     }
 
     private func binding<T>(_ keyPath: WritableKeyPath<EngineTweaks, T>) -> Binding<T> {

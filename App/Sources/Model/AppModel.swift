@@ -233,12 +233,12 @@ final class AppModel {
             self.reloadSessions()
             self.drainInbox()
         }
-        // Erasing after a lost key: answers stop first (up to 15 s), then the chat on screen starts over.
-        lock.stopAnswers = { [weak self] in
-            guard let chat = self?.chat else { return }
-            chat.stopForBackground()
-            for _ in 0..<150 where chat.usesModel { try? await Task.sleep(for: .milliseconds(100)) }
-        }
+        // The chat's answer and its queue stop before a model is unloaded, removed or reconfigured, an evaluation starts or
+        // chats are erased (android stopAnswersAndWait).
+        services.answers.register { [weak chat] in await chat?.stopAllAndWait() ?? true }
+        // Erasing after a lost key: answers stop first (up to 15 s) and the queue is dropped, then the chat on screen
+        // starts over.
+        lock.stopAnswers = { _ = await services.answers.stopAndWait() }
         lock.onErased = { [weak self] in
             guard let self else { return }
             self.newChat()

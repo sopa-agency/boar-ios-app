@@ -300,3 +300,9 @@ func shortModelLabel(_ label: String) -> String {
         .trimmingCharacters(in: .whitespaces)
     return stripped.isEmpty ? label.trimmingCharacters(in: .whitespaces) : stripped
 }
+
+/// A question waiting its turn (android `QueuedPrompt`).
+struct QueuedPrompt: Identifiable, Equatable {
+    let id: Int64
+    let text: String
+}
