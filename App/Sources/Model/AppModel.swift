@@ -233,12 +233,12 @@ final class AppModel {
             self.reloadSessions()
             self.drainInbox()
         }
-        // Erasing after a lost key: answers stop first (up to 15 s), then the chat on screen starts over.
-        lock.stopAnswers = { [weak self] in
-            guard let chat = self?.chat else { return }
-            chat.stopForBackground()
-            for _ in 0..<150 where chat.usesModel { try? await Task.sleep(for: .milliseconds(100)) }
-        }
+        // The chat's answer and its queue stop before a model is unloaded, removed or reconfigured, an evaluation starts or
+        // chats are erased (android stopAnswersAndWait).
+        services.answers.register { [weak chat] in await chat?.stopAllAndWait() ?? true }
+        // Erasing after a lost key: answers stop first (up to 15 s) and the queue is dropped, then the chat on screen
+        // starts over.
+        lock.stopAnswers = { _ = await services.answers.stopAndWait() }
         lock.onErased = { [weak self] in
             guard let self else { return }
             self.newChat()
@@ -369,6 +369,8 @@ final class AppModel {
     /// Switches between llama.cpp (a downloaded GGUF) and Apple's on-device model; the next answer loads it.
     func setBackend(_ backend: ModelBackend) async {
         guard let services, services.backend != backend else { return }
+        // The answer being written (and the queue) stop first: the queue must not go on with the other backend.
+        _ = await services.answers.stopAndWait()
         services.backend = backend
         await services.host.unload()
         chat?.refreshModel()

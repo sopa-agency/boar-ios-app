@@ -1,7 +1,8 @@
 import SwiftUI
 
 /// The input bar, one glass pill like Messages: the answer style on the left, the question field, and one trailing
-/// button that is the mic (empty field, voice input on), send (there is text) or stop (while answering).
+/// button that is the mic (empty field, voice input on), send (there is text) or stop (while answering with nothing
+/// typed). Typing while BOAR answers turns the button back into Send: the question waits its turn (the queue).
 struct Composer: View {
     @Binding var text: String
     var focused: FocusState<Bool>.Binding
@@ -19,7 +20,16 @@ struct Composer: View {
     /// The Mac shows the answer styles as a pop-up menu on the style button instead of a sheet.
     var chat: ChatController? = nil
 
+    /// After a send the round button rests this long before it can stop the answer (android `SEND_REST_MS`).
+    static let sendRest = Duration.milliseconds(500)
+    @State private var resting = false
+
     private var hasText: Bool { !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
+
+    /// One round button that follows what the user does: while BOAR answers it is Stop, and Send (to the queue) while
+    /// something is typed. After a send it ignores taps for half a second, dimmed, so a second tap meant for Send can't
+    /// land on the Stop it turns back into.
+    private var stops: Bool { answering && !hasText }
 
     /// The mic takes the trailing slot while dictating, or when there is nothing to send yet.
     private var showsMic: Bool {
@@ -80,31 +90,38 @@ struct Composer: View {
                 .buttonStyle(.borderless)
                 .frame(minWidth: 36, minHeight: 36)
         } else {
-            Button(action: answering ? onStop : send) {
-                Label(answering ? "Stop Answering" : "Send", icon: answering ? Symbols.stop : Symbols.send)
+            Button(action: stops ? onStop : send) {
+                Label(stops ? "Stop Answering" : "Send", icon: stops ? Symbols.stop : Symbols.send)
                     .labelStyle(.iconOnly)
                     .fontWeight(.semibold)
                     .contentTransition(.symbolEffect(.replace))
             }
+            .opacity(resting ? 0.45 : 1)
             .prominentGlassButtonStyle()
             .buttonBorderShape(.circle)
             #if os(macOS)
             .controlSize(.large)
             #endif
-            .disabled(!answering && !hasText)
+            .disabled((!answering && !hasText) || resting)
             #if os(macOS)
-            .help(answering ? "Stop Answering (⌘.)" : "Send (Return)")
+            .help(stops ? "Stop Answering (⌘.)" : "Send (Return)")
             #endif
-            .accessibilityLabel(answering ? (stopping ? Text("Stopping") : Text("Stop Answering")) : Text("Send"))
+            .accessibilityLabel(stops ? (stopping ? Text("Stopping") : Text("Stop Answering")) : Text("Send"))
         }
     }
 
     private func submit() {
-        if hasText && !answering { send() }
+        if hasText && !resting { send() }
     }
 
+    /// Every send rests, on an idle chat too (validator Q-6).
     private func send() {
         voice?.cancel()
         onSend()
+        resting = true
+        Task {
+            try? await Task.sleep(for: Self.sendRest)
+            resting = false
+        }
     }
 }

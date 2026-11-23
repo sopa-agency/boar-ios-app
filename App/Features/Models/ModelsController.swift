@@ -202,6 +202,13 @@ final class ModelsController {
         activating = a.id
         let services = services
         Task {
+            // The answer being written (and the queue) stop first: the next question must not start on the model going out.
+            // Still answering after the wait: nothing is switched.
+            guard await services.answers.stopAndWait() else {
+                activating = nil
+                toast = String(localized: "BOAR is still answering. Stop the answer, then pick \(a.friendlyName) again.")
+                return
+            }
             services.settings.setActiveModelId("llm", a.id)
             // Picked again after it closed the app: the user's call (CR-2's confirmation).
             services.loadGuard.confirm(a.id)
@@ -223,6 +230,13 @@ final class ModelsController {
         activating = "apple"
         let services = services
         Task {
+            // The answer being written (and the queue) stop first, as with Use. Still answering after the wait: nothing is
+            // switched.
+            guard await services.answers.stopAndWait() else {
+                activating = nil
+                toast = String(localized: "BOAR is still answering. Stop the answer, then pick \("Apple Intelligence") again.")
+                return
+            }
             services.backend = .apple
             await services.host.unload()
             let loaded = await services.host.loadApple() != nil
@@ -237,7 +251,15 @@ final class ModelsController {
         let services = services
         let wasActive = a.id == activeLlm
         Task {
-            if wasActive { await services.host.unload() }
+            // The answer being written (and the queue) stop first, as with Use: the next question must not start on a
+            // deleted model. Still answering after the wait: nothing is deleted.
+            if wasActive {
+                guard await services.answers.stopAndWait() else {
+                    toast = String(localized: "BOAR is still answering. Stop the answer, then pick \(a.friendlyName) again.")
+                    return
+                }
+                await services.host.unload()
+            }
             if a.kind == .corpus && a.format != "sqlite-pack" {
                 _ = try? await services.background { try $0.knowledgeBase.deleteSeedChunksWithPrefix(SeedCorpus.chunkIdPrefix(a.id)) }
             }

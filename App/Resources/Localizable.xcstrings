@@ -469,6 +469,16 @@
         }
       }
     },
+    "%lld waiting questions were dropped: they need that model too." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld perguntas na fila foram descartadas: elas também precisam desse modelo."
+          }
+        }
+      }
+    },
     "%lld%% lit · day %@ of the cycle" : {
       "localizations" : {
         "pt" : {
@@ -1926,6 +1936,16 @@
         }
       }
     },
+    "BOAR is still answering. Stop the answer, then pick %@ again." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O BOAR ainda está respondendo. Pare a resposta e escolha %@ de novo."
+          }
+        }
+      }
+    },
     "BOAR needs the microphone for dictation. Allow it in Settings → Privacy & Security → Microphone." : {
       "localizations" : {
         "pt" : {
@@ -1992,6 +2012,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tour do BOAR"
+          }
+        }
+      }
+    },
+    "BOAR was closed: %lld waiting questions were dropped." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O BOAR foi fechado: %lld perguntas na fila foram descartadas."
           }
         }
       }
@@ -2772,6 +2802,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Limpar e apagar também a cesta do Press (%lld)"
+          }
+        }
+      }
+    },
+    "Clear queue" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Limpar fila"
           }
         }
       }
@@ -5933,6 +5973,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Memória"
+          }
+        }
+      }
+    },
+    "Merge into one question" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Juntar numa só pergunta"
           }
         }
       }
@@ -9849,6 +9899,16 @@
         }
       }
     },
+    "They run one at a time, after this answer." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elas rodam uma de cada vez, depois desta resposta."
+          }
+        }
+      }
+    },
     "Thinking" : {
       "localizations" : {
         "pt" : {
@@ -10506,6 +10566,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "A seguir"
+          }
+        }
+      }
+    },
+    "Up to 5 questions can wait. Send this one when one of them has run." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Até 5 perguntas podem esperar. Envie esta quando uma delas tiver rodado."
           }
         }
       }

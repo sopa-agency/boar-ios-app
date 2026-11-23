@@ -6,6 +6,7 @@ import BoarRAG
 import BoarRemote
 import Foundation
 import os
+import Synchronization
 
 /// Everything the screens share, opened once per process (port of android `BoarServices.kt`): settings, the catalog
 /// (built-in plus models added from Hugging Face), the knowledge base and chats on one SQLite connection, the installed
@@ -37,6 +38,8 @@ final class BoarServices: @unchecked Sendable {
     let downloads: BackgroundDownloads
     /// Boar Avatars: what using the app unlocks, counted on the device.
     let vault: TruffleVault
+    /// Stops the chat's answer and queue before a model is unloaded, removed or reconfigured (android `stopAnswersAndWait`).
+    let answers = AnswerStopper()
 
     private let baseCatalog: Catalog
     private let catalogLock = OSAllocatedUnfairLock<Catalog?>(initialState: nil)
@@ -408,5 +411,23 @@ actor BoarSyncLock {
 
     func release() {
         if waiting.isEmpty { held = false } else { waiting.removeFirst().resume() }
+    }
+}
+
+/// The chat's stop-all, reachable from the screens that unload the model (android `BoarServices.stopAnswersAndWait`). The
+/// chat registers itself; with none open there is nothing to stop.
+final class AnswerStopper: Sendable {
+    private let hook = Mutex<(@MainActor @Sendable () async -> Bool)?>(nil)
+
+    func register(_ stop: @escaping @MainActor @Sendable () async -> Bool) {
+        hook.withLock { $0 = stop }
+    }
+
+    /// Stops every answer, title and summary and the questions waiting behind them, and waits for them to end (up to
+    /// 15 s); false when something still uses the model.
+    @MainActor
+    func stopAndWait() async -> Bool {
+        let stop = hook.withLock { $0 }
+        return await stop?() ?? true
     }
 }

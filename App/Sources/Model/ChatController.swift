@@ -55,6 +55,8 @@ final class ChatController {
     var toast: String?
     /// Setup's first question (android ChatViewModel prefill): the chat puts it in the field, unsent, and clears this.
     var prefill: String?
+    /// Questions sent while BOAR answers, waiting their turn (PromptQueue), first to run first.
+    private(set) var queued: [QueuedPrompt] = []
 
     @ObservationIgnored let services: BoarServices
     /// Called after a session is created, renamed by the model, or pruned (the sidebar reloads).
@@ -63,6 +65,8 @@ final class ChatController {
     /// A chat title or summary still being written; a new question stops it (one model, one generation).
     @ObservationIgnored private var background: Task<Void, Never>?
     @ObservationIgnored private let stopFlag = StopFlag()
+    /// The queue and what it decides (PromptQueueFlow); in memory, its size kept so a closed app can say what it dropped.
+    @ObservationIgnored private let flow = PromptQueueFlow(store: .defaults(AppPaths.defaults, key: "boar.chat.queueWaiting"))
 
     init(services: BoarServices) {
         self.services = services
@@ -70,6 +74,12 @@ final class ChatController {
         deepResearch = services.settings.deepResearchMode
         technicalDetails = services.settings.showLiveStats
         refreshModel()
+        flow.onChange = { [weak self] in
+            guard let self else { return }
+            queued = flow.waiting.map { QueuedPrompt(id: $0.id, text: $0.text) }
+        }
+        // Questions that were waiting when the app was closed are gone: say so, once.
+        if let n = flow.droppedAtStart() { toast = String(localized: "BOAR was closed: \(n) waiting questions were dropped.") }
     }
 
     var isAnswering: Bool { answeringId != nil }
@@ -111,7 +121,10 @@ final class ChatController {
         // The open chat was erased (Clear all chat history, a forgotten PIN): start a new one.
         if let open = sessionId {
             let exists = (try? await services.background { try $0.chats.listSessions().contains { $0.id == open } }) ?? true
-            if !exists { newChat() }
+            if !exists {
+                flow.clear()
+                newChat()
+            }
         }
     }
 
@@ -176,8 +189,10 @@ final class ChatController {
     }
 
     /// Loads the answer model now; then the held question, if any, is sent. A load that returns without a model (not a
-    /// closed app) brings the may-not-fit note back, so the user can still choose.
-    private func load(held: String?, risky: RiskyLoad? = nil) {
+    /// closed app) brings the may-not-fit note back, so the user can still choose. `fromNote`: the note's buttons, not the
+    /// preload; only then do the questions waiting behind the note start or go (android `userLoad`; `preload` leaves the
+    /// queue alone).
+    private func load(held: String?, risky: RiskyLoad? = nil, fromNote: Bool = false) {
         loadingModel = true
         let services = services
         Task {
@@ -187,7 +202,12 @@ final class ChatController {
             self.loadCrash = crash
             if crash != nil || services.backend == .remote { self.refreshModel() }
             if !loaded, crash == nil, let risky { self.riskyLoad = risky }
-            if loaded, let held { self.send(held) }
+            // The held question keeps its place: first, before any that waited behind it.
+            if loaded, let held { self.send(held, limit: nil, fromQueue: true) }
+            // Loaded with nothing held: questions waiting behind the note start now (validator Q-3).
+            else if loaded, fromNote { self.runNext() }
+            // A failed load: the waiting questions need that model too, so they go with it, said once.
+            else if !loaded, fromNote { self.skipToolsOnce = false; self.dropQueueWithNote() }
         }
     }
 
@@ -218,7 +238,7 @@ final class ChatController {
         services.rememberLoadAnyway(modelId)
         let risky = riskyLoad
         riskyLoad = nil
-        load(held: heldQuestion.take(), risky: risky)
+        load(held: heldQuestion.take(), risky: risky, fromNote: true)
     }
 
     /// The crash note's "Try Again with Less Memory": the model is unblocked and loaded now, keeping the mapped file
@@ -231,12 +251,14 @@ final class ChatController {
         loadCrash = nil
         refreshModel()
         guard !loadingModel else { return }
-        load(held: heldQuestion.take())
+        load(held: heldQuestion.take(), fromNote: true)
     }
 
     /// The memory note's "Pick Another Model" / "Choose a Model" and its OK: the held question is dropped.
     func dismissLoadNote() {
         heldQuestion = nil
+        skipToolsOnce = false
+        dropQueueWithNote()
         riskyLoad = nil
         loadCrash = nil
     }
@@ -273,7 +295,10 @@ final class ChatController {
     func deleteSession(_ id: String) async {
         if job != nil && sessionId == id { return }
         _ = try? await services.background { try $0.chats.deleteSession(sessionId: id) }
-        if sessionId == id { newChat() }
+        if sessionId == id {
+            flow.clear()
+            newChat()
+        }
         onSessionsChanged?()
     }
 
@@ -303,21 +328,88 @@ final class ChatController {
 
     /// Leaving the screen on iPhone: the answer stops (its text is kept) and a title or summary being written too, as
     /// Metal work isn't allowed in the background.
+    ///
+    /// Waiting questions go too: nothing may start on the model while the app can't run it (android `stopAll`, Q-1).
     func stopForBackground() {
-        stop()
+        stopAll()
         Task { await stopBackground() }
     }
 
+    /// Stop ends only the answer in progress, never the queue (validator Q-1). `stopAll` is for the paths that end everything
+    /// and then unload, switch or erase.
     func stop() {
         stopFlag.set(true)
         if answeringId != nil { stopping = true }
         services.host.cancel()
     }
 
+    /// Stop and clear the queue: leaving the screen, a tweak, a model removed or switched, an evaluation, the PIN's erase.
+    func stopAll() {
+        flow.clear()
+        stop()
+    }
+
+    /// `stopAll`, then waits (up to `timeout`) for the answer, a title or summary and a load to end (android
+    /// `BoarServices.stopAnswersAndWait`); false when something still uses the model.
+    func stopAllAndWait(timeout: Duration = .seconds(15)) async -> Bool {
+        stopAll()
+        let clock = ContinuousClock()
+        let until = clock.now + timeout
+        // A title or summary counts too (android's busy check), also one that starts during the wait: an answer already past
+        // its stop check ends as not stopped and writes a title after it.
+        while usesModel && clock.now < until {
+            if background != nil { await stopBackground() } else { try? await Task.sleep(for: .milliseconds(100)) }
+        }
+        return !usesModel
+    }
+
+    // MARK: the queue
+
+    func removeQueued(_ id: Int64) { flow.remove(id) }
+
+    func clearQueue() { flow.clear() }
+
+    /// The waiting questions become one, answered together. A safety question (the CO card) stays its own turn, ahead of
+    /// the merged one, whether Cohazard is on or not.
+    func mergeQueue() { flow.merge { LabTools.coHazard($0) != nil } }
+
+    /// A memory note (may not fit, closed the app) is on screen.
+    private var noteUp: Bool { riskyLoad != nil || loadCrash != nil }
+
+    /// Starts the oldest waiting question, if any.
+    private func runNext() {
+        guard let next = flow.takeNext(running: job != nil) else { return }
+        send(next, limit: nil, fromQueue: true)
+    }
+
+    /// The load note closed, or the model didn't load: the waiting questions need that model too, so they go, said once.
+    private func dropQueueWithNote() {
+        if let n = flow.dropWithNote() { toast = String(localized: "\(n) waiting questions were dropped: they need that model too.") }
+    }
+
     /// `limit` overrides the answer's token limit (the "Allow more and redo" note); nil uses the setting.
     func send(_ query: String, limit: Int? = nil) {
+        send(query, limit: limit, fromQueue: false)
+    }
+
+    /// While BOAR answers, a question waits its turn (PromptQueue, up to 5) and runs after, as the chat's next turn.
+    /// `fromQueue`: the queue starting it (it doesn't join the queue again).
+    private func send(_ query: String, limit: Int?, fromQueue: Bool) {
         let q = query.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !q.isEmpty, job == nil else { return }
+        guard !q.isEmpty else { return }
+        // Everything here runs on the main actor, so no question can land between an answer's end and the next waiting
+        // question's start: `job` clears and `runNext` follows with no suspension between (android's `handoff`, Q-2).
+        switch flow.admit(q, running: job != nil, fromQueue: fromQueue, behindNote: heldQuestion != nil && noteUp, noteUp: noteUp) {
+        case .start:
+            break
+        case .queued(let startNow):
+            if startNow { runNext() }
+            return
+        case .full(let startNow):
+            toast = String(localized: "Up to 5 questions can wait. Send this one when one of them has run.")
+            if startNow { runNext() }
+            return
+        }
         stopFlag.set(false)
         job = Task {
             // A model that may not fit, or closed the app with nothing to stand in, isn't loaded for a question: the
@@ -335,7 +427,9 @@ final class ChatController {
             }
             self.pruneAccepted = false
             await self.answer(q, limit: limit)
+            // However the answer ended (done, stopped, failed), the next waiting question starts.
             self.job = nil
+            self.runNext()
         }
     }
 
@@ -386,7 +480,9 @@ final class ChatController {
 
     /// "Ask BOAR instead": the question of a Labs tool's answer again, with the Labs tools skipped so the model answers.
     func askModel(_ answerId: String) {
-        guard job == nil, let q = question(for: answerId) else { return }
+        // Not queued: the "skip the Labs tools" flag belongs to this question only, so not while others wait either (it
+        // would be taken by the next one in line).
+        guard job == nil, flow.isEmpty, !noteUp, let q = question(for: answerId) else { return }
         skipToolsOnce = true
         send(q)
     }
@@ -419,6 +515,7 @@ final class ChatController {
             _ = try? await services.background { try $0.chats.deleteMessage(id: answerId) }
             await self.answer(question.text, savedQuestionId: question.id)
             self.job = nil
+            self.runNext()
         }
     }
 
@@ -542,10 +639,12 @@ final class ChatController {
         let deep = deepResearch && !personal
         let skipTools = skipToolsOnce
         skipToolsOnce = false
+        // A merged queue goes to the model whole: an instant answer would take one question and drop the rest (validator Q-8).
         let tool = skipTools || aboutConversation ? nil : AnswerTools.run(
             Labs.shared.activeTools, query: q,
             history: prior.map { ConversationTurn(role: $0.role, text: $0.isUser ? $0.text : AnswerText.stripThinking($0.text)) }
         ).flatMap { !(deep || personal) || PersonalFiles.keepsTool($0.tool) ? $0 : nil }
+            .flatMap { PromptMerge.forModel($0, question: q) }
         let instant = tool?.instantText
         let toolPrompt = AnswerTools.systemPrompt(systemPrompt, tool)
         // Boar Staged answers (android AnswerModes.staged): the default path only. It loads the model itself, after the
@@ -1102,6 +1201,11 @@ extension ChatController {
         self.activity = activity
         self.deepResearch = deepResearch
         liveTokPerSec = partial.isEmpty ? nil : 9.4
+    }
+
+    /// UI audit (`-uiScreen chat-queue`): questions waiting behind the answer in progress.
+    func debugQueue(_ questions: [String]) {
+        for q in questions { _ = flow.admit(q, running: true, fromQueue: false, behindNote: false, noteUp: false) }
     }
 
     /// UI audit (`-uiScreen chat-error / chat-no-model`): a question whose answer failed.
