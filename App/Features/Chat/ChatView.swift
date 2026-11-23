@@ -16,6 +16,8 @@ struct ChatView: View {
     @State private var openSource: ChatSource?
     /// The header's mascot shown full screen.
     @State private var showingMascot = false
+    /// The connection sheet (a tap on the header's connection word): the connection, the answer models, the catalog.
+    @State private var showingConnection = false
     #if os(macOS)
     /// The Mac shows sources in a trailing inspector beside the answer instead of a sheet.
     @State private var showingSources = false
@@ -33,7 +35,10 @@ struct ChatView: View {
     private var subtitle: String {
         if chat.loadingModel { return String(localized: "Loading the model…") }
         guard let name = chat.modelName, !chat.noModel else { return String(localized: "No answer model") }
-        return "\(name) · \(chat.modelPlace)"
+        // One source (android HeaderModel): while adaptive routing has another model write the answer, "→ that model".
+        // iOS adds where it runs (Android has only the phone).
+        return HeaderModel.label(answeringNow: chat.isAnswering, answeringModel: chat.answeringModel, phoneModel: "\(name) · \(chat.modelPlace)")
+            ?? name
     }
 
     /// The open chat's title; a new chat is just BOAR.
@@ -96,7 +101,8 @@ struct ChatView: View {
             #else
             // BOAR's mascot beside the title, as Android's header has it; a tap shows it big (ChatHeader).
             ToolbarItem(placement: .principal) {
-                ChatTitle(title: title, subtitle: subtitle) { showingMascot = true }
+                ChatTitle(title: title, subtitle: subtitle, online: model.connectivity.online,
+                          onMascot: { showingMascot = true }, onConnection: { showingConnection = true })
             }
             ChatToolbar(chat: chat, onNewChat: model.newChat)
             #endif
@@ -107,6 +113,10 @@ struct ChatView: View {
         }
         #endif
         .sheet(isPresented: $showingTones) { ToneSheet(chat: chat) }
+        .sheet(isPresented: $showingConnection) {
+            ConnectionSheet(online: model.connectivity.online, busy: chat.isAnswering, models: model.models,
+                            onCatalog: openCatalog, onClose: { showingConnection = false })
+        }
         .sheet(item: $openLab) { open in
             if let lab = Labs.shared.byId(open.id) {
                 NavigationStack {
@@ -212,6 +222,12 @@ struct ChatView: View {
     private func focusIfEmpty() {
         guard chat.messages.isEmpty, !chat.noModel, !showsMemoryNote else { return }
         composerFocused = true
+    }
+
+    /// The connection sheet's "Open the Model Catalog".
+    private func openCatalog() {
+        showingConnection = false
+        model.selection = .screen(.models)
     }
 
     private func showTones() {

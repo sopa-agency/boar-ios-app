@@ -63,11 +63,15 @@ extension View {
 
 #if os(iOS)
 /// The chat's title in the navigation bar with BOAR's mascot before it (android Header: the round avatar, then the
-/// name): the chat's title, and under it the model answering. A tap on the mascot shows it full screen.
+/// name): the chat's title, and under it the connection and the model answering. A tap on the mascot shows it full screen.
 struct ChatTitle: View {
     let title: String
+    /// The model line: what answers, and where.
     let subtitle: String
+    let online: Bool
     let onMascot: () -> Void
+    /// A tap on the connection word (android ConnectionLine): the connection sheet.
+    let onConnection: () -> Void
     @ScaledMetric(relativeTo: .headline) private var side = 30
 
     var body: some View {
@@ -81,15 +85,11 @@ struct ChatTitle: View {
                 Text(verbatim: title)
                     .font(.headline)
                     .foregroundStyle(.boar(.heading))
-                // The model, as Android's header writes it: mono.xs, upper case, textDim.
-                Text(verbatim: subtitle)
-                    .boarText("mono.xs")
-                    .textCase(.uppercase)
-                    .foregroundStyle(.boar(.dim))
+                // The connection on the model line (android ConnectionLine): the dot, the model as Android's header writes it
+                // (mono.xs, upper case, textDim), and for a moment ONLINE or OFFLINE in its place.
+                ConnectionLine(online: online, model: subtitle, onDetails: onConnection)
             }
             .lineLimit(1)
-            .accessibilityElement(children: .combine)
-            .accessibilityAddTraits(.isHeader)
         }
     }
 }

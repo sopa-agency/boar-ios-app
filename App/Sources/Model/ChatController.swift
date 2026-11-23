@@ -22,6 +22,9 @@ final class ChatController {
     private(set) var answeringId: String?
     private(set) var activity: ChatActivity?
     private(set) var liveTokPerSec: Double?
+    /// While adaptive routing has another model write the answer: that model's name (android `answeringModel`; the header
+    /// says "→ name"). Nil otherwise.
+    private(set) var answeringModel: String?
     /// The answering model's catalog label (the receipt keeps it).
     private(set) var modelLabel: String?
     /// The answering model's plain name ("Fast", "Accurate"), for the chat's subtitle.
@@ -581,6 +584,8 @@ final class ChatController {
     private enum Event: Sendable {
         case piece(String)
         case activity(ChatActivity)
+        /// Adaptive routing's generate step runs on a model other than the answering one (android `answeringModel`).
+        case routed(String?)
     }
 
     private func answer(_ q: String, savedQuestionId: String? = nil, limit: Int? = nil) async {
@@ -916,6 +921,7 @@ final class ChatController {
                     switch e {
                     case .piece(let p): onPiece(p)
                     case .activity(let a): if firstAt == nil { enter(a, answerId: answerId) }
+                    case .routed(let name): answeringModel = name
                     }
                 }
                 let outcome = try await work.value
@@ -1061,6 +1067,7 @@ final class ChatController {
             }
         }
         answeringId = nil
+        answeringModel = nil
         activity = nil
         stopping = false
         let all = prior + [ChatItem(id: userId, role: "user", text: q), ChatItem(id: answerId, role: "assistant", text: finalText)]
@@ -1104,18 +1111,25 @@ final class ChatController {
             Profiles.AvailableModel(RoutableModel(id: m.id, isLanguageModel: true, sizeBytes: m.sizeBytes, roles: m.capabilities?.roles,
                                                   estimatedMemoryMb: m.capabilities?.estimatedMemoryMb,
                                                   estimatedTokensPerSecond: m.capabilities?.estimatedTokensPerSecond),
-                                    present: services.isPresent(m))
+                                    present: services.isInstalled(m))
         }
         let preset = s.routingPreset.flatMap(RoutingPreset.init(rawValue:)) ?? .default
         var overrides: [ModelRole: String] = [:]
         for (k, v) in s.modelRoleAssignments() { if let role = ModelRole.of(k) { overrides[role] = v } }
-        let plan = AdaptivePlan.plan(query: q, statuses: statuses, preset: preset, overrides: overrides, activeModelId: s.activeModelId("llm"),
+        let plan = AdaptivePlan.plan(query: q, statuses: statuses, preset: preset, overrides: overrides,
+                                     activeModelId: services.answerModel()?.id ?? s.activeModelId("llm"),
                                      deviceRamBytes: services.totalRamBytes, maxTokens: maxTokens)
         let tweaks = s.engineTweaks
         let r = try await PlanExecutor(host: services.host, retriever: services.retriever, stages: stages, timeoutFor: { tweaks.stageTimeoutMs(nPredict: $0) })
             .execute(plan: plan.plan, input: PipelineInput(query: q, systemPrompt: systemPrompt, styleReminder: styleReminder, history: history),
                      onToken: { sink.yield(.piece($0)) },
-                     onStepStart: { step in sink.yield(.activity(step.type == .retrieve ? .retrieving : .thinking)) },
+                     onStepStart: { step in
+                         sink.yield(.activity(step.type == .retrieve ? .retrieving : .thinking))
+                         if step.type == .generate, let id = step.modelId {
+                             let other = id == services.answerModel()?.id ? nil : services.catalog.byId(id)?.friendlyName
+                             sink.yield(.routed(other))
+                         }
+                     },
                      shouldStop: { stop.value })
         if r.answer.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && !stop.value {
             throw ChatError.adaptive(r.warnings.joined(separator: ", "))
