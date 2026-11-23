@@ -57,8 +57,11 @@ struct AnswerView: View {
                 }
                 if !shown.isEmpty {
                     MarkdownText(text: shown, sourceCount: message.sources.count, answerId: message.id)
-                        // A tap on an instant answer being typed shows all of it (android skipTyping); no effect otherwise.
-                        .onTapGesture { if streaming { chat.skipInstantTyping() } }
+                        // A tap on an instant answer being typed shows all of it (android skipTyping). Only while the
+                        // answer is written, and beside the text's own taps: a finished answer's [n] links and
+                        // selection never meet it.
+                        .simultaneousGesture(TapGesture().onEnded { chat.skipInstantTyping() },
+                                             including: streaming ? .all : .subviews)
                 }
                 if let failure = message.failure {
                     failureRow(failure)

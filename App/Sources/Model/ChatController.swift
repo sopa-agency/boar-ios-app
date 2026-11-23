@@ -350,8 +350,7 @@ final class ChatController {
         Task { await stopBackground() }
     }
 
-    /// Stop ends only the answer in progress, never the queue (validator Q-1). `stopAll` is for the paths that end everything
-    /// and then unload, switch or erase.
+    /// A tap on an instant answer being typed: the rest shows at once (android skipTyping).
     func skipInstantTyping() { skipTyping = true }
 
     private static var animationsOff: Bool {
@@ -370,6 +369,8 @@ final class ChatController {
         #endif
     }
 
+    /// Stop ends only the answer in progress, never the queue (validator Q-1). `stopAll` is for the paths that end everything
+    /// and then unload, switch or erase.
     func stop() {
         stopFlag.set(true)
         if answeringId != nil { stopping = true }

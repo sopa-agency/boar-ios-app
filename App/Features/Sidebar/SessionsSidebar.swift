@@ -19,8 +19,11 @@ struct SessionsSidebar: View {
     /// The saved chats without the one waiting for its Undo.
     private var kept: [ChatSession] { model.sessions.filter { $0.id != pendingDelete?.id } }
 
-    /// The search box shows above `ChatList.searchFrom` chats, on every platform (android ChatList).
-    private var searchable: Bool { kept.count > ChatList.searchFrom }
+    /// The Mac's Find command (⌘F) asked for the search box: it shows then even with few chats.
+    @State private var findAsked = false
+
+    /// The search box shows above `ChatList.searchFrom` chats, on every platform (android ChatList), or after Find.
+    private var searchable: Bool { kept.count > ChatList.searchFrom || findAsked }
 
     /// The chats whose title matches the sidebar search (all of them with no search).
     private var shownSessions: [ChatSession] {
@@ -176,7 +179,10 @@ struct SessionsSidebar: View {
         guard let request else { return }
         model.sidebarRequest = nil
         switch request {
-        case .find: searching = true
+        case .find:
+            findAsked = true
+            // The field may only appear now: focus it on the next turn, once it's in the list.
+            Task { @MainActor in searching = true }
         case .rename(let id): if let s = model.sessions.first(where: { $0.id == id }) { startRename(s) }
         case .delete(let id): if let s = model.sessions.first(where: { $0.id == id }) { askDelete(s) }
         }

@@ -180,10 +180,10 @@ public final class AppSettings: @unchecked Sendable {
     public var hidePromptIdeas: Bool { get { bool("hidePromptIdeas") ?? false } set { set("hidePromptIdeas", .bool(newValue)) } }
     /// Settings → Engine Tweaks → Debug Log (android `debugLogEnabled`).
     public var debugLogEnabled: Bool { get { bool("debugLogEnabled") ?? false } set { set("debugLogEnabled", .bool(newValue)) } }
-    /// Advanced tweaks → Show technical details. On by default: the bounty's judges and early users want the numbers.
     /// Live tokens per second at the top of the chat while BOAR writes; off by default and in every profile (android
     /// AppSettings.showLiveSpeed, rc3 0978191f). Display & theme has the switch.
     public var showLiveSpeed: Bool { get { bool("showLiveSpeed") ?? false } set { set("showLiveSpeed", .bool(newValue)) } }
+    /// Advanced tweaks → Show technical details. On by default: the bounty's judges and early users want the numbers.
     public var showLiveStats: Bool { get { bool("showLiveStats") ?? true } set { set("showLiveStats", .bool(newValue)) } }
 
     // MARK: chat memory (DEFAULT_MEMORY_SETTINGS when unset)
