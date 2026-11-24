@@ -147,6 +147,15 @@ struct SessionsSidebar: View {
             Button("Cancel", role: .cancel) {}
             Button("Rename") { rename(session) }
         }
+        #if os(macOS)
+        // On the Mac the dialog is a sheet on the window, and the Delete key or the Chat menu can ask for a chat whose row
+        // isn't in the list (filtered out by the search, or scrolled away): it hangs on the list there.
+        .confirmationDialog("Delete this chat?", item: $deleting, titleVisibility: .visible) { session in
+            Button("Delete", role: .destructive) { delete(session) }
+        } message: { session in
+            deleteMessage(session)
+        }
+        #endif
     }
 
     /// One chat's row: a tap opens it; a swipe or a long press has Rename and Delete (android ChatList's long-press menu; its
@@ -170,17 +179,26 @@ struct SessionsSidebar: View {
                 Button("Delete", icon: Symbols.delete, role: .destructive) { askDelete(session) }
                     .disabled(isAnswering(in: session))
             }
-            // On the row, not the list: on iPhone the dialog is a popover whose arrow points at what it is attached to.
+            #if !os(macOS)
+            // On the row, not the list: on iPhone the dialog is a popover whose arrow points at what it is attached to. Only
+            // the row's own context menu asks for it here, so the row is on screen.
             .confirmationDialog("Delete this chat?", isPresented: deleteAsked(session), titleVisibility: .visible) {
                 Button("Delete", role: .destructive) { delete(session) }
             } message: {
-                Text("\"\(session.title)\" and its messages are deleted from this \(Platform.deviceNoun).")
+                deleteMessage(session)
             }
+            #endif
     }
 
+    private func deleteMessage(_ session: ChatSession) -> Text {
+        Text("\"\(session.title)\" and its messages are deleted from this \(Platform.deviceNoun).")
+    }
+
+    #if !os(macOS)
     private func deleteAsked(_ session: ChatSession) -> Binding<Bool> {
         Binding(get: { deleting?.id == session.id }, set: { if !$0, deleting?.id == session.id { deleting = nil } })
     }
+    #endif
 
     #if os(macOS)
     private func handle(_ request: SidebarRequest?) {
