@@ -3,7 +3,7 @@
 # Usage: scripts/sync-reference.sh [git-ref]   (default upstream/main). Writes Fixtures/SOURCE_SHA.
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"; APP="$ROOT/../boar-app"; REF="${1:-upstream/main}"
-SHA="$(git -C "$APP" rev-parse "$REF")"
+SHA="$(git -C "$APP" rev-parse "$REF^{commit}")"
 # Boar Avatars' roster (VaultTests checks Vault.rules against it, as Android's VaultTest does). Read first, so a ref
 # without it stops the script before anything is replaced.
 ROSTER="$(git -C "$APP" show "$SHA:android-native/art/icons/truffles.json")"
