@@ -129,8 +129,9 @@ public enum RagPure {
         return [token.u16DropLast(1)]
     }
 
-    /// An English question ("What is Na?"): a short one reads as Portuguese to `looksPortuguese`.
-    private static let enQuestion = Rx("(?<![\\p{L}])(?:what|who|whom|which|how|why|when|where|is|are|was|were|does|do|did|the|of|and)(?![\\p{L}])", .caseInsensitive)
+    /// An English question ("What is Na?"): a short one reads as Portuguese to `looksPortuguese`. No "do": it is Portuguese
+    /// too ("da agricultura do Brasil"), and kept every Portuguese function word as a keyword (validator P-C6, t9 0435).
+    private static let enQuestion = Rx("(?<![\\p{L}])(?:what|who|whom|which|how|why|when|where|is|are|was|were|does|did|the|of|and)(?![\\p{L}])", .caseInsensitive)
 
     /// Portuguese function words (t9 0226): "para" matched the article Pará. Only for a Portuguese question (validator R-D4:
     /// "What is DOS?", "What is Na?", "Uma Thurman" keep their keyword). Folded forms, as `tokenize` gives them.
