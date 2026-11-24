@@ -9,6 +9,7 @@ struct SettingsExperimentalSection: View {
     let bridge: SettingsBridge
     let profile: UserProfile
     @State private var labs = Labs.shared
+    @Environment(AppModel.self) private var model
 
     var body: some View {
         Section {
@@ -29,7 +30,7 @@ struct SettingsExperimentalSection: View {
             }
             if SettingsPart.labsSettings.shown(in: profile) {
                 Toggle(isOn: Binding(get: { labs.labsOn }, set: { labs.labsOn = $0 })) {
-                    SettingsLabel("Boar Labs", symbol: Symbols.labs)
+                    SettingsLabel("Plugins", symbol: Symbols.labs)
                 }
                 // android LabHooks.SettingsRow: the storage limit shows while Boar Labs is on.
                 if labs.labsOn {
@@ -42,6 +43,13 @@ struct SettingsExperimentalSection: View {
                     .accessibilityIdentifier("settings.storageLimit")
                 }
             }
+            // The list with a switch per plugin, in every profile (t9 1725).
+            if labs.labsOn {
+                Button { model.selection = .screen(.labs) } label: {
+                    Text("Open Plugins").foregroundStyle(.boar(.link))
+                }
+                .accessibilityIdentifier("settings.openPlugins")
+            }
         } header: {
             BoarHeader {
                 Text("Experimental")
@@ -50,7 +58,7 @@ struct SettingsExperimentalSection: View {
             BoarFooter {
                 VStack(alignment: .leading, spacing: 6) {
                     Text(profile == .pro
-                         ? "Extra tools in the menu and under answers. Each one can be switched on or off in Boar Labs. If one misbehaves, switch it off and, if you can, open an issue on GitHub."
+                         ? "Extra tools in the menu and under answers. Each one can be switched on or off. Some start on; switch on the others you want in Plugins. If one misbehaves, switch it off and, if you can, open an issue on GitHub."
                          : "Extra tools in the menu and under answers. Each one can be switched on or off.")
                     if SettingsPart.adaptiveRouting.shown(in: profile) {
                         Text("Adaptive Routing picks the best installed model for each question.")

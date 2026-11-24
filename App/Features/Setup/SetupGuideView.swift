@@ -219,7 +219,7 @@ extension SetupGuide.Page {
         case .pin: "Lock BOAR?"
         case .notify: "Notifications"
         case .privacy: "Privacy and memory"
-        case .labs: "Boar Labs"
+        case .labs: "Plugins"
         case .ready: "Almost there"
         }
     }
@@ -235,7 +235,7 @@ extension SetupGuide.Page {
         case .pin: "Only for BOAR: your \(Platform.deviceNoun)'s own lock doesn't change."
         case .notify: "One notification, only while BOAR answers."
         case .privacy: "How BOAR treats your chats and your \(Platform.deviceNoun)'s memory."
-        case .labs: "Extra tools in the menu and under answers. They all start off: switch on the ones you want."
+        case .labs: "Extra tools in the menu and under answers. Some start on: switch on the others you want."
         case .ready: "BOAR opens as soon as the download and the index are done."
         }
     }

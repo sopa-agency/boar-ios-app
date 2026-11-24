@@ -97,7 +97,7 @@ struct SettingsScreen: View {
         bridge.settings.profileNotePending = false
         withAnimation {
             toastSeconds = 7
-            toast = ProfileCopy.updateToast(profile)
+            toast = ProfileCopy.updateToast(profile, plugins: Labs.shared.turnedOnByUpdate.map(\.title))
         }
     }
 }

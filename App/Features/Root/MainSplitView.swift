@@ -27,6 +27,19 @@ struct MainSplitView: View {
             }
         }
         .onChange(of: model.selection) { _, item in model.select(item) }
+        .sheet(item: Binding(get: { model.pluginSheet.map(PluginSheetItem.init) }, set: { model.pluginSheet = $0?.id })) { item in
+            if let lab = Labs.shared.byId(item.id) {
+                NavigationStack {
+                    LabPage(lab: lab)
+                        .toolbar { ToolbarItem(placement: .confirmationAction) { Button("Done") { model.pluginSheet = nil } } }
+                }
+            }
+        }
         .debugSidebar($compactColumn)
     }
+}
+
+/// A plugin's page shown over the chat.
+private struct PluginSheetItem: Identifiable {
+    let id: String
 }

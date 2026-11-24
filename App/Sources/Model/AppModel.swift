@@ -24,7 +24,7 @@ enum AppScreen: String, Hashable, CaseIterable, Identifiable {
         case .settings: String(localized: "Settings")
         case .evaluation: String(localized: "Evaluation")
         case .about: String(localized: "About")
-        case .labs: String(localized: "Boar Labs")
+        case .labs: String(localized: "Plugins")
         }
     }
 
@@ -137,6 +137,19 @@ final class AppModel {
     var sidebarRequest: SidebarRequest?
     /// A citation link the system handed back (Mac): `boar-source://<n>/<answer id>`; the chat opens that source.
     var citationRequest: URL?
+    /// The plugin whose page is open over whatever is on screen (a tap on an answer's plugin name).
+    var pluginSheet: String?
+
+    func openPlugin(_ id: String) { pluginSheet = id }
+
+    /// A plugin page's Try row (android `AskFromPlugin`): a new chat that asks it, or one with it waiting in the box.
+    func askFromPlugin(_ question: String, send: Bool) {
+        pluginSheet = nil
+        newChat()
+        guard let chat else { return }
+        if send { chat.send(question) } else { chat.prefill = question }
+    }
+
     /// File → Import Documents… (Mac): the Documents screen opens its file picker.
     var importRequest = false
     /// Setup was opened from the app (Settings → Recovery): it offers the way back.
@@ -165,7 +178,7 @@ final class AppModel {
             // The install's profile, once: from what the user changed (a lab counts only while Boar Labs is on).
             let labs = Labs.shared
             services.settings.settleProfile(
-                anyLabOn: LabDefaults.userChoseOn(labsOn: labs.labsOn, stored: labs.all.map { labs.enabled($0.id) }),
+                anyLabOn: LabDefaults.userChoseOn(labsOn: labs.labsOn, stored: labs.all.map { labs.storedChoice($0.id) }),
                 boarverseOn: services.vault.enabled)
             #if DEBUG
             if let p = DebugLaunch.profile.flatMap(UserProfile.of) { services.settings.userProfile = p }

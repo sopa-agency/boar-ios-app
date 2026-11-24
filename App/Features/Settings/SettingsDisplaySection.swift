@@ -46,7 +46,7 @@ struct SettingsDisplaySection: View {
                     // The themes the menu lists (all but System), so a current one outside them (Paper from an older
                     // build) doesn't count as locked.
                     let locked = ThemeTokens.all.count - (model.themeChoices.count - 1)
-                    if locked > 0 { Text("\(locked) more themes are unlocked by Labs and avatars.") }
+                    if locked > 0 { Text("\(locked) more themes are unlocked by plugins and avatars.") }
                 }
                 #if !os(macOS)
                 Text("Text size follows your \(Platform.deviceNoun)'s Dynamic Type setting.")

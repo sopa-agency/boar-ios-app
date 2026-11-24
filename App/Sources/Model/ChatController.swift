@@ -716,7 +716,7 @@ final class ChatController {
             adaptive: !personal && settings.adaptiveRoutingEnabled, smallTalk: smallTalk
         )
         // The tool slot (Boar Labs): an instant answer needs no model, a context is read by it. Not for a recap; under
-        // Deep Research or Personal Files only a safety answer (Boar Cohazard).
+        // Deep Research or Personal Files only a safety answer (Cohazard).
         let deep = deepOn && !personal
         let skipTools = carried.skipTools
         // A merged queue goes to the model whole: an instant answer would take one question and drop the rest (validator Q-8).

@@ -32,13 +32,13 @@ enum AboutCredits {
     /// The Boar Labs code and data this build ships (Android's list, without the engines and models iOS doesn't
     /// have: stable-diffusion.cpp, Big Boar, Boar Wisp).
     static let labs = [
-        Credit(name: "r4to's calculator, BOAR R&D (Boar Calculator)", license: "MIT"),
-        Credit(name: "r4to's travel distance, BOAR R&D (Boar Distance)", license: "MIT"),
-        Credit(name: "GeoNames cities15000 (Boar Distance)", license: "CC BY 4.0"),
-        Credit(name: "r4to's offline facts, BOAR R&D (Boar Facts)", license: "MIT"),
-        Credit(name: "Wikidata facts table (Boar Facts)", license: "CC0"),
-        Credit(name: "r4to's verdict guard, BOAR R&D (Boar Guard)", license: "MIT"),
-        Credit(name: "r4to's CO hazard check, BOAR R&D (Boar Cohazard)", license: "MIT"),
+        Credit(name: "r4to's calculator, BOAR R&D (Calculator)", license: "MIT"),
+        Credit(name: "r4to's travel distance, BOAR R&D (Distance)", license: "MIT"),
+        Credit(name: "GeoNames cities15000 (Distance)", license: "CC BY 4.0"),
+        Credit(name: "r4to's offline facts, BOAR R&D (Facts)", license: "MIT"),
+        Credit(name: "Wikidata facts table (Facts)", license: "CC0"),
+        Credit(name: "r4to's verdict guard, BOAR R&D (Guard)", license: "MIT"),
+        Credit(name: "r4to's CO hazard check, BOAR R&D (Cohazard)", license: "MIT"),
     ]
 
     /// The catalog's models and packs, each with its license; hidden ones (no longer offered) aren't credited.

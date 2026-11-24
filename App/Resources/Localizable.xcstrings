@@ -213,6 +213,16 @@
         }
       }
     },
+    "%@ on or off" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ ligado ou desligado"
+          }
+        }
+      }
+    },
     "%@ page %lld" : {
       "localizations" : {
         "en" : {
@@ -389,6 +399,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mais %lld temas são liberados pelos Labs e pelos avatares."
+          }
+        }
+      }
+    },
+    "%lld more themes are unlocked by plugins and avatars." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mais %lld temas são liberados pelos plugins e pelos avatares."
           }
         }
       }
@@ -659,6 +679,16 @@
         }
       }
     },
+    "26 miles in km" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "26 milhas em km"
+          }
+        }
+      }
+    },
     "4,000 topics" : {
       "localizations" : {
         "pt" : {
@@ -699,6 +729,16 @@
         }
       }
     },
+    "7.5 L/100 km = 31.36 miles per gallon (US gallon). Formula: mpg = 235.215 ÷ L/100 km." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "7,5 L/100 km = 31,36 milhas por galão (galão americano). Conta: mpg = 235,215 ÷ L/100 km."
+          }
+        }
+      }
+    },
     "A compass from the %@'s own sensors, offline, no location needed." : {
       "localizations" : {
         "pt" : {
@@ -709,12 +749,32 @@
         }
       }
     },
+    "A compass from your %@'s sensors. No location needed." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uma bússola com os sensores do %@. Sem localização."
+          }
+        }
+      }
+    },
     "A fixed carbon monoxide safety answer when you plan to run a fuel-burning device indoors, without the model." : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Uma resposta fixa de segurança sobre monóxido de carbono quando você planeja usar um aparelho a combustível em lugar fechado, sem o modelo."
+          }
+        }
+      }
+    },
+    "A fixed safety answer about carbon monoxide indoors." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uma resposta fixa de segurança sobre monóxido de carbono em lugar fechado."
           }
         }
       }
@@ -745,6 +805,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Um quiz diário curto da biblioteca do BOAR, offline. Respostas certas liberam Avatares do Boar."
+          }
+        }
+      }
+    },
+    "AFTER" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DEPOIS"
           }
         }
       }
@@ -805,6 +875,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sobre o BOAR"
+          }
+        }
+      }
+    },
+    "About this plugin" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sobre este plugin"
           }
         }
       }
@@ -915,6 +995,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Adicione o endereço do Mac em Ajustes → Avançado → Motor."
+          }
+        }
+      }
+    },
+    "Add to Press" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adicionar ao Press"
           }
         }
       }
@@ -1249,6 +1339,16 @@
         }
       }
     },
+    "Answer the same plugin’s questions for a week." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Responda às perguntas do mesmo plugin durante uma semana."
+          }
+        }
+      }
+    },
     "Answered by %@" : {
       "localizations" : {
         "pt" : {
@@ -1321,6 +1421,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "As respostas podem citá-la por este nome."
+          }
+        }
+      }
+    },
+    "Answers come from a chat: under an answer, open the plugins and tap Add to Press. Here you reorder, edit or drop them, then compile the page to an A4 PDF or a Markdown file, made offline on this %@." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "As respostas vêm das conversas: embaixo de uma resposta, abra os plugins e toque em Adicionar ao Press. Aqui você reordena, edita ou tira, e depois compila a página num PDF A4 ou num arquivo Markdown, feito offline neste %@."
+          }
+        }
+      }
+    },
+    "Answers from a Wikidata table kept on the phone. English only for now." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Responde com dados de uma tabela da Wikidata no celular. Hoje só em inglês."
           }
         }
       }
@@ -1616,6 +1736,16 @@
         }
       }
     },
+    "Ask it in a new chat" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Perguntar numa nova conversa"
+          }
+        }
+      }
+    },
     "Ask with Deep Research" : {
       "localizations" : {
         "pt" : {
@@ -1782,6 +1912,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Disponível"
+          }
+        }
+      }
+    },
+    "BEFORE" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ANTES"
           }
         }
       }
@@ -1976,6 +2116,16 @@
         }
       }
     },
+    "BOAR replies" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O BOAR responde"
+          }
+        }
+      }
+    },
     "BOAR searches its library for your question, then answers from what it found." : {
       "localizations" : {
         "pt" : {
@@ -2002,6 +2152,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "O BOAR foi fechado: %lld perguntas na fila foram descartadas."
+          }
+        }
+      }
+    },
+    "BOAR will no longer show the carbon monoxide warning first when a question sounds like poisoning. You can turn it back on from its page." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O BOAR deixará de mostrar primeiro o aviso de monóxido de carbono quando uma pergunta parecer intoxicação. Você pode ligá-lo de novo na página dele."
           }
         }
       }
@@ -2456,6 +2616,16 @@
         }
       }
     },
+    "Calculator" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calculadora"
+          }
+        }
+      }
+    },
     "Can I run my portable generator in the attached garage if I keep the door open?" : {
       "localizations" : {
         "pt" : {
@@ -2816,6 +2986,16 @@
         }
       }
     },
+    "Cohazard" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cohazard"
+          }
+        }
+      }
+    },
     "Collect answers from any chat into a basket, then compile them into a PDF or a Markdown file." : {
       "localizations" : {
         "pt" : {
@@ -2952,6 +3132,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Copiar o trecho"
+          }
+        }
+      }
+    },
+    "Copy the question" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copiar a pergunta"
           }
         }
       }
@@ -3366,6 +3556,26 @@
         }
       }
     },
+    "Designer" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Designer"
+          }
+        }
+      }
+    },
+    "Designer draws with Apple's Image Playground, which needs Apple Intelligence (an iPhone 15 Pro or later, or a Mac with Apple silicon) on iOS 18.4 or macOS 15.4 or later, turned on in Settings. It isn't available on this %@." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Designer desenha com o Image Playground da Apple, que precisa da Apple Intelligence (um iPhone 15 Pro ou mais novo, ou um Mac com Apple silicon) no iOS 18.4 ou macOS 15.4 ou mais novo, ligada nos Ajustes. Ele não está disponível neste %@."
+          }
+        }
+      }
+    },
     "Detailed" : {
       "localizations" : {
         "pt" : {
@@ -3452,6 +3662,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Exibição e tema"
+          }
+        }
+      }
+    },
+    "Distance" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Distância"
           }
         }
       }
@@ -3696,6 +3916,16 @@
         }
       }
     },
+    "EXAMPLE" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "EXEMPLO"
+          }
+        }
+      }
+    },
     "Earlier" : {
       "localizations" : {
         "pt" : {
@@ -3916,6 +4146,16 @@
         }
       }
     },
+    "Every answer shows its source and date (Wikidata, October 2026)." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toda resposta mostra a fonte e a data (Wikidata, outubro de 2026)."
+          }
+        }
+      }
+    },
     "Every number in this answer is in its sources." : {
       "localizations" : {
         "pt" : {
@@ -3962,6 +4202,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Respostas exatas para algumas contas do dia a dia (bateria, consumo, trilha, câmbio, água, temperatura, quanto tempo, quantos), na hora e sem o modelo. Contas simples e porcentagens ainda vão para o modelo."
+          }
+        }
+      }
+    },
+    "Exact answers to everyday sums and unit conversions, with the formula. No model needed." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Contas exatas do dia a dia e conversões de unidades, com a fórmula. Sem precisar do modelo."
+          }
+        }
+      }
+    },
+    "Exact answers to everyday sums: fuel, battery, currency and more. No model needed." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Contas exatas do dia a dia: combustível, bateria, câmbio e mais. Sem o modelo."
           }
         }
       }
@@ -4076,6 +4336,26 @@
         }
       }
     },
+    "Extra tools in the menu and under answers. Each one can be switched on or off. Some start on; switch on the others you want in Plugins. If one misbehaves, switch it off and, if you can, open an issue on GitHub." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ferramentas extras no menu e nas respostas. Cada uma pode ser ligada ou desligada. Algumas já vêm ligadas; ligue as outras que quiser em Plugins. Se alguma der problema, desligue e, se puder, abra uma issue no GitHub."
+          }
+        }
+      }
+    },
+    "Extra tools in the menu and under answers. Some start on: switch on the others you want." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ferramentas extras no menu e nas respostas. Algumas já vêm ligadas: ligue as outras que quiser."
+          }
+        }
+      }
+    },
     "Extra tools in the menu and under answers. They all start off: switch on the ones you want." : {
       "localizations" : {
         "pt" : {
@@ -4112,6 +4392,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Face ID, Touch ID ou o código do aparelho selam suas conversas e escondem a tela do BOAR na troca de apps. Documentos importados ainda não são criptografados."
+          }
+        }
+      }
+    },
+    "Facts" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fatos"
           }
         }
       }
@@ -4397,6 +4687,16 @@
         }
       }
     },
+    "Fixes a yes, no or winner that the model's own numbers contradict." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Corrige um sim, não ou vencedor que os próprios números do modelo contradizem."
+          }
+        }
+      }
+    },
     "Flash Attention" : {
       "localizations" : {
         "pt" : {
@@ -4667,6 +4967,26 @@
         }
       }
     },
+    "Guard" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guarda"
+          }
+        }
+      }
+    },
+    "Guard checks a finished answer against its own numbers and fixes a Yes, No or winner that they contradict." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Guarda confere uma resposta pronta com os próprios números dela e corrige um Sim, Não ou vencedor que eles contradizem."
+          }
+        }
+      }
+    },
     "Hammock Boar" : {
       "localizations" : {
         "pt" : {
@@ -4683,6 +5003,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Vibração"
+          }
+        }
+      }
+    },
+    "Headache, dizziness, nausea or confusion near a fuel-burning device, or a CO alarm going off, even without symptoms? Get everyone into fresh air now and call emergency services." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dor de cabeça, tontura, náusea ou confusão perto de um aparelho a combustível, ou um alarme de CO tocando, mesmo sem sintomas? Leve todos para o ar livre agora e ligue para a emergência."
           }
         }
       }
@@ -4847,6 +5177,16 @@
         }
       }
     },
+    "How far apart two cities are, and how long the trip takes." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A distância entre duas cidades e quanto tempo leva a viagem."
+          }
+        }
+      }
+    },
     "How far apart two cities are, and how long to walk, cycle or drive it, as an estimate and without the model." : {
       "localizations" : {
         "pt" : {
@@ -4867,12 +5207,32 @@
         }
       }
     },
+    "How it works" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Como funciona"
+          }
+        }
+      }
+    },
     "How long to drive 240 miles at 60 mph?" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "How long to drive 240 miles at 60 mph?"
+          }
+        }
+      }
+    },
+    "How long to drive from Berlin to Prague?" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "How long to drive from Berlin to Prague?"
           }
         }
       }
@@ -5103,6 +5463,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Na memória"
+          }
+        }
+      }
+    },
+    "In Press (tap to remove)" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No Press (toque para remover)"
           }
         }
       }
@@ -5837,6 +6207,16 @@
         }
       }
     },
+    "Lunar" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunar"
+          }
+        }
+      }
+    },
     "Lunar Boar" : {
       "localizations" : {
         "pt" : {
@@ -5867,6 +6247,16 @@
         }
       }
     },
+    "Madrid and Barcelona are about 504 km (313 miles) apart in a straight line. Roads and trails are usually longer than the straight line, by about a quarter, so expect roughly 630 km by land. This is an estimate from the cities' coordinates, not a mapped route; the real route can differ." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Madrid and Barcelona are about 504 km (313 miles) apart in a straight line. Roads and trails are usually longer than the straight line, by about a quarter, so expect roughly 630 km by land. This is an estimate from the cities' coordinates, not a mapped route; the real route can differ."
+          }
+        }
+      }
+    },
     "Magma Boar" : {
       "localizations" : {
         "pt" : {
@@ -5883,6 +6273,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Deixe do seu jeito"
+          }
+        }
+      }
+    },
+    "Manage plugins ›" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gerenciar plugins ›"
           }
         }
       }
@@ -5973,6 +6373,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Meça, não adivinhe: rode uma avaliação."
+          }
+        }
+      }
+    },
+    "Measures" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Medidas"
           }
         }
       }
@@ -6219,6 +6629,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Meu power bank é de 5.000 mAh a 3,85 V. Quantos watt-hora isso dá, e posso levar no avião?"
+          }
+        }
+      }
+    },
+    "My rental car uses 7.5 litres per 100 km. How much is that in US miles per gallon?" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meu carro alugado faz 7,5 litros a cada 100 km. Quanto isso dá em milhas por galão americano?"
           }
         }
       }
@@ -6613,6 +7033,16 @@
         }
       }
     },
+    "No plugin matches." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nenhum plugin encontrado."
+          }
+        }
+      }
+    },
     "No readable text in this collection." : {
       "localizations" : {
         "pt" : {
@@ -6649,6 +7079,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nenhum texto foi encontrado nas fotos."
+          }
+        }
+      }
+    },
+    "No. Carbon monoxide (CO) from a generator […] is a poison you can't see or smell, and it can kill in minutes. Never run them inside a home, garage, carport, basement, shed, tent or camper, even with the doors or windows open: that is not enough ventilation. Run a generator outside only, at least 20 feet (6 metres) from any door, window or vent…" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não. O monóxido de carbono (CO) de um gerador […] é um veneno que não se vê nem tem cheiro, e pode matar em minutos. Nunca use esses aparelhos dentro de casa, garagem, abrigo de carro, porão, depósito, barraca ou trailer, nem com as portas ou janelas abertas: isso não é ventilação suficiente. Use o gerador só do lado de fora, a pelo menos 6 metros (20 pés) de qualquer porta, janela ou respiro…"
+          }
+        }
+      }
+    },
+    "Nomad" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nomad"
           }
         }
       }
@@ -6943,6 +7393,16 @@
         }
       }
     },
+    "On Android, Designer draws with its own model. On iPhone and Mac it uses Apple's instead, so there is nothing to download." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No Android, o Designer desenha com um modelo próprio. No iPhone e no Mac ele usa o da Apple, então não há nada para baixar."
+          }
+        }
+      }
+    },
     "On This %@" : {
       "localizations" : {
         "pt" : {
@@ -7033,6 +7493,16 @@
         }
       }
     },
+    "Open %@" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir %@"
+          }
+        }
+      }
+    },
     "Open Article" : {
       "localizations" : {
         "pt" : {
@@ -7089,6 +7559,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Abrir Modelos"
+          }
+        }
+      }
+    },
+    "Open Plugins" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir os Plugins"
           }
         }
       }
@@ -7169,6 +7649,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ou escreva a sua…"
+          }
+        }
+      }
+    },
+    "Other" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Outros"
           }
         }
       }
@@ -7423,6 +7913,16 @@
         }
       }
     },
+    "Places" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lugares"
+          }
+        }
+      }
+    },
     "Plasma Boar" : {
       "localizations" : {
         "pt" : {
@@ -7439,6 +7939,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tectônica de placas: como as placas em movimento formam montanhas e causam terremotos"
+          }
+        }
+      }
+    },
+    "Plugins" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plugins"
+          }
+        }
+      }
+    },
+    "Plugins don't slow the answers. Switch them on or off any time in Plugins, in the menu." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Os plugins não deixam as respostas lentas. Ligue ou desligue quando quiser em Plugins, no menu."
           }
         }
       }
@@ -7479,6 +7999,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ursos-polares e ursos-pardos comparados: tamanho, dieta e habitat"
+          }
+        }
+      }
+    },
+    "Polyglot" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Polyglot"
           }
         }
       }
@@ -7549,12 +8079,32 @@
         }
       }
     },
+    "Press" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Press"
+          }
+        }
+      }
+    },
     "Press and hold to copy for a bug report." : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Toque e segure para copiar para um relato de problema."
+          }
+        }
+      }
+    },
+    "Press: %lld answers in the basket" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Press: %lld respostas na cesta"
           }
         }
       }
@@ -7709,6 +8259,16 @@
         }
       }
     },
+    "Put it in the box to edit" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Colocar na caixa para editar"
+          }
+        }
+      }
+    },
     "Q8_0 and Q4_0 use less memory for the KV cache; on some phones Q8_0 with flash attention generates slower." : {
       "localizations" : {
         "pt" : {
@@ -7809,6 +8369,16 @@
         }
       }
     },
+    "Quick facts on countries, cities, mountains and rivers." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fatos rápidos sobre países, cidades, montanhas e rios."
+          }
+        }
+      }
+    },
     "Quick math" : {
       "localizations" : {
         "pt" : {
@@ -7845,6 +8415,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "RAM"
+          }
+        }
+      }
+    },
+    "RECENT PLUGINS" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PLUGINS RECENTES"
           }
         }
       }
@@ -8449,6 +9029,16 @@
         }
       }
     },
+    "Search plugins" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buscar plugins"
+          }
+        }
+      }
+    },
     "Searched ^[%lld source](inflect: true) · %@" : {
       "localizations" : {
         "en" : {
@@ -9001,6 +9591,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Em algum lugar do Boar Labs, uma pergunta está esperando."
+          }
+        }
+      }
+    },
+    "Somewhere in Plugins, a question is waiting." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Em algum lugar dos Plugins, uma pergunta está esperando."
           }
         }
       }
@@ -9599,6 +10199,16 @@
         }
       }
     },
+    "Switch them on or off, tap to open." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ligue ou desligue; toque num para abrir."
+          }
+        }
+      }
+    },
     "System" : {
       "localizations" : {
         "pt" : {
@@ -9619,6 +10229,16 @@
         }
       }
     },
+    "TRY IT" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "EXPERIMENTE"
+          }
+        }
+      }
+    },
     "Tactical Boar" : {
       "localizations" : {
         "pt" : {
@@ -9635,6 +10255,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Toque ou segure um endereço para copiar. Nada abre a partir desta página."
+          }
+        }
+      }
+    },
+    "Tap to ask it in a new chat. Hold to edit it first." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toque para perguntar numa nova conversa. Segure para editar antes."
           }
         }
       }
@@ -9775,6 +10405,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "O benchmark falhou: %@"
+          }
+        }
+      }
+    },
+    "The capital of Kenya is Nairobi.\n\nSource: Wikidata (CC0), offline table as of 2026-10-06." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The capital of Kenya is Nairobi.\n\nSource: Wikidata (CC0), offline table as of 2026-10-06."
           }
         }
       }
@@ -10045,6 +10685,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Depois, funciona em modo avião: o BOAR responde com a biblioteca do seu %@ e mostra os artigos que usou."
+          }
+        }
+      }
+    },
+    "These plugins are now on: %@. Turn them off in Plugins, in the menu." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estes plugins agora estão ligados: %@. Desligue nos Plugins, no menu."
           }
         }
       }
@@ -10410,6 +11060,16 @@
         }
       }
     },
+    "Tonight's moon phase, and the next full and new moon." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A fase da lua hoje, e a próxima lua cheia e nova."
+          }
+        }
+      }
+    },
     "Too big" : {
       "localizations" : {
         "pt" : {
@@ -10586,6 +11246,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tente perguntar sobre algo que seus arquivos dizem, com as palavras deles, ou peça um resumo dos seus arquivos."
+          }
+        }
+      }
+    },
+    "Turn off" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desligar"
+          }
+        }
+      }
+    },
+    "Turn off the carbon monoxide safety card?" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desligar o cartão de segurança do monóxido de carbono?"
           }
         }
       }
@@ -10820,6 +11500,16 @@
         }
       }
     },
+    "Vitals" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vitals"
+          }
+        }
+      }
+    },
     "Void Boar" : {
       "localizations" : {
         "pt" : {
@@ -10876,6 +11566,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Minguante gibosa"
+          }
+        }
+      }
+    },
+    "Watch your %@ work: heat, battery, cores and memory." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Veja o %@ trabalhar: calor, bateria, núcleos e memória."
           }
         }
       }
@@ -10986,6 +11686,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Quanto é 30 °C em Fahrenheit?"
+          }
+        }
+      }
+    },
+    "What is the capital of Kenya?" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "What is the capital of Kenya?"
           }
         }
       }
@@ -11277,6 +11987,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Você"
+          }
+        }
+      }
+    },
+    "You ask" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Você pergunta"
           }
         }
       }
@@ -11641,6 +12361,16 @@
         }
       }
     },
+    "height, length, depth; which of two places is bigger, higher, longer or has more people" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "altura, comprimento, profundidade; qual de dois lugares é maior, mais alto, mais longo ou tem mais gente"
+          }
+        }
+      }
+    },
     "hot: %@ may slow it down" : {
       "localizations" : {
         "pt" : {
@@ -11920,6 +12650,16 @@
         }
       }
     },
+    "population, area, capital, currency, languages, continent, borders" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "população, área, capital, moeda, línguas, continente, fronteiras"
+          }
+        }
+      }
+    },
     "reference source found" : {
       "localizations" : {
         "pt" : {
@@ -12014,6 +12754,16 @@
         }
       }
     },
+    "when a monument was built, plugs and voltage, where an event happened, who won a prize in a year" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "quando um monumento foi construído, tomadas e voltagem, onde um evento aconteceu, quem ganhou um prêmio num ano"
+          }
+        }
+      }
+    },
     "~%lld words (%lld tokens)" : {
       "localizations" : {
         "en" : {
@@ -12036,6 +12786,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Как долго нужно кипятить воду, чтобы она была безопасной?"
+          }
+        }
+      }
+    },
+    "“Did astronauts walk on the Moon before 1970?” → “No. Apollo 11 landed on the Moon on July 20, 1969.”" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“Astronautas pisaram na Lua antes de 1970?” → “Não. A Apollo 11 pousou na Lua em 20 de julho de 1969.”"
+          }
+        }
+      }
+    },
+    "“Yes. Apollo 11 landed on the Moon on July 20, 1969.” The answer’s own date says Yes, so Guard fixes the No." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“Sim. A Apollo 11 pousou na Lua em 20 de julho de 1969.” A própria data da resposta diz Sim, então o Guarda corrige o Não."
           }
         }
       }
@@ -12070,12 +12840,72 @@
         }
       }
     },
+    "• Answers from a Wikidata table kept on the phone, English only for now.\n• Two facts at once, a summary, a why or how, an ambiguous name (Georgia) or a health conversation go to the model.\n• An older population shows its year.\n• Every answer shows its source and date (Wikidata, October 2026).\n• Offline data from r4to (BOAR R&D)." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "• Responde com uma tabela da Wikidata guardada no celular, por enquanto só em inglês.\n• Dois fatos de uma vez, um resumo, um porquê ou como, um nome ambíguo (Georgia) ou uma conversa sobre saúde vão para o modelo.\n• Uma população antiga mostra o ano.\n• Toda resposta mostra a fonte e a data (Wikidata, outubro de 2026).\n• Dados offline do r4to (BOAR R&D)."
+          }
+        }
+      }
+    },
     "• Before or after a year: a No next to the answer's own first date that says Yes\n• Which is bigger, denser, taller or heavier, A or B: a winner the answer's own numbers in the same unit disagree with\n• Which are bigger than X: \"none\" next to \"X is the seventh-largest\"" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "• Antes ou depois de um ano: um Não ao lado da primeira data da própria resposta, que diz Sim\n• Qual é maior, mais denso, mais alto ou mais pesado, A ou B: um vencedor que os próprios números da resposta, na mesma unidade, desmentem\n• Quais são maiores que X: \"nenhum\" ao lado de \"X é o sétimo maior\""
+          }
+        }
+      }
+    },
+    "• Draws one illustration at a time on this %@, offline, from a few words, with Apple's Image Playground.\n• Some subjects are refused.\n• Pictures made here stay here: touch and hold one to share or delete it." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "• Desenha uma ilustração por vez neste %@, offline, com poucas palavras, usando o Image Playground da Apple.\n• Alguns temas são recusados.\n• As imagens feitas aqui ficam aqui: toque e segure uma para compartilhar ou apagar."
+          }
+        }
+      }
+    },
+    "• Guard waits for the answer to finish.\n• You see the model's text as it writes, then the fixed one.\n• It checks three things:\n• Before or after a year: the Yes or No against the answer's own first date.\n• Which is bigger, denser, taller or heavier: the winner against the answer's own numbers, in the same unit.\n• It adds the difference.\n• Which are bigger than X: “none” against the answer's own rank (“seventh-largest” means six).\n• It keeps the facts and rewrites only the verdict, dropping the model's own corrections and repeats.\n• Nothing is generated again.\n• When it isn't sure, it changes nothing: mixed units, overlapping ranges, a number that may belong to something else.\n• Never on health questions, instant answers or Deep Research.\n• The answer's details say Tool when it changed something.\n• English only.\n• Based on r4to's verdict guard (BOAR R&D)." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "• O Guarda espera a resposta terminar.\n• Você vê o texto do modelo enquanto ele escreve, depois o corrigido.\n• Ele confere três coisas:\n• Antes ou depois de um ano: o Sim ou Não contra a primeira data da própria resposta.\n• Qual é maior, mais denso, mais alto ou mais pesado: o vencedor contra os números da própria resposta, na mesma unidade.\n• Ele acrescenta a diferença.\n• Quais são maiores que X: “nenhum” contra a posição que a própria resposta dá (“sétimo maior” quer dizer seis).\n• Os fatos ficam; só o veredito é reescrito, sem as autocorreções e repetições do modelo.\n• Nada é gerado de novo.\n• Quando não tem certeza, não muda nada: unidades diferentes, faixas que se sobrepõem, um número que pode ser de outra coisa.\n• Nunca em perguntas de saúde, respostas instantâneas ou Pesquisa Profunda.\n• Os detalhes da resposta mostram Ferramenta quando ele mudou algo.\n• Só em inglês.\n• Baseado no verificador de veredito de r4to (BOAR R&D)."
+          }
+        }
+      }
+    },
+    "• Heat, battery, every core's load, memory and the chip BOAR runs on, read on this %@." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "• Calor, bateria, a carga de cada núcleo, a memória e o chip em que o BOAR roda, lidos neste %@."
+          }
+        }
+      }
+    },
+    "• It answers, without the model, when you plan to run a fuel-burning device indoors: a generator, a charcoal or gas grill, a camping stove or lantern, or a fuel heater in a home, garage, carport, basement, shed, tent or camper; an engine running in a garage; a gas oven or stove to heat a home; how far a generator must be from doors, windows and vents.\n• The answer is always the same reviewed text, with its sources (CDC, US CPSC, NHS) and an emergency number.\n• It starts with “No.” only when you ask whether you can do it.\n• Why it exists: small models told people a generator in a garage was fine with the door open.\n• Left to the model: electric heaters, installed and vented appliances, a propane stove in a kitchen.\n• Headaches, dizziness or an alarm going off are a health question, and BOAR answers them as one.\n• Questions in English, Portuguese or Spanish.\n• Based on r4to's CO hazard check (BOAR R&D)." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "• Ele responde, sem o modelo, quando você planeja usar um aparelho a combustível em lugar fechado: gerador, churrasqueira a carvão ou a gás, fogareiro ou lampião de camping, ou aquecedor a combustível dentro de casa, garagem, abrigo de carro, porão, depósito, barraca ou trailer; um motor ligado na garagem; forno ou fogão a gás para aquecer a casa; a distância de um gerador até portas, janelas e respiros.\n• A resposta é sempre o mesmo texto revisado, com as fontes (CDC, US CPSC, NHS) e um número de emergência.\n• Começa com “Não.” só quando você pergunta se pode fazer.\n• Por que existe: modelos pequenos disseram que um gerador na garagem estava ok com a porta aberta.\n• Ficam com o modelo: aquecedores elétricos, aparelhos instalados com saída para fora, um fogão a gás na cozinha.\n• Dor de cabeça, tontura ou um alarme tocando são pergunta de saúde, e o BOAR responde como tal.\n• Perguntas em inglês, português ou espanhol.\n• Baseado na verificação de CO de r4to (BOAR R&D)."
+          }
+        }
+      }
+    },
+    "• Points to magnetic north, worked out on this %@ with no internet.\n• True north is a few degrees off, depending on where you are; it would need your location, which BOAR doesn't ask for.\n• Hold the %@ flat." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "• Aponta para o norte magnético, calculado neste %@ sem internet.\n• O norte verdadeiro fica alguns graus ao lado, conforme onde você está; precisaria da sua localização, que o BOAR não pede.\n• Segure o %@ na horizontal."
           }
         }
       }
@@ -12100,12 +12930,52 @@
         }
       }
     },
+    "• Worked out from the date on this %@, with no internet and no location.\n• The hemisphere only changes which side looks lit.\n• Moonrise and moonset need your location, so they aren't shown." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "• Calculado pela data do %@, sem internet e sem localização.\n• O hemisfério só muda o lado que aparece iluminado.\n• Nascer e pôr da lua precisam da sua localização, por isso não aparecem."
+          }
+        }
+      }
+    },
+    "• Works from the 6,000 largest cities (GeoNames), using their coordinates.\n• Every answer is an estimate, not a route: no roads, borders, ferries or closures.\n• A place that is not one of those cities (a hotel, a beach, a small town) goes to the model.\n• A chat about health, an injury or danger goes to the model.\n• English only. Ported from r4to's travel distance (BOAR R&D)." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "• Usa as 6.000 maiores cidades (GeoNames) e as coordenadas delas.\n• Toda resposta é uma estimativa, não uma rota: sem estradas, fronteiras, balsas ou bloqueios.\n• Um lugar que não é uma dessas cidades (um hotel, uma praia, uma cidade pequena) vai para o modelo.\n• Uma conversa sobre saúde, ferimento ou perigo vai para o modelo.\n• Só em inglês. Adaptado do cálculo de distância do r4to (BOAR R&D)."
+          }
+        }
+      }
+    },
+    "• Works out the answer from the numbers in your question and shows the formula.\n• Converts miles, km, feet, inches, yards, kg, lb, ounces, US gallons and °C/°F: \"26 miles in km\".\n• Anything else goes to the model as usual.\n• It stays out of conversations about health, injuries, danger or people.\n• The answer's details say Tool when the calculator wrote it.\n• Word problems are English only. Ported from r4to's calculator (BOAR R&D)." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "• Calcula a resposta com os números da sua pergunta e mostra a fórmula.\n• Converte milhas, km, pés, polegadas, jardas, kg, libras, onças, galões americanos e °C/°F: \"26 milhas em km\".\n• O resto vai para o modelo, como sempre.\n• Fica de fora de conversas sobre saúde, ferimentos, perigo ou pessoas.\n• Os detalhes da resposta dizem Ferramenta quando foi a calculadora.\n• Problemas em texto só em inglês. Adaptado da calculadora do r4to (BOAR R&D)."
+          }
+        }
+      }
+    },
     "烧水需要多长时间才能安全饮用？" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "烧水需要多长时间才能安全饮用？"
+          }
+        }
+      }
+    },
+    "📎 %lld in the basket" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "📎 %lld na cesta"
           }
         }
       }

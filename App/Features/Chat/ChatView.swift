@@ -11,8 +11,8 @@ struct ChatView: View {
 
     @State private var input = ""
     @State private var showingTones = false
-    /// A lab's page opened from its toolbar badge.
-    @State private var openLab: OpenLab?
+    /// The header's plugins sheet (the icon beside New Chat).
+    @State private var showingPlugins = false
     @State private var openSource: ChatSource?
     /// The header's mascot shown full screen.
     @State private var showingMascot = false
@@ -83,11 +83,11 @@ struct ChatView: View {
         #endif
         .inlineNavigationTitle()
         .toolbar {
-            // The switched-on labs' badges (android HeaderBadge): Boar Press's 📎 n opens its page over the chat.
-            let badges = Labs.shared.active.compactMap { lab in lab.headerBadge(open: { openLab = OpenLab(id: lab.id) }).map { (lab.id, $0) } }
-            if !badges.isEmpty {
+            // One plugins icon (android `HeaderBadges`, t9 Nov 10): shown in every profile while a plugin is on or listed as
+            // off; a tap lists the last three used.
+            if Labs.shared.headerIconShown {
                 ToolbarItem(placement: .primaryAction) {
-                    HStack(spacing: 6) { ForEach(badges, id: \.0) { $0.1 } }
+                    Button("Plugins on", icon: Symbols.labs) { showingPlugins = true }
                 }
             }
             #if os(macOS)
@@ -118,16 +118,7 @@ struct ChatView: View {
             ConnectionSheet(online: model.connectivity.online, busy: chat.isAnswering, models: model.models,
                             onCatalog: openCatalog, onClose: { showingConnection = false })
         }
-        .sheet(item: $openLab) { open in
-            if let lab = Labs.shared.byId(open.id) {
-                NavigationStack {
-                    LabPage(lab: lab)
-                        .toolbar {
-                            ToolbarItem(placement: .confirmationAction) { Button("Done") { openLab = nil } }
-                        }
-                }
-            }
-        }
+        .sheet(isPresented: $showingPlugins) { PluginsSheet() }
         #if os(macOS)
         .inspector(isPresented: $showingSources) {
             SourceInspector(sources: inspectedSources, selected: $inspectedSource, technicalDetails: chat.technicalDetails)
@@ -268,9 +259,4 @@ struct ChatView: View {
         // The answer gets the whole screen: the keyboard closes on send.
         composerFocused = false
     }
-}
-
-/// A lab page shown over the chat, from its toolbar badge.
-private struct OpenLab: Identifiable {
-    let id: String
 }
