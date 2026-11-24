@@ -168,6 +168,10 @@ final class AppModel {
                 anyLabOn: LabDefaults.userChoseOn(labsOn: labs.labsOn, stored: labs.all.map { labs.enabled($0.id) }),
                 boarverseOn: services.vault.enabled)
             #if DEBUG
+            if let p = DebugLaunch.profile.flatMap(UserProfile.of) { services.settings.userProfile = p }
+            if DebugLaunch.profileNote { services.settings.profileNotePending = true }
+            #endif
+            #if DEBUG
             await DemoSeed.run(services: services)
             if let remote = DebugLaunch.remote {
                 services.backend = .remote

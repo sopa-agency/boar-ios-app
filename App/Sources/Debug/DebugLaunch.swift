@@ -10,6 +10,7 @@ import Foundation
 ///     -uiBasket YES      with -uiDemo, Boar Press's basket starts with the demo chats' answers
 ///     -uiDesigner YES    with -uiDemo, Boar Designer's gallery starts with three pictures
 ///     -uiStyle <id>      pick that answer style (succinct, detailed, personal, custom) on launch
+///     -uiProfile <id>    open Settings as that profile (simple, explorer, pro); -uiProfileNote YES shows the update toast
 ///     -uiTheme <id>      show that theme (system, or any palette id: campfire, moonlight, paper, tactical_red…) for this
 ///                        run, without saving it; a Boar Avatars theme needs -uiBoarverse YES
 ///     -uiDialog <name>   with -uiScreen settings, open a delete dialog: lower-<n> (Saved Chats to Keep n) or clear-history
@@ -38,6 +39,9 @@ enum DebugLaunch {
     static let dialog: String? = UserDefaults.standard.string(forKey: "uiDialog")
     /// `-uiTheme <id>`: the theme to show for this run (the stored choice is left alone).
     static let theme: String? = UserDefaults.standard.string(forKey: "uiTheme")
+    /// `-uiProfile <simple|explorer|pro>`: the profile to open with, and `-uiProfileNote YES` the one-time update note.
+    static let profile: String? = UserDefaults.standard.string(forKey: "uiProfile")
+    static let profileNote = UserDefaults.standard.bool(forKey: "uiProfileNote")
     /// `-uiAsk "<q1> || <q2>"`: questions asked in a new chat on launch, each after the previous answer ends.
     static let questions: [String] = (UserDefaults.standard.string(forKey: "uiAsk") ?? "")
         .components(separatedBy: " || ").map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }.filter { !$0.isEmpty }

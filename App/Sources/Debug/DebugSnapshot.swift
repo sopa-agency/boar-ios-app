@@ -1,7 +1,7 @@
 #if DEBUG && os(macOS)
 import AppKit
 
-/// `-uiSnapshot <seconds>` (Mac, DEBUG): after that many seconds, writes the app window's number to `ui-window.txt` in
+/// `-uiSnapshot <seconds>` (Mac, DEBUG): after that many seconds, writes the app window's number to `ui-window.txt` (and its content as `ui-window.png`) in
 /// the container's tmp folder, so `screencapture -l <number>` can capture just this window (even behind others, without
 /// bringing it to the front); quits 6 s later.
 @MainActor
@@ -55,6 +55,13 @@ enum DebugSnapshot {
                 try? await Task.sleep(for: .milliseconds(800))
                 let url = URL(filePath: NSTemporaryDirectory()).appending(path: "ui-window.txt")
                 try? "\(window.windowNumber)".write(to: url, atomically: true, encoding: .utf8)
+                // Without screen-recording permission (a build host with no display session) the window draws itself: a PNG
+                // of its frame (toolbar included) next to the number.
+                if let view = window.contentView?.superview ?? window.contentView, let rep = view.bitmapImageRepForCachingDisplay(in: view.bounds) {
+                    view.cacheDisplay(in: view.bounds, to: rep)
+                    try? rep.representation(using: .png, properties: [:])?
+                        .write(to: URL(filePath: NSTemporaryDirectory()).appending(path: "ui-window.png"))
+                }
             }
             try? await Task.sleep(for: .seconds(6))
             NSApp.terminate(nil)

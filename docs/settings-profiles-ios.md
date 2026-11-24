@@ -38,6 +38,12 @@ the removed Tour does differently, and what the Plugins work (BOAR-53) must fini
 - **The longer note** of Experimental says "in Boar Labs" where Android says "in Plugins" and "Some start on".
 - **Guide .md files** are not touched here: PR #61 carries the v2.0.0 guide text.
 
+- **Screenshots come from the Mac build** (`shots/b52-*.png`, not committed): the llama.xcframework has no iOS simulator slice
+  (`scripts/build-llama-xcframework.sh` needs 25 GiB free) and the build host has no display session, so `screencapture` fails.
+  `-uiSnapshot` now also writes the window frame (toolbar included) as `ui-window.png` through `cacheDisplay`, and
+  `-uiProfile <simple|explorer|pro>` / `-uiProfileNote YES` open Settings as a profile or with the update toast (DEBUG).
+  Glass materials (the toast's background) don't render in that capture.
+
 ## What BOAR-53 must finish
 
 - The Plugins list, switches and pages, and the name: Android says "Plugins" and "Experimental > Open the Plugins"; iOS still says
