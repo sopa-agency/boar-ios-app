@@ -65,8 +65,10 @@ public enum TableLines {
                 var j = i + 2
                 while j < lines.count, matchesWhole(row, lines[j]) {
                     let inner = trim(trim(Array(lines[j].unicodeScalars), where: isWhitespace).map { $0 }, where: { $0 == "|" })
-                    let cells = inner.split(separator: "|", omittingEmptySubsequences: false)
-                        .map { string(trim(Array($0), where: isWhitespace)) }.filter { !$0.isEmpty }
+                    // An empty cell keeps its place as "—" (validator P-C5: a blank result read as the range).
+                    let raw = inner.split(separator: "|", omittingEmptySubsequences: false)
+                        .map { string(trim(Array($0), where: isWhitespace)) }
+                    let cells = raw.allSatisfy(\.isEmpty) ? [] : raw.map { $0.isEmpty ? "—" : $0 }
                     if !cells.isEmpty {
                         switch cells.count {
                         case 1: out.append(cells[0])

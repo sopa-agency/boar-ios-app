@@ -147,11 +147,15 @@ struct SessionsSidebar: View {
             Button("Cancel", role: .cancel) {}
             Button("Rename") { rename(session) }
         }
+        #if os(macOS)
+        // On the Mac the dialog is a sheet on the window, and the Delete key or the Chat menu can ask for a chat whose row
+        // isn't in the list (filtered out by the search, or scrolled away): it hangs on the list there.
         .confirmationDialog("Delete this chat?", item: $deleting, titleVisibility: .visible) { session in
             Button("Delete", role: .destructive) { delete(session) }
         } message: { session in
-            Text("\"\(session.title)\" and its messages are deleted from this \(Platform.deviceNoun).")
+            deleteMessage(session)
         }
+        #endif
     }
 
     /// One chat's row: a tap opens it; a swipe or a long press has Rename and Delete (android ChatList's long-press menu; its
@@ -162,9 +166,12 @@ struct SessionsSidebar: View {
             // A swipe and then a tap on its Delete are already deliberate: no dialog after them (Biel, BOAR-58). No full
             // swipe, which would delete on one long drag. Android's one-tap trash icon is what "Ask Before Deleting a
             // Chat" guards; here it guards the context menu and the Mac's Delete key. Every delete waits for Undo.
+            // The chat BOAR is answering can't be deleted (android BoarDrawer). A swipe action doesn't look disabled, so it is
+            // left out rather than shown red and dead (Biel, iPhone test 2026-11-24).
             .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                Button("Delete", icon: Symbols.delete, role: .destructive) { delete(session) }
-                    .disabled(isAnswering(in: session))
+                if !isAnswering(in: session) {
+                    Button("Delete", icon: Symbols.delete, role: .destructive) { delete(session) }
+                }
                 Button("Rename", systemImage: "pencil") { startRename(session) }
             }
             .contextMenu {
@@ -172,7 +179,26 @@ struct SessionsSidebar: View {
                 Button("Delete", icon: Symbols.delete, role: .destructive) { askDelete(session) }
                     .disabled(isAnswering(in: session))
             }
+            #if !os(macOS)
+            // On the row, not the list: on iPhone the dialog is a popover whose arrow points at what it is attached to. Only
+            // the row's own context menu asks for it here, so the row is on screen.
+            .confirmationDialog("Delete this chat?", isPresented: deleteAsked(session), titleVisibility: .visible) {
+                Button("Delete", role: .destructive) { delete(session) }
+            } message: {
+                deleteMessage(session)
+            }
+            #endif
     }
+
+    private func deleteMessage(_ session: ChatSession) -> Text {
+        Text("\"\(session.title)\" and its messages are deleted from this \(Platform.deviceNoun).")
+    }
+
+    #if !os(macOS)
+    private func deleteAsked(_ session: ChatSession) -> Binding<Bool> {
+        Binding(get: { deleting?.id == session.id }, set: { if !$0, deleting?.id == session.id { deleting = nil } })
+    }
+    #endif
 
     #if os(macOS)
     private func handle(_ request: SidebarRequest?) {

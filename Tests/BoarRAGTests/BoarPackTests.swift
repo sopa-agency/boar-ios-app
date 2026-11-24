@@ -129,6 +129,20 @@ import Testing
         #expect(!BoarPack.isBoarSource("BOAR Guide notes.pdf"))
     }
 
+    /// Validator P-D1 (t9 0435): the FAQ said Succinct & Direct was the default; the code and the guide say Thorough & Detailed.
+    @Test func theFaqAndTheGuideNameTheCodesDefaultAnswerStyleEnAndPt() throws {
+        let services = try String(contentsOf: Fixtures.root.appending(path: "App/Sources/Services/BoarServices.swift"), encoding: .utf8)
+        let id = try #require(services.firstMatch(of: /defaultPersonalityId = "(\w+)"/)?.output.1)
+        let names = try #require(["detailed": ("Thorough & Detailed", "Completo e detalhado"), "succinct": ("Succinct & Direct", "Sucinto e direto")][String(id)])
+        let styles = all.filter { $0.id.contains("-faq-") && ($0.title.contains("way BOAR answers") || $0.title.contains("jeito de o BOAR")) }
+        let en = try #require(styles.filter { $0.lang == "en" }.first).body, pt = try #require(styles.filter { $0.lang == "pt" }.first).body
+        #expect(styles.count == 2)
+        #expect(en.contains("\(names.0) explains in depth and is the default"), "\(en)")
+        #expect(pt.contains("\(names.1) explica com mais profundidade e é o padrão"), "\(pt)")
+        #expect(guides["en"]!.contains("\(names.0): full explanations. This is the default."))
+        #expect(guides["pt"]!.range(of: "\(names.1): explicações completas. É o padrão.", options: .caseInsensitive) != nil)
+    }
+
     @Test func javaStringHashCodeMatches() {
         #expect(BoarPack.javaHash("hello") == 99162322)
         #expect(BoarPack.javaHash("") == 0)
