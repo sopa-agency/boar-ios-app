@@ -1,4 +1,4 @@
-# Boar Labs on iOS
+# Plugins on iOS (formerly Boar Labs)
 
 Where each Android lab stands on iOS (2026-11-05), and what the rest would take. Android's labs live in
 `app/src/labs/plugins/<id>` (one folder per lab, `plugin.properties` for id, order and status); the iOS labs are
@@ -9,16 +9,16 @@ Where each Android lab stands on iOS (2026-11-05), and what the rest would take.
 
 | Lab | Android id | Slot | Engine (iOS) | Tests |
 |---|---|---|---|---|
-| Boar Press | `printer` | page, answer menu, chat toolbar | `BoarAnswer/Labs/Basket` (Basket, Press), `PressPDF`, `BoarAnswer/Chat/ChatExport` | `BasketTests`, `PressPDFTests` (PressSelfTest's baskets), `ChatExportTests` |
-| Boar Vitals | `pulse` | page | `BoarCore/CoreLoad`, thermal state, footprint | `CoreLoadTests` (Android has none) |
-| Boar Nomad | `compass` | page | `BoarAnswer/Labs/CompassMath`, sensor: Core Motion | `CompassMathTests` (Android has none) |
-| Boar Lunar | `lunar` | page | `BoarAnswer/Labs/MoonPhase` | `MoonPhaseTests` (Android has none) |
-| Boar Polyglot | `polyglot` | tool | `BoarRouting/LanguageGate`, detector: NaturalLanguage | `LanguageGateTests` |
-| Boar Calculator | `calc` | tool | `BoarRouting/Arithmetic`, `NumGuard`, `CalcShortcut` | `ArithmeticTests`, `NumGuardTests` |
-| Boar Distance | `distance` | tool | `BoarRouting/TravelDistance` | `TravelDistanceTests` |
-| Boar Facts | `facts` | tool + search stage (two or more countries: the table's dated figures as one more source, `SearchStages`) | `BoarAnswer/Labs/Facts` | `FactsTests`, `FactsCountryContextTests` |
-| Boar Guard | `guard` | check | `BoarRouting/VerdictGuard` | `VerdictGuardTests` |
-| Boar Cohazard | `cohazard` | tool (first) | `BoarRouting/CoHazard` | `CoHazardTests`, `CoHazardPtEsTests` |
+| Press | `printer` | page, answer menu, chat toolbar | `BoarAnswer/Labs/Basket` (Basket, Press), `PressPDF`, `BoarAnswer/Chat/ChatExport` | `BasketTests`, `PressPDFTests` (PressSelfTest's baskets), `ChatExportTests` |
+| Vitals | `pulse` | page | `BoarCore/CoreLoad`, thermal state, footprint | `CoreLoadTests` (Android has none) |
+| Nomad | `compass` | page | `BoarAnswer/Labs/CompassMath`, sensor: Core Motion | `CompassMathTests` (Android has none) |
+| Lunar | `lunar` | page | `BoarAnswer/Labs/MoonPhase` | `MoonPhaseTests` (Android has none) |
+| Polyglot | `polyglot` | tool | `BoarRouting/LanguageGate`, detector: NaturalLanguage | `LanguageGateTests` |
+| Calculator | `calc` | tool | `BoarRouting/Arithmetic`, `NumGuard`, `CalcShortcut` | `ArithmeticTests`, `NumGuardTests` |
+| Distance | `distance` | tool | `BoarRouting/TravelDistance` | `TravelDistanceTests` |
+| Facts | `facts` | tool + search stage (two or more countries: the table's dated figures as one more source, `SearchStages`) | `BoarAnswer/Labs/Facts` | `FactsTests`, `FactsCountryContextTests` |
+| Guard | `guard` | check | `BoarRouting/VerdictGuard` | `VerdictGuardTests` |
+| Cohazard | `cohazard` | tool (first) | `BoarRouting/CoHazard` | `CoHazardTests`, `CoHazardPtEsTests` |
 | Daily Quiz | `dailyQuiz` | page, behind its classified tile | `BoarRAG/DailyQuiz`, `KnowledgeBase.seedArticles`, `BoarCore/KotlinRandom` | `DailyQuizTests`, `KotlinRandomTests` |
 
 All of them together: `LabToolsCombinationTests` and `LabToolsCompoundTests` (Android's, with `Fixtures/labs`).
@@ -26,6 +26,23 @@ All of them together: `LabToolsCombinationTests` and `LabToolsCompoundTests` (An
 Sanctuary and Signboard are classified teasers on Android too (no code behind them); iOS shows the same tiles.
 
 Differences from Android, on purpose:
+
+- **Plugins rename and BOAR-53 (2026-11-24, against v2.0.0):** user-facing "Labs" is "Plugins" and no plugin name starts with "Boar" (ids and
+  classes keep `Lab`). Every difference below is deliberate:
+  - Designer starts off (`LabDefaults.startsOffHere = ["image"]`): Image Playground needs Apple Intelligence, so it isn't on by default.
+  - Polyglot is deprecated (`LabDefaults.deprecated`): out of the list, never active.
+  - Tiles, the classified teasers, status tags, the easter egg and Daily Quiz are hidden (`PluginsUi`, as Android hides tiles and teasers);
+    the list is the only view.
+  - Lunar, Nomad and Vitals have no example or Try rows and no "ask in the chat" bullet until plugins answer in the chat (separate PR).
+  - Press and Designer have no canvas toolbar, gear or "..." menu (Press is rebuilt later). `LabPlugin.fullPage` exists, unused.
+  - Press's about text and body are iOS-specific (no projects); Designer's "How it works" is about Image Playground.
+  - A Try row's long press is a context menu (ask, edit in the box, copy).
+  - From the header sheet a plugin page opens as a push inside the sheet, with Done instead of Android's close; Press's basket count shows only in
+    the sheet row.
+  - Selected plugin pages are opened from a plugin answer's picture and name through `AppModel.openPlugin` (a root sheet).
+- **No release manifest (decision):** Android's `released.txt` hides plugins that exist in code but aren't released. Every iOS plugin that exists
+  ships, and the ones that don't (Big Boar, Wisp, Canvas/Cards, Sanctuary, Signboard) have no code, so iOS needs no manifest; `LabDefaults`'s
+  deprecated and start-off sets plus `PluginsUi` are the only gates. Revisit if a plugin lands in code before it's meant to ship.
 
 - **Daily Quiz:** right answers and days played count for Boar Avatars, and the copy says so, as on Android. The draw goes through `KotlinRandom` (Kotlin's
   XorWowRandom, `nextInt`, `shuffle`) so both phones get the same quiz for the same date and library; written from the
