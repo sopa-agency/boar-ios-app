@@ -31,14 +31,21 @@ private struct MacSettingsTabs: View {
     }
 
     var body: some View {
+        let profile = bridge.read { $0.userProfile }
         TabView {
             Tab("General", systemImage: "gearshape") {
                 BoarForm {
-                    SettingsToneSection(services: services, bridge: bridge)
-                    SettingsMemorySection(services: services, bridge: bridge)
-                    SettingsDisplaySection(bridge: bridge)
-                    SettingsAvatarsSection(vault: services.vault)
-                    SettingsVoiceSection(bridge: bridge)
+                    if SettingsPart.profile.shown(in: profile) {
+                        Section {
+                            MacProfileRow(bridge: bridge, profile: profile)
+                        } header: {
+                            BoarHeader { Text("Profile") }
+                        }
+                    }
+                    if SettingsPart.tone.shown(in: profile) { SettingsToneSection(services: services, bridge: bridge) }
+                    if SettingsPart.memory.shown(in: profile) { SettingsMemorySection(services: services, bridge: bridge) }
+                    SettingsDisplaySection(bridge: bridge, profile: profile)
+                    if SettingsPart.voice.shown(in: profile) { SettingsVoiceSection(bridge: bridge) }
                 }
                 .formStyle(.grouped)
                 .frame(width: 600, height: 620)
@@ -51,17 +58,26 @@ private struct MacSettingsTabs: View {
                 .formStyle(.grouped)
                 .frame(width: 600, height: 380)
             }
-            Tab("Advanced", systemImage: "gearshape.2") {
-                AdvancedSettingsScreen(services: services, bridge: bridge)
+            if LabsBuild.experimental && SettingsPart.experimentalShown(in: profile) {
+                Tab("Experimental", systemImage: "flask") {
+                    BoarForm {
+                        SettingsExperimentalSection(services: services, bridge: bridge, profile: profile)
+                    }
                     .formStyle(.grouped)
-                    .frame(width: 600, height: 620)
+                    .frame(width: 600, height: 520)
+                }
             }
-            Tab("Storage", systemImage: "internaldrive") {
-                DeviceInfoScreen(services: services)
-                    .formStyle(.grouped)
-                    .frame(width: 600, height: 480)
-            }
-            if bridge.read({ $0.showLiveStats }) {
+            if SettingsPart.tweaks.shown(in: profile) {
+                Tab("Advanced", systemImage: "gearshape.2") {
+                    AdvancedSettingsScreen(services: services, bridge: bridge)
+                        .formStyle(.grouped)
+                        .frame(width: 600, height: 620)
+                }
+                Tab("Storage", systemImage: "internaldrive") {
+                    DeviceInfoScreen(services: services)
+                        .formStyle(.grouped)
+                        .frame(width: 600, height: 480)
+                }
                 Tab("Engine", systemImage: "slider.horizontal.3") {
                     EngineTweaksScreen(services: services, bridge: bridge)
                         .formStyle(.grouped)
@@ -71,6 +87,25 @@ private struct MacSettingsTabs: View {
         }
         .onChange(of: bridge.version) {
             Task { await model.chat?.refreshSettings() }
+        }
+    }
+}
+
+/// The profile pills as a row of the General tab. A pick has no toast here: the line it would say sits under the pills.
+private struct MacProfileRow: View {
+    let bridge: SettingsBridge
+    let profile: UserProfile
+
+    var body: some View {
+        HStack {
+            ProfilePills(profile: profile) { p in
+                bridge.settings.userProfile = p
+                bridge.touch()
+            }
+            Spacer()
+            Text(verbatim: ProfileCopy.gives(profile))
+                .boarText("ui.subtext")
+                .foregroundStyle(.boar(.muted))
         }
     }
 }

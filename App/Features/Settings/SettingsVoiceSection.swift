@@ -1,7 +1,8 @@
 import BoarAppleAI
 import SwiftUI
 
-/// Voice: dictation in the chat, and the one-time English speech model download when iOS needs it.
+/// Language and voice (android: one section): the language follows the system, so this carries only a note about it; then
+/// dictation in the chat, and the one-time English speech model download when iOS needs it.
 struct SettingsVoiceSection: View {
     let bridge: SettingsBridge
     @State private var state: VoiceAssetState?
@@ -39,11 +40,12 @@ struct SettingsVoiceSection: View {
             }
         } header: {
             BoarHeader {
-                Text("Voice")
+                Text("Language & Voice")
             }
         } footer: {
             BoarFooter {
                 VStack(alignment: .leading) {
+                    Text("BOAR's language follows the one set for it in your \(Platform.deviceNoun)'s Settings.")
                     if state == .unsupported {
                         Text("Dictation isn't available on this \(Platform.deviceNoun).")
                     } else {

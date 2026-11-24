@@ -2,7 +2,7 @@ import BoarAnswer
 import BoarCore
 import SwiftUI
 
-/// Chats: automatic titles and how many saved chats to keep.
+/// Chats (android's memory section): titles, long chats' older turns, how many saved chats to keep, and clearing them.
 struct SettingsMemorySection: View {
     @Environment(AppModel.self) private var model
     let services: BoarServices
@@ -26,9 +26,21 @@ struct SettingsMemorySection: View {
 
     var body: some View {
         Section {
+            // The switches together, the choices under them (android ffaf3352).
             Toggle(isOn: bridge.binding({ $0.autoGenerateTitles }, { $0.autoGenerateTitles = $1 })) {
                 SettingsLabel("Generate Chat Titles", symbol: "character.cursor.ibeam")
             }
+            Toggle(isOn: bridge.binding({ $0.autoSummarize }, { $0.autoSummarize = $1 })) {
+                SettingsLabel("Summarize Older Turns", symbol: "text.append")
+            }
+            Toggle(isOn: bridge.binding({ $0.confirmChatDelete }, { $0.confirmChatDelete = $1 })) {
+                SettingsLabel("Ask Before Deleting a Chat", symbol: "trash.fill")
+            }
+            Stepper(value: bridge.binding({ $0.historyTurnThreshold }, { $0.historyTurnThreshold = $1 }), in: 2...12, step: 2) {
+                Text("Keep \(bridge.read { $0.historyTurnThreshold }) Recent Turns")
+                    .monospacedDigit()
+            }
+            .disabled(!bridge.read { $0.autoSummarize })
             Picker(selection: limit) {
                 Text("All Chats").tag(AppSettings.keepAllChats)
                 ForEach([5, 10, 25, 50], id: \.self) { Text(verbatim: "\($0)").tag($0) }
@@ -36,16 +48,14 @@ struct SettingsMemorySection: View {
                 SettingsLabel("Saved Chats to Keep", symbol: "tray.full.fill")
             }
             .pickerStyle(.menu)
-            Toggle(isOn: bridge.binding({ $0.confirmChatDelete }, { $0.confirmChatDelete = $1 })) {
-                SettingsLabel("Ask Before Deleting a Chat", symbol: "trash.fill")
-            }
+            SettingsClearChatsRows(services: services)
         } header: {
             BoarHeader {
                 Text("Chats")
             }
         } footer: {
             BoarFooter {
-                Text("New chats are named from your first message. BOAR keeps every chat unless you set a limit; then it asks before it deletes your oldest ones. Off, one tap deletes a chat.")
+                Text("Long chats keep their context: older turns are condensed and the most recent ones stay word for word. New chats are named from your first message. BOAR keeps every chat unless you set a limit; then it asks before it deletes your oldest ones. Off, one tap deletes a chat.")
             }
         }
         .task {

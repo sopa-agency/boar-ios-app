@@ -28,6 +28,12 @@ struct SettingsToneSection: View {
                 TextField("Write your own instructions…", text: bridge.binding({ $0.customSystemPrompt ?? "" }, { $0.customSystemPrompt = $1 }), axis: .vertical)
                     .lineLimit(3...8)
             }
+            Picker(selection: bridge.binding({ AnswerLength(tokens: $0.maxTokensChoice) }, { $0.maxTokensChoice = $1.tokens })) {
+                ForEach(AnswerLength.allCases) { Text($0.title).tag($0) }
+            } label: {
+                SettingsLabel("Answer Length", symbol: "text.alignleft")
+            }
+            .pickerStyle(.menu)
             Toggle(isOn: bridge.binding({ $0.deepResearchMode }, { $0.deepResearchMode = $1 })) {
                 SettingsLabel("Deep Research", symbol: Symbols.deepResearch)
             }
@@ -39,18 +45,9 @@ struct SettingsToneSection: View {
             BoarFooter {
                 VStack(alignment: .leading) {
                     Text("\(personalities.get(id).displayDescription) Deep Research splits your question into parts. Slower.")
-                    if let missing = missingSearchModel {
-                        Label("The search model (\(missing)) isn't on this \(Platform.deviceNoun), so answers can't use your library. Run Setup Again in Advanced.", icon: Symbols.caution)
-                            .foregroundStyle(.boar(.warning))
-                    }
+                    Text("Auto fits the answer style (up to \(AppSettings.autoMaxTokens(personalityId: bridge.read { $0.personalityId }, deepResearch: bridge.read { $0.deepResearchMode })) tokens now).")
                 }
             }
         }
-    }
-
-    /// The embedding model's friendly name when it is missing.
-    private var missingSearchModel: String? {
-        guard let emb = services.catalog.models.first(where: { $0.kind == .embedding }), !services.isPresent(emb) else { return nil }
-        return emb.friendlyName
     }
 }

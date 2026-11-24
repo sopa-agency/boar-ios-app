@@ -162,6 +162,11 @@ final class AppModel {
             // BOAR's guide and FAQ into the index (a no-op once this build's passages are there).
             Task.detached(priority: .utility) { _ = await services.syncBoarPack() }
             Self.migrateTechnicalDetails(services)
+            // The install's profile, once: from what the user changed (a lab counts only while Boar Labs is on).
+            let labs = Labs.shared
+            services.settings.settleProfile(
+                anyLabOn: LabDefaults.userChoseOn(labsOn: labs.labsOn, stored: labs.all.map { labs.enabled($0.id) }),
+                boarverseOn: services.vault.enabled)
             #if DEBUG
             await DemoSeed.run(services: services)
             if let remote = DebugLaunch.remote {
