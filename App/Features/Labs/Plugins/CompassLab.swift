@@ -15,8 +15,8 @@ struct CompassLab: LabPlugin {
     let emoji = "🧭"
     let art: String? = "truffle_nomad"
     let status = LabStatus.alpha
-    var title: String { String(localized: "Boar Nomad") }
-    var body: String { String(localized: "A compass from the \(Platform.deviceNoun)'s own sensors, offline, no location needed.") }
+    var title: String { String(localized: "Nomad") }
+    var body: String { String(localized: "A compass from your \(Platform.deviceNoun)'s sensors. No location needed.") }
 
     func content() -> AnyView { AnyView(CompassSections()) }
 
@@ -119,12 +119,9 @@ private struct CompassSections: View {
                     }
                 }
             }
-            Section {
-            } footer: {
-                BoarFooter {
-                    Text("Points to magnetic north, worked out on this \(Platform.deviceNoun) with no internet. True north differs by a few degrees depending on where you are; it would need your location, which BOAR doesn't ask for. Hold the \(Platform.deviceNoun) flat.")
-                }
-            }
+            // The tool first, the template's fold under it, with no summary. Android's last line (ask it in the chat) waits
+            // for the plugin answers port.
+            PluginPage(how: String(localized: "• Points to magnetic north, worked out on this \(Platform.deviceNoun) with no internet.\n• True north is a few degrees off, depending on where you are; it would need your location, which BOAR doesn't ask for.\n• Hold the \(Platform.deviceNoun) flat."))
         }
         .onAppear { reader.start() }
         .onDisappear { reader.stop() }

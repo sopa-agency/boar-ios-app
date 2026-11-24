@@ -14,8 +14,8 @@ struct CoHazardLab: LabPlugin {
     let emoji = "⚠️"
     let art: String? = "lab_cohazard"
     let status = LabStatus.beta
-    var title: String { String(localized: "Boar Cohazard") }
-    var body: String { String(localized: "A fixed carbon monoxide safety answer when you plan to run a fuel-burning device indoors, without the model.") }
+    var title: String { String(localized: "Cohazard") }
+    var body: String { String(localized: "A fixed safety answer about carbon monoxide indoors.") }
     var answerTool: (any AnswerTool)? { Tool() }
 
     struct Tool: AnswerTool {
@@ -25,23 +25,27 @@ struct CoHazardLab: LabPlugin {
     }
 
     func content() -> AnyView {
-        AnyView(Group {
-            Section {
-                Text("• A generator, charcoal or gas grill, camping stove or lantern, or fuel heater in a home, garage, carport, basement, shed, tent or camper\n• A car or other engine left running in a garage\n• Heating a home with a gas oven or stove\n• How far a generator must be from doors, windows and vents")
-            } header: {
-                Text(LocalizedStringResource("labs.answersOnItsOwn.m", defaultValue: "Answers on its own", comment: "Header; PT is masculine (Boar Fatos, Boar Distância)"))
-            }
-            Section {
-                LabExample("Can I run my portable generator in the attached garage if I keep the door open?")
-                LabExample("Is it safe to use a camping stove inside the tent to cook?")
-                LabExample("Can we bring the propane heater into the camper overnight?")
-            } header: {
-                Text("Try")
-            } footer: {
-                BoarFooter {
-                    Text("The answer is always the same reviewed text, with its sources (CDC, US CPSC, NHS) and an emergency number line; it starts with No. only when you ask whether you can do it. Small models told people a generator in a garage was fine with the door open. Electric heaters, installed and vented appliances and a propane stove in a kitchen are left to the model. A message about headaches, dizziness or an alarm going off is a health question and goes to the model as one. Ported from r4to's CO hazard check (BOAR R&D).")
-                }
-            }
-        })
+        AnyView(CoHazardPage())
+    }
+}
+
+/// A safety page: what to do now comes first, in amber, before the example (android CoHazardLab).
+private struct CoHazardPage: View {
+    @Environment(\.palette) private var palette
+
+    var body: some View {
+        Section {
+            Text(verbatim: "⚠ " + String(localized: "Headache, dizziness, nausea or confusion near a fuel-burning device, or a CO alarm going off, even without symptoms? Get everyone into fresh air now and call emergency services."))
+                .font(.boar("ui.body").weight(.semibold))
+                .foregroundStyle(.boar(.warning))
+                .listRowBackground(Color(palette.amberBgSubtle))
+        }
+        AnswerPage(
+            question: String(localized: "Can I run my portable generator in the attached garage if I keep the door open?"),
+            reply: String(localized: "No. Carbon monoxide (CO) from a generator […] is a poison you can't see or smell, and it can kill in minutes. Never run them inside a home, garage, carport, basement, shed, tent or camper, even with the doors or windows open: that is not enough ventilation. Run a generator outside only, at least 20 feet (6 metres) from any door, window or vent…"),
+            tries: [String(localized: "Can I run my portable generator in the attached garage if I keep the door open?"),
+                    String(localized: "Is it safe to use a camping stove inside the tent to cook?"),
+                    String(localized: "Can we bring the propane heater into the camper overnight?")],
+            how: String(localized: "• It answers, without the model, when you plan to run a fuel-burning device indoors: a generator, a charcoal or gas grill, a camping stove or lantern, or a fuel heater in a home, garage, carport, basement, shed, tent or camper; an engine running in a garage; a gas oven or stove to heat a home; how far a generator must be from doors, windows and vents.\n• The answer is always the same reviewed text, with its sources (CDC, US CPSC, NHS) and an emergency number.\n• It starts with “No.” only when you ask whether you can do it.\n• Why it exists: small models told people a generator in a garage was fine with the door open.\n• Left to the model: electric heaters, installed and vented appliances, a propane stove in a kitchen.\n• Headaches, dizziness or an alarm going off are a health question, and BOAR answers them as one.\n• Questions in English, Portuguese or Spanish.\n• Based on r4to's CO hazard check (BOAR R&D)."))
     }
 }

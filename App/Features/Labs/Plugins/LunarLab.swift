@@ -11,8 +11,8 @@ struct LunarLab: LabPlugin {
     let emoji = "🌕"
     let art: String? = "truffle_lunar"
     let status = LabStatus.alpha
-    var title: String { String(localized: "Boar Lunar") }
-    var body: String { String(localized: "The moon tonight and this month, offline: phase, lit share, the next full and new moon.") }
+    var title: String { String(localized: "Lunar") }
+    var body: String { String(localized: "Tonight's moon phase, and the next full and new moon.") }
 
     func content() -> AnyView { AnyView(LunarSections()) }
 
@@ -95,11 +95,8 @@ private struct LunarSections: View {
             }
             Section {
                 LunarMonth(now: now, offset: monthOffset, south: south) { monthOffset += $0 }
-            } footer: {
-                BoarFooter {
-                    Text("Worked out from the date on this \(Platform.deviceNoun), no internet and no location. The hemisphere only changes which side of the moon is lit. Moonrise and moonset need your location, so they are not shown.")
-                }
             }
+            PluginPage(how: String(localized: "• Worked out from the date on this \(Platform.deviceNoun), with no internet and no location.\n• The hemisphere only changes which side looks lit.\n• Moonrise and moonset need your location, so they aren't shown."))
         }
     }
 

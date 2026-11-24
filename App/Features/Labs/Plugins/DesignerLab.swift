@@ -15,7 +15,7 @@ struct DesignerLab: LabPlugin {
     let art: String? = "truffle_retrowave"
     /// Android's is BETA; this one hasn't drawn on a phone yet (none of the test phones has Apple Intelligence).
     let status = LabStatus.alpha
-    var title: String { String(localized: "Boar Designer") }
+    var title: String { String(localized: "Designer") }
     var body: String { String(localized: "Draw an illustration from a few words with Apple's Image Playground, on this \(Platform.deviceNoun).") }
 
     func content() -> AnyView { AnyView(DesignerSections()) }
@@ -108,6 +108,7 @@ private struct DesignerSections: View {
                 Text("On this \(Platform.deviceNoun)")
             }
         }
+        PluginPage(how: String(localized: "• Draws one illustration at a time on this \(Platform.deviceNoun), offline, from a few words, with Apple's Image Playground.\n• Some subjects are refused.\n• Pictures made here stay here: touch and hold one to share or delete it."))
     }
 }
 
@@ -167,10 +168,10 @@ private struct DesignerComposer: View {
 private struct DesignerUnavailable: View {
     var body: some View {
         Section {
-            Text("Boar Designer draws with Apple's Image Playground, which needs Apple Intelligence (an iPhone 15 Pro or later, or a Mac with Apple silicon) on iOS 18.4 or macOS 15.4 or later, turned on in Settings. It isn't available on this \(Platform.deviceNoun).")
+            Text("Designer draws with Apple's Image Playground, which needs Apple Intelligence (an iPhone 15 Pro or later, or a Mac with Apple silicon) on iOS 18.4 or macOS 15.4 or later, turned on in Settings. It isn't available on this \(Platform.deviceNoun).")
         } footer: {
             BoarFooter {
-                Text("On Android, Boar Designer draws with its own model. On iPhone and Mac it uses Apple's instead, so there is nothing to download.")
+                Text("On Android, Designer draws with its own model. On iPhone and Mac it uses Apple's instead, so there is nothing to download.")
             }
         }
     }

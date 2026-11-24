@@ -12,10 +12,8 @@ struct CalcLab: LabPlugin {
     let emoji = "🧮"
     let art: String? = "lab_calc"
     let status = LabStatus.beta
-    var title: String { String(localized: "Boar Calculator") }
-    var body: String {
-        String(localized: "Exact answers to a few everyday calculations (battery, fuel, hiking, currency, water, temperature, how long, how many), instantly and without the model. Plain sums and percentages still go to the model.")
-    }
+    var title: String { String(localized: "Calculator") }
+    var body: String { String(localized: "Exact answers to everyday sums: fuel, battery, currency and more. No model needed.") }
     var answerTool: (any AnswerTool)? { Tool() }
 
     struct Tool: AnswerTool {
@@ -25,24 +23,14 @@ struct CalcLab: LabPlugin {
     }
 
     func content() -> AnyView {
-        AnyView(Group {
-            Section {
-                Text("• A battery's watt-hours, and whether it can fly\n• Fuel economy: L/100 km and miles per gallon\n• Hiking time by Naismith's rule\n• Currency at the rate you give, with a tip\n• Water for a trip: people × days × litres\n• Temperature: Celsius and Fahrenheit\n• How long: an amount at a rate (MB at MB/s, km at km/h, pages per hour)\n• How many: containers, trips or buses for a total, rounded up")
-            } header: {
-                Text("Answers on its own")
-            }
-            Section {
-                LabExample("I have 23 L of water and 5 L jerrycans. How many jerrycans do I need?")
-                LabExample("How long to drive 240 miles at 60 mph?")
-                LabExample("My power bank is 5,000 mAh at 3.85 V. How many watt-hours is that, and can I take it on a plane?")
-            } header: {
-                Text("Try")
-            } footer: {
-                BoarFooter {
-                    Text("It works out the answer from the numbers in your question and shows the formula. Anything else goes to the model as usual. A message about health, an injury, danger or a person (or a chat that was) never gets a calculator answer. The answer's details say Tool when the calculator wrote it. Word problems are English only. Ported from r4to's calculator (BOAR R&D).")
-                }
-            }
-        })
+        AnyView(AnswerPage(
+            summary: String(localized: "Exact answers to everyday sums and unit conversions, with the formula. No model needed."),
+            question: String(localized: "My rental car uses 7.5 litres per 100 km. How much is that in US miles per gallon?"),
+            reply: String(localized: "7.5 L/100 km = 31.36 miles per gallon (US gallon). Formula: mpg = 235.215 ÷ L/100 km."),
+            tries: [String(localized: "I have 23 L of water and 5 L jerrycans. How many jerrycans do I need?"),
+                    String(localized: "How long to drive 240 miles at 60 mph?"),
+                    String(localized: "26 miles in km")],
+            how: String(localized: "• Works out the answer from the numbers in your question and shows the formula.\n• Converts miles, km, feet, inches, yards, kg, lb, ounces, US gallons and °C/°F: \"26 miles in km\".\n• Anything else goes to the model as usual.\n• It stays out of conversations about health, injuries, danger or people.\n• The answer's details say Tool when the calculator wrote it.\n• Word problems are English only. Ported from r4to's calculator (BOAR R&D).")))
     }
 }
 

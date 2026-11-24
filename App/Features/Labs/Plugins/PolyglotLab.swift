@@ -15,7 +15,7 @@ struct PolyglotLab: LabPlugin {
     let emoji = "🗣️"
     let art: String? = "lab_polyglot"
     let status = LabStatus.beta
-    var title: String { String(localized: "Boar Polyglot") }
+    var title: String { String(localized: "Polyglot") }
     var body: String { String(localized: "Says so at once when you ask in a language BOAR doesn't speak yet, instead of a confused answer.") }
     var answerTool: (any AnswerTool)? { Tool() }
 

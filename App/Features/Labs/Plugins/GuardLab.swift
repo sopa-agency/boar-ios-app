@@ -13,8 +13,8 @@ struct GuardLab: LabPlugin {
     let emoji = "🛡️"
     let art: String? = "lab_guard"
     let status = LabStatus.alpha
-    var title: String { String(localized: "Boar Guard") }
-    var body: String { String(localized: "Fixes a Yes, No or winner that the model's own figures or dates contradict, after it answers.") }
+    var title: String { String(localized: "Guard") }
+    var body: String { String(localized: "Fixes a yes, no or winner that the model's own numbers contradict.") }
     var answerCheck: (any AnswerCheck)? { Check() }
 
     struct Check: AnswerCheck {
@@ -24,23 +24,13 @@ struct GuardLab: LabPlugin {
     }
 
     func content() -> AnyView {
-        AnyView(Group {
-            Section {
-                Text("• Before or after a year: a No next to the answer's own first date that says Yes\n• Which is bigger, denser, taller or heavier, A or B: a winner the answer's own numbers in the same unit disagree with\n• Which are bigger than X: \"none\" next to \"X is the seventh-largest\"")
-            } header: {
-                Text("Checks")
-            }
-            Section {
-                LabExample("Did astronauts walk on the Moon before 1970?")
-                LabExample("Which is more densely populated, Japan or Germany, and by how much?")
-                LabExample("Which countries are bigger than India by area?")
-            } header: {
-                Text("Try")
-            } footer: {
-                BoarFooter {
-                    Text("It only reads the finished answer, so you see the model's text while it is written and the fixed one when it ends. The facts stay and the wrong verdict is rewritten from them, with the model's own corrections and restatements removed; nothing is generated again. It leaves the answer alone when it isn't sure: mixed units, overlapping ranges, a number that may belong to something else. Never on health questions, instant answers or Deep Research. The answer's details say Tool when it changed something. English only. Ported from r4to's verdict guard (BOAR R&D).")
-                }
-            }
-        })
+        AnyView(PluginPage(
+            summary: String(localized: "Guard checks a finished answer against its own numbers and fixes a Yes, No or winner that they contradict."),
+            before: String(localized: "“Did astronauts walk on the Moon before 1970?” → “No. Apollo 11 landed on the Moon on July 20, 1969.”"),
+            after: String(localized: "“Yes. Apollo 11 landed on the Moon on July 20, 1969.” The answer’s own date says Yes, so Guard fixes the No."),
+            tries: [String(localized: "Did astronauts walk on the Moon before 1970?"),
+                    String(localized: "Which is more densely populated, Japan or Germany, and by how much?"),
+                    String(localized: "Which countries are bigger than India by area?")],
+            how: String(localized: "• Guard waits for the answer to finish.\n• You see the model's text as it writes, then the fixed one.\n• It checks three things:\n• Before or after a year: the Yes or No against the answer's own first date.\n• Which is bigger, denser, taller or heavier: the winner against the answer's own numbers, in the same unit.\n• It adds the difference.\n• Which are bigger than X: “none” against the answer's own rank (“seventh-largest” means six).\n• It keeps the facts and rewrites only the verdict, dropping the model's own corrections and repeats.\n• Nothing is generated again.\n• When it isn't sure, it changes nothing: mixed units, overlapping ranges, a number that may belong to something else.\n• Never on health questions, instant answers or Deep Research.\n• The answer's details say Tool when it changed something.\n• English only.\n• Based on r4to's verdict guard (BOAR R&D).")))
     }
 }

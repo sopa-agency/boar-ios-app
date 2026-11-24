@@ -15,8 +15,8 @@ struct DistanceLab: LabPlugin {
     let emoji = "🗺️"
     let art: String? = "lab_distance"
     let status = LabStatus.beta
-    var title: String { String(localized: "Boar Distance") }
-    var body: String { String(localized: "How far apart two cities are, and how long to walk, cycle or drive it, as an estimate and without the model.") }
+    var title: String { String(localized: "Distance") }
+    var body: String { String(localized: "How far apart two cities are, and how long the trip takes.") }
     var answerTool: (any AnswerTool)? { Tool() }
 
     /// The city table, read on the first travel question (280 KB of JSON).
@@ -38,23 +38,12 @@ struct DistanceLab: LabPlugin {
     }
 
     func content() -> AnyView {
-        AnyView(Group {
-            Section {
-                Text("• The straight-line distance between two cities, in km and miles\n• Roughly how far by road or trail: walking about 30% longer, cycling and driving about 25%\n• How many days to walk or cycle it, or hours to drive\n• There and back, when you ask for the round trip")
-            } header: {
-                Text(LocalizedStringResource("labs.answersOnItsOwn.m", defaultValue: "Answers on its own", comment: "Header; PT is masculine (Boar Fatos, Boar Distância)"))
-            }
-            Section {
-                LabExample("How far is it to walk from Paris to Rome and back?")
-                LabExample("How long would it take to bike from Vienna to Budapest?")
-                LabExample("What's the distance between Madrid and Barcelona?")
-            } header: {
-                Text("Try")
-            } footer: {
-                BoarFooter {
-                    Text("It knows the 6,000 largest cities (GeoNames, CC BY 4.0) and works from their coordinates, so every answer is an estimate, not a mapped route: it can't know roads, borders, ferries or closures. A place that isn't one of those cities (a hotel, a beach, a small town) goes to the model as usual, and so does a chat about health, an injury or danger. Questions in English only. Ported from r4to's travel distance (BOAR R&D).")
-                }
-            }
-        })
+        AnyView(AnswerPage(
+            question: String(localized: "What's the distance between Madrid and Barcelona?"),
+            reply: String(localized: "Madrid and Barcelona are about 504 km (313 miles) apart in a straight line. Roads and trails are usually longer than the straight line, by about a quarter, so expect roughly 630 km by land. This is an estimate from the cities' coordinates, not a mapped route; the real route can differ."),
+            tries: [String(localized: "How far is it to walk from Paris to Rome and back?"),
+                    String(localized: "How long would it take to bike from Vienna to Budapest?"),
+                    String(localized: "How long to drive from Berlin to Prague?")],
+            how: String(localized: "• Works from the 6,000 largest cities (GeoNames), using their coordinates.\n• Every answer is an estimate, not a route: no roads, borders, ferries or closures.\n• A place that is not one of those cities (a hotel, a beach, a small town) goes to the model.\n• A chat about health, an injury or danger goes to the model.\n• English only. Ported from r4to's travel distance (BOAR R&D).")))
     }
 }
