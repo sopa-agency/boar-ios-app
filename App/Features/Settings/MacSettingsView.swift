@@ -1,4 +1,5 @@
 #if os(macOS)
+import BoarCore
 import SwiftUI
 
 /// The Mac's Settings window (⌘,): the iPhone's Settings page split into General, Privacy and Advanced tabs, each a

@@ -1,7 +1,7 @@
 import BoarCore
 import SwiftUI
 
-/// Start over (android RecoverySection, no tour any more): run setup again, reset the settings (setup opens again), erase
+/// Start over (android RecoverySection): run setup again, reset the settings (setup opens again), erase
 /// everything. Clearing the chats lives with the chats.
 struct SettingsRecoverySection: View {
     @Environment(AppModel.self) private var model

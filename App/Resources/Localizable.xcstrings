@@ -67,16 +67,6 @@
         }
       }
     },
-    "%@ Recommended" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ Recomendado"
-          }
-        }
-      }
-    },
     "%@ Version" : {
       "localizations" : {
         "pt" : {
@@ -449,6 +439,16 @@
         }
       }
     },
+    "%lld on" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld ligados"
+          }
+        }
+      }
+    },
     "%lld open · %lld classified" : {
       "localizations" : {
         "pt" : {
@@ -669,16 +669,6 @@
         }
       }
     },
-    "42 pages · in Personal Files" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "42 páginas · em Arquivos pessoais"
-          }
-        }
-      }
-    },
     "50 answers." : {
       "localizations" : {
         "pt" : {
@@ -839,12 +829,12 @@
         }
       }
     },
-    "Adaptive routing" : {
+    "Adaptive Routing picks the best installed model for each question." : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Roteamento adaptativo"
+            "value" : "O Roteamento adaptativo escolhe o melhor modelo instalado para cada pergunta."
           }
         }
       }
@@ -1049,6 +1039,16 @@
         }
       }
     },
+    "Advanced tweaks and plugin settings pause below Pro. Your settings are kept." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajustes avançados e configurações de plugin pausam abaixo do Pro. Suas configurações ficam salvas."
+          }
+        }
+      }
+    },
     "After the index" : {
       "localizations" : {
         "pt" : {
@@ -1074,7 +1074,7 @@
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Javali Airgap"
+            "value" : "Boar Airgap"
           }
         }
       }
@@ -1129,6 +1129,16 @@
         }
       }
     },
+    "All ›" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Todos ›"
+          }
+        }
+      }
+    },
     "Allow %@ and redo" : {
       "localizations" : {
         "pt" : {
@@ -1149,16 +1159,6 @@
         }
       }
     },
-    "Alpha: early, less tested" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Alpha: no começo, menos testados"
-          }
-        }
-      }
-    },
     "Already added: %@" : {
       "localizations" : {
         "pt" : {
@@ -1175,16 +1175,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Já está neste %@"
-          }
-        }
-      }
-    },
-    "An answer from the library lists the articles it used: tap one to read it. A receipt shows the model, the speed and the time." : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Uma resposta da biblioteca lista os artigos que usou: toque em um para ler. Um recibo mostra o modelo, a velocidade e o tempo."
           }
         }
       }
@@ -1295,16 +1285,6 @@
         }
       }
     },
-    "Answering With" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Respondendo com"
-          }
-        }
-      }
-    },
     "Answers" : {
       "localizations" : {
         "pt" : {
@@ -1341,16 +1321,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "As respostas podem citá-la por este nome."
-          }
-        }
-      }
-    },
-    "Answers come from models and a library on this %@. No internet needed." : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "As respostas vêm de modelos e de uma biblioteca neste %@. Não precisa de internet."
           }
         }
       }
@@ -1462,6 +1432,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Apple Intelligence"
+          }
+        }
+      }
+    },
+    "Apple Intelligence answers with Apple's built-in model where available; Mac on Your Network sends the writing to llama-server on another Mac." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A Apple Intelligence responde com o modelo embutido da Apple onde houver; Mac na sua rede envia a escrita para o llama-server de outro Mac."
           }
         }
       }
@@ -1646,16 +1626,6 @@
         }
       }
     },
-    "Ask with 🗂️ Personal Files" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pergunte com 🗂️ Arquivos pessoais"
-          }
-        }
-      }
-    },
     "Ask: %@" : {
       "localizations" : {
         "pt" : {
@@ -1681,7 +1651,7 @@
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Javali Astro"
+            "value" : "Boar Astro"
           }
         }
       }
@@ -1691,7 +1661,7 @@
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Javali Atômico"
+            "value" : "Boar Atômico"
           }
         }
       }
@@ -1776,12 +1746,12 @@
         }
       }
     },
-    "Auto fits the answer style (up to %lld tokens now). Apple Intelligence answers with Apple's built-in model where available; Mac on Your Network sends the writing to llama-server on another Mac." : {
+    "Auto fits the answer style (up to %lld tokens now)." : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O Auto ajusta ao estilo de resposta (até %lld tokens agora). Apple Intelligence responde com o modelo da própria Apple onde houver; Mac na sua rede manda a escrita para o llama-server em outro Mac."
+            "value" : "O Auto se ajusta ao estilo de resposta (até %lld tokens agora)."
           }
         }
       }
@@ -1886,42 +1856,22 @@
         }
       }
     },
-    "BOAR Knowledge and your Personal Files" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Conhecimento BOAR e seus Arquivos pessoais"
-          }
-        }
-      }
-    },
-    "BOAR Knowledge is the Vital Articles library on your %@. Import your notes, PDFs and spreadsheets into Personal Files, then ask about them with the Personal Files style." : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "O Conhecimento BOAR é a biblioteca Vital Articles no seu %@. Importe suas notas, PDFs e planilhas em Arquivos pessoais e pergunte sobre eles com o estilo Arquivos pessoais."
-          }
-        }
-      }
-    },
-    "BOAR answers on your %@, from its own offline library, and shows where each answer came from. Here's a quick look around." : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "O BOAR responde no seu %@, a partir da própria biblioteca offline, e mostra de onde veio cada resposta. Uma volta rápida pelo app."
-          }
-        }
-      }
-    },
     "BOAR can't read %@: it imports .txt, .md, .csv, .json and .pdf. Save the page as one of those (a browser can save it as PDF) and import it again." : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "O BOAR não consegue ler %@: ele importa .txt, .md, .csv, .json e .pdf. Salve a página em um desses formatos (o navegador salva como PDF) e importe de novo."
+          }
+        }
+      }
+    },
+    "BOAR checks each model against your %@'s memory. Downloads stay within a 50 GB storage budget; in Pro you can change it in Experimental." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O BOAR confere cada modelo com a memória do seu %@. Os downloads ficam dentro de um limite de 50 GB de armazenamento; no Pro dá para mudar isso em Experimental."
           }
         }
       }
@@ -2046,16 +1996,6 @@
         }
       }
     },
-    "BOAR tour" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tour do BOAR"
-          }
-        }
-      }
-    },
     "BOAR was closed: %lld waiting questions were dropped." : {
       "localizations" : {
         "pt" : {
@@ -2086,26 +2026,6 @@
         }
       }
     },
-    "BOAR → Knowledge" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "BOAR → Conhecimento"
-          }
-        }
-      }
-    },
-    "BOAR → Models" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "BOAR → Modelos"
-          }
-        }
-      }
-    },
     "BOAR's %@ storage limit is reached: BOAR already stores %@. Remove a model first. The %@ itself may still have room." : {
       "localizations" : {
         "pt" : {
@@ -2132,6 +2052,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Limite de armazenamento do BOAR"
+          }
+        }
+      }
+    },
+    "BOAR's language follows the one set for it in your %@'s Settings." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O idioma do BOAR segue o definido para ele nas Configurações do seu %@."
           }
         }
       }
@@ -2236,16 +2166,6 @@
         }
       }
     },
-    "Beta: tested on phones" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Beta: testados em celulares"
-          }
-        }
-      }
-    },
     "Better explanations, a little slower" : {
       "localizations" : {
         "pt" : {
@@ -2286,12 +2206,12 @@
         }
       }
     },
-    "Boar" : {
+    "Boar Avatar" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Boar"
+            "value" : "Avatar do Boar"
           }
         }
       }
@@ -2596,16 +2516,6 @@
         }
       }
     },
-    "Card %lld of %lld" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cartão %1$lld de %2$lld"
-          }
-        }
-      }
-    },
     "Carry two knowledge packs." : {
       "localizations" : {
         "pt" : {
@@ -2631,7 +2541,7 @@
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Muda o javali da conversa e o ícone do app."
+            "value" : "Muda o Boar da conversa e o ícone do app."
           }
         }
       }
@@ -2641,7 +2551,7 @@
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Muda o javali da conversa."
+            "value" : "Muda o Boar da conversa."
           }
         }
       }
@@ -2662,16 +2572,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Histórico de conversas apagado"
-          }
-        }
-      }
-    },
-    "Chat Memory" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Memória da conversa"
           }
         }
       }
@@ -2712,6 +2612,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Confira se a coleção está ligada em Conhecimento → Arquivos pessoais."
+          }
+        }
+      }
+    },
+    "Checked before it loads" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conferido antes de carregar"
           }
         }
       }
@@ -2791,7 +2701,7 @@
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Javali Crono"
+            "value" : "Boar Crono"
           }
         }
       }
@@ -2901,7 +2811,7 @@
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Javali Código"
+            "value" : "Boar Código"
           }
         }
       }
@@ -3016,22 +2926,22 @@
         }
       }
     },
-    "Copies the address" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Copia o endereço"
-          }
-        }
-      }
-    },
     "Copy" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Copiar"
+          }
+        }
+      }
+    },
+    "Copy %@" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copiar %@"
           }
         }
       }
@@ -3046,12 +2956,12 @@
         }
       }
     },
-    "Core Team" : {
+    "Core team, on X" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Equipe principal"
+            "value" : "Equipe principal, no X"
           }
         }
       }
@@ -3081,7 +2991,7 @@
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Javali Cósmico"
+            "value" : "Boar Cósmico"
           }
         }
       }
@@ -3181,7 +3091,7 @@
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Javali Ciber"
+            "value" : "Boar Ciber"
           }
         }
       }
@@ -3202,16 +3112,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Quiz do Dia"
-          }
-        }
-      }
-    },
-    "Dark" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Escuro"
           }
         }
       }
@@ -3496,6 +3396,16 @@
         }
       }
     },
+    "Development build" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão de desenvolvimento"
+          }
+        }
+      }
+    },
     "Dictate" : {
       "localizations" : {
         "pt" : {
@@ -3536,22 +3446,12 @@
         }
       }
     },
-    "Display" : {
+    "Display & Theme" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Exibição"
-          }
-        }
-      }
-    },
-    "Document" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Documento"
+            "value" : "Exibição e tema"
           }
         }
       }
@@ -3841,7 +3741,7 @@
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Javali Ancião"
+            "value" : "Boar Ancião"
           }
         }
       }
@@ -3991,7 +3891,7 @@
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Javali Etéreo"
+            "value" : "Boar Etéreo"
           }
         }
       }
@@ -4002,6 +3902,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Avaliação"
+          }
+        }
+      }
+    },
+    "Every answer records how it ran" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cada resposta registra como rodou"
           }
         }
       }
@@ -4076,22 +3986,32 @@
         }
       }
     },
-    "Experiments, labelled beta or alpha. They all start off: switch on the ones you want." : {
+    "Experimental" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Experimentos, marcados beta ou alpha. Todos começam desligados: ligue os que quiser."
+            "value" : "Experimental"
           }
         }
       }
     },
-    "Experiments, labelled beta or alpha. They all start off: switch on the ones you want.\n\nAlso try Boar Press, which turns answers into a PDF.\n\nIf one misbehaves, switch it off and, if you can, open an issue on GitHub." : {
+    "Explorer" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Experimentos, marcados beta ou alpha. Todos começam desligados: ligue os que quiser.\n\nExperimente também o Boar Press, que transforma respostas em PDF.\n\nSe algum der problema, desligue e, se puder, abra uma issue no GitHub."
+            "value" : "Explorador"
+          }
+        }
+      }
+    },
+    "Explorer: discover more features." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Explorador: descubra mais recursos."
           }
         }
       }
@@ -4132,6 +4052,36 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Estendido"
+          }
+        }
+      }
+    },
+    "Extra tools in the menu and under answers. Each one can be switched on or off in Boar Labs. If one misbehaves, switch it off and, if you can, open an issue on GitHub." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ferramentas extras no menu e nas respostas. Cada uma pode ser ligada ou desligada no Boar Labs. Se alguma der problema, desligue e, se puder, abra uma issue no GitHub."
+          }
+        }
+      }
+    },
+    "Extra tools in the menu and under answers. Each one can be switched on or off." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ferramentas extras no menu e nas respostas. Podem ser ligadas ou desligadas."
+          }
+        }
+      }
+    },
+    "Extra tools in the menu and under answers. They all start off: switch on the ones you want." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ferramentas extras no menu e nas respostas. Todas começam desligadas: ligue as que quiser."
           }
         }
       }
@@ -4302,7 +4252,7 @@
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Javali Explorador"
+            "value" : "Boar Explorador"
           }
         }
       }
@@ -4497,16 +4447,6 @@
         }
       }
     },
-    "For big questions: BOAR searches in several steps and writes a longer answer. It takes more time. When it's on, the chat glows and the 🔬 lights up, so you always know." : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Para perguntas grandes: o BOAR pesquisa em várias etapas e escreve uma resposta mais longa. Leva mais tempo. Quando está ligada, o chat brilha e o 🔬 acende, então você sempre sabe."
-          }
-        }
-      }
-    },
     "Forage deep in the woods: no network, 7 days in a row." : {
       "localizations" : {
         "pt" : {
@@ -4522,7 +4462,7 @@
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Javali Floresta"
+            "value" : "Boar Floresta"
           }
         }
       }
@@ -4577,22 +4517,12 @@
         }
       }
     },
-    "From this device, with the part BOAR used marked." : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Do próprio aparelho, com a parte que o BOAR usou marcada."
-          }
-        }
-      }
-    },
     "Frost Boar" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Javali Gélido"
+            "value" : "Boar Gélido"
           }
         }
       }
@@ -4742,7 +4672,7 @@
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Javali Descanso"
+            "value" : "Boar Descanso"
           }
         }
       }
@@ -5407,16 +5337,6 @@
         }
       }
     },
-    "Keep using BOAR and you’ll keep unlocking avatars: each one is a boar to wear, and some unlock new themes. Finding out what unlocks them is part of the fun." : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Continue usando o BOAR e você vai liberar avatares: cada um é um javali para usar, e alguns liberam novos temas. Descobrir o que libera cada um faz parte da graça."
-          }
-        }
-      }
-    },
     "Keeping %lld chats deletes “%@” and %lld more." : {
       "localizations" : {
         "pt" : {
@@ -5462,7 +5382,7 @@
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Javali Kernel"
+            "value" : "Boar Kernel"
           }
         }
       }
@@ -5482,7 +5402,7 @@
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Javali Cavaleiro"
+            "value" : "Boar Cavaleiro"
           }
         }
       }
@@ -5497,7 +5417,7 @@
         }
       }
     },
-    "Knowledge Packs" : {
+    "Knowledge packs" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
@@ -5513,16 +5433,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pacotes de conhecimento que você coleciona, guarda e abre neste %@: bibliotecas inteiras, offline."
-          }
-        }
-      }
-    },
-    "Knowledge that travels with you" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Conhecimento que vai com você"
           }
         }
       }
@@ -5577,12 +5487,22 @@
         }
       }
     },
-    "Labs don't slow the answers. The ones that load a model use extra memory while they run. All of them are in Settings → Advanced → Boar Labs." : {
+    "Labs don't slow the answers. Switch them on or off any time in Boar Labs, in the menu." : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Os Labs não deixam as respostas mais lentas. Os que carregam um modelo usam memória extra enquanto rodam. Todos ficam em Configurações → Avançado → Boar Labs."
+            "value" : "Os Labs não deixam as respostas lentas. Ligue ou desligue quando quiser no Boar Labs, no menu."
+          }
+        }
+      }
+    },
+    "Language & Voice" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Idioma e voz"
           }
         }
       }
@@ -5677,22 +5597,22 @@
         }
       }
     },
-    "Light" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Claro"
-          }
-        }
-      }
-    },
     "Likes" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Curtidas"
+          }
+        }
+      }
+    },
+    "Links" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Links"
           }
         }
       }
@@ -5783,16 +5703,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Bloqueio"
-          }
-        }
-      }
-    },
-    "Lock BOAR" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bloquear o BOAR"
           }
         }
       }
@@ -5897,12 +5807,12 @@
         }
       }
     },
-    "Long chats keep their context: older turns are condensed and the most recent ones stay word for word." : {
+    "Long chats keep their context: older turns are condensed and the most recent ones stay word for word. New chats are named from your first message. BOAR keeps every chat unless you set a limit; then it asks before it deletes your oldest ones. Off, one tap deletes a chat." : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Conversas longas mantêm o contexto: os turnos antigos são resumidos e os mais recentes ficam palavra por palavra."
+            "value" : "Conversas longas mantêm o contexto: as mensagens mais antigas são resumidas e as mais recentes ficam palavra por palavra. Conversas novas ganham nome pela sua primeira mensagem. O BOAR guarda todas as conversas, a menos que você defina um limite; aí ele pergunta antes de apagar as mais antigas. Desligado, um toque apaga uma conversa."
           }
         }
       }
@@ -5932,17 +5842,7 @@
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Javali Lunar"
-          }
-        }
-      }
-    },
-    "MIT. The code of this app and of the Android app, the model list and the scripts that build the knowledge packs." : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "MIT. O código deste app e do app de Android, a lista de modelos e os scripts que montam os pacotes de conhecimento."
+            "value" : "Boar Lunar"
           }
         }
       }
@@ -5972,7 +5872,7 @@
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Javali Magma"
+            "value" : "Boar Magma"
           }
         }
       }
@@ -6047,12 +5947,22 @@
         }
       }
     },
-    "Measure It Yourself" : {
+    "Measure it yourself" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Meça você mesmo"
+          }
+        }
+      }
+    },
+    "Measure your own %@" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meça o seu %@"
           }
         }
       }
@@ -6072,7 +5982,7 @@
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Javali Mecha"
+            "value" : "Boar Mecha"
           }
         }
       }
@@ -6093,16 +6003,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Médio"
-          }
-        }
-      }
-    },
-    "Meet BOAR" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Conheça o BOAR"
           }
         }
       }
@@ -6219,16 +6119,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Modelos"
-          }
-        }
-      }
-    },
-    "Models and Knowledge" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Modelos e conhecimento"
           }
         }
       }
@@ -6428,7 +6318,7 @@
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Javali Neon"
+            "value" : "Boar Neon"
           }
         }
       }
@@ -6473,22 +6363,12 @@
         }
       }
     },
-    "New chats are named from your first message. BOAR keeps every chat unless you set a limit; then it asks before it deletes your oldest ones. Off, one tap deletes a chat." : {
+    "New in this version: profiles. BOAR picked %@ from your settings. Change it any time." : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Chats novos ganham o nome da sua primeira mensagem. O BOAR guarda todos os chats, a menos que você defina um limite; aí ele pergunta antes de apagar os mais antigos. Desligado, um toque apaga um chat."
-          }
-        }
-      }
-    },
-    "New chats are named from your first message. Older chats are removed past the limit. Off, one tap deletes a chat." : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Chats novos ganham o nome da sua primeira mensagem. Os mais antigos saem quando passam do limite. Desligado, um toque apaga um chat."
+            "value" : "Novo nesta versão: perfis. O BOAR escolheu %@ pelas suas configurações. Mude quando quiser."
           }
         }
       }
@@ -6743,6 +6623,16 @@
         }
       }
     },
+    "No server receives your questions, so no one holds a switch." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nenhum servidor recebe suas perguntas, então ninguém pode desligar o BOAR por você."
+          }
+        }
+      }
+    },
     "No source in this %@'s library covers this; the answer is from the model alone." : {
       "localizations" : {
         "pt" : {
@@ -6768,7 +6658,7 @@
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Javali Nômade"
+            "value" : "Boar Nômade"
           }
         }
       }
@@ -6779,6 +6669,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nenhum"
+          }
+        }
+      }
+    },
+    "None on" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nenhum ligado"
           }
         }
       }
@@ -6953,16 +6853,6 @@
         }
       }
     },
-    "ON · deeper, slower answers" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "LIGADA · respostas mais profundas e lentas"
-          }
-        }
-      }
-    },
     "ONLINE" : {
       "localizations" : {
         "pt" : {
@@ -6983,16 +6873,6 @@
         }
       }
     },
-    "Off by default. Switch it on and BOAR picks which of your installed models answers each question, and how. Worth it when you have more than one model." : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vem desligado. Ligue e o BOAR escolhe qual dos seus modelos instalados responde cada pergunta, e como. Vale a pena quando você tem mais de um modelo."
-          }
-        }
-      }
-    },
     "Off: this lab disappears from the chat too." : {
       "localizations" : {
         "pt" : {
@@ -7003,12 +6883,22 @@
         }
       }
     },
-    "Official Site" : {
+    "Official website" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Site oficial"
+          }
+        }
+      }
+    },
+    "Offline AI research on your %@. Answers with sources, no signal needed." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pesquisa com IA offline no seu %@. Respostas com fontes, sem precisar de sinal."
           }
         }
       }
@@ -7063,16 +6953,6 @@
         }
       }
     },
-    "On X. Tap an address to copy it." : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No X. Toque num endereço para copiar."
-          }
-        }
-      }
-    },
     "On this %@" : {
       "localizations" : {
         "pt" : {
@@ -7089,6 +6969,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "O ditado no aparelho não está disponível neste %@."
+          }
+        }
+      }
+    },
+    "One download at setup" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Um download na configuração"
           }
         }
       }
@@ -7133,6 +7023,16 @@
         }
       }
     },
+    "Only for downloading models or packs, searching Hugging Face and sharing evaluation results, if you turn that on." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Só para baixar modelos ou pacotes, buscar no Hugging Face e compartilhar resultados de avaliação, se você ligar isso."
+          }
+        }
+      }
+    },
     "Open Article" : {
       "localizations" : {
         "pt" : {
@@ -7173,32 +7073,12 @@
         }
       }
     },
-    "Open Boar Avatars" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Abrir Avatares do Boar"
-          }
-        }
-      }
-    },
     "Open Full Article" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Abrir artigo completo"
-          }
-        }
-      }
-    },
-    "Open Knowledge" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Abrir Conhecimento"
           }
         }
       }
@@ -7213,12 +7093,12 @@
         }
       }
     },
-    "Open Source" : {
+    "Open source, MIT." : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Código aberto"
+            "value" : "Código aberto, MIT."
           }
         }
       }
@@ -7259,16 +7139,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Abre o BOAR numa conversa nova e começa a responder sua pergunta com os modelos e a biblioteca deste iPhone."
-          }
-        }
-      }
-    },
-    "Opens in your browser. Needs internet." : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Abre no seu navegador. Precisa de internet."
           }
         }
       }
@@ -7323,12 +7193,12 @@
         }
       }
     },
-    "Packs from R4to's R&D Lab." : {
+    "Packs from R4to's R&D Labs" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pacotes do R&D Lab do R4to."
+            "value" : "Pacotes feitos pelo R&D Labs, de R4to"
           }
         }
       }
@@ -7503,32 +7373,12 @@
         }
       }
     },
-    "Pick a theme. It changes right away, and you can change it again any time." : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Escolha um tema. Ele muda na hora, e dá para trocar de novo quando quiser."
-          }
-        }
-      }
-    },
     "Pick a theme. It changes right away, and you can change it again in Settings." : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Escolha um tema. Ele muda na hora, e dá para mudar de novo nas Configurações."
-          }
-        }
-      }
-    },
-    "Pick how BOAR answers" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Escolha como o BOAR responde"
           }
         }
       }
@@ -7553,16 +7403,6 @@
         }
       }
     },
-    "Picks a model per question from the ones installed." : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Escolhe um modelo por pergunta entre os instalados."
-          }
-        }
-      }
-    },
     "Picture" : {
       "localizations" : {
         "pt" : {
@@ -7578,7 +7418,7 @@
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Javali Pixel"
+            "value" : "Boar Pixel"
           }
         }
       }
@@ -7588,7 +7428,7 @@
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Javali Plasma"
+            "value" : "Boar Plasma"
           }
         }
       }
@@ -7599,6 +7439,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tectônica de placas: como as placas em movimento formam montanhas e causam terremotos"
+          }
+        }
+      }
+    },
+    "Plugins on" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plugins ligados"
           }
         }
       }
@@ -7699,6 +7549,16 @@
         }
       }
     },
+    "Press and hold to copy for a bug report." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toque e segure para copiar para um relato de problema."
+          }
+        }
+      }
+    },
     "Preview" : {
       "localizations" : {
         "pt" : {
@@ -7759,12 +7619,42 @@
         }
       }
     },
+    "Pro" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pro"
+          }
+        }
+      }
+    },
+    "Pro: advanced settings and tweaks." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pro: ajustes avançados."
+          }
+        }
+      }
+    },
     "Processor Cores" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Núcleos do processador"
+          }
+        }
+      }
+    },
+    "Profile" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Perfil"
           }
         }
       }
@@ -7834,7 +7724,7 @@
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Javali Quântico"
+            "value" : "Boar Quântico"
           }
         }
       }
@@ -8059,6 +7949,16 @@
         }
       }
     },
+    "Release build" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versão de lançamento"
+          }
+        }
+      }
+    },
     "Reliability" : {
       "localizations" : {
         "pt" : {
@@ -8249,16 +8149,6 @@
         }
       }
     },
-    "Reset Settings and Erase All Data reopen setup." : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Redefinir configurações e Apagar todos os dados reabrem a configuração."
-          }
-        }
-      }
-    },
     "Reset all settings?" : {
       "localizations" : {
         "pt" : {
@@ -8279,16 +8169,6 @@
         }
       }
     },
-    "Retrieval" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Busca"
-          }
-        }
-      }
-    },
     "Retrieved sources" : {
       "localizations" : {
         "pt" : {
@@ -8304,7 +8184,7 @@
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Javali Retrowave"
+            "value" : "Boar Retrowave"
           }
         }
       }
@@ -8389,12 +8269,12 @@
         }
       }
     },
-    "Run Setup Again checks your models and library." : {
+    "Run Setup Again checks your models and library. Reset Settings and Erase All Data reopen setup." : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Rodar a configuração de novo confere seus modelos e a biblioteca."
+            "value" : "Rodar a configuração de novo confere seus modelos e sua biblioteca. Redefinir configurações e Apagar todos os dados reabrem a configuração."
           }
         }
       }
@@ -8665,16 +8545,6 @@
         }
       }
     },
-    "See the Tour" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ver o tour"
-          }
-        }
-      }
-    },
     "Select a Model" : {
       "localizations" : {
         "pt" : {
@@ -8720,7 +8590,7 @@
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Javali Sênior"
+            "value" : "Boar Sênior"
           }
         }
       }
@@ -8765,42 +8635,12 @@
         }
       }
     },
-    "Settings → Advanced → Boar Labs" : {
+    "Settings, Advanced, Benchmark (Pro profile)." : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Configurações → Avançado → Boar Labs"
-          }
-        }
-      }
-    },
-    "Settings → Advanced, with Show Technical Details on" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Configurações → Avançado, com Mostrar detalhes técnicos ligado"
-          }
-        }
-      }
-    },
-    "Settings → Display" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Configurações → Exibição"
-          }
-        }
-      }
-    },
-    "Settings → Privacy" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Configurações → Privacidade"
+            "value" : "Configurações, Avançado, Benchmark (perfil Pro)."
           }
         }
       }
@@ -9035,12 +8875,12 @@
         }
       }
     },
-    "Shows timings under each answer, plus the engine settings and the benchmark." : {
+    "Shows timings under each answer, the live speed at the top of the chat, and the memory and storage bars in the menu." : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mostra os tempos embaixo de cada resposta, além dos ajustes do motor e do benchmark."
+            "value" : "Mostra os tempos sob cada resposta, a velocidade ao vivo no topo da conversa e as barras de memória e armazenamento no menu."
           }
         }
       }
@@ -9130,7 +8970,7 @@
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Javali Neve"
+            "value" : "Boar Neve"
           }
         }
       }
@@ -9150,7 +8990,7 @@
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Javali Solarpunk"
+            "value" : "Boar Solarpunk"
           }
         }
       }
@@ -9221,6 +9061,16 @@
         }
       }
     },
+    "Source code" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Código-fonte"
+          }
+        }
+      }
+    },
     "Source found" : {
       "localizations" : {
         "pt" : {
@@ -9237,16 +9087,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Fontes"
-          }
-        }
-      }
-    },
-    "Sources and receipts" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fontes e recibos"
           }
         }
       }
@@ -9276,7 +9116,7 @@
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Javali Soberano"
+            "value" : "Boar Soberano"
           }
         }
       }
@@ -9316,7 +9156,7 @@
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Javali SpecOps"
+            "value" : "Boar SpecOps"
           }
         }
       }
@@ -9366,7 +9206,7 @@
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Javali Espírito"
+            "value" : "Boar Espírito"
           }
         }
       }
@@ -9471,12 +9311,42 @@
         }
       }
     },
+    "Start Over" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recomeçar"
+          }
+        }
+      }
+    },
     "Started from a connected computer (request %@)." : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Iniciado por um computador conectado (pedido %@)."
+          }
+        }
+      }
+    },
+    "Starter" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Iniciante"
+          }
+        }
+      }
+    },
+    "Starter: set up the essentials." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Iniciante: configure o essencial."
           }
         }
       }
@@ -9501,22 +9371,12 @@
         }
       }
     },
-    "Stays on Your %@" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fica no seu %@"
-          }
-        }
-      }
-    },
     "Stealth Boar" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Javali Furtivo"
+            "value" : "Boar Furtivo"
           }
         }
       }
@@ -9526,7 +9386,7 @@
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Javali Steampunk"
+            "value" : "Boar Steampunk"
           }
         }
       }
@@ -9719,16 +9579,6 @@
         }
       }
     },
-    "Succinct & Direct for quick replies, Thorough & Detailed for full explanations (the default), Personal Files to answer only from your own documents." : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sucinto e Direto para respostas rápidas, Completo e Detalhado para explicações inteiras (o padrão), Arquivos pessoais para responder só a partir dos seus documentos."
-          }
-        }
-      }
-    },
     "Summarize Older Turns" : {
       "localizations" : {
         "pt" : {
@@ -9745,16 +9595,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Resumo"
-          }
-        }
-      }
-    },
-    "Swap the answer model, find more on Hugging Face, and let BOAR free the memory when you leave it." : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Troque o modelo de resposta, encontre outros no Hugging Face e deixe o BOAR liberar a memória quando você sair dele."
           }
         }
       }
@@ -9784,7 +9624,27 @@
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Javali Tático"
+            "value" : "Boar Tático"
+          }
+        }
+      }
+    },
+    "Tap or hold an address to copy it. Nothing opens from this page." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toque ou segure um endereço para copiar. Nada abre a partir desta página."
+          }
+        }
+      }
+    },
+    "Technical details (live speed at the top of the chat, the answer's performance details, the menu's memory and storage bars) are now in Pro." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Os detalhes técnicos (a velocidade ao vivo no topo da conversa, os detalhes de desempenho da resposta, as barras de memória e armazenamento do menu) agora ficam no Pro."
           }
         }
       }
@@ -9794,7 +9654,7 @@
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Javali Tensor"
+            "value" : "Boar Tensor"
           }
         }
       }
@@ -9819,12 +9679,12 @@
         }
       }
     },
-    "That's the tour" : {
+    "The BOAR FAQ, written by Amandita (@AAmandita_) from her Zebra Talks interview" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fim do tour"
+            "value" : "O FAQ do BOAR, escrito pela Amandita (@AAmandita_) a partir da entrevista dela no Zebra Talks"
           }
         }
       }
@@ -9919,6 +9779,16 @@
         }
       }
     },
+    "The connection" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A conexão"
+          }
+        }
+      }
+    },
     "The dot only shows the connection. BOAR answers the same offline." : {
       "localizations" : {
         "pt" : {
@@ -9955,6 +9825,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "O download parou. Tente de novo."
+          }
+        }
+      }
+    },
+    "The engine settings and the benchmark. Below Pro, Advanced tweaks pause and your choices are kept." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Os ajustes do motor e o benchmark. Abaixo do Pro, os ajustes avançados pausam e suas escolhas ficam salvas."
           }
         }
       }
@@ -10029,12 +9909,32 @@
         }
       }
     },
+    "The model lives on your %@" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O modelo vive no seu %@"
+          }
+        }
+      }
+    },
     "The model stopped without writing an answer." : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "O modelo parou sem escrever uma resposta."
+          }
+        }
+      }
+    },
+    "The model, time to the first word, tokens per second, memory and sources." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O modelo, o tempo até a primeira palavra, tokens por segundo, memória e fontes."
           }
         }
       }
@@ -10079,12 +9979,12 @@
         }
       }
     },
-    "The search model (%@) isn't on this %@, so answers can't use your library. Run Setup Again in Advanced." : {
+    "The search model (%@) isn't on this %@, so answers can't use your library. Run Setup Again in Settings." : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O modelo de busca (%@) não está neste %@, então as respostas não podem usar sua biblioteca. Rode a configuração de novo em Avançado."
+            "value" : "O modelo de busca (%@) não está neste %@, então as respostas não podem usar a sua biblioteca. Rode a configuração de novo em Configurações."
           }
         }
       }
@@ -10129,32 +10029,22 @@
         }
       }
     },
-    "The style button in the chat, or Settings → Answers" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "O botão de estilo no chat, ou Configurações → Respostas"
-          }
-        }
-      }
-    },
-    "The style button, next to where you type" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "O botão de estilo, ao lado de onde você digita"
-          }
-        }
-      }
-    },
     "Theme" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tema"
+          }
+        }
+      }
+    },
+    "Then airplane mode is fine: BOAR answers from the library on your %@ and shows the articles it used." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Depois, funciona em modo avião: o BOAR responde com a biblioteca do seu %@ e mostra os artigos que usou."
           }
         }
       }
@@ -10450,16 +10340,6 @@
         }
       }
     },
-    "Timings and speed show under each answer. Adaptive Routing picks the best installed model for each question." : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tempos e velocidade aparecem embaixo de cada resposta. O roteamento adaptativo escolhe o melhor modelo instalado para cada pergunta."
-          }
-        }
-      }
-    },
     "Tinker with the engine in Advanced tweaks." : {
       "localizations" : {
         "pt" : {
@@ -10595,7 +10475,7 @@
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Javali Totem"
+            "value" : "Boar Totem"
           }
         }
       }
@@ -10720,16 +10600,6 @@
         }
       }
     },
-    "Turn on Show Technical Details in Settings → Advanced to see timings and run the benchmark." : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ligue Mostrar detalhes técnicos em Ajustes → Avançado para ver os tempos e rodar o benchmark."
-          }
-        }
-      }
-    },
     "Turn on the lock for your chats" : {
       "localizations" : {
         "pt" : {
@@ -10760,16 +10630,6 @@
         }
       }
     },
-    "Under every answer" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Embaixo de cada resposta"
-          }
-        }
-      }
-    },
     "Undo" : {
       "localizations" : {
         "pt" : {
@@ -10795,7 +10655,7 @@
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Javali Unicórnio"
+            "value" : "Boar Unicórnio"
           }
         }
       }
@@ -10815,7 +10675,7 @@
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Libere avatares de javali enquanto usa o BOAR e use-os na conversa; alguns liberam novos temas."
+            "value" : "Libere avatares do Boar enquanto usa o BOAR e use-os na conversa; alguns liberam novos temas."
           }
         }
       }
@@ -10875,7 +10735,7 @@
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Javali Urbano"
+            "value" : "Boar Urbano"
           }
         }
       }
@@ -10940,22 +10800,6 @@
         }
       }
     },
-    "Version %@ (%@) · Development build" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Version %1$@ (%2$@) · Development build"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Versão %@ (%@) · Build de desenvolvimento"
-          }
-        }
-      }
-    },
     "Versions" : {
       "localizations" : {
         "pt" : {
@@ -10976,22 +10820,12 @@
         }
       }
     },
-    "Voice" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Voz"
-          }
-        }
-      }
-    },
     "Void Boar" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Javali Vazio"
+            "value" : "Boar Vazio"
           }
         }
       }
@@ -11106,22 +10940,22 @@
         }
       }
     },
-    "What BOAR answers with and searches, all on this %@." : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Com o que o BOAR responde e onde ele pesquisa, tudo neste %@."
-          }
-        }
-      }
-    },
     "What BOAR can read to answer you. It downloads once, together with the answer model; then BOAR works offline." : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "O que o BOAR pode ler para responder você. Baixa uma vez, junto com o modelo de resposta; depois o BOAR funciona offline."
+          }
+        }
+      }
+    },
+    "What BOAR is" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O que é o BOAR"
           }
         }
       }
@@ -11306,16 +11140,6 @@
         }
       }
     },
-    "Works Offline" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Funciona offline"
-          }
-        }
-      }
-    },
     "Works without internet" : {
       "localizations" : {
         "pt" : {
@@ -11457,16 +11281,6 @@
         }
       }
     },
-    "You can see this tour again from Settings." : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dá para ver este tour de novo nas Configurações."
-          }
-        }
-      }
-    },
     "You keep %lld chats, so starting this one deletes “%@” and %lld more." : {
       "localizations" : {
         "pt" : {
@@ -11597,12 +11411,22 @@
         }
       }
     },
-    "Your questions, chats and documents never leave it." : {
+    "Your privacy" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Suas perguntas, conversas e documentos nunca saem dele."
+            "value" : "Sua privacidade"
+          }
+        }
+      }
+    },
+    "Your questions.\nYour phone. Your AI." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suas perguntas.\nSeu celular. Sua IA."
           }
         }
       }
@@ -11623,16 +11447,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "^[%lld artigo](inflect: true)"
-          }
-        }
-      }
-    },
-    "^[%lld collection](inflect: true)" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "^[%lld coleção](inflect: true)"
           }
         }
       }
@@ -11803,16 +11617,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "recursos"
-          }
-        }
-      }
-    },
-    "field-manual.pdf" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "manual-de-campo.pdf"
           }
         }
       }
