@@ -55,3 +55,37 @@ struct LabRangesTests {
         #expect(chat.contains("personal && shortReason != nil ? ShortAnswer.personalShort : nil"))
     }
 }
+
+/// LabRangesSafetyTest (validator 04:25, t9 0435): never guess a direction when the numbers or units don't line up.
+struct LabRangesSafetyTests {
+    private typealias Mark = LabRanges.Mark
+    private func m(_ v: String, _ r: String, _ ctx: String = "") -> Mark? { LabRanges.mark(value: v, range: r, context: ctx) }
+
+    @Test func aThousandsMarkTheFileDoesntExplainLeavesTheRowUnmarked() {
+        for (v, r) in [("1.250 mg/dL", "abaixo de 150"), ("1,250 mg/dL", "below 150"), ("1.500", "< 200"), ("2.000", "até 200"),
+                       ("1.350 ng/mL", "30 - 400"), ("1.200", "acima de 30")] {
+            #expect(m(v, r) == nil, "\(v) | \(r)")
+        }
+        // Plain decimals still read: 6,5 against 4,0 a 7,0.
+        #expect(m("6,5", "4,0 a 7,0") == .within)
+    }
+
+    @Test func aValueOnAnInclusiveBoundIsWithinIt() {
+        for r in ["≤190", "<= 190", "até 190", "up to 190"] { #expect(m("190", r) == .within, "\(r)") }
+        for r in ["≥ 40", ">=40", "pelo menos 40", "at least 40"] { #expect(m("40", r) == .within, "\(r)") }
+        #expect(m("190", "below 190") == .above)
+        #expect(m("40", "above 40") == .below)
+    }
+
+    @Test func aUnitAgainstARangeWithoutOneIsMarkedOnlyWhenTheHeaderNamesIt() {
+        #expect(m("6,5 mmol/L", "abaixo de 190") == nil)
+        #expect(m("5,4 mmol/L", "70 - 99") == nil)
+        #expect(m("98 mg/dL", "70 - 99", "| Exame | Resultado | Referência (mg/dL) |") == .within)
+        let table = "| Exam | Result | Reference (mg/dL) |\n|---|---|---|\n| Glucose | 98 mg/dL | 70 - 99 |\n| Cholesterol | 6,5 mmol/L | below 190 |"
+        #expect(LabRanges.rows(table).map(\.name) == ["Glucose"])
+    }
+
+    @Test func anEmptyCellKeepsItsPlaceInATableShownAsLines() {
+        #expect(TableLines.of("| Exame | Resultado | Referência |\n|---|---|---|\n| Glicose | | 70 - 99 mg/dL |") == "Glicose: — (70 - 99 mg/dL)")
+    }
+}

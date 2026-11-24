@@ -28,8 +28,17 @@ public enum LabRanges {
 
     // The ranges, EN and PT, each with its unit (optional).
     private static let between = Rx("^\(s)*(?:de\(s)+|entre\(s)+|from\(s)+)?(\(num))\(s)*(\(unit))?\(s)*(?:to|-|–|a|até|e|and)\(s)*(\(num))\(s)*(\(unit))?\(s)*$", ignoreCase: true)
-    private static let under = Rx("^\(s)*(?:below|under|less than|lower than|up to|<|≤|<=|abaixo de|menor que|menos de|até|inferior a)\(s)*(\(num))\(s)*(\(unit))?\(s)*$", ignoreCase: true)
-    private static let over = Rx("^\(s)*(?:above|over|more than|greater than|at least|>|≥|>=|acima de|maior que|mais de|superior a|pelo menos)\(s)*(\(num))\(s)*(\(unit))?\(s)*$", ignoreCase: true)
+    // "Up to 190", "até 190", "≤ 190" include 190; "below 190" doesn't (validator P-C2: 190 against "até 190" read ABOVE).
+    private static let under = Rx("^\(s)*(below|under|less than|lower than|up to|no more than|<=|≤|<|abaixo de|menor que|menos de|até|no máximo|inferior a)\(s)*(\(num))\(s)*(\(unit))?\(s)*$", ignoreCase: true)
+    private static let over = Rx("^\(s)*(above|over|more than|greater than|at least|no less than|>=|≥|>|acima de|maior que|mais de|superior a|pelo menos|no mínimo)\(s)*(\(num))\(s)*(\(unit))?\(s)*$", ignoreCase: true)
+    private static let inclusive = Rx("^(?:up to|no more than|<=|≤|até|no máximo|at least|no less than|>=|≥|pelo menos|no mínimo)$", ignoreCase: true)
+
+    /// "1.250" or "1,250": a thousands mark or a decimal one, the file doesn't say (validator P-C1: 1.250 mg/dL against
+    /// "abaixo de 150" read WITHIN, a false comfort). One separator, three digits after it, a non-zero whole part.
+    private static let ambiguous = Rx("(?<![0-9.,])[1-9][0-9]{0,2}[.,][0-9]{3}(?![0-9.,])")
+
+    /// A table's separator row ("|---|---|"): the row right above it is the header.
+    private static let separator = Rx("^\(s)*\\|?\(s)*:?-{3,}")
 
     /// Kotlin `matchEntire`: the match only when it covers the whole input.
     private static func matchEntire(_ rx: Rx, _ text: String) -> NSTextCheckingResult? {
@@ -47,9 +56,8 @@ public enum LabRanges {
     private static func number(_ s: String) -> Double? { Double(s.replacingOccurrences(of: ",", with: ".")) }
 
     /// Kotlin `a.equals(b, ignoreCase = true)` (Java's regionMatches: each UTF-16 unit equal, or equal upper-cased, or
-    /// equal lower-cased after that), with blank on either side counting as the same unit.
-    private static func sameUnit(_ a: String?, _ b: String?) -> Bool {
-        guard let a, !isBlank(a), let b, !isBlank(b) else { return true }
+    /// equal lower-cased after that).
+    private static func equalsIgnoreCase(_ a: String, _ b: String) -> Bool {
         let x = Array(a.utf16), y = Array(b.utf16)
         guard x.count == y.count else { return false }
         func upper(_ c: UInt16) -> String { String(utf16CodeUnits: [c], count: 1).uppercased() }
@@ -61,8 +69,21 @@ public enum LabRanges {
         }
     }
 
-    /// The mark for a value against a range written as the file writes it; nil when it can't tell.
-    public static func mark(value valueText: String, range rangeText: String) -> Mark? {
+    /// The range's unit agrees with the value's. A value with a unit against a range without one is compared only when the
+    /// table's header names that unit (validator P-C3: 6,5 mmol/L against "abaixo de 190" read WITHIN).
+    private static func sameUnit(_ value: String?, _ range: String?, _ context: String) -> Bool {
+        guard let value, !isBlank(value) else { return true }
+        guard let range, !isBlank(range) else {
+            return Rx("(?<![\\p{L}])\(NSRegularExpression.escapedPattern(for: value))(?![\\p{L}])", ignoreCase: true).containsMatch(in: context)
+        }
+        return equalsIgnoreCase(value, range)
+    }
+
+    /// The mark for a value against a range written as the file writes it; nil when it can't tell. `context`: the table's
+    /// header row, where a unit for the whole column may be written.
+    public static func mark(value valueText: String, range rangeText: String, context: String = "") -> Mark? {
+        // Units or magnitudes that don't line up: never guess a direction (t9 0435).
+        if ambiguous.containsMatch(in: valueText) || ambiguous.containsMatch(in: rangeText) { return nil }
         let vt = valueText.kotlinTrim()
         guard let v = matchEntire(value, vt), let x = number(g(v, 1, vt)) else { return nil }
         let u = g(v, 2, vt)
@@ -71,28 +92,38 @@ public enum LabRanges {
         if let m = matchEntire(between, r) {
             guard let lo = number(g(m, 1, r)), let hi = number(g(m, 3, r)) else { return nil }
             let hiUnit = g(m, 4, r)
-            if lo > hi || !sameUnit(unitOf, isBlank(hiUnit) ? g(m, 2, r) : hiUnit) { return nil }
+            if lo > hi || !sameUnit(unitOf, isBlank(hiUnit) ? g(m, 2, r) : hiUnit, context) { return nil }
             return x < lo ? .below : (x > hi ? .above : .within)
         }
         if let m = matchEntire(under, r) {
-            guard let lim = number(g(m, 1, r)) else { return nil }
-            if !sameUnit(unitOf, g(m, 2, r)) { return nil }
-            return x < lim ? .within : .above
+            guard let lim = number(g(m, 2, r)) else { return nil }
+            if !sameUnit(unitOf, g(m, 3, r), context) { return nil }
+            let within = matchEntire(inclusive, g(m, 1, r)) != nil ? x <= lim : x < lim
+            return within ? .within : .above
         }
         if let m = matchEntire(over, r) {
-            guard let lim = number(g(m, 1, r)) else { return nil }
-            if !sameUnit(unitOf, g(m, 2, r)) { return nil }
-            return x > lim ? .within : .below
+            guard let lim = number(g(m, 2, r)) else { return nil }
+            if !sameUnit(unitOf, g(m, 3, r), context) { return nil }
+            let within = matchEntire(inclusive, g(m, 1, r)) != nil ? x >= lim : x > lim
+            return within ? .within : .below
         }
         return nil
     }
 
     /// Every result row in `text` the code can mark.
     public static func rows(_ text: String) -> [Row] {
-        text.kotlinLines().compactMap { l in
-            guard let m = tableRow.firstMatch(in: l) ?? lineRow.firstMatch(in: l) else { return nil }
+        let lines = text.kotlinLines()
+        return lines.enumerated().compactMap { i, l in
+            if separator.containsMatch(in: l) { return nil }
+            let table = tableRow.firstMatch(in: l)
+            guard let m = table ?? lineRow.firstMatch(in: l) else { return nil }
+            // A table's header: the row right above its "|---|" line; its words can give a column's unit.
+            var header = ""
+            if table != nil {
+                header = lines[..<i].indices.last { k in k + 1 < lines.count && separator.containsMatch(in: lines[k + 1]) }.map { lines[$0] } ?? ""
+            }
             let name = g(m, 1, l).kotlinTrim(), val = g(m, 2, l).kotlinTrim(), range = g(m, 3, l).kotlinTrim()
-            return mark(value: val, range: range).map { Row(name: name, value: val, range: range, mark: $0) }
+            return mark(value: val, range: range, context: header).map { Row(name: name, value: val, range: range, mark: $0) }
         }
     }
 

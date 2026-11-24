@@ -117,11 +117,11 @@
    "id": "styles",
    "en": {
     "q": "How do I control the way BOAR answers?",
-    "a": "Pick an answer style in Settings → How BOAR answers: Succinct & Direct is the fastest and the default, Thorough & Detailed explains in more depth, Local Files answers only from your own files, and Custom lets you write your own. Deep Research is a separate switch: it researches in several passes over the knowledge packs, offline, and works with any style."
+    "a": "Pick an answer style in Settings → How BOAR answers: Thorough & Detailed explains in depth and is the default, Succinct & Direct is the fastest, Local Files answers only from your own files, and Custom lets you write your own. Deep Research is a separate switch: it researches in several passes over the knowledge packs, offline, and works with any style."
    },
    "pt": {
     "q": "Como eu controlo o jeito de o BOAR responder?",
-    "a": "Escolha um estilo de resposta em Configurações → Como o BOAR responde: Sucinto e direto é o mais rápido e o padrão, Completo e detalhado explica com mais profundidade, Arquivos locais responde só a partir dos seus arquivos, e Personalizado deixa você escrever o seu. A Pesquisa Profunda é um botão à parte: pesquisa em várias etapas nos pacotes de conhecimento, offline, e funciona com qualquer estilo."
+    "a": "Escolha um estilo de resposta em Configurações → Como o BOAR responde: Completo e detalhado explica com mais profundidade e é o padrão, Sucinto e direto é o mais rápido, Arquivos locais responde só a partir dos seus arquivos, e Personalizado deixa você escrever o seu. A Pesquisa Profunda é um botão à parte: pesquisa em várias etapas nos pacotes de conhecimento, offline, e funciona com qualquer estilo."
    },
    "checked": "corrected for rc3"
   }
