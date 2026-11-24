@@ -24,7 +24,6 @@ private struct MacSettingsTabs: View {
     @Environment(AppModel.self) private var model
     let services: BoarServices
     @State private var bridge: SettingsBridge
-    @State private var touring = false
 
     init(services: BoarServices) {
         self.services = services
@@ -47,11 +46,10 @@ private struct MacSettingsTabs: View {
             Tab("Privacy", systemImage: "hand.raised") {
                 BoarForm {
                     if let lock = model.lock { SettingsSecuritySection(lock: lock) }
-                    SettingsRecoverySection(services: services, bridge: bridge, touring: $touring)
+                    SettingsRecoverySection(services: services, bridge: bridge)
                 }
                 .formStyle(.grouped)
                 .frame(width: 600, height: 380)
-                .tourCover(isPresented: $touring)
             }
             Tab("Advanced", systemImage: "gearshape.2") {
                 AdvancedSettingsScreen(services: services, bridge: bridge)

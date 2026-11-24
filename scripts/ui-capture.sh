@@ -105,17 +105,6 @@ labs-2|labs|end
 lab-image|lab-image|
 avatars|avatars|
 avatars-2|avatars|end
-tour-welcome|tour-welcome|
-tour-theme|tour-theme|
-tour-styles|tour-styles|
-tour-deep|tour-deep|
-tour-sources|tour-sources|
-tour-knowledge|tour-knowledge|
-tour-models|tour-models|
-tour-adaptive|tour-adaptive|
-tour-lock|tour-lock|
-tour-labs|tour-labs|
-tour-end|tour-end|
 "
 
 if [ -n "${THEME:-}" ] && [ "$THEME" != system ]; then MODES="${MODES:-light}"; fi

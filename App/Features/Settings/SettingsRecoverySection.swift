@@ -1,15 +1,12 @@
 import BoarCore
 import SwiftUI
 
-/// The last section (android RecoverySection): the tour again, then the destructive actions: clear the chats, reset the
+/// The last section (android RecoverySection, no tour any more): clear the chats, reset the
 /// settings (setup opens again), erase everything.
 struct SettingsRecoverySection: View {
     @Environment(AppModel.self) private var model
     let services: BoarServices
     let bridge: SettingsBridge
-    /// The tour's cover lives on the screen that holds this section, outside the List: a List can drop an offscreen
-    /// row, and the cover on it (rotating to landscape moves this last row off screen).
-    @Binding var touring: Bool
     @State private var confirmClear = false
     @State private var confirmReset = false
     @State private var confirmPurge = false
@@ -20,13 +17,6 @@ struct SettingsRecoverySection: View {
 
     var body: some View {
         Section {
-            // The tour on its own (android "See the tour"): Done comes back here.
-            Button {
-                touring = true
-            } label: {
-                Label("See the Tour", systemImage: "signpost.right")
-                    .foregroundStyle(.boar(.link))
-            }
             Button(role: .destructive) {
                 confirmClear = true
             } label: {

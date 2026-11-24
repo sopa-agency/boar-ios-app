@@ -75,7 +75,7 @@ surface mixed by Compose's `lerp`, which mixes in Oklab. Paper is written out wh
   the flag is on; off (Android's default), the boars stay inside the app and the icons aren't shipped. The Mac app can
   only change the Dock icon while running (`NSApp.applicationIconImage`): leave it out there.
 - **PIN → app lock.** `pinOn` is iOS's lock (`AppLock`, Face ID / passcode); the clue says "Lock BOAR" instead of
-  "with a PIN" (same change the tour made).
+  "with a PIN" (same change setup's guide made).
 - **Airplane mode:** iOS has no API for it. Closest honest signal: opened with no network at all
   (`NWPath.status == .unsatisfied`, which `SystemStatus` already watches). Four avatars use it (nomad, ice, snow,
   tactical_ii); their clues will say "no network" instead of "airplane mode". **Decided 2026-11-11 (Biel):** a day
@@ -153,7 +153,7 @@ the app. DEBUG `-uiVault <json>` stores a state before the vault opens (`DebugLa
 | `AppModel.checkVault` (launch, `didBecomeActive`, leaving Models) → `onOpen` | `BoarServices.checkVault`, `MainActivity` start and leaving "models" |
 | `AppLock.enable` → `pinOn` | `MainActivity` PIN setup `onDone` → `checkVault` |
 | `ChatController.answer` after the answer is saved → `answered` | `ChatViewModel` after `upsertMessage` |
-| `AppModel.setTheme` (Settings → Display and the tour's theme card) → `themeChanged` | `SettingsScreen` (2 places), `MainActivity` tour |
+| `AppModel.setTheme` (Settings → Display and setup's theme page) → `themeChanged` | `SettingsScreen` (2 places), `SetupGuide` |
 | `EngineTweaksScreen.save`, non-Auto → `tweaksChanged` | `SettingsScreen` TweaksSection `save` |
 | `DocumentsController.run` after an import → `documents += files` | `DocumentsViewModel.import` |
 | `DocumentsController.exportFile` → `exports += 1` | `DocumentsViewModel.exportIntent` |
@@ -234,7 +234,7 @@ them into `ThemePalettes.swift` (and checks that the JVM's Paper equals the one 
 | iOS | Android |
 |---|---|
 | `ThemeTokens.vault`, `starter` (Tactical Red), `byAvatar` (Paper ← snow) | `Themes.extras`, `starter`, `byAvatar` |
-| `ThemeTokens.available(boarverse:state:)` → `AppModel.themeChoices` (Settings menu, tour chips) | `ThemePicker`'s filter |
+| `ThemeTokens.available(boarverse:state:)` → `AppModel.themeChoices` (Settings menu, setup chips) | `ThemePicker`'s filter |
 | `ThemeChoice.shown(boarverse:)` → `AppModel.theme` (the stored id is kept) | `MainActivity`'s `theme.takeIf { avatarsOn \|\| it in open }` |
 | Display footer "N more themes are unlocked by Labs and avatars." while Boarverse is on | `ThemePicker`'s note |
 | `TruffleVault.grantTheme`; DEBUG `-uiGrantThemes YES` grants them all | `grantTheme`; `BenchActivity` "themes" (adb) |

@@ -6,7 +6,6 @@ import Foundation
 ///     -uiDemo            seed an in-memory-style demo state (no model needed); wipes BOAR's files in the app container
 ///     -uiScreen <name>   open that screen directly (see `DebugRouter`); `lab-<id>` opens that lab's page; a setup screen
 ///                        is a preview that never downloads or saves setup's progress (safe on a phone already set up)
-///     -uiScreen tour-<card>  the tour on that card (welcome, theme, styles…), over Settings
 ///     -uiScroll <pts|end> scroll the main list that far once the screen is up
 ///     -uiBasket YES      with -uiDemo, Boar Press's basket starts with the demo chats' answers
 ///     -uiDesigner YES    with -uiDemo, Boar Designer's gallery starts with three pictures
@@ -73,8 +72,6 @@ enum DebugLaunch {
     static var labId: String? { screen.flatMap { $0.hasPrefix("lab-") ? String($0.dropFirst(4)) : nil } }
     /// The lock screen stays as it is drawn: no Face ID / passcode prompt, no error text under it.
     static var holdsLockScreen: Bool { screen == "lock" }
-    /// `-uiScreen tour-<card>` (`tour-welcome`, `tour-theme`…): the tour on that card, over Settings.
-    static var tourCard: TourCard? { screen.flatMap { $0.hasPrefix("tour-") ? TourCard(rawValue: String($0.dropFirst(5))) : nil } }
     /// `-uiScreen setup…`: setup is a preview this run (`SetupFlow.preview`): no download, no saved progress.
     static var previewsSetup: Bool { screen?.hasPrefix("setup") ?? false }
     #else
@@ -84,7 +81,6 @@ enum DebugLaunch {
     static func isScreen(_ name: String) -> Bool { false }
     static var labId: String? { nil }
     static var holdsLockScreen: Bool { false }
-    static var tourCard: TourCard? { nil }
     static var previewsSetup: Bool { false }
     #endif
 }

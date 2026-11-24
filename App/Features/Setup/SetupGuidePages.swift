@@ -34,12 +34,12 @@ struct SetupGuidePage: View {
 
     private var look: some View {
         VStack(alignment: .leading, spacing: 16) {
-            TourThemePicker()
+            SetupThemePicker()
             #if !os(macOS)
             GuideNote("Text size follows your \(Platform.deviceNoun)'s Dynamic Type setting.")
             #endif
-            // Below the chips, so a tap repaints the example right under the finger (as the tour's theme card).
-            TourPreview(card: .theme)
+            // Below the chips, so a tap repaints the example right under the finger.
+            ThemePreview()
         }
     }
 
@@ -58,7 +58,6 @@ struct SetupGuidePage: View {
                     .boarText("ui.body")
                 }
             }
-            TourPreview(card: .sources)
         }
     }
 
@@ -344,6 +343,15 @@ private struct GuideLockPage: View {
     let lock: AppLock
     @Environment(\.palette) private var palette
 
+    /// The Mac locks with Touch ID or its password and has no app switcher snapshot to hide.
+    private static var text: LocalizedStringResource {
+        #if os(macOS)
+        return "Touch ID or your Mac's password seals your chats. Imported documents aren't encrypted yet."
+        #else
+        return "Face ID, Touch ID or your passcode seals your chats and hides BOAR's screen in the app switcher. Imported documents aren't encrypted yet."
+        #endif
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             if lock.enabled {
@@ -358,7 +366,7 @@ private struct GuideLockPage: View {
                     }
                 }
             } else {
-                Text(TourCard.lock.text)
+                Text(Self.text)
                     .boarText("ui.body")
                     .foregroundStyle(.boar(.primary))
                 if lock.available {
@@ -396,6 +404,7 @@ private struct GuideLabsPage: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             GuideCard {
+                // One plain list, the tested ones first (the grid's order): no group headings, no status tag.
                 let shown = labs.visible.filter { $0.status <= .alpha }
                 ForEach(Array(shown.enumerated()), id: \.element.id) { i, lab in
                     if i > 0 { Divider() }
@@ -403,12 +412,9 @@ private struct GuideLabsPage: View {
                         HStack(alignment: .top, spacing: 12) {
                             picture(lab)
                             VStack(alignment: .leading, spacing: 4) {
-                                HStack(spacing: 6) {
-                                    Text(verbatim: lab.title)
-                                        .boarText("ui.titleSm")
-                                        .foregroundStyle(.boar(.heading))
-                                    LabStatusTag(status: lab.status)
-                                }
+                                Text(verbatim: lab.title)
+                                    .boarText("ui.titleSm")
+                                    .foregroundStyle(.boar(.heading))
                                 Text(verbatim: lab.body)
                                     .boarText("ui.caption")
                                     .foregroundStyle(.boar(.muted))
@@ -417,12 +423,7 @@ private struct GuideLabsPage: View {
                     }
                 }
             }
-            VStack(alignment: .leading, spacing: 4) {
-                GuideNote("Beta: tested on phones")
-                GuideNote("Alpha: early, less tested")
-            }
-            GuideNote("Labs don't slow the answers. The ones that load a model use extra memory while they run. All of them are in Settings → Advanced → Boar Labs.",
-                      role: .secondary)
+            GuideNote("Labs don't slow the answers. Switch them on or off any time in Boar Labs, in the menu.", role: .secondary)
         }
     }
 

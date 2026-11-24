@@ -93,7 +93,7 @@ final class AppModel {
     /// Boarverse is off (android MainActivity).
     var theme: ThemeChoice { chosenTheme.shown(boarverse: boarverse) }
 
-    /// The theme pickers' choices (Settings → Display, the tour): the open themes, and Boar Avatars' while Boarverse is
+    /// The theme pickers' choices (Settings → Display, setup): the open themes, and Boar Avatars' while Boarverse is
     /// on and they're unlocked.
     var themeChoices: [ThemeChoice] {
         let available = services.map { ThemeTokens.available(boarverse: boarverse, state: $0.vault.state) } ?? ThemeTokens.open
@@ -113,7 +113,7 @@ final class AppModel {
     func setTheme(_ choice: ThemeChoice) {
         chosenTheme = choice
         services?.settings.themeId = choice.storedId
-        // Settings → Display and the tour's theme card both come here (android SettingsScreen, MainActivity's tour).
+        // Settings → Display and setup's theme page both come here (android SettingsScreen, SetupGuide).
         services?.vault.record { $0.themeChanged = true }
     }
 
