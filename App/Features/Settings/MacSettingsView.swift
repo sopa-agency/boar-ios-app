@@ -25,6 +25,8 @@ private struct MacSettingsTabs: View {
     @Environment(AppModel.self) private var model
     let services: BoarServices
     @State private var bridge: SettingsBridge
+    /// What the iPhone's toasts say (the update note, what a pick down pauses), kept under the pills.
+    @State private var note: String?
 
     init(services: BoarServices) {
         self.services = services
@@ -38,9 +40,15 @@ private struct MacSettingsTabs: View {
                 BoarForm {
                     if SettingsPart.profile.shown(in: profile) {
                         Section {
-                            MacProfileRow(bridge: bridge, profile: profile)
+                            MacProfileRow(bridge: bridge, profile: profile) { p in
+                                note = p.ordinal < profile.ordinal ? ProfileCopy.pauseNote : nil
+                            }
                         } header: {
                             BoarHeader { Text("Profile") }
+                        } footer: {
+                            if let note {
+                                BoarFooter { Text(verbatim: note) }
+                            }
                         }
                     }
                     if SettingsPart.tone.shown(in: profile) { SettingsToneSection(services: services, bridge: bridge) }
@@ -89,19 +97,28 @@ private struct MacSettingsTabs: View {
         .onChange(of: bridge.version) {
             Task { await model.chat?.refreshSettings() }
         }
+        // After an update that gave the install a profile, its note shows once, under the pills.
+        .task {
+            guard bridge.settings.profileNotePending else { return }
+            bridge.settings.profileNotePending = false
+            note = ProfileCopy.updateToast(bridge.read { $0.userProfile })
+        }
     }
 }
 
-/// The profile pills as a row of the General tab. A pick has no toast here: the line it would say sits under the pills.
+/// The profile pills as a row of the General tab. A pick has no toast here: what it gives sits beside the pills, and what a
+/// pick down pauses under them (`onPick`).
 private struct MacProfileRow: View {
     let bridge: SettingsBridge
     let profile: UserProfile
+    let onPick: (UserProfile) -> Void
 
     var body: some View {
         HStack {
             ProfilePills(profile: profile) { p in
                 bridge.settings.userProfile = p
                 bridge.touch()
+                onPick(p)
             }
             Spacer()
             Text(verbatim: ProfileCopy.gives(profile))

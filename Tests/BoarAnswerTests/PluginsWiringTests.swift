@@ -68,11 +68,17 @@ struct PluginsWiringTests {
         let dir = Fixtures.root.appending(path: "App/Features/Labs/Plugins")
         let files = try FileManager.default.contentsOfDirectory(atPath: dir.path).filter { $0.hasSuffix("Lab.swift") }
         #expect(files.count >= 9)
-        let titles = /var title(?::\s*String)?\s*(?:=|\{\s*return)?\s*"([^"]*)"/
+        // `var title: String { String(localized: "Calculator") }`: every plugin's name has to be found, then checked.
+        let titles = /var title:\s*String\s*\{\s*(?:return\s+)?String\(localized:\s*"([^"]*)"/
+        var named = 0
         for f in files {
             let src = try AppSource.text("App/Features/Labs/Plugins/\(f)")
-            if let m = src.firstMatch(of: titles) { #expect(!m.1.hasPrefix("Boar"), Comment(rawValue: f)) }
+            if let m = src.firstMatch(of: titles) {
+                named += 1
+                #expect(!m.1.hasPrefix("Boar"), Comment(rawValue: f))
+            }
         }
+        #expect(named >= 9, "plugin names weren't found, so none was checked")
         let catalog = try AppSource.text("App/Resources/Localizable.xcstrings")
         let obj = try #require(JSONSerialization.jsonObject(with: Data(catalog.utf8)) as? [String: Any])
         let keys = try #require(obj["strings"] as? [String: Any]).keys

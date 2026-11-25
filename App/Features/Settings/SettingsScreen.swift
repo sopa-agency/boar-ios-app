@@ -67,7 +67,10 @@ struct SettingsScreen: View {
                 #endif
             }
         }
-        .overlay(alignment: .top) { ToastView(message: $toast, seconds: toastSeconds) }
+        .overlay(alignment: .top) {
+            // "New avatar unlocked" sits in the same place: this waits for it, as Android's one toast queue does.
+            if services.vault.fresh.isEmpty { ToastView(message: $toast, seconds: toastSeconds) }
+        }
         .task { showUpdateNote(profile) }
         .debugPush("settings-advanced") { AdvancedSettingsScreen(services: services, bridge: bridge) }
         .debugPush("settings-engine") { EngineTweaksScreen(services: services, bridge: bridge) }
