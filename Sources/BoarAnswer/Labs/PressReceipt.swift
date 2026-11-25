@@ -250,7 +250,9 @@ public enum PressReceipt {
         let longestFirst = names.enumerated().sorted { a, b in
             a.element.utf16.count != b.element.utf16.count ? a.element.utf16.count > b.element.utf16.count : a.offset < b.offset
         }.map(\.element)
-        let re = try! NSRegularExpression(pattern: #"(?<![\p{L}\p{N}_])(?:"# + longestFirst.map(asciiCaseless).joined(separator: "|") + #")(?![\p{L}\p{N}_])"#)
+        // Kotlin's Regex(IGNORE_CASE) adds UNICODE_CASE: "RELATÓRIO" matches "Relatório", as ICU's .caseInsensitive.
+        let re = try! NSRegularExpression(pattern: #"(?<![\p{L}\p{N}_])(?:"# + longestFirst.map { NSRegularExpression.escapedPattern(for: $0) }.joined(separator: "|") + #")(?![\p{L}\p{N}_])"#,
+                                          options: .caseInsensitive)
         let template = NSRegularExpression.escapedTemplate(for: ownFile)
         func x(_ t: String) -> String {
             re.stringByReplacingMatches(in: t, range: NSRange(location: 0, length: (t as NSString).length), withTemplate: template)
@@ -267,14 +269,6 @@ public enum PressReceipt {
             return .answer(a)
         }
         return out
-    }
-
-    /// Java's IGNORE_CASE without UNICODE_CASE folds ASCII letters only: each one as [xX], the rest literal.
-    private static func asciiCaseless(_ s: String) -> String {
-        s.map { c -> String in
-            if c.isASCII, c.isLetter { return "[\(c.lowercased())\(c.uppercased())]" }
-            return NSRegularExpression.escapedPattern(for: String(c))
-        }.joined()
     }
 
     /// Every text a card's body holds, through `x` (CodeRabbit on all73: a Facts value could still hold the file's name).

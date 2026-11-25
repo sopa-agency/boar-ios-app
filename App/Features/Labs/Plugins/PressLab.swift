@@ -46,7 +46,10 @@ struct PressLab: LabPlugin {
     }
 
     /// What the header sheet shows beside Press: the open project's answers (android `headerCount`; not on the icon).
-    func headerCount() -> Int { PressStore.shared.library?.current.answers.count ?? 0 }
+    func headerCount() -> Int {
+        PressStore.shared.load()  // as Android's headerCount: the sheet can open before anything read the projects
+        return PressStore.shared.library?.current.answers.count ?? 0
+    }
     func headerCountLabel(_ n: Int) -> String { String(localized: "\(n) in \(PressStore.shared.library?.current.name ?? "")") }
 
     /// The projects hold answers' text: they go with the chats (Forgot PIN, Clear all), every project and its folder;
@@ -327,7 +330,8 @@ private struct PressSections: View {
         }
         .task(id: name) {
             // Renamed a moment after typing stops; a blank name keeps the old one.
-            try? await Task.sleep(for: .milliseconds(800))
+            // A key typed meanwhile cancels this wait: only the last one renames (pr-review #66).
+            guard (try? await Task.sleep(for: .milliseconds(800))) != nil else { return }
             if let id = project?.id, name != project?.name { store.change { $0.rename(id, name) } }
         }
         .sheet(item: $editing) { a in PressAnswerEditor(answer: a) }

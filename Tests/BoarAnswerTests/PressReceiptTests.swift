@@ -208,6 +208,15 @@ struct PressScrubTests {
         let p = project(.answer(PressDoc.Answer("a2", "T", "Q", "Text", [pack])))
         #expect(PressReceipt.scrubOwnFiles(p, ownFile: "Your own file") == p)
     }
+
+    /// Kotlin's IGNORE_CASE is Unicode (Regex adds UNICODE_CASE): an accented name in another case goes too (pr-review #66).
+    @Test func anAccentedNameInAnotherCaseIsScrubbedToo() throws {
+        let accented = PressDoc.Source("Relatório-Ação", "Relatório-Ação.pdf")
+        let a = Block.answer(PressDoc.Answer("a1", "Relatório", "o que diz RELATÓRIO-AÇÃO.pdf?", "O relatório-ação.PDF fala de impostos [1].", [accented]))
+        let out = try #require(PressReceipt.scrubOwnFiles(project(a), ownFile: "Seu arquivo").answers.first)
+        #expect(out.question == "o que diz Seu arquivo?")
+        #expect(out.text == "O Seu arquivo fala de impostos [1].")
+    }
 }
 
 /// The validator's Press gate (android `PressGateGTest` G-5 and G-2, and the engine half of `ZzPressGTest`): a used
