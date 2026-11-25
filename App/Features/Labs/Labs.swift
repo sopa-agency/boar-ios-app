@@ -430,6 +430,7 @@ extension Labs {
         [
             DesignerLab(),
             VitalsLab(),
+            CardsLab(),
             PressLab(),
             CompassLab(),
             LunarLab(),

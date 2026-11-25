@@ -4,7 +4,7 @@ import Foundation
 /// A plugin the user never switched keeps following this list; a switch the user flipped is kept as it is.
 public enum LabDefaults {
     /// adam's default-on list, without the ALPHA labs still waiting for tests and a phone pass (`pendingAlpha`). Android's
-    /// ids: `image` is Designer, `canvas` is Cards (not on iOS yet). Polyglot left the list on Nov 11 and is deprecated.
+    /// ids: `image` is Designer, `canvas` is Cards. Polyglot left the list on Nov 11 and is deprecated.
     public static let on: Set<String> = ["pulse", "image", "printer", "calc", "distance", "facts", "cohazard", "canvas"]
 
     /// On adam's list but ALPHA: they start off until each has tests and a device pass, or is raised to BETA, or adam
