@@ -95,8 +95,8 @@ enum AvatarCopy {
         case .AIRPLANE_STREAK_3: String(localized: "Open BOAR with no network at all, 3 days in a row.")
         case .AIRPLANE_STREAK_7: String(localized: "Forage deep in the woods: no network, 7 days in a row.")
         case .AIRPLANE_DAYS_14: String(localized: "14 days off the grid, in any order.")
-        case .QUIZ_FIRST: String(localized: "Somewhere in Boar Labs, a question is waiting.")
-        case .QUIZ_DAYS_7: String(localized: "Answer the same lab’s questions for a week.")
+        case .QUIZ_FIRST: String(localized: "Somewhere in Plugins, a question is waiting.")
+        case .QUIZ_DAYS_7: String(localized: "Answer the same plugin’s questions for a week.")
         case .ALL_OTHERS: String(localized: "The legendary avatar: unlock every other one.")
         }
     }

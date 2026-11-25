@@ -40,10 +40,14 @@ enum ProfileCopy {
     }
 
     /// The one-time note after an update gave the install a profile.
-    static func updateToast(_ p: UserProfile) -> String {
+    /// `plugins`: the default-on plugins this update switched on, named so nobody finds one on without being told.
+    static func updateToast(_ p: UserProfile, plugins: [String] = []) -> String {
         var text = String(localized: "New in this version: profiles. BOAR picked \(nameText(p)) from your settings. Change it any time.")
         if p != .pro {
             text += " " + String(localized: "Technical details (live speed at the top of the chat, the answer's performance details, the menu's memory and storage bars) are now in Pro.")
+        }
+        if !plugins.isEmpty {
+            text += " " + String(localized: "These plugins are now on: \(plugins.joined(separator: ", ")). Turn them off in Plugins, in the menu.")
         }
         return text
     }

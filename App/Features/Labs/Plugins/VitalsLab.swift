@@ -17,8 +17,8 @@ struct VitalsLab: LabPlugin {
     let emoji = "🌡️"
     let art: String? = "truffle_synthetic"
     let status = LabStatus.live
-    var title: String { String(localized: "Boar Vitals") }
-    var body: String { String(localized: "Watch your \(Platform.deviceNoun) work: heat, every core's load, memory and the chip BOAR runs on.") }
+    var title: String { String(localized: "Vitals") }
+    var body: String { String(localized: "Watch your \(Platform.deviceNoun) work: heat, battery, cores and memory.") }
 
     func content() -> AnyView { AnyView(VitalsSections()) }
 }
@@ -103,6 +103,7 @@ private struct VitalsSections: View {
                         Text("Leave this open, ask BOAR something, then come back to see what it cost.")
                     }
                 }
+                PluginPage(how: String(localized: "• Heat, battery, every core's load, memory and the chip BOAR runs on, read on this \(Platform.deviceNoun)."))
             } else {
                 // Something on screen before the first sample: an empty Group in a Form never runs its .task.
                 Section { ProgressView().frame(maxWidth: .infinity) }

@@ -395,7 +395,8 @@ private struct GuideLockPage: View {
     }
 }
 
-/// The labs a user can switch on (live, beta and alpha), each with its switch, off until switched on.
+/// The plugins a user can switch on (live, beta and alpha), each with its switch: the default-on ones start on. The same
+/// switches as the Plugins list, so turning Cohazard off asks here too (android `LabHooks.SetupList`).
 private struct GuideLabsPage: View {
     @State private var labs = Labs.shared
     @Environment(\.palette) private var palette
@@ -404,11 +405,12 @@ private struct GuideLabsPage: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             GuideCard {
-                // One plain list, the tested ones first (the grid's order): no group headings, no status tag.
+                // One plain list, the tested ones first: no group headings, no status tag.
                 let shown = labs.visible.filter { $0.status <= .alpha }
+                    .sorted { ($0.status <= .beta ? 0 : 1) < ($1.status <= .beta ? 0 : 1) }
                 ForEach(Array(shown.enumerated()), id: \.element.id) { i, lab in
                     if i > 0 { Divider() }
-                    Toggle(isOn: Binding(get: { labs.enabled(lab.id) }, set: { labs.setEnabled(lab.id, $0) })) {
+                    GuideLabToggle(lab: lab) {
                         HStack(alignment: .top, spacing: 12) {
                             picture(lab)
                             VStack(alignment: .leading, spacing: 4) {
@@ -423,7 +425,7 @@ private struct GuideLabsPage: View {
                     }
                 }
             }
-            GuideNote("Labs don't slow the answers. Switch them on or off any time in Boar Labs, in the menu.", role: .secondary)
+            GuideNote("Plugins don't slow the answers. Switch them on or off any time in Plugins, in the menu.", role: .secondary)
         }
     }
 
@@ -559,5 +561,23 @@ private struct GuideSwitch: View {
                     .foregroundStyle(.boar(.secondary))
             }
         }
+    }
+}
+
+/// One plugin's switch in setup's list, with the question before the safety plugin goes off.
+private struct GuideLabToggle<Label: View>: View {
+    let lab: any LabPlugin
+    @ViewBuilder let label: () -> Label
+    @State private var labs = Labs.shared
+    @State private var asking = false
+
+    var body: some View {
+        Toggle(isOn: Binding(
+            get: { labs.enabled(lab.id) },
+            set: { on in
+                if PluginReach.asksBeforeOff(lab.id, turningOn: on) { asking = true } else { labs.setEnabled(lab.id, on) }
+            }
+        ), label: label)
+        .safetyOffAlert(isPresented: $asking) { labs.setEnabled(lab.id, false, confirmed: true) }
     }
 }

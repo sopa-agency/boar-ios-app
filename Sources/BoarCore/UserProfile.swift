@@ -56,15 +56,3 @@ public enum SettingsPart: CaseIterable, Sendable {
     public static let experimentalRows: [SettingsPart] = [.boarverseSwitch, .labsSettings, .adaptiveRouting]
     public static func experimentalShown(in profile: UserProfile) -> Bool { experimentalRows.contains { $0.shown(in: profile) } }
 }
-
-/// The pure parts of android `LabDefaults` that profiles need. The default-on list and the update note belong with the
-/// Plugins work (BOAR-53).
-public enum LabDefaults {
-    /// The user switched a lab on themselves (a stored true), counted only while Boar Labs is on: a switch left on behind a
-    /// master switch that's off shows nowhere, so it must not make the install Pro.
-    public static func userChoseOn(labsOn: Bool, stored: [Bool?]) -> Bool { labsOn && stored.contains(true) }
-
-    /// Boar Labs' own places (the sidebar item, the page, its settings) are Pro's. A lab that is on keeps working in every
-    /// profile: its rows under answers and its header badge are not gated.
-    public static func managementShown(_ profile: UserProfile) -> Bool { profile == .pro }
-}

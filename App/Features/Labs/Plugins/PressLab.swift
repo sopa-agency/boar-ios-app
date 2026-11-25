@@ -3,7 +3,7 @@ import BoarCore
 import SwiftUI
 
 /// Boar Press (android labs/plugins/printer `PrinterLab.kt`): the research basket as a document. Answers come in from any
-/// chat (More → Add to the Printer basket); here they're reordered, edited or dropped, and compiled to an A4 PDF
+/// chat (More → Add to Press); here they're reordered, edited or dropped, and compiled to an A4 PDF
 /// (BoarAnswer `PressPDF`) or a Markdown file, shared through the share sheet (Save to Files included). iOS has no Image
 /// Gen, so there are no drawings to pick and the drawing switches stay hidden, as Android hides them when no answer has
 /// a drawing.
@@ -13,17 +13,21 @@ struct PressLab: LabPlugin {
     let emoji = "🖨️"
     let art: String? = "truffle_steampunk"
     let status = LabStatus.beta
-    var title: String { String(localized: "Boar Press") }
+    var title: String { String(localized: "Press") }
     var body: String { String(localized: "Collect answers from any chat into a basket, then compile them into a PDF or a Markdown file.") }
 
     func content() -> AnyView { AnyView(PressSections()) }
+
+    var about: String? {
+        String(localized: "Answers come from a chat: under an answer, open the plugins and tap Add to Press. Here you reorder, edit or drop them, then compile the page to an A4 PDF or a Markdown file, made offline on this \(Platform.deviceNoun).")
+    }
 
     /// 📎 in the answer's More menu: into the basket with its question, sources and chat title; again takes it out.
     func answerActions(_ a: AnswerRef) -> [LabAnswerAction] {
         let basket = BasketModel.shared
         let added = basket.contains(a.id)
         return [LabAnswerAction(id: "printer.basket",
-                                title: added ? String(localized: "In the Printer basket (tap to remove)") : String(localized: "Add to the Printer basket"),
+                                title: added ? String(localized: "In Press (tap to remove)") : String(localized: "Add to Press"),
                                 systemImage: "paperclip", done: added) {
             if added {
                 basket.remove(a.id)
@@ -35,10 +39,9 @@ struct PressLab: LabPlugin {
         }]
     }
 
-    /// 📎 n in the chat's toolbar while the basket has something: opens the Press.
-    func headerBadge(open: @escaping () -> Void) -> AnyView? {
-        BasketModel.shared.items.isEmpty ? nil : AnyView(PressBadge(open: open))
-    }
+    /// What the header sheet shows beside Press: the basket's answers (android `headerCount`; not on the icon).
+    func headerCount() -> Int { BasketModel.shared.items.count }
+    func headerCountLabel(_ n: Int) -> String { String(localized: "📎 \(n) in the basket") }
 
     /// The basket holds answers' text: it goes with the chats, except when Clear Chat History keeps Press.
     func eraseUserData(_ scope: UserDataScope) {
@@ -145,24 +148,6 @@ enum PressPrefs {
     }
 
     static var today: String { Date().formatted(date: .long, time: .omitted) }
-}
-
-private struct PressBadge: View {
-    let open: () -> Void
-    @State private var basket = BasketModel.shared
-
-    var body: some View {
-        let n = basket.items.count
-        if n > 0 {
-            Button(action: open) {
-                // Never wider than "9+".
-                Text(verbatim: "📎 " + (n > 9 ? "9+" : "\(n)"))
-                    .font(.boar("mono.xs").weight(.heavy))
-                    .lineLimit(1)
-            }
-            .accessibilityLabel(Text("Boar Press: \(n) answers in the basket"))
-        }
-    }
 }
 
 private struct PressSections: View {

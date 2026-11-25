@@ -14,8 +14,8 @@ struct FactsLab: LabPlugin {
     let emoji = "📇"
     let art: String? = "lab_facts"
     let status = LabStatus.beta
-    var title: String { String(localized: "Boar Facts") }
-    var body: String { String(localized: "One fact about a country, city, mountain, river, landmark or award, from a Wikidata table, without the model.") }
+    var title: String { String(localized: "Facts") }
+    var body: String { String(localized: "Quick facts on countries, cities, mountains and rivers.") }
     var answerTool: (any AnswerTool)? { Tool() }
     var searchStage: (any SearchStage)? { Stage() }
 
@@ -48,23 +48,37 @@ struct FactsLab: LabPlugin {
     }
 
     func content() -> AnyView {
-        AnyView(Group {
-            Section {
-                Text("• Population, area, capital, currency, official languages, continent and borders\n• Height or elevation, length and depth\n• When a landmark was built or came down\n• Plug types and mains voltage\n• Where an event was held, and an award's winner in a given year\n• Two places compared: which is bigger, taller, longer or has more people")
-            } header: {
-                Text(LocalizedStringResource("labs.answersOnItsOwn.m", defaultValue: "Answers on its own", comment: "Header; PT is masculine (Boar Fatos, Boar Distância)"))
-            }
-            Section {
-                LabExample("Does Brazil have more people than Russia?")
-                LabExample("What plug type and voltage does Brazil use?")
-                LabExample("If you stood the Burj Khalifa on the deepest point of Lake Baikal, would its top stick out of the water?")
-            } header: {
-                Text("Try")
-            } footer: {
-                BoarFooter {
-                    Text("It answers only when the question names something in the table and asks for exactly one of these; every answer ends with its source and the table's date (Wikidata, CC0, October 2026), and an older population figure says how old it is. Two properties at once, an overview, a why or how question, a name it can't tell apart (Georgia), or a chat about health goes to the model as usual. Questions in English only. Ported from r4to's offline facts (BOAR R&D).")
-                }
-            }
-        })
+        AnyView(FactsPage())
+    }
+}
+
+/// The template with what it knows in three groups (adam): Places, Measures, Other.
+private struct FactsPage: View {
+    var body: some View {
+        Section {
+            Text("Answers from a Wikidata table kept on the phone. English only for now.")
+                .font(.boar("ui.bodyLg"))
+                .foregroundStyle(.boar(.primary))
+            group("Places", "population, area, capital, currency, languages, continent, borders")
+            group("Measures", "height, length, depth; which of two places is bigger, higher, longer or has more people")
+            group("Other", "when a monument was built, plugs and voltage, where an event happened, who won a prize in a year")
+            Text("Every answer shows its source and date (Wikidata, October 2026).")
+                .font(.boar("ui.caption"))
+                .foregroundStyle(.boar(.muted))
+        }
+        AnswerPage(
+            question: String(localized: "What is the capital of Kenya?"),
+            reply: String(localized: "The capital of Kenya is Nairobi.\n\nSource: Wikidata (CC0), offline table as of 2026-10-06."),
+            tries: [String(localized: "Does Brazil have more people than Russia?"),
+                    String(localized: "What plug type and voltage does Brazil use?"),
+                    String(localized: "If you stood the Burj Khalifa on the deepest point of Lake Baikal, would its top stick out of the water?")],
+            how: String(localized: "• Answers from a Wikidata table kept on the phone, English only for now.\n• Two facts at once, a summary, a why or how, an ambiguous name (Georgia) or a health conversation go to the model.\n• An older population shows its year.\n• Every answer shows its source and date (Wikidata, October 2026).\n• Offline data from r4to (BOAR R&D)."))
+    }
+
+    private func group(_ title: LocalizedStringKey, _ list: LocalizedStringKey) -> some View {
+        VStack(alignment: .leading, spacing: 0) {
+            Text(title).font(.boar("ui.body").weight(.semibold)).foregroundStyle(.boar(.heading))
+            Text(list).font(.boar("ui.body")).foregroundStyle(.boar(.secondary))
+        }
     }
 }

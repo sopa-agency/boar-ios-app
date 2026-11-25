@@ -44,14 +44,15 @@ the removed Tour does differently, and what the Plugins work (BOAR-53) must fini
   `-uiProfile <simple|explorer|pro>` / `-uiProfileNote YES` open Settings as a profile or with the update toast (DEBUG).
   Glass materials (the toast's background) don't render in that capture.
 
-## What BOAR-53 must finish
+## What BOAR-53 finished (2026-11-24)
 
-- The Plugins list, switches and pages, and the name: Android says "Plugins" and "Experimental > Open the Plugins"; iOS still says
-  Boar Labs (the master switch row, the sidebar item, the setup guide's Labs page).
-- The default-on plugin list (`LabDefaults`'s default-on set, `userChoseOn` for the plugins that start on) and the toast that names
-  the plugins an update turned on (`native.settings.profile.labsOn`). `AppModel` passes only a plugin the user switched on.
-- Whether Boar Labs' sidebar item and page are Pro's (`LabDefaults.managementShown`): today only the master switch and the
-  storage limit in Experimental are Pro's, because Android's `proProfile` is unused at v2.0.0. A plugin that is on keeps working in
-  every profile.
-- Plugin settings that Pro gates ("plugin settings pause below Pro" in the going-down toast) and About's "Plugins on" list, which
-  lists `Labs.shared.active` today.
+- Plugins everywhere: the Experimental note, the sidebar item, the setup guide's page and About say Plugins. The Experimental note is
+  "Extra tools in the menu and under answers. Each one can be switched on or off. Some start on; switch on the others you want in Plugins.
+  If one misbehaves, ..."; an "Open Plugins" link sits under it in every profile.
+- Default-on list and toast: `LabDefaults.switchOf` with a stored tri-state; the update toast appends "These plugins are now on: ..." with
+  `Labs.turnedOnByUpdate`.
+- Pro's share is only the master switch and the storage limit in Experimental. The plugins list, the header icon and sheet and every plugin
+  page and switch are in every profile, as at v2.0.0 (`LabDefaults.managementShown` is unused there). A plugin that is on keeps working.
+- Cohazard asks before going off in every profile, from the list, its page and setup.
+- About's "Plugins on" list is `Labs.shared.active`, which excludes deprecated plugins (Polyglot).
+- Not done: "plugin settings pause below Pro" in the going-down toast: Android doesn't use it at v2.0.0 either.

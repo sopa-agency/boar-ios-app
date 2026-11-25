@@ -71,8 +71,15 @@ protocol LabPlugin {
     /// `answerNotes`, adam Nov 14): an error, a refusal. No lab here makes one yet (android's only source is Designer's
     /// "Not enough free memory to draw", and Designer isn't ported); the slot is ready for the first.
     func answerNotes(_ answer: AnswerRef) -> [LabAnswerNote]
-    /// A small badge in the chat's toolbar (android `HeaderBadge`); `open` shows this lab's page.
-    func headerBadge(open: @escaping () -> Void) -> AnyView?
+    /// A count shown beside this plugin in the chat header's sheet (android `headerCount`); 0 shows none. Never on the icon.
+    func headerCount() -> Int
+    func headerCountLabel(_ n: Int) -> String
+    /// "About this plugin", folded at the foot of the page: the longer explanation the list's line leaves out. A page with
+    /// a "How it works" fold has none, so a page has one fold.
+    var about: String? { get }
+    /// The plugin lays out the whole page itself (android `fullPage`): no Form and no shared header; the page switch sits
+    /// in the navigation bar. No iOS plugin is one yet.
+    var fullPage: Bool { get }
     /// Erases what this lab made from the user's chats (android `eraseUserData`): runs with the chats' erase, even while
     /// the lab is switched off.
     func eraseUserData(_ scope: UserDataScope)
@@ -120,7 +127,10 @@ extension LabPlugin {
     func presenter() -> AnyView? { nil }
     func answerActions(_ answer: AnswerRef) -> [LabAnswerAction] { [] }
     func answerNotes(_ answer: AnswerRef) -> [LabAnswerNote] { [] }
-    func headerBadge(open: @escaping () -> Void) -> AnyView? { nil }
+    func headerCount() -> Int { 0 }
+    func headerCountLabel(_ n: Int) -> String { "\(n)" }
+    var about: String? { nil }
+    var fullPage: Bool { false }
     func eraseUserData(_ scope: UserDataScope) {}
     /// A lab under review (frozen) shows the ice boar, whatever its own art.
     var shownArt: String? { status == .review ? "lab_frozen" : art }
@@ -155,7 +165,12 @@ final class Labs {
 
     @ObservationIgnored private let defaults: UserDefaults
     private var on: Bool
-    private var enabledIds: Set<String>
+    /// What the user chose, per plugin (nil: never switched, so the default list decides; android `LabPrefs.stored`).
+    private var stored: [String: Bool]
+    /// Plugins the user switched off from their own pages: the header sheet lists them as off (PluginReach).
+    private var offFromPage: Set<String>
+    /// The plugins used last, newest first (RecentPlugins); kept apart from settings.
+    private var recent: [String]
     private var unlockedIds: Set<String>
     /// Classified tiles leaked with the easter egg: they last while Boar Labs is open (Android, Oct 19).
     private var revealedIds: Set<String> = []
@@ -164,9 +179,14 @@ final class Labs {
     init(defaults: UserDefaults, labs: [any LabPlugin] = Labs.registry) {
         self.defaults = defaults
         all = labs.sorted { $0.order < $1.order }
-        // The Labs build opens with Boar Labs on; every lab in it starts off.
+        // The master switch starts on; a plugin never switched follows the default list (LabDefaults) until the user flips it.
         on = defaults.object(forKey: "labs.on") as? Bool ?? true
-        enabledIds = Set(all.map(\.id).filter { defaults.bool(forKey: "labs.enabled.\($0)") })
+        stored = Dictionary(uniqueKeysWithValues: all.compactMap { lab in
+            // `bool(forKey:)` also reads a launch argument's "YES"; object(forKey:) tells never-set from off.
+            defaults.object(forKey: "labs.enabled.\(lab.id)") == nil ? nil : (lab.id, defaults.bool(forKey: "labs.enabled.\(lab.id)"))
+        })
+        offFromPage = Set(defaults.stringArray(forKey: "labs.offFromPage") ?? [])
+        recent = defaults.stringArray(forKey: "labs.recent") ?? []
         unlockedIds = Set(all.map(\.id).filter { defaults.bool(forKey: "labs.unlocked.\($0)") })
         storageLimitChoice = defaults.string(forKey: Self.storageLimitKey) ?? "auto"
     }
@@ -203,9 +223,11 @@ final class Labs {
         }
     }
 
-    /// In the grid's order: live, then beta, alpha, under review, classified; plugin.properties order within each.
+    /// In the list's order: live, then beta, alpha, under review, classified; plugin.properties order within each. A
+    /// deprecated plugin (Polyglot) is not listed (android `LabRegistry.visible`).
     var visible: [any LabPlugin] {
-        all.enumerated().sorted { ($0.element.status, $0.offset) < ($1.element.status, $1.offset) }.map(\.element)
+        all.enumerated().filter { !LabDefaults.deprecated.contains($0.element.id) }
+            .sorted { ($0.element.status, $0.offset) < ($1.element.status, $1.offset) }.map(\.element)
     }
 
     /// The lab a tile opens: itself, a classified one's working lab once the user unlocked it, else nil.
@@ -219,13 +241,14 @@ final class Labs {
         visible.first { $0.id == id }.flatMap(opened)
     }
 
-    /// The labs that fill slots: open (not classified, or unlocked) and switched on, with Boar Labs on.
+    /// The labs that fill slots: open (not classified, or unlocked) and switched on, with Plugins on. A deprecated one
+    /// (Polyglot) fills none, whatever its switch said before.
     var active: [any LabPlugin] {
         guard labsOn else { return [] }
-        return visible.compactMap(opened).filter { enabled($0.id) }
+        return visible.compactMap(opened).filter { enabled($0.id) && !LabDefaults.deprecated.contains($0.id) }
     }
 
-    /// The tool slot's tools: safety first (Boar Cohazard), then Boar Polyglot, then grid order.
+    /// The tool slot's tools: safety first (Cohazard), then Boar Polyglot, then grid order.
     var activeTools: [any AnswerTool] {
         active.enumerated()
             .sorted { (LabTools.slotRank($0.element.id), $0.offset) < (LabTools.slotRank($1.element.id), $1.offset) }
@@ -252,11 +275,51 @@ final class Labs {
     /// What Press holds that "Also delete Press" would delete: the basket's answers (android `UserData.pressProjects`).
     var pressItems: Int { BasketModel.shared.items.count }
 
-    func enabled(_ id: String) -> Bool { enabledIds.contains(id) }
+    /// The switch as shown: the user's own choice, else the default-on list (`LabDefaults.switchOf`).
+    func enabled(_ id: String) -> Bool { LabDefaults.switchOf(id, stored: stored[id]) }
 
-    func setEnabled(_ id: String, _ value: Bool) {
-        if value { enabledIds.insert(id) } else { enabledIds.remove(id) }
+    /// The user's own choice, nil while they never switched it (what an update turned on, what makes an install Pro).
+    func storedChoice(_ id: String) -> Bool? { stored[id] }
+
+    /// `fromPage`: the switch on the plugin's own page; an off plugin from there stays listed in the header sheet. A safety
+    /// plugin goes off only once its question was answered (`confirmed`; `PluginReach.allowsSet`).
+    func setEnabled(_ id: String, _ value: Bool, fromPage: Bool = false, confirmed: Bool = false) {
+        guard PluginReach.allowsSet(id, on: value, confirmed: confirmed) else { return }
+        DebugLog.settingChanged("labs.enabled.\(id)", old: enabled(id), new: value)
+        stored[id] = value
+        offFromPage = PluginReach.offFromPageAfter(offFromPage, id: id, on: value, fromPage: fromPage)
         defaults.set(value, forKey: "labs.enabled.\(id)")
+        defaults.set(offFromPage.sorted(), forKey: "labs.offFromPage")
+    }
+
+    /// The header sheet's Off section: plugins switched off from their pages, and an off safety plugin.
+    var offListed: [any LabPlugin] {
+        guard labsOn else { return [] }
+        let ids = PluginReach.offListed(visible.compactMap(opened).map(\.id), enabled: enabled, offFromPage: offFromPage)
+        return ids.compactMap(byId)
+    }
+
+    /// The chat header's plugins icon: any plugin on, or one listed as off.
+    var headerIconShown: Bool {
+        labsOn && PluginReach.headerIconShown(activeIds: active.map(\.id), offListed: offListed.map(\.id))
+    }
+
+    /// The plugins in the header sheet: the last three used among those on (RecentPlugins).
+    var recentShown: [any LabPlugin] {
+        RecentPlugins.pick(active: active.map(\.id), recent: recent).compactMap { id in active.first { $0.id == id } }
+    }
+
+    /// A plugin's page opened, or one of its actions used: it moves to the front of the recent list.
+    func used(_ id: String) {
+        recent = RecentPlugins.used(recent, id: id)
+        defaults.set(recent, forKey: "labs.recent")
+    }
+
+    /// Default-on plugins this install never switched: on because of the update (the one-time note names them).
+    var turnedOnByUpdate: [any LabPlugin] {
+        guard labsOn else { return [] }
+        let ids = LabDefaults.turnedOnByUpdate(ids: visible.compactMap(opened).map(\.id), stored: { stored[$0] })
+        return ids.compactMap(byId)
     }
 
     func revealed(_ id: String) -> Bool { revealedIds.contains(id) }
@@ -275,6 +338,7 @@ final class Labs {
     /// Who wrote an instant answer, from its receipt's tool code: the lab speaks by its tile's name, so the chat and the
     /// switch to turn it off say the same thing. `canBypass`: "Ask BOAR instead" is offered (not for the CO safety answer).
     struct Speaker: Equatable {
+        let id: String
         let title: String
         let art: String?
         let emoji: String
@@ -293,16 +357,25 @@ final class Labs {
         default: nil
         }
         guard let lab = id.flatMap(byId) else { return nil }
-        return Speaker(title: lab.title, art: lab.art, emoji: lab.emoji, canBypass: lab.id != "cohazard")
+        return Speaker(id: lab.id, title: lab.title, art: lab.art, emoji: lab.emoji, canBypass: lab.id != "cohazard")
     }
 }
 
 /// The name and picture an instant answer speaks with, over its text (BoarSpeakerLabel's row, with the lab's art).
+/// A tap opens that plugin's page over the chat (android 18352f05: the picture and the name open the plugin's page).
 struct LabSpeakerLabel: View {
     let speaker: Labs.Speaker
+    @Environment(AppModel.self) private var model
     @ScaledMetric(relativeTo: .caption) private var side = 20
 
     var body: some View {
+        Button { model.openPlugin(speaker.id) } label: { label }
+            .buttonStyle(.plain)
+            .accessibilityLabel(Text("Answered by \(speaker.title)"))
+            .accessibilityHint(Text("Open \(speaker.title)"))
+    }
+
+    private var label: some View {
         HStack(spacing: 6) {
             if let art = speaker.art {
                 Image(art)
@@ -316,8 +389,7 @@ struct LabSpeakerLabel: View {
             Text(verbatim: speaker.title)
                 .speakerStyle()
         }
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel(Text("Answered by \(speaker.title)"))
+        .contentShape(.rect)
     }
 }
 
