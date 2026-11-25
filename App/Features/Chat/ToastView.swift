@@ -16,6 +16,8 @@ struct ToastView: View {
                 .task(id: message) {
                     AccessibilityNotification.Announcement(message).post()
                     try? await Task.sleep(for: .seconds(seconds))
+                    // Taken off the screen before its time (held behind another banner): it shows again, whole, after.
+                    guard !Task.isCancelled else { return }
                     withAnimation { self.message = nil }
                 }
         }

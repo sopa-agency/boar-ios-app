@@ -31,8 +31,12 @@ enum ProfileCopy {
     /// What a pick shows, and for how long: going down adds what pauses.
     static func pickToast(_ p: UserProfile, from old: UserProfile) -> (text: String, seconds: Double) {
         let down = p.ordinal < old.ordinal
-        let note = String(localized: "Advanced tweaks and plugin settings pause below Pro. Your settings are kept.")
-        return (gives(p) + (down ? " " + note : ""), down ? 4.5 : 2.8)
+        return (gives(p) + (down ? " " + pauseNote : ""), down ? 4.5 : 2.8)
+    }
+
+    /// What a pick down adds.
+    static var pauseNote: String {
+        String(localized: "Advanced tweaks and plugin settings pause below Pro. Your settings are kept.")
     }
 
     /// The one-time note after an update gave the install a profile.
