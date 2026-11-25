@@ -1,4 +1,5 @@
 import BoarCore
+import BoarRAG
 import Foundation
 
 /// The card shown under one answer (android `AnswerCard`; Cards, adam's interview, Nov 14; t9 0207 items 3 and 4): what
@@ -279,4 +280,26 @@ public struct AnswerCard: Equatable, Sendable {
         m[metaTicks] = ticks.isEmpty ? nil : .array(ticks.sorted().map { .int(Int64($0)) })
         return JSONValue.object(m).jsonString
     }
+}
+
+extension AnswerCard {
+    /// The sources a rule card's title may come from (android CanvasLab `titleSources`): a pack's, never a user's own file,
+    /// whose title is its file name (validator R-A1: the title printed bold in a shared PDF or .md).
+    public static func titleSources(_ sources: [(title: String, source: String?)]) -> [String] {
+        sources.filter { $0.source.map(shareable) ?? false }.map(\.title)
+    }
+
+    /// A source that may print in a shared PDF or .md (android `PressReceipt.shareable`, validator A-1): a pack's or the
+    /// corpus's "Wikipedia — https://…", or a pack's bare label. For the user's own files the source is the file name
+    /// ("imposto-2025.pdf"): never.
+    public static func shareable(_ source: String) -> Bool {
+        let s = source.kotlinTrim()
+        if s.isEmpty { return false }
+        if packStyle.containsMatch(in: s) { return true }
+        // BOAR's own guide and FAQ (BoarPack): public text, never a user's file.
+        if BoarPack.isBoarSource(s) { return true }
+        return Packs.sourceLabel.values.contains(s)
+    }
+
+    private static let packStyle = Rx.javaWhole(#"[^—\n]{1,60} — https?://\S+(?: \([^)\n]{1,60}\))?"#)
 }

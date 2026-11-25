@@ -121,6 +121,18 @@ struct AnswerCardTests {
         #expect(steps.body == .steps(["Boil the water", "Let it cool"]))
         #expect(steps.title == "Boil")
     }
+
+    /// android CanvasLab `titleSources` over PressReceipt.shareable (validator R-A1): a rule card's title comes from a
+    /// pack's source, never from a user's own file, whose title is its file name.
+    @Test func aRuleCardsTitleComesOnlyFromAPacksSource() {
+        let sources: [(title: String, source: String?)] = [
+            ("imposto-2025.pdf", "imposto-2025.pdf"), ("Notes", nil),
+            ("Mount Everest", "Wikipedia — https://en.wikipedia.org/wiki/Mount_Everest"), ("K2", "Wikipedia"), ("Ask", "BOAR FAQ"),
+        ]
+        #expect(AnswerCard.titleSources(sources) == ["Mount Everest", "K2", "Ask"])
+        #expect(!AnswerCard.shareable("  "))
+        #expect(AnswerCard.titleFor(.steps(["a", "b"]), question: "How do I boil water?", sources: AnswerCard.titleSources(sources)) == "Mount Everest")
+    }
 }
 
 /// android AnswerCardPtTest (coder's F3 check, 15 Nov): a model's card under a Portuguese answer dropped Brasil, whose

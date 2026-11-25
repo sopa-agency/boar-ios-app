@@ -89,6 +89,12 @@ public final class ChatStore: @unchecked Sendable {
         }
     }
 
+    /// One message's meta (its sources, receipt, card…), nil when it has none (android `messageMeta`).
+    public func messageMeta(messageId: String) throws -> String? {
+        try db.query("SELECT meta FROM chat_message_meta WHERE message_id = ?", args: [.text(messageId)]) { $0.string(0) }
+            .first.flatMap { $0 }.map(open)
+    }
+
     public func setMessageMeta(messageId: String, meta: String) throws {
         try db.execute("INSERT OR REPLACE INTO chat_message_meta (message_id, meta) VALUES (?, ?)", args: [.text(messageId), .text(seal(meta))])
     }
