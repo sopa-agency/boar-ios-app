@@ -206,4 +206,14 @@ public enum BoarData {
     }
 
     public static func data(_ file: File) throws -> Data { try Data(contentsOf: url(file)) }
+
+    /// The bench's topic files (android assets/boar-data/topics, `<id>.v<version>.json`), by file name; BenchTopic picks
+    /// the newest of each.
+    public static func topicFiles() -> [String: Data] {
+        guard let dir = Bundle.module.url(forResource: "Topics", withExtension: nil),
+              let names = try? FileManager.default.contentsOfDirectory(atPath: dir.path(percentEncoded: false)) else { return [:] }
+        var out: [String: Data] = [:]
+        for n in names where n.hasSuffix(".json") { out[n] = try? Data(contentsOf: dir.appending(path: n)) }
+        return out
+    }
 }

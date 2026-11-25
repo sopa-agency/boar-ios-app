@@ -64,11 +64,18 @@ public struct EvalRequest: Sendable, Equatable {
     /// The language fix's arm for this run (t9 0420 item 5): 0 no language line (the "before"), 1 the line (users), 2 also
     /// the style reminder in Portuguese, 3 also the style prompt. Nil: as the build ships (1). Bench only.
     public var languageArm: Int?
+    /// A bench preset ("fast", "fast-plugins", "complete-research"; `BenchPresets`): its level picks the models (unless
+    /// `models` names them) and the styles, its topics the questions. Nil: the request as before.
+    public var preset: BenchPreset?
+    /// Search only (t9 0321, the ebook case): each question's search runs and its sources are written with their scores;
+    /// no answer. Device requests only: the Benchmark screen has no way to ask for it. Nil or false: the run as before.
+    public var searchOnly: Bool?
 
     public init(requestId: String, models: [String]? = nil, adaptive: Bool? = nil, queries: [String]? = nil, pipeline: String? = nil, answerOnly: [String: JSONValue] = [:],
-                languageArm: Int? = nil) {
+                languageArm: Int? = nil, preset: BenchPreset? = nil, searchOnly: Bool? = nil) {
         self.requestId = requestId; self.models = models; self.adaptive = adaptive; self.queries = queries
         self.pipeline = pipeline; self.answerOnly = answerOnly; self.languageArm = languageArm
+        self.preset = preset; self.searchOnly = searchOnly
     }
 }
 
@@ -152,6 +159,26 @@ public enum DeviceEval {
                 throw EvalRequestError("\"evalSetVersion\" must be 1-64 letters, digits, dots, dashes or underscores")
             }
         }
+        // adam, Nov 14: presets by level and topic. "preset": "fast-plugins", or "level" with "topics".
+        var preset: BenchPreset?
+        if let v = member("preset") {
+            guard let name = v.stringValue, let p = BenchPresets.parse(name) else {
+                throw EvalRequestError("\"preset\" must be a level (fast, medium, complete), then a topic: \"fast-plugins\"")
+            }
+            preset = p
+        } else if let v = member("level") {
+            guard let level = BenchLevel.of(v.stringValue) else { throw EvalRequestError("\"level\" must be fast, medium or complete") }
+            let topics = try stringList(member("topics"), "topics") ?? []
+            preset = BenchPreset(level, topics.isEmpty ? [BenchPresets.core] : topics)
+        }
+        if preset != nil && (member("questions") != nil || member("queries") != nil) {
+            throw EvalRequestError("a preset brings its own questions: leave out \"questions\" and \"queries\"")
+        }
+        var searchOnly: Bool?
+        if let v = member("searchOnly") {
+            guard case .bool(let b) = v else { throw EvalRequestError("\"searchOnly\" must be a boolean") }
+            searchOnly = b
+        }
         var adaptive: Bool?
         if case .bool(let b) = member("adaptive") { adaptive = b }
         // Kotlin `(raw["languageArm"] as? JsonPrimitive)?.content?.toIntOrNull()`: a whole number or a string of one;
@@ -165,7 +192,8 @@ public enum DeviceEval {
         return EvalRequest(
             requestId: id, models: try stringList(member("models"), "models"), adaptive: adaptive,
             queries: try stringList(member("queries"), "queries"), pipeline: pipe,
-            answerOnly: Dictionary(uniqueKeysWithValues: present.map { ($0, o[$0]!) }), languageArm: languageArm
+            answerOnly: Dictionary(uniqueKeysWithValues: present.map { ($0, o[$0]!) }), languageArm: languageArm,
+            preset: preset, searchOnly: searchOnly
         )
     }
 

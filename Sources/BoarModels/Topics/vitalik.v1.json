@@ -1,0 +1,34 @@
+{
+  "id": "vitalik",
+  "version": 1,
+  "status": "reviewed by t9, 14 Nov",
+  "title": "Vitalik's six",
+  "titlePt": "As seis do Vitalik",
+  "about": "The 6 extra questions of eval-set.json, exactly as they are there. Nothing checked by rule: to read.",
+  "questions": [
+    {
+      "id": "vitalik-about-x",
+      "fromSet": true
+    },
+    {
+      "id": "vitalik-zk-snark",
+      "fromSet": true
+    },
+    {
+      "id": "vitalik-quadratic-funding",
+      "fromSet": true
+    },
+    {
+      "id": "vitalik-far-uvc",
+      "fromSet": true
+    },
+    {
+      "id": "vitalik-zuzalu",
+      "fromSet": true
+    },
+    {
+      "id": "vitalik-vegan-buenos-aires",
+      "fromSet": true
+    }
+  ]
+}

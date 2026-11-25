@@ -68,6 +68,17 @@ struct AnswerView: View {
                 }
                 // BOAR's own notes (the style it kept, the number check, no source) sit in the footer under the separator,
                 // above the receipt, not against the answer's text (android e1d1ed0f, f4e43f00).
+                // The question was a plugin's, but it's off (android Nov 12): one line; a tap opens its page, where its
+                // switch is.
+                if !streaming, let id = message.offPlugin, let lab = Labs.shared.byId(id) {
+                    Button { model.openPlugin(id) } label: {
+                        Text("\(lab.title) is off. Turn it on in Plugins ›")
+                            .font(.boar("ui.subtext"))
+                            .foregroundStyle(.boar(.link))
+                            .multilineTextAlignment(.leading)
+                    }
+                    .buttonStyle(.plain)
+                }
                 if message.stopped { MessageNote(symbol: Symbols.stop, text: "Stopped", warning: false) }
                 if message.timedOut { MessageNote(symbol: Symbols.caution, text: "A research step took too long and was cut short", warning: true) }
                 // No "Ask BOAR instead" pill (t9 0235): it is the "Ask BOAR" step under the latest answer (KeepGoingGroup).

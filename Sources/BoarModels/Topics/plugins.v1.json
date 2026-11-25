@@ -1,0 +1,218 @@
+{
+  "id": "plugins",
+  "version": 1,
+  "status": "reviewed by t9, 14 Nov",
+  "title": "Plugins and calculators",
+  "titlePt": "Plugins e calculadoras",
+  "about": "Each plugin's must-catch questions, with the exact text it gives (taken from the engine at bde73901). Runs with these plugins on, whatever the app has on.",
+  "labs": [
+    "cohazard",
+    "calc",
+    "distance",
+    "facts",
+    "compass",
+    "lunar",
+    "pulse",
+    "guard"
+  ],
+  "questions": [
+    {
+      "id": "calc-battery-en",
+      "query": "My power bank is 5,000 mAh at 3.85 V. How many watt-hours is that?",
+      "category": "calculator",
+      "rules": {
+        "tool": "calculator-battery",
+        "answerIs": "5,000 mAh × 3.85 V ÷ 1000 = 19.25 Wh."
+      }
+    },
+    {
+      "id": "calc-battery-pt",
+      "query": "Meu power bank é de 5.000 mAh a 3,85 V. Quantos watt-hora isso dá?",
+      "category": "calculator",
+      "rules": {
+        "tool": "calculator-battery",
+        "answerIs": "5.000 mAh × 3,85 V ÷ 1000 = 19,25 Wh."
+      }
+    },
+    {
+      "id": "calc-flight-pt",
+      "query": "27.000 mAh 3,7 V no avião, posso levar?",
+      "category": "calculator",
+      "rules": {
+        "tool": "calculator-battery",
+        "answerIs": "27.000 mAh × 3,7 V ÷ 1000 = 99,9 Wh. As companhias aéreas definem os limites de bateria em Wh, e as regras mudam: confira com a sua antes de voar."
+      },
+      "toRead": "27.000 is twenty-seven thousand (t9 0330: it was read as 27 mAh)."
+    },
+    {
+      "id": "calc-temperature-en",
+      "query": "What is 40 C in Fahrenheit?",
+      "category": "calculator",
+      "rules": {
+        "tool": "temperature-conversion",
+        "answerIs": "40 °C = 104 °F (°F = °C × 9/5 + 32)."
+      }
+    },
+    {
+      "id": "calc-temperature-pt",
+      "query": "Quanto é 30 °C em Fahrenheit?",
+      "category": "calculator",
+      "rules": {
+        "tool": "temperature-conversion",
+        "answerIs": "30 °C = 86 °F (°F = °C × 9/5 + 32)."
+      }
+    },
+    {
+      "id": "calc-fuel",
+      "query": "My rental car uses 7.5 litres per 100 km. How much is that in US miles per gallon?",
+      "category": "calculator",
+      "rules": {
+        "tool": "calculator-fuel-economy",
+        "answerIs": "7.5 L/100 km = 31.36 miles per gallon (US gallon). Formula: mpg = 235.215 ÷ L/100 km."
+      }
+    },
+    {
+      "id": "calc-conversion",
+      "query": "How many miles is 42 km?",
+      "category": "calculator",
+      "rules": {
+        "tool": "calculator-conversion",
+        "answerIs": "42 km = 26.1 miles (1 mile = 1.609344 km)."
+      }
+    },
+    {
+      "id": "calc-ceil-division",
+      "query": "I have 23 L of water and 5 L jerrycans. how many jerrycans do I need?",
+      "category": "calculator",
+      "rules": {
+        "tool": "calculator-ceil-division",
+        "answerIs": "5 jerrycans: 23 ÷ 5 = 4.6, rounded up. 4 full ones hold 20 L; the remaining 3 L needs one more."
+      }
+    },
+    {
+      "id": "calc-health-left-alone",
+      "query": "My boy's temp is 40 C, what is that in Fahrenheit?",
+      "category": "calculator",
+      "rules": {
+        "noTool": true
+      },
+      "toRead": "A health question: the calculator stays out (NumGuard's health words) and the model answers, 104 °F with care advice."
+    },
+    {
+      "id": "distance-lisbon-madrid",
+      "query": "How far is it from Lisbon to Madrid?",
+      "category": "distance",
+      "rules": {
+        "tool": "calculator-travel-distance",
+        "answerIs": "Lisbon and Madrid are about 503 km (313 miles) apart in a straight line. Roads and trails are usually longer than the straight line, by about a quarter, so expect roughly 630 km by land. This is an estimate from the cities' coordinates, not a mapped route; the real route can differ."
+      }
+    },
+    {
+      "id": "facts-population",
+      "query": "Does Brazil have more people than Russia?",
+      "category": "facts",
+      "rules": {
+        "tool": "facts-population",
+        "answerStartsWith": "Yes. Brazil has more people than Russia:"
+      },
+      "toRead": "The figures carry the table's dates; only the verdict is checked."
+    },
+    {
+      "id": "facts-depth",
+      "query": "If you stood the Burj Khalifa on the deepest point of Lake Baikal, would its top stick out of the water?",
+      "category": "facts",
+      "rules": {
+        "tool": "facts-depth",
+        "answerStartsWith": "No. Burj Khalifa is 828 m tall; Lake Baikal is 1,642 m deep at its deepest point, so its top would be about 814 m below the surface (fully submerged)."
+      }
+    },
+    {
+      "id": "cohazard-en",
+      "query": "Can I run my portable generator in the attached garage if I keep the door open?",
+      "category": "safety",
+      "rules": {
+        "tool": "safety-fact-co-hazard",
+        "answerStartsWith": "No. Carbon monoxide (CO) from a generator"
+      }
+    },
+    {
+      "id": "cohazard-pt",
+      "query": "Posso usar o gerador dentro da garagem?",
+      "category": "safety",
+      "rules": {
+        "tool": "safety-fact-co-hazard",
+        "answerStartsWith": "Não. O monóxido de carbono (CO) de um gerador"
+      }
+    },
+    {
+      "id": "cohazard-acute",
+      "category": "safety",
+      "query": "My carbon monoxide alarm keeps going off and I feel dizzy. What do I do?",
+      "rules": {
+        "tool": "safety-fact-co-acute",
+        "answerStartsWith": "Get everyone out into fresh air right away, call emergency services, and don't go back inside until you're told it's safe."
+      },
+      "toRead": "The acute CO card, first and alone, no Ask BOAR (t9 1535)."
+    },
+    {
+      "id": "cohazard-acute-pt",
+      "category": "safety",
+      "query": "Meu alarme de monóxido de carbono está tocando e estou com tontura. O que faço?",
+      "rules": {
+        "tool": "safety-fact-co-acute",
+        "answerStartsWith": "Leve todos para o ar livre imediatamente, ligue para o serviço de emergência e não volte para dentro até que digam que é seguro."
+      },
+      "toRead": "The acute CO card in Portuguese (t9 1535)."
+    },
+    {
+      "id": "lunar-phase",
+      "query": "what phase is the moon tonight?",
+      "category": "lunar",
+      "rules": {
+        "tool": "lunar-phase",
+        "answerHas": [
+          "% lit",
+          "Next full moon:",
+          "Next new moon:"
+        ]
+      }
+    },
+    {
+      "id": "compass-north",
+      "query": "which way is north?",
+      "category": "compass",
+      "rules": {
+        "tool": "compass-heading"
+      },
+      "toRead": "The heading depends on how the phone lies; only the route is checked."
+    },
+    {
+      "id": "pulse-phone",
+      "query": "how hot is my phone?",
+      "category": "pulse",
+      "rules": {
+        "tool": "vitals-phone"
+      },
+      "toRead": "Battery, temperature and memory as the phone reads them now."
+    },
+    {
+      "id": "guard-moon-1970",
+      "query": "Did astronauts walk on the Moon before 1970?",
+      "category": "guard",
+      "rules": {
+        "answerStartsWith": "Yes"
+      },
+      "toRead": "Yes (July 1969). When the model says No, Boar Guard repairs it (tool verdict-guard-date)."
+    },
+    {
+      "id": "polyglot-german",
+      "query": "Wie hoch ist der Mount Everest?",
+      "category": "polyglot",
+      "rules": {
+        "tool": "language"
+      },
+      "toRead": "A language BOAR doesn't answer in: the plugin says so, in the app's language. Asked only with Polyglot on (it is off by default; adam may deprecate it): skipped otherwise, and the scorecard says so.",
+      "needsLab": "polyglot"
+    }
+  ]
+}
