@@ -356,7 +356,7 @@ final class EvaluationController {
 
     /// EvalTrace v1 for one model, the files `harness/judge.mjs` and `scorers/score.py` read (one system per file). A run
     /// with several passes (a preset's Succinct, Detailed and Deep Research) gets one file per pass, so each file is one
-    /// system; the pass comes from the row's `path` (Deep Research) or its `style`.
+    /// system; the pass is `BenchPresets.passKey`.
     func traceFiles(configId: String) -> [TraceFile] {
         guard let runId else { return [] }
         let rows = rows.filter { $0["configId"]?.stringValue == configId }
@@ -365,7 +365,7 @@ final class EvaluationController {
         let slug = configId.replacing("model:", with: "").replacing(/[^A-Za-z0-9._-]/, with: "-")
         var order: [String] = []
         let byPass = Dictionary(grouping: rows) { row in
-            let key = Self.passKey(row)
+            let key = BenchPresets.passKey(row)
             if !order.contains(key) { order.append(key) }
             return key
         }
@@ -388,11 +388,6 @@ final class EvaluationController {
         var id: String { file.filename }
     }
 
-    /// The bench pass a row belongs to: "deep" for Deep Research, else the pass's style ("" for an old run's rows).
-    nonisolated static func passKey(_ row: JSONValue) -> String {
-        if row["path"]?.stringValue == BenchPass.pathDeep { return BenchPass.pathDeep }
-        return row["style"]?.stringValue ?? ""
-    }
 
     /// The results as JSONL or CSV (exportEvalResults): a run just made or one opened from the list.
     func exportFile(jsonl: Bool) -> ExportedFile? {
