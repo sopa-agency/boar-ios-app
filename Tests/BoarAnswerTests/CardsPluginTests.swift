@@ -63,11 +63,19 @@ struct CardsPluginTests {
 
     @Test func theModelsCardHoldsTheChatsModelAndTheChecklistReadsAsCheckboxes() throws {
         let src = try lab()
-        #expect(src.contains("guard chat.runForLab({ [weak self] in await self?.make(job) }) else {\n            statuses[id] = .failed(.busy, detail: nil, raw: nil)"))
+        #expect(src.contains("guard chat.runForLab({ [weak self] stopped in await self?.make(job, stopped: stopped) }) else {\n            statuses[id] = .failed(.busy, detail: nil, raw: nil)"))
         let chat = try AppSource.text("App/Sources/Model/ChatController.swift")
         let run = try AppSource.slice(chat, after: "func runForLab(", before: "\n    }\n")
         // The chat's job: questions wait in the queue, and the next one starts however it ended.
         #expect(run.contains("guard !modelBusy else { return false }") && run.contains("job = Task {") && run.contains("self.job = nil\n            self.runNext()"))
+        // Stop reaches it: the composer's Stop, Chat ▸ Stop Answering and New Chat see it as an answer in progress; ✕ on
+        // the wait line stops it; a Stop before the model starts keeps the model from starting.
+        #expect(run.contains("labWorking = true") && run.contains("self.labWorking = false"))
+        #expect(chat.contains("var holdsModel: Bool { isAnswering || labWorking }"))
+        #expect(try AppSource.text("App/Features/Chat/ChatView.swift").contains("answering: chat.holdsModel"))
+        #expect(try AppSource.text("App/Sources/Platform/BoarCommands.swift").contains("model.chat?.holdsModel"))
+        #expect(src.contains("if let session, !stopped() {"))
+        #expect(src.contains("Button(\"Stop\", systemImage: \"xmark\") { model.cancel(a.id) }"))
         #expect(src.contains(".accessibilityAddTraits(.isToggle)") && src.contains(".frame(minHeight: 44)"))
     }
 

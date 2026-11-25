@@ -129,7 +129,7 @@ struct SessionsSidebar: View {
             #endif
             ToolbarItem(placement: .primaryAction) {
                 Button("New Chat", icon: Symbols.newChat, action: model.newChat)
-                    .disabled(chat.isAnswering)
+                    .disabled(chat.holdsModel)
                     .help("New Chat (⌘N)")
             }
         }

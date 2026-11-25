@@ -71,7 +71,7 @@ struct ChatView: View {
             VStack(spacing: 0) {
                 if !chat.queued.isEmpty { QueueStrip(chat: chat) }
                 Composer(text: $input, focused: $composerFocused, toneSymbol: chat.currentTone.symbol, toneLabel: chat.currentTone.label,
-                         deepResearch: chat.deepResearch, answering: chat.isAnswering, stopping: chat.stopping,
+                         deepResearch: chat.deepResearch, answering: chat.holdsModel, stopping: chat.stopping,
                          onSend: sendInput, onStop: chat.stop, onTones: showTones, voice: voiceOn ? voice : nil, chat: chat)
             }
         }
