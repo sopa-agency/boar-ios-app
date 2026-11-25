@@ -117,6 +117,16 @@
         }
       }
     },
+    "%@ is off. Turn it on in Plugins ›" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ está desligado. Ligue em Plugins ›"
+          }
+        }
+      }
+    },
     "%@ leaked, and it's yours: tap it to open it and switch it on. Still in testing." : {
       "localizations" : {
         "pt" : {
@@ -373,6 +383,16 @@
         }
       }
     },
+    "%lld answers" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld respostas"
+          }
+        }
+      }
+    },
     "%lld in %@" : {
       "localizations" : {
         "pt" : {
@@ -399,6 +419,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld fatos principais"
+          }
+        }
+      }
+    },
+    "%lld known issues" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld problemas conhecidos"
           }
         }
       }
@@ -519,12 +549,32 @@
         }
       }
     },
+    "%lld skipped (plugin off)" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld puladas (plugin desligado)"
+          }
+        }
+      }
+    },
     "%lld sources" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld fontes"
+          }
+        }
+      }
+    },
+    "%lld to read" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld para ler"
           }
         }
       }
@@ -585,6 +635,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld/%lld achadas"
+          }
+        }
+      }
+    },
+    "%lld/%lld passed" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld/%lld passaram"
           }
         }
       }
@@ -775,6 +835,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "7,5 L/100 km = 31,36 milhas por galão (galão americano). Conta: mpg = 235,215 ÷ L/100 km."
+          }
+        }
+      }
+    },
+    "= same" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "= igual"
           }
         }
       }
@@ -2586,6 +2656,16 @@
         }
       }
     },
+    "By hand" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "À mão"
+          }
+        }
+      }
+    },
     "CLASSIFIED" : {
       "localizations" : {
         "pt" : {
@@ -2602,6 +2682,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "CPU"
+          }
+        }
+      }
+    },
+    "CPU %lld cores · BOAR %@ GB" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CPU %lld núcleos · BOAR %@ GB"
           }
         }
       }
@@ -3032,6 +3122,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Comparação"
+          }
+        }
+      }
+    },
+    "Complete" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Completo"
           }
         }
       }
@@ -3516,6 +3616,16 @@
         }
       }
     },
+    "Delete this run?" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apagar esta execução?"
+          }
+        }
+      }
+    },
     "Delete your oldest chat?" : {
       "localizations" : {
         "pt" : {
@@ -3926,6 +4036,16 @@
         }
       }
     },
+    "Draft: its rules don't count yet." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rascunho: as regras ainda não contam."
+          }
+        }
+      }
+    },
     "Draw" : {
       "localizations" : {
         "pt" : {
@@ -4282,6 +4402,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Exercício e saúde: quanto um adulto precisa, e por quê"
+          }
+        }
+      }
+    },
+    "Expected: about %@ for %lld answers" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Previsto: cerca de %@ para %lld respostas"
           }
         }
       }
@@ -5107,6 +5237,16 @@
         }
       }
     },
+    "Heat unknown" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calor desconhecido"
+          }
+        }
+      }
+    },
     "Hemisphere" : {
       "localizations" : {
         "pt" : {
@@ -5173,6 +5313,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "História da ciência"
+          }
+        }
+      }
+    },
+    "Hot · slowing down" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quente · desacelerando"
           }
         }
       }
@@ -5697,6 +5847,16 @@
         }
       }
     },
+    "Its answers are deleted from this %@ and can't be brought back. Exports you made are kept." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "As respostas são apagadas deste %@ e não voltam. Exportações que você fez continuam."
+          }
+        }
+      }
+    },
     "Its details, and the button to use or download it, appear here." : {
       "localizations" : {
         "pt" : {
@@ -5913,6 +6073,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Conhecimento que vai com você."
+          }
+        }
+      }
+    },
+    "Known issue" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Problema conhecido"
           }
         }
       }
@@ -6253,6 +6423,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Trancado, e aberto sem nenhuma rede."
+          }
+        }
+      }
+    },
+    "Log" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registro"
           }
         }
       }
@@ -7193,6 +7373,16 @@
         }
       }
     },
+    "No runs saved yet. Every run stays on this %@ until you delete it." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nenhuma execução salva ainda. Cada execução fica neste %@ até você apagar."
+          }
+        }
+      }
+    },
     "No server receives your questions, so no one holds a switch." : {
       "localizations" : {
         "pt" : {
@@ -7269,6 +7459,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nenhum ligado"
+          }
+        }
+      }
+    },
+    "Normal heat" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calor normal"
           }
         }
       }
@@ -7909,6 +8109,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Código"
+          }
+        }
+      }
+    },
+    "Passed" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Passou"
           }
         }
       }
@@ -8599,6 +8809,26 @@
         }
       }
     },
+    "RAM %@ GB" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "RAM %@ GB"
+          }
+        }
+      }
+    },
+    "RAM %@ GB free for BOAR of %@ GB" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "RAM %@ GB livres para o BOAR de %@ GB"
+          }
+        }
+      }
+    },
     "RECENT PLUGINS" : {
       "localizations" : {
         "pt" : {
@@ -9139,6 +9369,26 @@
         }
       }
     },
+    "Saved Run · %@" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Execução salva · %@"
+          }
+        }
+      }
+    },
+    "Saved Runs (%lld)" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Execuções salvas (%lld)"
+          }
+        }
+      }
+    },
     "Saved on this %@ only. Nothing is sent. BOAR doesn't learn from it yet." : {
       "localizations" : {
         "pt" : {
@@ -9195,6 +9445,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nota"
+          }
+        }
+      }
+    },
+    "Scorecard" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Placar"
           }
         }
       }
@@ -9725,6 +9985,16 @@
         }
       }
     },
+    "Skipped" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pulada"
+          }
+        }
+      }
+    },
     "Slowest 10 %" : {
       "localizations" : {
         "pt" : {
@@ -10181,6 +10451,16 @@
         }
       }
     },
+    "Starting…" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Começando…"
+          }
+        }
+      }
+    },
     "Starts after the downloads" : {
       "localizations" : {
         "pt" : {
@@ -10405,6 +10685,36 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sucinto e Direto"
+          }
+        }
+      }
+    },
+    "Succinct and Detailed on both models, and Deep Research for the research topic." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sucinto e Detalhado nos dois modelos, e Pesquisa Profunda no tema de pesquisa."
+          }
+        }
+      }
+    },
+    "Succinct, on the 1.7B (or the only answer model)." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sucinto, no 1.7B (ou no único modelo de resposta)."
+          }
+        }
+      }
+    },
+    "Succinct, on the 1.7B and the 4B." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sucinto, no 1.7B e no 4B."
           }
         }
       }
@@ -10689,6 +10999,16 @@
         }
       }
     },
+    "The computer scores only what a rule can check (a plugin's exact text, the language, cards, sources, numbers). The rest is to read." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O computador só pontua o que uma regra consegue checar (o texto exato de um plugin, o idioma, os cartões, as fontes, os números). O resto é para ler."
+          }
+        }
+      }
+    },
     "The connection" : {
       "localizations" : {
         "pt" : {
@@ -10875,6 +11195,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "O modelo, o tempo até a primeira palavra, tokens por segundo, memória e fontes."
+          }
+        }
+      }
+    },
+    "The models you tick, in the default style." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Os modelos que você marcar, no estilo padrão."
           }
         }
       }
@@ -11350,6 +11680,16 @@
         }
       }
     },
+    "To read" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para ler"
+          }
+        }
+      }
+    },
     "Today" : {
       "localizations" : {
         "pt" : {
@@ -11400,6 +11740,16 @@
         }
       }
     },
+    "Too hot · slowing down hard" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quente demais · desacelerando muito"
+          }
+        }
+      }
+    },
     "Too large: %@ (over %lld MB)." : {
       "localizations" : {
         "pt" : {
@@ -11426,6 +11776,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ferramenta"
+          }
+        }
+      }
+    },
+    "Topic" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tema"
           }
         }
       }
@@ -11896,6 +12256,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Minguante gibosa"
+          }
+        }
+      }
+    },
+    "Warm" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Morno"
           }
         }
       }
@@ -12561,6 +12931,16 @@
         }
       }
     },
+    "^[%lld question](inflect: true) × ^[%lld model](inflect: true), ^[%lld answer](inflect: true) in all. %@" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "^[%lld pergunta](inflect: true) × ^[%lld modelo](inflect: true), ^[%lld resposta](inflect: true) no total. %@"
+          }
+        }
+      }
+    },
     "^[%lld source](inflect: true)" : {
       "localizations" : {
         "pt" : {
@@ -12597,6 +12977,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "bateria"
+          }
+        }
+      }
+    },
+    "by hand" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "à mão"
           }
         }
       }
@@ -12641,6 +13031,16 @@
         }
       }
     },
+    "done" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "concluída"
+          }
+        }
+      }
+    },
     "engine" : {
       "localizations" : {
         "pt" : {
@@ -12671,6 +13071,16 @@
         }
       }
     },
+    "failed" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "falhou"
+          }
+        }
+      }
+    },
     "features" : {
       "localizations" : {
         "pt" : {
@@ -12697,6 +13107,46 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "primeira palavra %@"
+          }
+        }
+      }
+    },
+    "first word %@ · whole answer %@ · peak %@" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "primeira palavra %@ · resposta inteira %@ · pico %@"
+          }
+        }
+      }
+    },
+    "from a computer" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "de um computador"
+          }
+        }
+      }
+    },
+    "from the F3's medians" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "pelas medianas do F3"
+          }
+        }
+      }
+    },
+    "from the last %@ run on this device" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "pela última execução %@ neste aparelho"
           }
         }
       }
@@ -12747,6 +13197,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "instantâneo"
+          }
+        }
+      }
+    },
+    "interrupted" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "interrompida"
           }
         }
       }
@@ -13010,6 +13470,26 @@
         }
       }
     },
+    "peak: %@" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "pico: %@"
+          }
+        }
+      }
+    },
+    "plus %lld Deep Research answers nobody has timed yet" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "mais %lld respostas de Pesquisa Profunda que ninguém cronometrou ainda"
+          }
+        }
+      }
+    },
     "population, area, capital, currency, languages, continent, borders" : {
       "localizations" : {
         "pt" : {
@@ -13040,12 +13520,32 @@
         }
       }
     },
+    "running" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "rodando"
+          }
+        }
+      }
+    },
     "sources" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "fontes"
+          }
+        }
+      }
+    },
+    "stopped" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "parada"
           }
         }
       }
@@ -13110,6 +13610,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "morno"
+          }
+        }
+      }
+    },
+    "was %lld/%lld" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "antes %lld/%lld"
           }
         }
       }
@@ -13240,12 +13750,12 @@
         }
       }
     },
-    "• Heat, battery, every core's load, memory and the chip BOAR runs on, read on this %@." : {
+    "• Heat, battery, every core's load, memory and the chip BOAR runs on, read on this %@.\n• You can also ask in the chat how hot your %@ is." : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "• Calor, bateria, a carga de cada núcleo, a memória e o chip em que o BOAR roda, lidos neste %@."
+            "value" : "• Calor, bateria, a carga de cada núcleo, a memória e o chip em que o BOAR roda, lidos neste %@.\n• Você também pode perguntar na conversa se o %@ está quente."
           }
         }
       }
@@ -13260,12 +13770,12 @@
         }
       }
     },
-    "• Points to magnetic north, worked out on this %@ with no internet.\n• True north is a few degrees off, depending on where you are; it would need your location, which BOAR doesn't ask for.\n• Hold the %@ flat." : {
+    "• Points to magnetic north, worked out on this %@ with no internet.\n• True north is a few degrees off, depending on where you are; it would need your location, which BOAR doesn't ask for.\n• Hold the %@ flat.\n• You can also ask in the chat which way is north." : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "• Aponta para o norte magnético, calculado neste %@ sem internet.\n• O norte verdadeiro fica alguns graus ao lado, conforme onde você está; precisaria da sua localização, que o BOAR não pede.\n• Segure o %@ na horizontal."
+            "value" : "• Aponta para o norte magnético, calculado neste %@ sem internet.\n• O norte verdadeiro fica alguns graus ao lado, conforme onde você está; precisaria da sua localização, que o BOAR não pede.\n• Segure o %@ na horizontal.\n• Você também pode perguntar na conversa onde fica o norte."
           }
         }
       }
@@ -13300,12 +13810,12 @@
         }
       }
     },
-    "• Worked out from the date on this %@, with no internet and no location.\n• The hemisphere only changes which side looks lit.\n• Moonrise and moonset need your location, so they aren't shown." : {
+    "• Worked out from the date on this %@, with no internet and no location.\n• The hemisphere only changes which side looks lit.\n• Moonrise and moonset need your location, so they aren't shown.\n• You can also ask in the chat." : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "• Calculado pela data do %@, sem internet e sem localização.\n• O hemisfério só muda o lado que aparece iluminado.\n• Nascer e pôr da lua precisam da sua localização, por isso não aparecem."
+            "value" : "• Calculado pela data do %@, sem internet e sem localização.\n• O hemisfério só muda o lado que aparece iluminado.\n• Nascer e pôr da lua precisam da sua localização, por isso não aparecem.\n• Você também pode perguntar na conversa."
           }
         }
       }
@@ -13326,6 +13836,46 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "• Calcula a resposta com os números da sua pergunta e mostra a fórmula.\n• Converte milhas, km, pés, polegadas, jardas, kg, libras, onças, galões americanos e °C/°F: \"26 milhas em km\".\n• O resto vai para o modelo, como sempre.\n• Fica de fora de conversas sobre saúde, ferimentos, perigo ou pessoas.\n• Os detalhes da resposta dizem Ferramenta quando foi a calculadora.\n• Problemas em texto só em inglês. Adaptado da calculadora do r4to (BOAR R&D)."
+          }
+        }
+      }
+    },
+    "↑ up" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "↑ subiu"
+          }
+        }
+      }
+    },
+    "↓ down" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "↓ caiu"
+          }
+        }
+      }
+    },
+    "● last line %lld min %lld s ago" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "● última linha há %lld min %lld s"
+          }
+        }
+      }
+    },
+    "● last line %lld s ago" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "● última linha há %lld s"
           }
         }
       }

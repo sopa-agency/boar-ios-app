@@ -7,7 +7,7 @@ import SwiftUI
 /// setup, setup-model, setup-knowledge, setup-install, setup-index, setup-guide-<page> (look, answers, ask, first, pin, privacy,
 /// labs, ready), chat-empty, chat-error, chat-no-model, chat-load-crash, chat, chat-top, chat-streaming, chat-queue, chat-keep-going, chat-retrieving, chat-research,
 /// sidebar, citation-sheet, source-reader, receipt, tone-sheet, models, model-detail, models-downloading, models-browse, documents,
-/// settings, settings-advanced, settings-engine, device-info, evaluation, about, lock.
+/// settings, settings-advanced, settings-engine, device-info, evaluation, evaluation-preset, about, lock.
 @MainActor
 enum DebugRouter {
     static func apply(_ model: AppModel) async {
@@ -63,7 +63,7 @@ enum DebugRouter {
         case "documents": model.selection = .screen(.documents)
         case "settings", "settings-engine", "settings-advanced", "device-info", "avatars":
             model.selection = .screen(.settings)
-        case "evaluation": model.selection = .screen(.evaluation)
+        case "evaluation", "evaluation-preset": model.selection = .screen(.evaluation)
         case "about": model.selection = .screen(.about)
         case "labs", _ where screen.hasPrefix("lab-"): model.selection = .screen(.labs)
         default: break

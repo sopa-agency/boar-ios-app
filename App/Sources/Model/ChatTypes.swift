@@ -144,6 +144,9 @@ struct ChatItem: Identifiable, Hashable, Sendable {
     var failureNoModel = false
     /// A user message sent by a Keep going step: its text is the real question, the bubble shows the step's verb.
     var step: KeepGoing.Step?
+    /// A plugin that would have answered this question but is off (its id): one line under the answer (android
+    /// `offPlugin`, adam Nov 12). Live answers only, as on Android.
+    var offPlugin: String?
 
     var isUser: Bool { role == "user" }
 }

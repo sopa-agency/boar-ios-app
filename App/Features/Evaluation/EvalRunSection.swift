@@ -42,8 +42,11 @@ struct EvalRunSection: View {
                 let c = controller.chosen.count
                 if chatBusy {
                     Text("Wait for the current answer to finish before running the benchmark.")
-                } else {
+                } else if controller.byHand {
                     Text("^[\(n) question](inflect: true) × ^[\(c) model](inflect: true) = ^[\(n * c) answer](inflect: true). \(Self.awakeNote)")
+                } else {
+                    // A preset's passes ask some questions more than once (Succinct, Detailed, Deep Research).
+                    Text("^[\(n) question](inflect: true) × ^[\(c) model](inflect: true), ^[\(controller.plannedAnswers) answer](inflect: true) in all. \(Self.awakeNote)")
                 }
             }
         }

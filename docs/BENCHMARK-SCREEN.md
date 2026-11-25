@@ -26,7 +26,7 @@ python3 scorers/score.py --traces <file>.traces.jsonl --judgments <file>.judgmen
 | D7 | Speed: total p50 / p90, first word p50, decode tok/s median, model load, peak memory. p50 = median; p90 = nearest rank | the Bounty board's latency row; same fields as the trace's `timing` |
 | D8 | Labels say what each number is: "Facts checked" carries the caveat that precheck agrees with blind hand labels 88 % of the time and **is not the bounty ratio** | precheck is an upper bound (score.py PRECHECK_CAVEAT); no LLM judge on the phone |
 | D9 | Models are named "Fast · Qwen2.5-1.5B-Instruct" (plain name from the catalog copy + the model's own name without quantization) | the review flagged raw catalog names on this screen |
-| D10 | Export: **Traces for the judge** = EvalTrace v1 JSONL, one file per model (`adapter: ios-app`, `engine.commit` = app version + build, `engine.arm` = `ios-native`, host = device + iOS). Raw rows JSONL/CSV stay, unchanged columns | judge.mjs and score.py read one system per file; convert_device.py is for the Android "answer" pipeline rows and is not needed |
+| D10 | Export: **Traces for the judge** = EvalTrace v1 JSONL, one file per model, and per pass when a preset ran several (`adapter: ios-app`, `engine.commit` = app version + build, `engine.arm` = `ios-native`, host = device + iOS). Raw rows JSONL/CSV stay, unchanged columns | judge.mjs and score.py read one system per file; convert_device.py is for the Android "answer" pipeline rows and is not needed |
 | D11 | Rows keep every legacy field and add `benchSet`, `check`, `checkWhy`, `sourceHit`, `referenceTitles`, `danger`, `gradingType` | old readers ignore new keys; device requests keep working |
 | D12 | Device requests may also name bench v0.1 ids or categories in `queries` (bench items are passed as extra sets) | a connected Mac can run a slice without a new protocol |
 
@@ -43,6 +43,49 @@ By Category         explanation 2/2 · reasoning 1/2 · …   (one row per categ
 Answers             one row per answer; tap → check result, why, timings, sources, the answer
 Share               Traces for the judge (per model) · Rows (JSONL) · Rows (CSV)
 ```
+
+## Presets, scorecard and saved runs (BOAR-56, Android v2.0.0)
+
+Port of Android's bench at v2.0.0 (3619e95a engine, 66ff23c7 page, 91c28f67 log, 06276b77 and 11e7997b vitals,
+b13d990e search-only). Engine in `Sources/BoarAnswer/Eval` (`BenchTopics`, `BenchPresets`, `Scorecard`, `SavedRuns`,
+`BenchLog`), with Android's BenchPresetsTest, ScorecardTest, SavedRunsTest, SearchOnlyRequestTest, BenchLogTest and
+BenchVitalsTest ported. The topic files are Android's `boar-data/topics/*.v1.json` byte for byte, in
+`Sources/BoarModels/Topics` (core, vitalik, plugins, problems, howto, research, quick, cards, portuguese, health).
+
+```
+Preset              By hand | Fast | Medium | Complete      Topic [Plugins and calculators ▸]
+                    Models: Qwen3-1.7B · Expected: about 3 min for 21 answers (from the F3's medians)
+Vitals / Log        while a run goes, on top: heat, battery, memory; the log newest line first, "● last line 12 s ago"
+Scorecard           plugins 18/20 passed ↑ up · was 15/20 · 0 to read · 1 skipped (plugin off)
+                    qwen3-1.7b-q4km · succinct: first word, whole answer, peak memory
+Saved Runs (n)      newest first: date, level · topic · answers · BOAR version · "from a computer"; tap opens, Delete asks
+```
+
+- **Levels:** Fast = Succinct on the 1.7B (or the only answer model); Medium = Succinct on the 1.7B and the 4B; Complete =
+  Succinct and Detailed on both, plus Deep Research for the research topic. Each pass answers in its style with the
+  chat's rules (short-answer reasons, `autoMaxTokens`, small talk at Succinct's length, the small-model prompts).
+- **Plugins:** a topic's labs answer and check (the plugins topic), else the ones switched on in the app; an instant
+  answer is the row (`reasonCodes: ["answer:<tool>"]`, `tool`), as in the chat. Nomad and Vitals read the device first.
+- **Rows** add `style`, `level`, `topic`, `topicVersion`, `labsOn`, `tool`, `fileSources`, `path` (`deep`,
+  `search-only`) and `subQuestions`; the CSV has Android's new columns, then iOS's bench-check columns.
+- **Files:** `Documents/eval/<runId>.jsonl` as before, plus `<runId>.meta.json` (written as the run goes; a run the app
+  closed on shows as interrupted) and `<runId>.scorecard.txt` (against the last finished run of the same level and
+  topics). Old runs without a meta are listed from their rows.
+- **Device requests** take `"preset": "fast-plugins"` or `"level"` + `"topics"`, and `"searchOnly": true` (the sources
+  with similarity, score, match and kind; no answer). The status file says `preset` and `scorecardPath`.
+
+Differences from Android, on purpose:
+
+- No separate bench activity (BenchActivity, adb-only): the log and the vitals card sit on top of the Benchmark screen
+  while a run goes. The saved run's `source` is `"request"` (a connected computer), not `"adb"`.
+- Vitals read what iOS gives: the thermal state (no battery temperature), battery, BOAR's footprint and what it can
+  still use, the core count. No per-core clocks; the heat is the thermal state, with its peak during the run.
+- By hand keeps iOS's question sets (Quick check, Research bench v0.1, App smoke set); the topic picker shows with a
+  level only (Android's by hand also takes a topic's questions).
+- No BenchModels (Android's bench-only Qwen3-0.6B pushed over USB), and no request fields for outside questions,
+  engines, retrieval mode, answer style or labs (`questions`, `engine(s)`, `retrieval`, `style`, `labs`): the iOS
+  runner keeps the legacy fixed-model pipeline and the app's or the topic's plugins. No Staged rows either.
+- The bench screens are in English and Portuguese (Android's bench activity is English only).
 
 ## Not in scope (next iterations)
 

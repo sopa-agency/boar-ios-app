@@ -1,3 +1,4 @@
+import BoarAnswer
 import BoarCore
 import SwiftUI
 
@@ -6,9 +7,13 @@ import SwiftUI
 struct EvalResultRow: View {
     let row: JSONValue
     let modelName: String
+    /// Its place in the run: a preset answers the same question once per pass (Succinct, Detailed, Deep Research).
+    var index = 0
+    /// The scorecard's verdict for it (a preset's rules), when there is one.
+    var verdict: Scorecard.RowResult?
     @Binding var expanded: String?
 
-    private var key: String { "\(row["configId"]?.stringValue ?? "")/\(row["queryId"]?.stringValue ?? "")" }
+    private var key: String { "\(index)/\(row["configId"]?.stringValue ?? "")/\(row["queryId"]?.stringValue ?? "")" }
     private var open: Bool { expanded == key }
     private var outcome: String { row["outcome"]?.stringValue ?? "" }
     private var check: String? { row["check"]?.stringValue }
@@ -28,8 +33,9 @@ struct EvalResultRow: View {
     }
 
     private var summary: String {
-        [EvalFormat.category(row["category"]?.stringValue ?? ""), modelName, FeatureFormat.milliseconds(row["totalLatencyMs"]?.doubleValue)]
-            .joined(separator: " · ")
+        [EvalFormat.category(row["category"]?.stringValue ?? ""), modelName, row["style"]?.stringValue,
+         row["path"]?.stringValue == BenchPass.pathDeep ? "deep" : nil, FeatureFormat.milliseconds(row["totalLatencyMs"]?.doubleValue)]
+            .compactMap { $0 }.joined(separator: " · ")
     }
 
     /// What the check found, in words.
@@ -81,7 +87,27 @@ struct EvalResultRow: View {
                         .foregroundStyle(status.color)
                         .accessibilityLabel(status.label)
                 }
+                if let verdict, verdict.verdict != .toRead {
+                    Text(verdict.verdict.label)
+                        .textCase(.uppercase)
+                        .boarText("mono.xs")
+                        .fontWeight(.semibold)
+                        .foregroundStyle(verdict.verdict.color)
+                }
                 if open {
+                    // What failed, and what right looks like (the topic's note).
+                    if let verdict {
+                        ForEach(Array(verdict.checks.filter { $0.ok == false }.enumerated()), id: \.offset) { _, check in
+                            Text(verbatim: "✗ \(check.rule): \(check.detail)")
+                                .boarText("mono.xs")
+                                .foregroundStyle(.boar(.danger))
+                        }
+                        if !verdict.toRead.isEmpty {
+                            Text(verbatim: verdict.toRead)
+                                .boarText("mono.xs")
+                                .foregroundStyle(.secondary)
+                        }
+                    }
                     if let finding {
                         Text(finding)
                             .font(.boar("ui.subtext"))

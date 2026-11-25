@@ -1,0 +1,228 @@
+{
+  "id": "cards",
+  "version": 1,
+  "status": "reviewed by t9, 14 Nov",
+  "title": "Cards",
+  "titlePt": "Cards",
+  "about": "The 14 questions of the Cards runs on the F3 (Nov 14): each one's card found by CardRules.find, with its numbers right.",
+  "questions": [
+    {
+      "id": "cards-water",
+      "query": "How do you purify water in the wild, step by step?",
+      "category": "cards",
+      "rules": {
+        "cards": [
+          "steps"
+        ]
+      },
+      "knownIssue": "the Cards a/b/c decision (adam: review later)"
+    },
+    {
+      "id": "cards-tyre",
+      "query": "How do I change a flat bicycle tyre?",
+      "category": "cards",
+      "rules": {
+        "cards": [
+          "steps"
+        ]
+      },
+      "knownIssue": "the Cards a/b/c decision (adam: review later)"
+    },
+    {
+      "id": "cards-bread",
+      "query": "How do I make a simple no-knead bread?",
+      "category": "cards",
+      "rules": {
+        "cards": [
+          "steps"
+        ],
+        "citesOnlyRealSources": true
+      },
+      "knownIssue": "the Cards a/b/c decision (adam: review later)"
+    },
+    {
+      "id": "cards-campfire",
+      "query": "How do I start a campfire safely?",
+      "category": "cards",
+      "rules": {
+        "cards": [
+          "steps"
+        ]
+      },
+      "knownIssue": "the Cards a/b/c decision (adam: review later)"
+    },
+    {
+      "id": "cards-mountains",
+      "query": "What are the three highest mountains, and how tall is each?",
+      "category": "cards",
+      "rules": {
+        "cards": [
+          "chart"
+        ],
+        "minChartPoints": 3,
+        "numbers": [
+          {
+            "value": 8849,
+            "tolerance": 0.001,
+            "label": "Everest"
+          },
+          {
+            "value": 8611,
+            "tolerance": 0.001,
+            "label": "K2"
+          },
+          {
+            "value": 8586,
+            "tolerance": 0.001,
+            "label": "Kangchenjunga"
+          }
+        ]
+      },
+      "knownIssue": "the Cards a/b/c decision (adam: review later)"
+    },
+    {
+      "id": "cards-countries",
+      "query": "What are the five largest countries by area?",
+      "category": "cards",
+      "rules": {
+        "cards": [
+          "chart"
+        ],
+        "minChartPoints": 5,
+        "answerHas": [
+          "Russia",
+          "Canada"
+        ]
+      },
+      "knownIssue": "the Cards a/b/c decision (adam: review later)"
+    },
+    {
+      "id": "cards-distances",
+      "query": "How far are the Moon, Mars and the Sun from Earth?",
+      "category": "cards",
+      "rules": {
+        "answerHas": [
+          "Moon",
+          "Mars",
+          "Sun"
+        ]
+      }
+    },
+    {
+      "id": "cards-boiling",
+      "query": "What are the boiling points of water, ethanol and mercury?",
+      "category": "cards",
+      "rules": {
+        "cards": [
+          "chart"
+        ],
+        "minChartPoints": 3,
+        "numbersAny": [
+          {
+            "value": 100,
+            "tolerance": 0,
+            "label": "water 100 °C"
+          },
+          {
+            "value": 212,
+            "tolerance": 0,
+            "label": "water 212 °F"
+          }
+        ]
+      },
+      "knownIssue": "the Cards a/b/c decision (adam: review later)"
+    },
+    {
+      "id": "cards-solar-wind",
+      "query": "Compare solar and wind power.",
+      "category": "cards",
+      "rules": {
+        "cards": [
+          "compare"
+        ]
+      },
+      "knownIssue": "the Cards a/b/c decision (adam: review later)"
+    },
+    {
+      "id": "cards-virus",
+      "query": "What is the difference between a virus and a bacterium?",
+      "category": "cards",
+      "rules": {
+        "cards": [
+          "compare"
+        ]
+      },
+      "knownIssue": "the Cards a/b/c decision (adam: review later)"
+    },
+    {
+      "id": "cards-curie",
+      "query": "Who was Marie Curie?",
+      "category": "cards",
+      "rules": {
+        "answerHas": [
+          "radioactivity"
+        ]
+      }
+    },
+    {
+      "id": "cards-rome",
+      "query": "When did the Western Roman Empire fall, and who was its last emperor?",
+      "category": "cards",
+      "rules": {
+        "numbers": [
+          {
+            "value": 476,
+            "tolerance": 0,
+            "label": "476"
+          }
+        ],
+        "answerHas": [
+          "Romulus Augustulus"
+        ]
+      }
+    },
+    {
+      "id": "cards-mountains-pt",
+      "query": "Quais são as três montanhas mais altas, e qual a altura de cada uma?",
+      "category": "cards",
+      "rules": {
+        "language": "pt",
+        "cards": [
+          "chart"
+        ],
+        "minChartPoints": 3,
+        "noFileSources": true,
+        "numbers": [
+          {
+            "value": 8849,
+            "tolerance": 0.001,
+            "label": "Everest"
+          },
+          {
+            "value": 8611,
+            "tolerance": 0.001,
+            "label": "K2"
+          },
+          {
+            "value": 8586,
+            "tolerance": 0.001,
+            "label": "Kangchenjunga"
+          }
+        ]
+      },
+      "knownIssue": "the Cards a/b/c decision (adam: review later)"
+    },
+    {
+      "id": "cards-water-pt",
+      "query": "Como purificar água na natureza, passo a passo?",
+      "category": "cards",
+      "rules": {
+        "language": "pt",
+        "cards": [
+          "steps"
+        ]
+      },
+      "knownIssue": "the Cards a/b/c decision (adam: review later)"
+    }
+  ]
+}

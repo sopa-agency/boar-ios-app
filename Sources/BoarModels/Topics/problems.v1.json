@@ -1,0 +1,229 @@
+{
+  "id": "problems",
+  "version": 1,
+  "status": "reviewed by t9, 14 Nov",
+  "title": "Problems found so far",
+  "titlePt": "Problemas achados",
+  "about": "Every failure found so far, each with what right looks like. The statuette's 7 (Oct 7): their documents and expected answers were never shared; four cases reconstructed from the described failures are here (statuette-*), marked so. The originals wait for someone to ask the tester (t9 0526).",
+  "questions": [
+    {
+      "id": "bread-no-knead",
+      "query": "How do I make a simple no-knead bread?",
+      "category": "how-to",
+      "rules": {
+        "citesOnlyRealSources": true,
+        "sourcesNot": [
+          "Cutlet"
+        ]
+      },
+      "toRead": "Steps: flour, water, salt, a little yeast, a long rise, bake hot in a covered pot. It cited Cutlet: no [n] without a real source."
+    },
+    {
+      "id": "mountains-ranking",
+      "category": "factual",
+      "query": "What are the three highest mountains, and how tall is each?",
+      "rules": {
+        "numbers": [
+          {
+            "value": 8849,
+            "tolerance": 0.001,
+            "label": "Everest"
+          },
+          {
+            "value": 8611,
+            "tolerance": 0.001,
+            "label": "K2"
+          },
+          {
+            "value": 8586,
+            "tolerance": 0.001,
+            "label": "Kangchenjunga"
+          }
+        ],
+        "answerHasNot": [
+          "Kilimanjaro",
+          "Olympus"
+        ]
+      },
+      "knownIssue": "model fact errors seen on the F3, 14 Nov: the 4B named Kilimanjaro and the 1.7B Olympus Mons among the three highest (no brief yet)",
+      "toRead": "Everest 8,849 m, K2 8,611 m, Kangchenjunga 8,586 m. Not Kilimanjaro, not Olympus Mons (a Martian volcano)."
+    },
+    {
+      "id": "mountains-pt",
+      "query": "Quais são as três montanhas mais altas, e qual a altura de cada uma?",
+      "category": "factual",
+      "rules": {
+        "language": "pt",
+        "noFileSources": true,
+        "citesOnlyRealSources": true,
+        "numbers": [
+          {
+            "value": 8849,
+            "tolerance": 0.001,
+            "label": "Everest 8.849 m"
+          },
+          {
+            "value": 8611,
+            "tolerance": 0.001,
+            "label": "K2 8.611 m"
+          },
+          {
+            "value": 8586,
+            "tolerance": 0.001,
+            "label": "Kangchenjunga 8.586 m"
+          }
+        ],
+        "cards": [
+          "chart"
+        ]
+      },
+      "toRead": "Everest, K2, Kangchenjunga, in Portuguese. It cited the user's own file."
+    },
+    {
+      "id": "battery-27000-pt",
+      "query": "27.000 mAh 3,7 V no avião, posso levar?",
+      "category": "calculator",
+      "rules": {
+        "numbers": [
+          {
+            "value": 99.9,
+            "tolerance": 0.001,
+            "label": "99,9 Wh"
+          }
+        ],
+        "numbersNot": [
+          {
+            "value": 0.0999,
+            "tolerance": 0.01,
+            "label": "0,0999 Wh (27 mAh)"
+          }
+        ],
+        "language": "pt"
+      },
+      "toRead": "99,9 Wh, under the usual 100 Wh line; check the airline. It was read as 27 mAh."
+    },
+    {
+      "id": "co-merged",
+      "query": "We're going camping this weekend. How do I pitch a tent in the rain, and can I cook on the camping stove inside the tent?",
+      "category": "safety",
+      "rules": {
+        "answerHasAny": [
+          "carbon monoxide",
+          "CO poisoning",
+          "(CO)"
+        ]
+      },
+      "toRead": "The tent part answered, and the stove part says no: carbon monoxide, even with the flap open. A CO question inside a merged question."
+    },
+    {
+      "id": "health-kept-brief",
+      "query": "How do I treat a minor kitchen burn?",
+      "category": "health",
+      "rules": {
+        "keptShort": true
+      },
+      "toRead": "Short and safe: cool running water 20 minutes, no ice or butter, cover loosely; see a doctor when large, deep or on the face. Kept brief even under Detailed."
+    },
+    {
+      "id": "seed-phrase",
+      "query": "How should I store my seed phrase?",
+      "category": "security",
+      "rules": {
+        "keptShort": true
+      },
+      "toRead": "Offline, on paper or metal, never typed into a phone, photo or cloud; never shared. Kept brief."
+    },
+    {
+      "id": "statuette-rule-exception",
+      "category": "reasoning",
+      "query": "Read this note and answer.\n\nNote: \"Greenhouse vents. Open the North and South vents when it is above 28 °C, unless there is a smoke alert. During a smoke alert, close the North vent; the South vent stays open.\"\n\nIt is 31 °C and there is a smoke alert. Which vents should be open and which closed?",
+      "rules": {},
+      "toRead": "Right: the North vent closed, the South vent open (the smoke alert is the exception to the above-28 °C rule). BOAR inverted this. Reconstructed from the description (SOPA card \"[App] Corrigir os 4 erros de raciocínio\"), not the tester's originals; the originals wait for someone to ask the tester (t9 0526). Check that it does not say any of: \"North vent open\", \"North vent should be open\", \"open the North\" (to read: a rule on \"North\" alone gives false passes, t9 1058)."
+    },
+    {
+      "id": "statuette-time-compare",
+      "category": "reasoning",
+      "query": "Read this message and answer.\n\nMessage: \"The technician arrives at 17:10. Your appointment is at 17:30. The replacement part you ordered is unavailable until next week.\"\n\nWill the repair be done at the appointment? Why or why not?",
+      "rules": {
+        "answerHasAny": [
+          "replacement part",
+          "part is unavailable",
+          "not available",
+          "unavailable"
+        ],
+        "answerHasNot": [
+          "17:10 is later",
+          "arrives late",
+          "after the appointment"
+        ]
+      },
+      "toRead": "Right: 17:10 is before 17:30, so arriving is not the problem; the repair can't be done because the part is unavailable until next week. BOAR called 17:10 later than 17:30 and left out the part. Reconstructed from the description (SOPA card \"[App] Corrigir os 4 erros de raciocínio\"), not the tester's originals; the originals wait for someone to ask the tester (t9 0526)."
+    },
+    {
+      "id": "statuette-contradiction",
+      "category": "reasoning",
+      "query": "Read these observations and answer.\n\nObservations: \"Field A got fertilizer and full sun; its harvest was 40 % bigger. Field B got no fertilizer and full sun; its harvest was normal. Field C got fertilizer and half shade; its harvest was normal.\"\n\nDid the fertilizer cause Field A's bigger harvest? Can these observations separate the effect of fertilizer from the effect of sun?",
+      "rules": {},
+      "toRead": "Right, and consistent from start to end: the fertilizer alone did not cause it (Field C had fertilizer and a normal harvest); the bigger harvest came with fertilizer and full sun together; the three fields don't fully separate the two (no field with neither, no field with sun only besides B). The answer must not say both that they separate and that they do not. Reconstructed from the description (SOPA card \"[App] Corrigir os 4 erros de raciocínio\"), not the tester's originals; the originals wait for someone to ask the tester (t9 0526)."
+    },
+    {
+      "id": "statuette-missing-info",
+      "category": "reasoning",
+      "query": "Read this notice and answer.\n\nNotice: \"Community center. Open Monday to Friday, 8:00 to 18:00. Saturday 9:00 to 13:00. Closed on Sundays and holidays.\"\n\nWhat is the access code for the side door?",
+      "rules": {
+        "answerHasAny": [
+          "not in",
+          "doesn't say",
+          "does not say",
+          "isn't in",
+          "no access code",
+          "not mentioned"
+        ],
+        "answerHasNot": [
+          "8:00",
+          "18:00"
+        ]
+      },
+      "toRead": "Right: the notice has no access code; say so, and don't give the opening hours instead. BOAR gave the hours. Reconstructed from the description (SOPA card \"[App] Corrigir os 4 erros de raciocínio\"), not the tester's originals; the originals wait for someone to ask the tester (t9 0526)."
+    },
+    {
+      "id": "compare-brazil-russia",
+      "query": "Compare Brazil and Russia",
+      "category": "comparison",
+      "rules": {
+        "citesOnlyRealSources": true,
+        "answerHasAny": [
+          "17,075,400",
+          "17.075.400",
+          "17,098,246",
+          "17.098.246",
+          "17.1 million",
+          "17 million",
+          "17,1 milhões"
+        ],
+        "answerHasEach": [
+          [
+            "twice",
+            "double",
+            "two times",
+            "2 times",
+            "about 2 ",
+            "roughly 2 ",
+            "nearly 2 ",
+            "1.9 times",
+            "2.0 times",
+            "dobro",
+            "duas vezes"
+          ]
+        ],
+        "answerHasNot": [
+          "three-quarters",
+          "three quarters",
+          "smaller than Brazil"
+        ]
+      },
+      "toRead": "Right: Russia is about twice Brazil's area (the F3's all66 answer said \"three-quarters\": wrong) (17,075,400 km² vs 8,515,767 km² in the table), Brazil has more people (214 million in 2026 vs 146 million in 2025), capitals Brasília and Moscow; the figures cited from the Facts source with its date (offline table as of 2026-10-06), not the model's memory. Needs Facts on (t9 0110 item 5).",
+      "needsLab": "facts"
+    }
+  ]
+}

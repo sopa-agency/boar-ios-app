@@ -10,9 +10,10 @@ struct EvalShareMenu: View {
         Menu("Share Results", systemImage: "square.and.arrow.up") {
             Section("Traces for the Judge") {
                 ForEach(configs) { config in
-                    if let file = controller.traceFile(configId: config.configId) {
-                        ShareLink(item: file, preview: SharePreview(Text(verbatim: file.filename))) {
-                            Label(controller.name(configId: config.configId, label: config.label).full, systemImage: "doc.badge.gearshape")
+                    ForEach(controller.traceFiles(configId: config.configId)) { trace in
+                        ShareLink(item: trace.file, preview: SharePreview(Text(verbatim: trace.file.filename))) {
+                            let name = controller.name(configId: config.configId, label: config.label).full
+                            Label(trace.pass.map { "\(name) · \($0)" } ?? name, systemImage: "doc.badge.gearshape")
                         }
                     }
                 }

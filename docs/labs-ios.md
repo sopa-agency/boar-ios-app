@@ -9,10 +9,10 @@ Where each Android lab stands on iOS (2026-11-05), and what the rest would take.
 
 | Lab | Android id | Slot | Engine (iOS) | Tests |
 |---|---|---|---|---|
-| Press | `printer` | page, answer menu, chat toolbar | `BoarAnswer/Labs/` PressDoc, PressReceipt, PressLayout (+ PictureFit), PressFiles, PressRewrite (marks), DesignerCanvas, `PressPDF` (+ PressPage, PressPaper) | `PressDocTests`, `PressReceiptTests`, `PressFilesTests`, `PressPDFTests` (PressSelfTest's projects) |
-| Vitals | `pulse` | page | `BoarCore/CoreLoad`, thermal state, footprint | `CoreLoadTests` (Android has none) |
-| Nomad | `compass` | page | `BoarAnswer/Labs/CompassMath`, sensor: Core Motion | `CompassMathTests` (Android has none) |
-| Lunar | `lunar` | page | `BoarAnswer/Labs/MoonPhase` | `MoonPhaseTests` (Android has none) |
+| Press | `printer` | page, answer menu, chat toolbar | `BoarAnswer/Labs/` PressDoc, PressReceipt, PressLayout (+ PictureFit), PressFiles, PressRewrite (marks), DesignerCanvas, `PressPDF` (+ PressPage, PressPaper), `BoarAnswer/Chat/ChatExport` | `PressDocTests`, `PressReceiptTests`, `PressFilesTests`, `PressPDFTests` (PressSelfTest's projects), `ChatExportTests` |
+| Vitals | `pulse` | page, tool | `BoarCore/CoreLoad`, thermal state, footprint, `BoarAnswer/Labs/PluginAnswers` | `CoreLoadTests` (Android has none), `PluginAnswersTests` |
+| Nomad | `compass` | page, tool | `BoarAnswer/Labs/CompassMath`, `PluginAnswers`, sensor: Core Motion | `CompassMathTests` (Android has none), `PluginAnswersTests` |
+| Lunar | `lunar` | page, tool | `BoarAnswer/Labs/MoonPhase`, `PluginAnswers` | `MoonPhaseTests` (Android has none), `PluginAnswersTests` |
 | Polyglot | `polyglot` | tool | `BoarRouting/LanguageGate`, detector: NaturalLanguage | `LanguageGateTests` |
 | Calculator | `calc` | tool | `BoarRouting/Arithmetic`, `NumGuard`, `CalcShortcut` | `ArithmeticTests`, `NumGuardTests` |
 | Distance | `distance` | tool | `BoarRouting/TravelDistance` | `TravelDistanceTests` |
@@ -34,7 +34,7 @@ Differences from Android, on purpose:
   - Polyglot is deprecated (`LabDefaults.deprecated`): out of the list, never active.
   - Tiles, the classified teasers, status tags, the easter egg and Daily Quiz are hidden (`PluginsUi`, as Android hides tiles and teasers);
     the list is the only view.
-  - Lunar, Nomad and Vitals have no example or Try rows and no "ask in the chat" bullet until plugins answer in the chat (separate PR).
+  - Lunar, Nomad and Vitals have no example or Try rows; their "How it works" says they answer in the chat (BOAR-56).
   - Press and Designer have no canvas toolbar, gear or "..." menu (Press is rebuilt later). `LabPlugin.fullPage` exists, unused.
   - Press's about text and body are iOS-specific (one project on the page until BOAR-55 part 6.2); Designer's "How it works" is about Image Playground.
   - A Try row's long press is a context menu (ask, edit in the box, copy).
@@ -75,7 +75,8 @@ Differences from Android, on purpose:
   lacks). It uses only the model the chat
   already has: with none loaded it says "No answer model is loaded" instead of loading one (a model that may not fit asks
   first, in the chat). Not ported: `CardSpec` and `CanvasTest` (dead in v2.0.0), the move of pre-Cards files
-  (`files/canvas`, which iOS never had), and `cards.v1.json` (a bench topic, with Bench in BOAR-56). Press doesn't take the
+  (`files/canvas`, which iOS never had); `cards.v1.json` is a bench topic, ported with Bench in BOAR-56
+  (docs/BENCHMARK-SCREEN.md). Press doesn't take the
   card along yet (PressDoc, the PDF's card): that comes with Press in BOAR-55. Answer ids are never reused, so a deleted
   chat's cards need no `eraseAnswers`: their meta goes with the chat.
 - **Press redone (BOAR-55, against v2.0.0), part 6.1, the engine:** projects as documents of blocks (`PressDoc`), the old
@@ -98,6 +99,22 @@ Differences from Android, on purpose:
     doesn't run it yet, and the prune and delete dialogs don't say Press loses them (`pluginsOn: false`).
   - The Kotlin tests that read Android's screen sources (PressEraseTest, PressDesignerLayoutTest, parts of the gate) have
     no counterpart; the fuzz uses SplitMix64 with seed 7 instead of `java.util.Random(7)`.
+- **Plugin answers (BOAR-56, against v2.0.0):** Lunar, Nomad and Vitals answer their questions in the chat (`PluginAnswers`,
+  tool codes `lunar-phase`, `compass-heading`, `vitals-phone`), and a model's answer to a question one of them would have
+  taken while it's off says "<name> is off. Turn it on in Plugins ›". Differences: the answers name the device ("This iPhone
+  has no compass", "Read on this iPhone just now") where Android says "phone"; "my iPhone" / "this iPad" count as the device
+  in Vitals' question; Vitals says the system's heat level ("heat level warm") instead of the battery temperature iOS
+  doesn't give, and its "free memory" is what BOAR can still use before iOS closes it (`os_proc_available_memory`; the Mac
+  says no memory figure). The tool slot runs synchronously, so the chat reads the compass (up to 900 ms, three readings, as
+  Android) and the battery just before the tools run (`PhoneReads.prepare`), only for a question that plugin takes. The
+  off line opens the plugin's page (its switch is there) in every profile, where Android's Pro opens the Plugins list.
+  Illustrate on these answers waits for Designer. The bench's plugins topic runs them the same way, with the topic's labs
+  on whatever the app has on (docs/BENCHMARK-SCREEN.md).
+- **Waiting animation (BOAR-56, rc3 bfe69c4b, 50bdf593):** Android draws the boar's trail (or the Matrix rain, a Pro setting)
+  on its Close BOAR screen, hoofprints only. iOS has no Close BOAR (an iOS app doesn't quit itself) and no Matrix rain, and
+  Designer waits on Image Playground's own progress, so no iOS screen shows a waiting animation and the setting isn't
+  offered (it would change nothing). Only the trail's math is ported (`BoarAnswer/Labs/Trail`, `TrailTests`), ready for
+  the first iOS wait that needs it.
 - **Timing tests:** Kotlin's time limits are for a warm JVM; a Swift debug build with every suite in parallel takes about
   twice as long on the same regexes (`LabCombos.timeFactor`).
 

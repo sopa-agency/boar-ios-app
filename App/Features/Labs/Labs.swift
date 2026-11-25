@@ -56,6 +56,8 @@ protocol LabPlugin {
 
     /// The tool slot: looks at the question before the model and answers it or adds context.
     var answerTool: (any AnswerTool)? { get }
+    /// Whether `query` is clearly this plugin's question (android `recognizes`): "Lunar is off" under a model answer.
+    func recognizes(_ query: String) -> Bool
     /// The check slot: reads a model's finished answer and may repair it.
     var answerCheck: (any AnswerCheck)? { get }
     /// The search slot (android `PipelineStages.search`): looks at what the search found and returns the passages the model reads.
@@ -142,6 +144,7 @@ extension LabPlugin {
     var reviewShort: String? { nil }
     var review: String? { nil }
     var answerTool: (any AnswerTool)? { nil }
+    func recognizes(_ query: String) -> Bool { false }
     var answerCheck: (any AnswerCheck)? { nil }
     var searchStage: (any SearchStage)? { nil }
     func content() -> AnyView { AnyView(EmptyView()) }
@@ -281,6 +284,13 @@ final class Labs {
 
     var activeChecks: [any AnswerCheck] { active.compactMap(\.answerCheck) }
 
+    /// The id of a plugin that's off but would have answered `query` (Lunar for "what phase is the moon"), named under the
+    /// model's answer; nil otherwise, and always with Plugins off (android `AnswerTools.offPlugin`, Nov 12).
+    func offPlugin(_ query: String) -> String? {
+        guard labsOn else { return nil }
+        return visible.compactMap(opened).first { !enabled($0.id) && $0.recognizes(query) }?.id
+    }
+
     /// The search stages of the labs switched on now, in grid order.
     var activeSearchStages: [any SearchStage] { active.compactMap(\.searchStage) }
 
@@ -395,6 +405,9 @@ final class Labs {
         case _ where code.hasPrefix("calculator-"): "calc"
         case _ where code.hasPrefix("facts-"): "facts"
         case "language": "polyglot"
+        case _ where code.hasPrefix("lunar-"): "lunar"
+        case _ where code.hasPrefix("compass-"): "compass"
+        case _ where code.hasPrefix("vitals-"): "pulse"
         default: nil
         }
         guard let lab = id.flatMap(byId) else { return nil }

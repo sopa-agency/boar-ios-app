@@ -1,4 +1,5 @@
 import BoarAnswer
+import BoarRAG
 import SwiftUI
 #if os(iOS)
 import CoreMotion
@@ -8,7 +9,8 @@ import CoreMotion
 /// rotation vector; here Core Motion's device motion in the magnetic-north frame gives the heading, with no permission
 /// prompt and no location. It points to magnetic north: true north needs the local declination, which needs the user's
 /// location, and BOAR doesn't ask for it. A low magnetometer calibration shows the figure-8 hint. The Mac has no
-/// magnetometer: the page says so. The arithmetic is BoarAnswer `CompassMath`.
+/// magnetometer: the page says so. The arithmetic is BoarAnswer `CompassMath`. In the chat it answers "which way is north?"
+/// (PluginAnswers) from a reading the chat takes just before (PhoneReads), with "hold it flat" when it's tilted.
 struct CompassLab: LabPlugin {
     let id = "compass"
     let order = 50
@@ -19,6 +21,17 @@ struct CompassLab: LabPlugin {
     var body: String { String(localized: "A compass from your \(Platform.deviceNoun)'s sensors. No location needed.") }
 
     func content() -> AnyView { AnyView(CompassSections()) }
+
+    func recognizes(_ query: String) -> Bool { PluginAnswers.isDirectionQuestion(query) }
+    var answerTool: (any AnswerTool)? { Tool() }
+
+    struct Tool: AnswerTool {
+        func run(query: String, history: [ConversationTurn]) -> ToolResult? {
+            guard PluginAnswers.isDirectionQuestion(query) else { return nil }
+            let (heading, tilt) = PhoneReads.lastHeading()
+            return .instant(tool: "compass-heading", text: PluginAnswers.directionAnswer(query, heading: heading, tiltDeg: tilt, device: PhoneReads.device))
+        }
+    }
 
     static func direction(_ key: String) -> LocalizedStringResource {
         switch key {
@@ -119,9 +132,8 @@ private struct CompassSections: View {
                     }
                 }
             }
-            // The tool first, the template's fold under it, with no summary. Android's last line (ask it in the chat) waits
-            // for the plugin answers port.
-            PluginPage(how: String(localized: "• Points to magnetic north, worked out on this \(Platform.deviceNoun) with no internet.\n• True north is a few degrees off, depending on where you are; it would need your location, which BOAR doesn't ask for.\n• Hold the \(Platform.deviceNoun) flat."))
+            // The tool first, the template's fold under it, with no summary.
+            PluginPage(how: String(localized: "• Points to magnetic north, worked out on this \(Platform.deviceNoun) with no internet.\n• True north is a few degrees off, depending on where you are; it would need your location, which BOAR doesn't ask for.\n• Hold the \(Platform.deviceNoun) flat.\n• You can also ask in the chat which way is north."))
         }
         .onAppear { reader.start() }
         .onDisappear { reader.stop() }
