@@ -29,7 +29,7 @@ enum DebugRouter {
         // The split view has to be on screen before a selection change reaches `onChange`.
         try? await Task.sleep(for: .milliseconds(700))
         switch screen {
-        case "chat", "chat-top", "citation-sheet", "source-reader", "receipt", "tone-sheet":
+        case "chat", "chat-top", "chat-card", "citation-sheet", "source-reader", "receipt", "tone-sheet":
             await openFirstSession(model)
         case "chat-streaming":
             await openFirstSession(model)
