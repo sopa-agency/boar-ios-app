@@ -58,6 +58,38 @@ struct ChatStoreTests {
         #expect(try s.listSessions().isEmpty)
     }
 
+    /// android ChatStoreTest: prune tells which chats go before deleting them, while their answers can still be read.
+    @Test func pruneTellsWhichChatsGoBeforeDeletingThemWhileTheirAnswersCanStillBeRead() throws {
+        let s = try store()
+        var ids: [String] = []
+        for i in 1...3 {
+            let session = try s.createSession(title: "s\(i)")
+            try s.addMessage(sessionId: session.id, role: "assistant", text: "a\(i)", id: "a\(i)")
+            ids.append(session.id)
+        }
+        var seen: [String: [String]] = [:]
+        var deleted: [String] = []
+        try s.prune(maxSessions: 1, beforeDelete: { id in seen[id] = (try? s.messages(sessionId: id).map(\.id)) ?? [] },
+                    deleted: { deleted.append($0) })
+        #expect(seen == [ids[0]: ["a1"], ids[1]: ["a2"]])
+        #expect(Set(deleted) == [ids[0], ids[1]])
+        #expect(try s.listSessions().map(\.id) == [ids[2]])
+    }
+
+    /// iOS: the answers of the pruned chats, for the plugins (Press) to let go of them.
+    @Test func pruneAnswersListsTheDeletedChatsAnswers() throws {
+        let s = try store()
+        for i in 1...3 {
+            let session = try s.createSession(title: "s\(i)")
+            try s.addMessage(sessionId: session.id, role: "user", text: "q\(i)", id: "q\(i)")
+            try s.addMessage(sessionId: session.id, role: "assistant", text: "a\(i)", id: "a\(i)")
+        }
+        let r = s.pruneAnswers(maxSessions: 1)
+        #expect(r.ok && Set(r.answers) == ["a1", "a2"])
+        let none = s.pruneAnswers(maxSessions: 0)
+        #expect(none.ok && none.answers.isEmpty)
+    }
+
     /// iOS only: an answer saved as it was written that ended with nothing to keep goes, with its meta and rating.
     @Test func deleteMessageRemovesOnlyThatMessage() throws {
         let s = try store()

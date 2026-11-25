@@ -38,7 +38,7 @@ struct SettingsClearChatsRows: View {
             // Press holds answers the user collected: kept unless they choose to delete it too (android: off by default).
             Button("Clear Chat History", role: .destructive) { clearChats(alsoPress: false) }
             if UserDataScope.offersPressChoice(pressItems: pressItems) {
-                Button("Clear and Also Delete Press Basket (\(pressItems))", role: .destructive) { clearChats(alsoPress: true) }
+                Button("Clear and Also Delete Press Projects (\(pressItems))", role: .destructive) { clearChats(alsoPress: true) }
             }
         } message: {
             Text("Every saved chat and message on this \(Platform.deviceNoun) is deleted. Models, documents and settings stay.")

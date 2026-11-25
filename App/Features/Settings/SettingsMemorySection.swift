@@ -73,7 +73,7 @@ struct SettingsMemorySection: View {
             Button("Delete Them", role: .destructive) { deleteNow(l) }
             Button("Cancel", role: .cancel) {}
         } message: { l in
-            Text(PruneText.of(Self.message(l.max, l.going), "", pluginsOn: false))
+            Text(PruneText.of(Self.message(l.max, l.going), Labs.prunePluginsLine, pluginsOn: true))
         }
     }
 
@@ -95,7 +95,9 @@ struct SettingsMemorySection: View {
         let max = l.max
         let going = Set(l.going.map(\.id))
         Task {
-            _ = try? await services.background { try $0.chats.prune(maxSessions: max) }
+            // What the plugins kept of their answers (Press's projects) goes with the chats, only those really deleted.
+            let gone = (try? await services.background { $0.chats.pruneAnswers(maxSessions: max).answers }) ?? []
+            Labs.shared.eraseAnswers(gone)
             // As AppModel.deleteSession: Settings stays on screen; only a sidebar pointing at a deleted chat moves.
             if let open = model.chat?.sessionId, going.contains(open) { model.chat?.newChat() }
             if case .session(let id) = model.selection, going.contains(id) { model.selection = .newChat }

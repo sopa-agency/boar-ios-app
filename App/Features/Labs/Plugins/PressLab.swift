@@ -40,12 +40,27 @@ struct PressLab: LabPlugin {
                                 systemImage: "paperclip", done: added) {
             if added {
                 store.change { $0.removeAnswer(a.id) }
-            } else {
-                var card = CardsModel.shared.shown(a)
-                card?.ticks = CardsModel.shared.ticks(a.id)
-                store.addAnswer(PressDoc.Answer(a.id, a.chatTitle, a.question, a.text,
-                                                a.sources.map { PressDoc.Source($0.0, $0.1.flatMap { $0.isEmpty ? nil : $0 }) },
-                                                PressStore.now, a.model, a.tokPerSec, card: card))
+                return
+            }
+            let block = { (card: AnswerCard?) in
+                PressDoc.Answer(a.id, a.chatTitle, a.question, a.text,
+                                a.sources.map { PressDoc.Source($0.0, $0.1.flatMap { $0.isEmpty ? nil : $0 }) },
+                                PressStore.now, a.model, a.tokPerSec, card: card)
+            }
+            let cards = CardsModel.shared
+            // The card as Cards holds it now (a tick or ✕ may still be on its way to the meta); not read there (Cards
+            // off), from the answer's own meta, as Android's `cardOf` (0bea1eca).
+            if cards.isRead(a) || a.chat == nil {
+                var card = cards.shown(a)
+                card?.ticks = cards.ticks(a.id)
+                store.addAnswer(block(card))
+            } else if let services = a.chat?.services {
+                let id = a.id
+                Task {
+                    let meta = (try? await services.background { try $0.chats.messageMeta(messageId: id) }) ?? nil
+                    guard store.library?.has(id) == false else { return }
+                    store.addAnswer(block(AnswerCard.fromMeta(meta)))
+                }
             }
         }]
     }
@@ -65,6 +80,11 @@ struct PressLab: LabPlugin {
 
     /// One chat deleted: its answers leave every project (adam chose (a), Nov 12). Runs even when off.
     func eraseAnswers(_ answerIds: [String]) { PressStore.shared.eraseAnswers(answerIds) }
+
+    /// The chat's delete dialog says its answers leave Press, only when some are in a project (android `deleteNote`).
+    func deleteNote(_ answerIds: [String]) -> String? {
+        PressStore.shared.countOf(answerIds) > 0 ? String(localized: "Its answers leave every Press project.") : nil
+    }
 }
 
 /// Press's projects as the app holds them (android printer `PressStore.kt`): `files/labs/press/projects.json`, read once,

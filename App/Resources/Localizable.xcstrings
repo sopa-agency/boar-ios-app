@@ -403,6 +403,46 @@
         }
       }
     },
+    "%lld blocks" : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld block"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld blocks"
+                }
+              }
+            }
+          }
+        },
+        "pt" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld bloco"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld blocos"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "%lld in %@" : {
       "localizations" : {
         "pt" : {
@@ -1429,6 +1469,16 @@
         }
       }
     },
+    "All projects (%lld)" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Todos os projetos (%lld)"
+          }
+        }
+      }
+    },
     "All ›" : {
       "localizations" : {
         "pt" : {
@@ -1856,6 +1906,26 @@
         }
       }
     },
+    "As a list" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Em lista"
+          }
+        }
+      }
+    },
+    "As a paragraph" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Em parágrafo"
+          }
+        }
+      }
+    },
     "Ask About Them" : {
       "localizations" : {
         "pt" : {
@@ -1902,6 +1972,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pedir ao BOAR para fazer um · mais lento"
+          }
+        }
+      }
+    },
+    "Ask BOAR to rewrite it" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pedir ao BOAR para reescrever"
           }
         }
       }
@@ -2236,6 +2316,16 @@
         }
       }
     },
+    "BOAR IS REWRITING…" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O BOAR ESTÁ REESCREVENDO…"
+          }
+        }
+      }
+    },
     "BOAR Knowledge" : {
       "localizations" : {
         "pt" : {
@@ -2262,6 +2352,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "O BOAR confere cada modelo com a memória do seu %@. Os downloads ficam dentro de um limite de 50 GB de armazenamento; no Pro dá para mudar isso em Experimental."
+          }
+        }
+      }
+    },
+    "BOAR could not rewrite it. Your text is as it was." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O BOAR não conseguiu reescrever. Seu texto está como estava."
           }
         }
       }
@@ -2372,6 +2472,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "O BOAR responde"
+          }
+        }
+      }
+    },
+    "BOAR rewrites it on this %@ with your model. You see both versions before anything changes." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O BOAR reescreve neste %@ com o seu modelo. Você vê as duas versões antes de qualquer mudança."
           }
         }
       }
@@ -3096,12 +3206,12 @@
         }
       }
     },
-    "Clear and Also Delete Press Basket (%lld)" : {
+    "Clear and Also Delete Press Projects (%lld)" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Limpar e apagar também a cesta do Press (%lld)"
+            "value" : "Limpar e apagar também os projetos do Press (%lld)"
           }
         }
       }
@@ -3422,6 +3532,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Não foi possível salvar o log"
+          }
+        }
+      }
+    },
+    "Create" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Criar"
           }
         }
       }
@@ -4286,12 +4406,32 @@
         }
       }
     },
+    "Edit it yourself" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eu mesmo edito"
+          }
+        }
+      }
+    },
     "Edit text" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Editar texto"
+          }
+        }
+      }
+    },
+    "Edit this text" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Editar este texto"
           }
         }
       }
@@ -5013,6 +5153,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cinco perguntas nas horas quietas."
+          }
+        }
+      }
+    },
+    "Fix the wording" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Corrigir a redação"
           }
         }
       }
@@ -6027,6 +6177,16 @@
         }
       }
     },
+    "Its answers leave every Press project." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "As respostas dela saem de todos os projetos do Press."
+          }
+        }
+      }
+    },
     "Its details, and the button to use or download it, appear here." : {
       "localizations" : {
         "pt" : {
@@ -6133,6 +6293,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Seguir adiante: o que perguntar depois"
+          }
+        }
+      }
+    },
+    "Keep mine" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Manter o meu"
           }
         }
       }
@@ -7053,6 +7223,16 @@
         }
       }
     },
+    "More formal" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mais formal"
+          }
+        }
+      }
+    },
     "More threads than performance cores is usually slower. On iPhone, answers run on the CPU." : {
       "localizations" : {
         "pt" : {
@@ -7143,6 +7323,16 @@
         }
       }
     },
+    "NOW" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AGORA"
+          }
+        }
+      }
+    },
     "Name" : {
       "localizations" : {
         "pt" : {
@@ -7159,6 +7349,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Dê um nome a esta coleção"
+          }
+        }
+      }
+    },
+    "Name, for example Trip to Lisbon" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nome, por exemplo Viagem a Lisboa"
           }
         }
       }
@@ -7299,6 +7499,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Lua nova"
+          }
+        }
+      }
+    },
+    "New project" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Novo projeto"
           }
         }
       }
@@ -7493,6 +7703,16 @@
         }
       }
     },
+    "No change. Try again or say what to change." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nada mudou. Tente de novo ou escreva o que quer mudar."
+          }
+        }
+      }
+    },
     "No chats match." : {
       "localizations" : {
         "pt" : {
@@ -7549,6 +7769,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nenhum plugin encontrado."
+          }
+        }
+      }
+    },
+    "No project with that name." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nenhum projeto com esse nome."
           }
         }
       }
@@ -8209,6 +8439,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Optic ID"
+          }
+        }
+      }
+    },
+    "Or say what to change, for example: for a 10-year-old" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ou diga o que mudar, por exemplo: para uma criança de 10 anos"
           }
         }
       }
@@ -9149,6 +9389,16 @@
         }
       }
     },
+    "REWRITTEN" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "REESCRITO"
+          }
+        }
+      }
+    },
     "Read the Whole Article" : {
       "localizations" : {
         "pt" : {
@@ -9539,6 +9789,16 @@
         }
       }
     },
+    "Rewriting needs an answer model on this %@." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para reescrever é preciso um modelo de resposta neste %@."
+          }
+        }
+      }
+    },
     "Right!" : {
       "localizations" : {
         "pt" : {
@@ -9839,6 +10099,16 @@
         }
       }
     },
+    "Search projects" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buscar projetos"
+          }
+        }
+      }
+    },
     "Searched ^[%lld source](inflect: true) · %@" : {
       "localizations" : {
         "en" : {
@@ -10125,6 +10395,16 @@
         }
       }
     },
+    "Shorter" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mais curto"
+          }
+        }
+      }
+    },
     "Shortly after you leave, when nothing is being answered, BOAR unloads the model, so the phone doesn't close BOAR to get its memory back. The next answer takes a few seconds longer to start." : {
       "localizations" : {
         "pt" : {
@@ -10315,6 +10595,16 @@
         }
       }
     },
+    "Simpler words" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Palavras mais simples"
+          }
+        }
+      }
+    },
     "Size" : {
       "localizations" : {
         "pt" : {
@@ -10421,6 +10711,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Boar Solarpunk"
+          }
+        }
+      }
+    },
+    "Some source marks changed" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Algumas marcas de fonte mudaram"
           }
         }
       }
@@ -10951,6 +11251,16 @@
         }
       }
     },
+    "Stopped. Your text is as it was." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Parado. Seu texto está como estava."
+          }
+        }
+      }
+    },
     "Stopping" : {
       "localizations" : {
         "pt" : {
@@ -11189,6 +11499,16 @@
         }
       }
     },
+    "Tell BOAR how to change this text…" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diga ao BOAR como mudar este texto…"
+          }
+        }
+      }
+    },
     "Tensor Boar" : {
       "localizations" : {
         "pt" : {
@@ -11215,6 +11535,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "O tamanho do texto segue o Tipo Dinâmico do seu %@."
+          }
+        }
+      }
+    },
+    "Text updated." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Texto atualizado."
           }
         }
       }
@@ -11665,6 +11995,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "O estilo com que o BOAR começa. Na conversa, o botão de estilo troca para qualquer pergunta."
+          }
+        }
+      }
+    },
+    "Their answers also leave your Press projects, and the cards made from them are deleted." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "As respostas delas também saem dos seus projetos do Press, e os cartões feitos a partir delas são apagados."
           }
         }
       }
@@ -12546,6 +12886,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Usar nas respostas"
+          }
+        }
+      }
+    },
+    "Use the new text" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usar o texto novo"
           }
         }
       }
@@ -14000,6 +14350,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Próximo"
+          }
+        }
+      }
+    },
+    "type on the page" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "digite na página"
           }
         }
       }

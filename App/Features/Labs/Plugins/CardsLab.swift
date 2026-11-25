@@ -145,6 +145,10 @@ final class CardsModel {
 
     func ticks(_ id: String) -> Set<Int> { ticksById[id] ?? [] }
 
+    /// `a`'s card has been read from its meta (shown or not): `shown` and `ticks` are what it holds now, also with writes
+    /// still on their way.
+    func isRead(_ a: AnswerRef) -> Bool { shownCards[a.id]?.text == a.text.hashValue }
+
     /// The rules' cards for `a`, found off the main actor by `prepare` as the answer shows; none until then (android
     /// `cardsOf`'s empty start: the menu is built with every footer, and the rules can take a second on a long answer).
     func cards(_ a: AnswerRef) -> [CardRules.Card] {

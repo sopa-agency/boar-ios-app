@@ -6,8 +6,9 @@ import SwiftUI
 /// Press's page (android printer `PressScreen.kt`, adam's mock-up, Nov 13): the paper, what you see is what prints, then
 /// one row of tools and the note bar. Nothing selected, the row adds (heading, paragraph, list, divider, photo, a chat's
 /// answers); a tapped block gets the row of its tools (up, down, edit or caption, place, remove with Undo, close). The
-/// bar writes a note; its ⋯ menu saves the PDF or the Markdown, renames or deletes the project. The gear opens Press
-/// settings. Apple's pieces: PhotosPicker, the share sheet (Save to Files), a menu, a sheet.
+/// bar writes a note, or with a text selected tells BOAR how to rewrite it; its ⋯ menu saves the PDF or the Markdown and
+/// holds the projects (the open one and the most recent, All projects, New, Rename, Delete). The gear opens Press
+/// settings. Apple's pieces: PhotosPicker, the share sheet (Save to Files), a menu, sheets, an alert.
 struct PressScreen: View {
     let lab: PressLab
     @State private var store = PressStore.shared
@@ -20,6 +21,10 @@ struct PressScreen: View {
     @State private var photo: PhotosPickerItem?
     @State private var removed: Removed?
     @State private var confirmDelete = false
+    /// What was typed in the bar for the selected text: the edit sheet starts BOAR's rewrite with it, once (t9 0136).
+    @State private var askOwn: String?
+    @State private var naming = false
+    @State private var newName = ""
     @State private var toast: String?
     @State private var focusTitle = 0
     // A moved block stays in view (t9 0143): every move bumps `follow`; the scroll is measured after layout.
@@ -31,7 +36,7 @@ struct PressScreen: View {
     @Environment(AppModel.self) private var model
 
     private enum Sheet: String, Identifiable {
-        case settings, chats
+        case settings, chats, edit, projects
         var id: String { rawValue }
     }
 
@@ -67,6 +72,15 @@ struct PressScreen: View {
             }
         }
         .onAppear { store.load() }
+        #if DEBUG
+        // -uiPressSheet: the edit sheet on the demo's second paragraph, or the full project list, for screenshots.
+        .task {
+            guard let which = DebugLaunch.pressSheet, (try? await Task.sleep(for: .milliseconds(600))) != nil else { return }
+            if which == "projects" { sheet = .projects; return }
+            edit.select("demo-t2")
+            sheet = .edit
+        }
+        #endif
         .toolbar {
             // The header's gear opens Press settings (android PluginSettings, adam Nov 14).
             ToolbarItem(placement: .primaryAction) {
@@ -74,7 +88,9 @@ struct PressScreen: View {
             }
         }
         .navigationSubtitleIfAvailable(Text(verbatim: store.library?.current.name ?? ""))
-        .sheet(item: $sheet) { which in
+        // Closed any way (swipe down, the close button): the bar's instruction goes with it, so the pencil never reopens the
+        // sheet on a leftover and rewrites at once (adam on the F3, Nov 14; t9 0136).
+        .sheet(item: $sheet, onDismiss: { askOwn = nil }) { which in
             switch which {
             case .settings:
                 PressSettingsSheet(lab: lab, showBreaks: $showBreaks, options: $options)
@@ -83,6 +99,15 @@ struct PressScreen: View {
                     sheet = nil
                     guard let services = model.services else { return }
                     Task { await store.addChat(services, id, title) }
+                }
+            case .edit:
+                editSheet
+            case .projects:
+                if let lib = store.library {
+                    PressAllProjectsSheet(library: lib) { id in
+                        store.change { $0.switchTo(id) }
+                        sheet = nil
+                    }
                 }
             }
         }
@@ -121,7 +146,11 @@ struct PressScreen: View {
             starts = found
         }
         .task(id: follow) { await keepInView() }
-        .onChange(of: project.id) { _, _ in edit = PressEdit() }
+        // Another project opened: the one left is marked seen (the menu's recent projects are ordered by it).
+        .onChange(of: project.id) { old, _ in
+            store.change { $0.markSeen(PressStore.now, projectId: old) }
+            edit = PressEdit()
+        }
         // Leaving the page (or another project) marks it seen.
         .onDisappear { store.change { $0.markSeen(PressStore.now, projectId: project.id) } }
         .onChange(of: photo) { _, item in
@@ -137,6 +166,12 @@ struct PressScreen: View {
                 toast = String(localized: "“\(name)” deleted")
             }
         }
+        .alert("New project", isPresented: $naming) {
+            TextField("Name, for example Trip to Lisbon", text: $newName)
+            Button("Cancel", role: .cancel) {}
+            Button("Create") { createProject() }
+        }
+        .onChange(of: newName) { _, n in if n.count > 60 { newName = String(n.prefix(60)) } }
         .overlay(alignment: .top) { ToastView(message: $toast).padding(.top, 8) }
         .animation(.default, value: toast)
     }
@@ -180,7 +215,10 @@ struct PressScreen: View {
             PressTool("Move up", "arrow.up", enabled: i > 0) { move(b.id, -1) }
             PressTool("Move down", "arrow.down", enabled: i < project.blocks.count - 1) { move(b.id, 1) }
             if PressEdit.textOf(b) != nil {
-                PressTool(open ? "Done editing" : "Edit text", open ? "checkmark" : "pencil", on: open) { edit.toggleEditing() }
+                // The pencil opens the edit sheet (edit it yourself, or ask BOAR); a block being typed in closes with it.
+                PressTool(open ? "Done editing" : "Edit text", open ? "checkmark" : "pencil", on: open) {
+                    if open { edit.editing = nil } else { sheet = .edit }
+                }
             }
             if let p = b.picture {
                 PressTool(open ? "Done with the caption" : "Caption", open ? "checkmark" : "text.below.photo", on: open) { edit.toggleEditing() }
@@ -233,13 +271,19 @@ struct PressScreen: View {
         .padding(.vertical, 6)
     }
 
-    /// The note bar (android PromptBar on Press): ⋯ opens the menu; what is typed becomes a note, placed after the
-    /// selection (or the last note) but neither selected nor opened. Asking BOAR to change a selected text comes in
-    /// part 6.3.
+    /// The selected block when it has text: what the bar's words ask BOAR to change.
+    private func target(_ project: PressDoc.Project) -> PressDoc.Block? {
+        project.blocks.first { $0.id == edit.selected && PressEdit.textOf($0) != nil }
+    }
+
+    /// The note bar (android PromptBar on Press): ⋯ opens the menu. With a text selected, what is typed tells BOAR how to
+    /// change it (NOW and REWRITTEN in the edit sheet, nothing changes before Use); with nothing selected it becomes a
+    /// note, placed after the selection (or the last note) but neither selected nor opened.
     private func noteBar(_ project: PressDoc.Project) -> some View {
-        HStack(spacing: 8) {
+        let asking = target(project) != nil
+        return HStack(spacing: 8) {
             menu(project)
-            TextField("Write a note…", text: $note, axis: .vertical)
+            TextField(asking ? "Tell BOAR how to change this text…" : "Write a note…", text: $note, axis: .vertical)
                 .lineLimit(1...4)
                 .font(.boar("ui.body"))
                 .textFieldStyle(.plain)
@@ -248,13 +292,13 @@ struct PressScreen: View {
                 .background(.boar(.border).opacity(0.25), in: .rect(cornerRadius: 18))
                 .onSubmit { addNote(project) }
             Button { addNote(project) } label: {
-                Image(systemName: "plus.circle.fill")
+                Image(systemName: asking ? "arrow.up.circle.fill" : "plus.circle.fill")
                     .font(.system(size: 28))
                     .foregroundStyle(.boar(.accent))
             }
             .buttonStyle(.plain)
             .disabled(note.allSatisfy(\.isWhitespace))
-            .accessibilityLabel(Text("Add the note"))
+            .accessibilityLabel(asking ? Text("Ask BOAR") : Text("Add the note"))
         }
         .padding(.horizontal, 12)
         .padding(.top, 4)
@@ -262,7 +306,8 @@ struct PressScreen: View {
     }
 
     /// Press's menu, grouped (android ProjectsSheet, adam Nov 12): Save as .pdf or .md (the share sheet, Save to Files
-    /// included), then the project: rename on the page, delete. Switching and new projects come in part 6.3.
+    /// included), then the projects: the open one and the most recent (`PressDoc.shortListSize`), All projects (N) with a
+    /// search when there are more, New project, rename on the page, delete.
     private func menu(_ project: PressDoc.Project) -> some View {
         Menu {
             Section("Save as…") {
@@ -275,6 +320,25 @@ struct PressScreen: View {
                 }
             }
             Section("Projects") {
+                if let lib = store.library {
+                    ForEach(lib.shortList(), id: \.id) { p in
+                        Button { store.change { $0.switchTo(p.id) } } label: {
+                            Label {
+                                Text(verbatim: p.name)
+                                Text("\(p.blocks.count) blocks")
+                            } icon: {
+                                Image(systemName: p.id == project.id ? "checkmark" : "folder")
+                            }
+                        }
+                    }
+                    if lib.projects.count > PressDoc.shortListSize {
+                        Button("All projects (\(lib.projects.count))", systemImage: "folder") { sheet = .projects }
+                    }
+                }
+                Button("New project", systemImage: "plus") {
+                    newName = ""
+                    naming = true
+                }
                 Button("Rename “\(project.name)”", systemImage: "pencil") {
                     edit.close()
                     withAnimation { scroll.scrollTo(edge: .top) }
@@ -308,11 +372,56 @@ struct PressScreen: View {
     private func addNote(_ project: PressDoc.Project) {
         let typed = note.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !typed.isEmpty else { return }
+        // A text selected: the words go to BOAR in the edit sheet, used once (set here only).
+        if target(project) != nil {
+            askOwn = typed
+            edit.editing = nil
+            note = ""
+            sheet = .edit
+            return
+        }
         let id = PressStore.newId("n")
         store.change { $0.insert(.note(id: id, text: typed), at: edit.insertIndex(project.blocks)) }
         edit.addedNote(id)
         note = ""
         follow += 1
+    }
+
+    /// A new empty project, opened (android `onNew`): a blank name is "Field notes".
+    private func createProject() {
+        let typed = newName.trimmingCharacters(in: .whitespacesAndNewlines)
+        let name = typed.isEmpty ? String(localized: "Field notes") : typed
+        store.change { $0.newProject(PressStore.newId("p"), name, PressStore.now) }
+        newName = ""
+    }
+
+    /// The pencil's sheet on the selected text; with none left (removed meanwhile) it closes.
+    @ViewBuilder private var editSheet: some View {
+        if let project = store.library?.current, let target = target(project) {
+            PressEditSheet(block: target, document: Self.document(project, without: target.id), typed: askOwn,
+                           onTypedUsed: { askOwn = nil },
+                           onSelf: {
+                               askOwn = nil
+                               sheet = nil
+                               edit.editing = target.id
+                           },
+                           onUse: { text in
+                               store.change { $0.editText(target.id, .text, text) }
+                               toast = String(localized: "Text updated.")
+                               sheet = nil
+                           })
+        } else {
+            Color.clear.onAppear { sheet = nil }
+        }
+    }
+
+    /// The rest of the document, for an instruction in the user's own words (android `PressRewrite.documentContext` with
+    /// each other block's text, an answer as its heading and plain text).
+    static func document(_ project: PressDoc.Project, without id: String) -> String {
+        PressRewrite.documentContext(project.name, project.blocks.filter { $0.id != id }.compactMap { b in
+            if case .answer(let a) = b { return a.shownHeading + "\n" + PressReceipt.plain(a.text) }
+            return PressEdit.textOf(b)
+        })
     }
 
     private func addPhoto(_ item: PhotosPickerItem, projectId: String) async {

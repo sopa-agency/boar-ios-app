@@ -79,6 +79,12 @@ enum DemoFiles {
                                                 DemoContent.model, e.receipt.tokPerSec))
         }
         lib = lib.markSeen(now + 2)
+        // More projects than the menu lists, so "All projects (N)" shows; seen one day apart, the newest first.
+        let names = ["Garden diary", "Trip to Lisbon", "Bread starter", "Night sky notes", "Kids' science fair"]
+        for (i, name) in names.enumerated() {
+            let at = now - Int64(i + 1) * 86_400_000
+            lib.projects.append(PressDoc.Project("demo-press-\(i)", name, at, [.paragraph(id: "demo-p\(i)", text: name)], seenAt: at))
+        }
         try? Data(PressDoc.toJson(lib).utf8).write(to: PressStore.projectsURL(AppPaths.filesDir), options: .atomic)
     }
 

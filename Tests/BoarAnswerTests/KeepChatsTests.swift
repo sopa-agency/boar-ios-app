@@ -99,7 +99,9 @@ struct KeepChatsTests {
         let st = try Fixtures.text(Fixtures.root.appending(path: "App/Features/Settings/SettingsMemorySection.swift"))
         #expect(st.contains("if going.isEmpty {\n            bridge.settings.maxSavedSessions = value"))
         #expect(st.contains("bridge.settings.maxSavedSessions = AppSettings.keepAllChats"))
-        #expect(st.contains("try $0.chats.prune(maxSessions: max)"))
+        #expect(st.contains("$0.chats.pruneAnswers(maxSessions: max).answers"))
+        // The deleted chats' answers leave Press only after their delete went through (BOAR-55 6.3).
+        #expect(st.contains("Labs.shared.eraseAnswers(gone)"))
         for k in ["Delete your oldest chats?", "Keeping %lld chats deletes “%@”.", "Keeping %lld chats deletes “%@” and %lld more.", "Delete Them"] {
             #expect(try pt(k) != nil, Comment(rawValue: "pt \(k)"))
         }
@@ -116,11 +118,12 @@ struct KeepChatsTests {
 
     @Test("both dialogs use it")
     func bothDialogsUseIt() throws {
-        // `both dialogs use it, and Boar Labs says when it applies`: iOS has no plugin data a deleted chat takes along (Press
-        // projects, cards), so both dialogs pass pluginsOn: false until those land.
+        // `both dialogs use it, and Boar Labs says when it applies`: plugins are on in every profile (v2.0.0), and a deleted
+        // chat's answers leave Press, so both dialogs add the plugins' line (BOAR-55 6.3).
         let chat = try Fixtures.text(Fixtures.root.appending(path: "App/Features/Chat/ChatView.swift"))
         let settings = try Fixtures.text(Fixtures.root.appending(path: "App/Features/Settings/SettingsMemorySection.swift"))
-        for s in [chat, settings] { #expect(s.contains("PruneText.of(") && s.contains("pluginsOn: false")) }
+        for s in [chat, settings] { #expect(s.contains("PruneText.of(") && s.contains("Labs.prunePluginsLine, pluginsOn: true")) }
+        #expect(try pt("Their answers also leave your Press projects, and the cards made from them are deleted.") != nil)
     }
 
     // MARK: ClearHistoryPressTest
@@ -142,7 +145,7 @@ struct KeepChatsTests {
     func withNoPressProjectsThereIsNoChoice() throws {
         #expect(!UserDataScope.offersPressChoice(pressItems: 0))
         #expect(UserDataScope.offersPressChoice(pressItems: 3))
-        #expect(try pt("Clear and Also Delete Press Basket (%lld)") != nil)
+        #expect(try pt("Clear and Also Delete Press Projects (%lld)") != nil)
     }
 
     @Test("Forgot PIN still erases Press")

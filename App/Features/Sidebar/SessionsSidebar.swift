@@ -8,6 +8,8 @@ struct SessionsSidebar: View {
     let chat: ChatController
     @State private var renaming: ChatSession?
     @State private var deleting: ChatSession?
+    /// What deleting `deleting` takes from the plugins on (Press: its answers in a project), read before the dialog opens.
+    @State private var deleteNotes: [String] = []
     @State private var newTitle = ""
     @State private var query = ""
     @FocusState private var searching: Bool
@@ -190,8 +192,10 @@ struct SessionsSidebar: View {
             #endif
     }
 
+    /// The chat named, then what the plugins lose with it (Press), each on its own line.
     private func deleteMessage(_ session: ChatSession) -> Text {
-        Text("\"\(session.title)\" and its messages are deleted from this \(Platform.deviceNoun).")
+        let chatLine = String(localized: "\"\(session.title)\" and its messages are deleted from this \(Platform.deviceNoun).")
+        return Text(verbatim: ([chatLine] + deleteNotes).joined(separator: "\n\n"))
     }
 
     #if !os(macOS)
@@ -234,8 +238,18 @@ struct SessionsSidebar: View {
     }
 
     /// Settings → Ask before deleting a chat: on, the dialog naming the chat; off, one tap deletes it.
+    /// The plugins' lines (android ChatSheet's deleteNotes) are read before the dialog opens, the chat's answers off the main
+    /// actor, so the dialog never shows without them (pr-review #68).
     private func askDelete(_ session: ChatSession) {
-        if chat.services.settings.confirmChatDelete { deleting = session } else { delete(session) }
+        guard chat.services.settings.confirmChatDelete else { delete(session); return }
+        let id = session.id
+        Task {
+            let answers = (try? await chat.services.background { s in
+                try s.chats.messages(sessionId: id).filter { $0.role == "assistant" }.map(\.id)
+            }) ?? []
+            deleteNotes = Labs.shared.deleteNotes(answers)
+            deleting = session
+        }
     }
 
     /// Hides the chat and shows "Deleted: title · Undo"; after `ChatList.undoMs` it is deleted for real (android ChatList).
