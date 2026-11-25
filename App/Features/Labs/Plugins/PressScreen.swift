@@ -140,7 +140,10 @@ struct PressScreen: View {
             // A change meanwhile cancels this wait: a cancelled sleep must not fall through (pr-review #66).
             guard (try? await Task.sleep(for: .milliseconds(300))) != nil else { return }
             let fileOf = PressStore.fileOf(store.dir, project.id)
-            starts = await Task.detached(priority: .utility) { PressPDF.pageStarts(paper, fileOf: fileOf) }.value
+            let found = await Task.detached(priority: .utility) { PressPDF.pageStarts(paper, fileOf: fileOf) }.value
+            // An older version's breaks never land after a newer change (Kotlin's withContext throws on cancel).
+            guard !Task.isCancelled else { return }
+            starts = found
         }
         .task(id: follow) { await keepInView() }
         // Another project opened: the one left is marked seen (the menu's recent projects are ordered by it).
