@@ -3096,12 +3096,12 @@
         }
       }
     },
-    "Clear and Also Delete Press Basket (%lld)" : {
+    "Clear and Also Delete Press Projects (%lld)" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Limpar e apagar também a cesta do Press (%lld)"
+            "value" : "Limpar e apagar também os projetos do Press (%lld)"
           }
         }
       }
@@ -6023,6 +6023,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "As respostas são apagadas deste %@ e não voltam. Exportações que você fez continuam."
+          }
+        }
+      }
+    },
+    "Its answers leave every Press project." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "As respostas dela saem de todos os projetos do Press."
           }
         }
       }
@@ -11645,6 +11655,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "O estilo com que o BOAR começa. Na conversa, o botão de estilo troca para qualquer pergunta."
+          }
+        }
+      }
+    },
+    "Their answers also leave your Press projects, and the cards made from them are deleted." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "As respostas delas também saem dos seus projetos do Press, e os cartões feitos a partir delas são apagados."
           }
         }
       }

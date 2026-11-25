@@ -65,6 +65,11 @@ struct PressLab: LabPlugin {
 
     /// One chat deleted: its answers leave every project (adam chose (a), Nov 12). Runs even when off.
     func eraseAnswers(_ answerIds: [String]) { PressStore.shared.eraseAnswers(answerIds) }
+
+    /// The chat's delete dialog says its answers leave Press, only when some are in a project (android `deleteNote`).
+    func deleteNote(_ answerIds: [String]) -> String? {
+        PressStore.shared.countOf(answerIds) > 0 ? String(localized: "Its answers leave every Press project.") : nil
+    }
 }
 
 /// Press's projects as the app holds them (android printer `PressStore.kt`): `files/labs/press/projects.json`, read once,

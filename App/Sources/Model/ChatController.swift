@@ -1133,16 +1133,20 @@ final class ChatController {
         // A failed answer with no text stays on screen (with Try Again) but is not saved.
         let keep = failure == nil || !finalText.isEmpty
         await partialSave?.value
-        let saved = (try? await services.background { s -> Bool in
+        let written = try? await services.background { s -> (saved: Bool, pruned: [String]) in
             if keep {
                 try s.chats.upsertMessage(sessionId: sid, role: "assistant", text: finalText, id: answerId)
                 try s.chats.setMessageMeta(messageId: answerId, meta: meta)
             } else {
                 try s.chats.deleteMessage(id: answerId)
             }
-            try s.chats.prune(maxSessions: maxSessions)
-            return keep
-        }) ?? false
+            // Older chats over the limit go, and what the plugins kept of their answers goes with them (android
+            // validator P-1), only for the chats really deleted.
+            let pruned = s.chats.pruneAnswers(maxSessions: maxSessions)
+            return (keep && pruned.ok, pruned.answers)
+        }
+        let saved = written?.saved ?? false
+        if let pruned = written?.pruned, !pruned.isEmpty { Labs.shared.eraseAnswers(pruned) }
         // Boar Avatars: a saved answer that wrote something; Boar Polyglot's "doesn't speak it yet" reply isn't one. The
         // speed avatars count this device's speed: an answer from the Mac on the network (iOS only) gives none.
         if saved && !finalText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && tool?.tool != LanguageGate.tool {

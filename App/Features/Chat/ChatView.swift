@@ -65,7 +65,7 @@ struct ChatView: View {
             Button("Delete It", role: .destructive) { chat.pruneDelete() }
             Button("Cancel", role: .cancel) {}
         } message: { n in
-            Text(PruneText.of(Self.pruneMessage(n), "", pluginsOn: false))
+            Text(PruneText.of(Self.pruneMessage(n), Labs.prunePluginsLine, pluginsOn: true))
         }
         .bottomBar {
             VStack(spacing: 0) {

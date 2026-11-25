@@ -8,6 +8,8 @@ struct SessionsSidebar: View {
     let chat: ChatController
     @State private var renaming: ChatSession?
     @State private var deleting: ChatSession?
+    /// What deleting `deleting` takes from the plugins on (Press: its answers in a project), read as the dialog opens.
+    @State private var deleteNotes: [String] = []
     @State private var newTitle = ""
     @State private var query = ""
     @FocusState private var searching: Bool
@@ -142,6 +144,17 @@ struct SessionsSidebar: View {
         }
         .onChange(of: model.sidebarRequest) { _, request in handle(request) }
         #endif
+        // The plugins' lines for the delete dialog (android ChatSheet's deleteNotes), the chat's answers read off the main
+        // actor.
+        .task(id: deleting?.id) {
+            deleteNotes = []
+            guard let id = deleting?.id else { return }
+            let answers = (try? await chat.services.background { s in
+                try s.chats.messages(sessionId: id).filter { $0.role == "assistant" }.map(\.id)
+            }) ?? []
+            guard !Task.isCancelled, deleting?.id == id else { return }
+            deleteNotes = Labs.shared.deleteNotes(answers)
+        }
         .alert("Rename Chat", item: $renaming) { session in
             TextField("Title", text: $newTitle)
             Button("Cancel", role: .cancel) {}
@@ -190,8 +203,10 @@ struct SessionsSidebar: View {
             #endif
     }
 
+    /// The chat named, then what the plugins lose with it (Press), each on its own line.
     private func deleteMessage(_ session: ChatSession) -> Text {
-        Text("\"\(session.title)\" and its messages are deleted from this \(Platform.deviceNoun).")
+        let chatLine = String(localized: "\"\(session.title)\" and its messages are deleted from this \(Platform.deviceNoun).")
+        return Text(verbatim: ([chatLine] + deleteNotes).joined(separator: "\n\n"))
     }
 
     #if !os(macOS)

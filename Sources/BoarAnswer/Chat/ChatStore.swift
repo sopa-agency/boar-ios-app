@@ -194,10 +194,31 @@ public final class ChatStore: @unchecked Sendable {
         maxSessions <= 0 ? [] : try listSessions().dropFirst(maxSessions).reversed()
     }
 
-    /// Keeps the `maxSessions` most recently used sessions; 0 keeps every chat (the default).
-    public func prune(maxSessions: Int) throws {
+    /// Keeps the `maxSessions` most recently used sessions; 0 keeps every chat (the default). `beforeDelete` hears of
+    /// each chat that goes while its answers can still be read (android `prune(maxSessions, beforeDelete)`); `deleted`,
+    /// once it is really gone, so what the plugins kept of it goes only with the chat (iOS: a failed delete keeps them).
+    public func prune(maxSessions: Int, beforeDelete: (String) -> Void = { _ in }, deleted: (String) -> Void = { _ in }) throws {
         if maxSessions <= 0 { return }
         let ids = try db.query("SELECT id FROM chat_sessions ORDER BY updated_at DESC LIMIT -1 OFFSET ?", args: [.integer(Int64(maxSessions))]) { $0.string(0)! }
-        for id in ids { try deleteSession(sessionId: id) }
+        for id in ids {
+            beforeDelete(id)
+            try deleteSession(sessionId: id)
+            deleted(id)
+        }
+    }
+
+    /// `prune`, with the answers of the chats it deleted (for `Labs.eraseAnswers`), also those deleted before a failure,
+    /// and whether it ran to the end.
+    public func pruneAnswers(maxSessions: Int) -> (answers: [String], ok: Bool) {
+        var pending: [String: [String]] = [:]
+        var gone: [String] = []
+        do {
+            try prune(maxSessions: maxSessions, beforeDelete: { id in
+                pending[id] = ((try? messages(sessionId: id)) ?? []).filter { $0.role == "assistant" }.map(\.id)
+            }, deleted: { id in gone += pending[id] ?? [] })
+            return (gone, true)
+        } catch {
+            return (gone, false)
+        }
     }
 }

@@ -93,6 +93,9 @@ protocol LabPlugin {
     /// One chat deleted: its answers (`answerIds`) leave what this lab kept of them (android `eraseAnswers`); runs even
     /// while the lab is switched off.
     func eraseAnswers(_ answerIds: [String])
+    /// What deleting a chat with these answers takes from this lab, said in the delete dialog; nil when nothing (android
+    /// `deleteNote`: Press's "Its answers leave every Press project", only when some are in it).
+    func deleteNote(_ answerIds: [String]) -> String?
 }
 
 /// A finished answer, as the answer slots see it (android `plugins.AnswerRef`).
@@ -159,6 +162,7 @@ extension LabPlugin {
     var fullPage: Bool { false }
     func eraseUserData(_ scope: UserDataScope) {}
     func eraseAnswers(_ answerIds: [String]) {}
+    func deleteNote(_ answerIds: [String]) -> String? { nil }
     /// A lab under review (frozen) shows the ice boar, whatever its own art.
     var shownArt: String? { status == .review ? "lab_frozen" : art }
 }
@@ -320,6 +324,20 @@ final class Labs {
     func eraseAnswers(_ answerIds: [String]) {
         guard !answerIds.isEmpty else { return }
         all.forEach { $0.eraseAnswers(answerIds) }
+    }
+
+    /// The lines a chat's delete dialog adds: what deleting it takes from the plugins switched on (android
+    /// `UserData.deleteNotes`, over the active labs).
+    func deleteNotes(_ answerIds: [String]) -> [String] {
+        guard !answerIds.isEmpty else { return [] }
+        return active.compactMap { $0.deleteNote(answerIds) }
+    }
+
+    /// The two "delete your oldest chats" dialogs' plugin line (android `native.chat.prune.plugins`, always said since
+    /// `eraseAnswers` runs on every plugin, on or off). iOS Designer keeps no pictures made from answers, so the line
+    /// names only Press and the cards.
+    static var prunePluginsLine: String {
+        String(localized: "Their answers also leave your Press projects, and the cards made from them are deleted.")
     }
 
     /// What Press holds that "Also delete Press" would delete: its projects with something in them (android
