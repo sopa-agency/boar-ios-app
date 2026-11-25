@@ -67,6 +67,11 @@ protocol LabPlugin {
     func presenter() -> AnyView?
     /// Rows in a finished answer's More menu (android `answerActions`, the 🧩 sheet).
     func answerActions(_ answer: AnswerRef) -> [LabAnswerAction]
+    /// Under a finished answer's text, before the footer (android `AnswerExtra`): Cards' card, its wait line or refusal.
+    func answerExtra(_ answer: AnswerRef) -> AnyView?
+    /// Work done once per finished answer as it shows, off the main actor (Cards reads the answer's card and what its rules
+    /// find), so the menu and the extra read it ready.
+    func prepareAnswer(_ answer: AnswerRef) async
     /// Notes about a finished answer, in the footer under the separator after BOAR's own, before the receipt (android
     /// `answerNotes`, adam Nov 14): an error, a refusal. No lab here makes one yet (android's only source is Designer's
     /// "Not enough free memory to draw", and Designer isn't ported); the slot is ready for the first.
@@ -97,6 +102,16 @@ struct AnswerRef {
     let sources: [(String, String?)]
     let model: String?
     let tokPerSec: Double?
+    /// The receipt's tool code when a tool wrote it (an instant answer), nil for the model's.
+    var tool: String?
+    /// The style it was kept to ("health", "seed"), nil when none.
+    var styleNote: String?
+    /// The passages the model read (title, body), in the sources' order.
+    var passages: [(title: String, body: String)] = []
+    /// The chat's model is busy: an answer, a plugin's own work, a load (android `chatBusy`).
+    var chatBusy = false
+    /// The chat the answer is in: a plugin's own model work runs as its job (`ChatController.runForLab`).
+    weak var chat: ChatController?
 }
 
 /// One row a lab adds to an answer's More menu. `done`: the action already happened (a checkmark; choosing it undoes it).
@@ -105,6 +120,9 @@ struct LabAnswerAction: Identifiable {
     let title: String
     let systemImage: String
     var done = false
+    /// A second line under the title (android `LabAction.detail`): what Cards found, why it waits.
+    var detail: String?
+    var enabled = true
     let run: @MainActor () -> Void
 }
 
@@ -126,6 +144,8 @@ extension LabPlugin {
     func content() -> AnyView { AnyView(EmptyView()) }
     func presenter() -> AnyView? { nil }
     func answerActions(_ answer: AnswerRef) -> [LabAnswerAction] { [] }
+    func answerExtra(_ answer: AnswerRef) -> AnyView? { nil }
+    func prepareAnswer(_ answer: AnswerRef) async {}
     func answerNotes(_ answer: AnswerRef) -> [LabAnswerNote] { [] }
     func headerCount() -> Int { 0 }
     func headerCountLabel(_ n: Int) -> String { "\(n)" }
@@ -262,6 +282,16 @@ final class Labs {
 
     /// The More menu's lab rows for a finished answer, in grid order.
     func answerActions(_ answer: AnswerRef) -> [LabAnswerAction] { active.flatMap { $0.answerActions(answer) } }
+
+    /// What the switched-on labs show under a finished answer's text, in grid order.
+    func answerExtras(_ answer: AnswerRef) -> [(id: String, view: AnyView)] {
+        active.compactMap { lab in lab.answerExtra(answer).map { (lab.id, $0) } }
+    }
+
+    /// A finished answer shows: each switched-on lab prepares what it reads of it.
+    func prepareAnswer(_ answer: AnswerRef) async {
+        for lab in active { await lab.prepareAnswer(answer) }
+    }
 
     /// The footer's plugin notes for a finished answer, oldest first, so a new one is always the last line (android
     /// `LabHooks.AnswerNotes`: `sortedBy { it.at }`, a stable sort).

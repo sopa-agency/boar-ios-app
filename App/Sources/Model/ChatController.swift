@@ -532,6 +532,26 @@ final class ChatController {
         send(q)
     }
 
+    /// The chat's model is held: an answer or a plugin's own work runs, or a model loads (android `AnswerRef.chatBusy`).
+    var modelBusy: Bool { job != nil || loadingModel || noteUp }
+
+    /// A plugin's own work on the chat's model (Cards' card made by the model; android `claimModelForLab`): it runs as the
+    /// chat's job, so a question sent meanwhile waits in the queue and starts after it, Stop ends it, and nothing else
+    /// starts on the model. A title or summary still being written stops first. False, and nothing runs, while the model
+    /// is held (`modelBusy`).
+    func runForLab(_ work: @escaping @MainActor () async -> Void) -> Bool {
+        guard !modelBusy else { return false }
+        stopFlag.set(false)
+        job = Task {
+            await self.stopBackground()
+            await work()
+            // However it ended, the next waiting question starts.
+            self.job = nil
+            self.runNext()
+        }
+        return true
+    }
+
     /// What the next question carries, for that question only: the Labs tools skipped (`askModel`), and a Keep going step's
     /// style, Deep Research and verb. The user's style and the Deep Research switch are never written.
     @ObservationIgnored private var once = KeepGoing.Overrides()
