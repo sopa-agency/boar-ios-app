@@ -113,7 +113,7 @@ struct JavaRegex: @unchecked Sendable {
 }
 
 /// Java number formatting and BigDecimal rounding the Kotlin routing files call.
-enum JavaNumber {
+public enum JavaNumber {
     /// `Double.toString` for NaN and the infinities.
     static func nonFinite(_ x: Double) -> String { x.isNaN ? "NaN" : (x < 0 ? "-Infinity" : "Infinity") }
 
@@ -135,7 +135,7 @@ enum JavaNumber {
 
     /// `String.format(Locale.US, "%.{n}f", x)`: Java rounds HALF_UP on the shortest decimal that reads back as x (not on
     /// the binary value as C's printf does: 0.25 gives "0.3", 0.15 gives "0.2"). Finite x.
-    static func fixed(_ x: Double, decimals n: Int) -> String {
+    public static func fixed(_ x: Double, decimals n: Int) -> String {
         let neg = x < 0 || (x == 0 && 1.0 / x < 0)
         var d = JsNumber.shortest(abs(x))
         if d.scale > n { d = d.roundedHalfUp(toScale: n) }
