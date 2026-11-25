@@ -66,6 +66,8 @@ final class EvaluationController {
     @ObservationIgnored private var evalSets: EvalSets?
     @ObservationIgnored private var topicsById: [String: BenchTopic] = [:]
     @ObservationIgnored private var installed: [ModelRef] = []
+    /// The UI audit's made-up runs are shown: the saved list isn't read from the files.
+    @ObservationIgnored private var showingDemo = false
 
     /// The topics in t9's order (0521 item 3), after the fixed 17.
     static let topicOrder = ["plugins", "problems", "howto", "research", "quick", "cards", "portuguese", "vitalik"]
@@ -187,7 +189,7 @@ final class EvaluationController {
         let active = runner.activeRunId
         Task {
             let list = await Task.detached(priority: .utility) { store.list(active: active) }.value
-            saved = list
+            if !showingDemo { saved = list }
         }
     }
 
@@ -470,6 +472,29 @@ final class EvaluationController {
         runId = demo.rows.first?["runId"]?.stringValue
         savedPath = runId.map { "Documents/eval/\($0).jsonl" }
         resultSetKind = setKind
+    }
+
+    /// `-uiDemo -uiScreen evaluation-preset`: a finished Fast · plugins run with its scorecard against the run before, and
+    /// the saved list (EvalDemo.preset), no model needed.
+    func debugShowPresetDemo() {
+        guard !running, rows.isEmpty else { return }
+        showingDemo = true
+        let small = ModelRef(id: BenchPresets.smallModel, label: "Qwen3-1.7B (Q4_K_M)")
+        installed = [small]
+        names[small.id] = EvalModelName(asset: services.catalog.byId(small.id), label: small.label)
+        configs = [.model(modelId: small.id, label: small.label)]
+        selected = Set(configs?.map(\.id) ?? [])
+        level = .fast
+        topic = "plugins"
+        replan()
+        guard let plan else { return }
+        let demo = EvalDemo.preset(plan, topics: topicsById, appVersion: appVersion)
+        rows = demo.rows
+        runId = demo.runId
+        savedPath = "Documents/eval/\(demo.runId).jsonl"
+        runAnswers = plan.answers
+        scorecard = Scorecard.of(demo.rows, topics: topicsById, previous: demo.previous)
+        saved = demo.saved
     }
     #endif
 }

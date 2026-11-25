@@ -98,6 +98,9 @@ device-info|device-info|
 settings-engine|settings-engine|
 settings-engine-2|settings-engine|end
 evaluation|evaluation|
+evaluation-preset|evaluation-preset|
+evaluation-preset-2|evaluation-preset|760
+evaluation-preset-3|evaluation-preset|end
 about|about|
 about-2|about|end
 lock|lock|
