@@ -322,7 +322,8 @@ final class ChatController {
         if job != nil && sessionId == id { return }
         // Its answers leave what the labs kept of them (Press's projects), once the chat is gone.
         let answers = (try? await services.background { try $0.chats.messages(sessionId: id).filter { $0.role == "assistant" }.map(\.id) }) ?? []
-        _ = try? await services.background { try $0.chats.deleteSession(sessionId: id) }
+        // Only once the chat is really gone: a failed delete keeps the chat and its answers in Press.
+        guard (try? await services.background { try $0.chats.deleteSession(sessionId: id) }) != nil else { return }
         Labs.shared.eraseAnswers(answers)
         if sessionId == id {
             flow.clear()

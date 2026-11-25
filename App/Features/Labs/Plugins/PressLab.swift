@@ -48,7 +48,10 @@ struct PressLab: LabPlugin {
     }
 
     /// What the header sheet shows beside Press: the open project's answers (android `headerCount`; not on the icon).
-    func headerCount() -> Int { PressStore.shared.library?.current.answers.count ?? 0 }
+    func headerCount() -> Int {
+        PressStore.shared.load()  // as Android's headerCount: the sheet can open before anything read the projects
+        return PressStore.shared.library?.current.answers.count ?? 0
+    }
     func headerCountLabel(_ n: Int) -> String { String(localized: "\(n) in \(PressStore.shared.library?.current.name ?? "")") }
 
     /// The projects hold answers' text: they go with the chats (Forgot PIN, Clear all), every project and its folder;
