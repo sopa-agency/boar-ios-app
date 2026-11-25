@@ -87,7 +87,7 @@ struct AnswerFooter: View {
     private var moreMenu: some View {
         Menu("More", systemImage: "ellipsis") {
             Button("Ask Again", icon: Symbols.retry, action: askAgain)
-                .disabled(chat.isAnswering)
+                .disabled(chat.holdsModel)
             if chat.technicalDetails, message.receipt != nil {
                 Button("Performance Details", icon: Symbols.performance, action: showReceipt)
             }

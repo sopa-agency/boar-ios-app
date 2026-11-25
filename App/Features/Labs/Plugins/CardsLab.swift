@@ -240,7 +240,7 @@ final class CardsModel {
         let id = a.id
         let job = ModelJob(id: id, sessionId: a.sessionId, question: a.question, text: a.text, passages: a.passages,
                            fallbackTitle: fallbackTitle, services: chat.services)
-        guard chat.runForLab({ [weak self] in await self?.make(job) }) else {
+        guard chat.runForLab({ [weak self] stopped in await self?.make(job, stopped: stopped) }) else {
             statuses[id] = .failed(.busy, detail: nil, raw: nil)
             return
         }
@@ -259,7 +259,7 @@ final class CardsModel {
         let services: BoarServices
     }
 
-    private func make(_ job: ModelJob) async {
+    private func make(_ job: ModelJob, stopped: @escaping @Sendable () -> Bool) async {
         let services = job.services
         // Only the model the chat already has: a card never loads one (a model that may not fit asks first, in the chat).
         let session: (any TextModelSession)? = services.backend == .llama && services.host.current == nil ? nil : await services.activeSession()
@@ -270,7 +270,8 @@ final class CardsModel {
             .joined(separator: "\n")
         var raw: String?
         var threw = false
-        if let session {
+        // Stopped (Stop, ✕) while the context was read: the model never starts.
+        if let session, !stopped() {
             do {
                 raw = try await SessionEngine(session).generate(
                     system: Visual.prompt, user: VisualContext.prompt(job.question, job.text, earlier, fromSources),
@@ -286,6 +287,11 @@ final class CardsModel {
         makingIn = nil
         // Removed (✕) or erased while it was being made: nothing is kept.
         guard statuses[job.id] == .making else { return }
+        // Stopped (the chat's Stop, leaving the chat): what it wrote so far isn't judged as a failed card.
+        if stopped(), parsed.map({ if case .ok = $0 { false } else { true } }) ?? true {
+            statuses[job.id] = nil
+            return
+        }
         switch parsed {
         case .ok(let visual, let leftOut):
             statuses[job.id] = nil
@@ -340,9 +346,17 @@ private struct CardsExtra: View {
         VStack(alignment: .leading, spacing: 8) {
             switch model.status(a.id) {
             case .making:
-                Text("📊 BOAR is reading the answer to make a card…")
-                    .font(.boar("ui.caption"))
-                    .foregroundStyle(.boar(.success))
+                // ✕ stops the model's card (iOS: Android's wait line has none; its chat Stop ends it).
+                HStack(alignment: .firstTextBaseline, spacing: 8) {
+                    Text("📊 BOAR is reading the answer to make a card…")
+                        .font(.boar("ui.caption"))
+                        .foregroundStyle(.boar(.success))
+                    Button("Stop", systemImage: "xmark") { model.cancel(a.id) }
+                        .labelStyle(.iconOnly)
+                        .buttonStyle(.borderless)
+                        .font(.boar("mono.xs"))
+                        .foregroundStyle(.boar(.dim))
+                }
             case .failed(let failure, let detail, let raw):
                 CardFailed(id: a.id, failure: failure, detail: detail, raw: raw)
             case nil:

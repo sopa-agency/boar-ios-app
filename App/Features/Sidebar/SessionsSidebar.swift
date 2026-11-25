@@ -129,7 +129,7 @@ struct SessionsSidebar: View {
             #endif
             ToolbarItem(placement: .primaryAction) {
                 Button("New Chat", icon: Symbols.newChat, action: model.newChat)
-                    .disabled(chat.isAnswering)
+                    .disabled(chat.holdsModel)
                     .help("New Chat (⌘N)")
             }
         }
@@ -220,7 +220,7 @@ struct SessionsSidebar: View {
     }
 
     private func isAnswering(in session: ChatSession) -> Bool {
-        chat.isAnswering && chat.sessionId == session.id
+        chat.holdsModel && chat.sessionId == session.id
     }
 
     private func startRename(_ session: ChatSession) {

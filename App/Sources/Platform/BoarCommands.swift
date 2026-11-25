@@ -11,7 +11,7 @@ struct BoarCommands: Commands {
         if case .ready = model.phase { model.lock?.locked != true } else { false }
     }
 
-    private var answering: Bool { model.chat?.isAnswering ?? false }
+    private var answering: Bool { model.chat?.holdsModel ?? false }
 
     var body: some Commands {
         CommandGroup(replacing: .appInfo) {

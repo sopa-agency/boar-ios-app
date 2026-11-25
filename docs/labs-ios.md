@@ -69,7 +69,9 @@ Differences from Android, on purpose:
 - **Cards (BOAR-54, against v2.0.0):** the row ("Create a card" · what the rules found, or "Nothing to draw here" · "Ask BOAR
   to make one · slower") is in the answer's More menu, with its second line, as Press's (no 🧩 sheet; the "How it works" text
   says More). The model's card runs as the chat's own job (`ChatController.runForLab`) instead of Android's lab hold: a
-  question sent meanwhile waits in the chat's queue and starts after it, and Stop ends it. It uses only the model the chat
+  question sent meanwhile waits in the chat's queue and starts after it, and Stop ends it (the composer's Stop, ⌘. and
+  New Chat treat it as an answer in progress, `ChatController.holdsModel`; the wait line also has a ✕, which Android's
+  lacks). It uses only the model the chat
   already has: with none loaded it says "No answer model is loaded" instead of loading one (a model that may not fit asks
   first, in the chat). Not ported: `CardSpec` and `CanvasTest` (dead in v2.0.0), the move of pre-Cards files
   (`files/canvas`, which iOS never had); `cards.v1.json` is a bench topic, ported with Bench in BOAR-56

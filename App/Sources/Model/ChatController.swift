@@ -535,17 +535,27 @@ final class ChatController {
     /// The chat's model is held: an answer or a plugin's own work runs, or a model loads (android `AnswerRef.chatBusy`).
     var modelBusy: Bool { job != nil || loadingModel || noteUp }
 
+    /// A plugin's own work holds the chat's model (`runForLab`): the composer's Stop, Chat ▸ Stop Answering and New Chat
+    /// treat it as an answer in progress.
+    private(set) var labWorking = false
+
+    /// An answer or a plugin's own work runs on the chat's model: Stop shows, New Chat waits.
+    var holdsModel: Bool { isAnswering || labWorking }
+
     /// A plugin's own work on the chat's model (Cards' card made by the model; android `claimModelForLab`): it runs as the
     /// chat's job, so a question sent meanwhile waits in the queue and starts after it, Stop ends it, and nothing else
     /// starts on the model. A title or summary still being written stops first. False, and nothing runs, while the model
-    /// is held (`modelBusy`).
-    func runForLab(_ work: @escaping @MainActor () async -> Void) -> Bool {
+    /// is held (`modelBusy`). `work` gets whether Stop was pressed, to check before it starts the model.
+    func runForLab(_ work: @escaping @MainActor (_ stopped: @escaping @Sendable () -> Bool) async -> Void) -> Bool {
         guard !modelBusy else { return false }
         stopFlag.set(false)
+        labWorking = true
+        let flag = stopFlag
         job = Task {
             await self.stopBackground()
-            await work()
+            await work { flag.value }
             // However it ended, the next waiting question starts.
+            self.labWorking = false
             self.job = nil
             self.runNext()
         }
