@@ -30,8 +30,11 @@ struct PressLab: LabPlugin {
     func answerActions(_ a: AnswerRef) -> [LabAnswerAction] {
         let store = PressStore.shared
         store.load()
-        let added = store.library?.has(a.id) == true
-        let project = store.library?.current.name ?? ""
+        // An unreadable projects file offers nothing: no "Add to Press: " with a blank name (pr-review #66; Android
+        // still shows the row).
+        guard let lib = store.library, !store.unreadable else { return [] }
+        let added = lib.has(a.id)
+        let project = lib.current.name
         return [LabAnswerAction(id: "printer.basket",
                                 title: added ? String(localized: "In \(project) (tap to remove)") : String(localized: "Add to Press: \(project)"),
                                 systemImage: "paperclip", done: added) {
@@ -200,8 +203,7 @@ final class PressStore {
     func dropPhotoLater(_ projectId: String, _ name: String, after: Duration) {
         let dir = dir
         Task { @MainActor [weak self] in
-            try? await Task.sleep(for: after)
-            guard let self, self.loaded, let lib = self.library, PressFiles.unused(lib, projectId, name) else { return }
+            guard (try? await Task.sleep(for: after)) != nil, let self, self.loaded, let lib = self.library, PressFiles.unused(lib, projectId, name) else { return }
             try? FileManager.default.removeItem(at: PressFiles.photoFile(dir, projectId, name))
         }
     }

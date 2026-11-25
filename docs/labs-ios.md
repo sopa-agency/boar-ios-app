@@ -119,6 +119,9 @@ Differences from Android, on purpose:
   - Answers added from the page's chat list carry no model or speed, as on Android; the list shows the latest 12 chats.
   - On the paper a line's height is SwiftUI's line spacing over the font's natural height, an approximation of the PDF's
     Core Text lines, so a block can sit a few points off its printed place; the page-break lines come from the PDF itself.
+  - An unreadable projects file shows Android's warning on the page and the answer's More menu offers no Add to Press
+    (Android still shows the row, with a blank project name). A block type this version doesn't know draws nothing on the
+    paper (no empty row), as it prints nothing.
 - **Plugin answers (BOAR-56, against v2.0.0):** Lunar, Nomad and Vitals answer their questions in the chat (`PluginAnswers`,
   tool codes `lunar-phase`, `compass-heading`, `vitals-phone`), and a model's answer to a question one of them would have
   taken while it's off says "<name> is off. Turn it on in Plugins ›". Differences: the answers name the device ("This iPhone

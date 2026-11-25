@@ -112,8 +112,8 @@ struct PressScreen: View {
         // changes: the lines on the paper are where the PDF really breaks, not an estimate (adam, Nov 12).
         .task(id: PageKey(page: paper, on: showBreaks)) {
             guard showBreaks else { starts = []; return }
-            try? await Task.sleep(for: .milliseconds(300))
-            guard !Task.isCancelled else { return }
+            // A change meanwhile cancels this wait: a cancelled sleep must not fall through (pr-review #66).
+            guard (try? await Task.sleep(for: .milliseconds(300))) != nil else { return }
             let fileOf = PressStore.fileOf(store.dir, project.id)
             starts = await Task.detached(priority: .utility) { PressPDF.pageStarts(paper, fileOf: fileOf) }.value
         }
@@ -153,8 +153,7 @@ struct PressScreen: View {
             if let removed {
                 PressUndoBar { undo(removed) }
                     .task(id: removed.block.id) {
-                        try? await Task.sleep(for: .milliseconds(ChatList.undoMs))
-                        guard !Task.isCancelled else { return }
+                        guard (try? await Task.sleep(for: .milliseconds(ChatList.undoMs))) != nil else { return }
                         withAnimation { self.removed = nil }
                     }
             }
@@ -349,8 +348,7 @@ struct PressScreen: View {
     private func keepInView() async {
         guard follow > 0, let id = edit.selected ?? edit.barNote else { return }
         // Two frames: the block is laid out in its new place before it is measured.
-        try? await Task.sleep(for: .milliseconds(50))
-        guard let f = frames.rects[id] else { return }
+        guard (try? await Task.sleep(for: .milliseconds(50))) != nil, let f = frames.rects[id] else { return }
         let top = Self.pad + f.minY - viewport.top
         guard let delta = PressLayout.scrollToShow(viewHeight: viewport.height, blockTop: top, blockHeight: f.height, room: 16) else { return }
         let y = max(viewport.offset + delta, 0)
@@ -359,16 +357,24 @@ struct PressScreen: View {
 
     // MARK: files
 
-    /// The A4 PDF, compiled when the share sheet asks for it.
+    /// The A4 PDF, laid out and compiled when the share sheet asks for it.
     private func pdfFile(_ project: PressDoc.Project) -> ExportedFile {
-        let page = PressPrefs.page(project, options: options)
+        let options = options
         let fileOf = PressStore.fileOf(store.dir, project.id)
-        return ExportedFile(filename: PressReceipt.slug(project.name) + ".pdf") { PressPDF.compile(page, fileOf: fileOf) }
+        return ExportedFile(filename: PressReceipt.slug(project.name) + ".pdf") {
+            let page = await MainActor.run { PressPrefs.page(project, options: options) }
+            return PressPDF.compile(page, fileOf: fileOf)
+        }
     }
 
+    /// The Markdown, built when the share sheet asks for it, not on every redraw of the page (pr-review #66).
     private func markdownFile(_ project: PressDoc.Project) -> ExportedFile {
-        let md = PressPrefs.page(project, options: options).markdown(drawingLabel: String(localized: "Drawing"), photoLabel: String(localized: "Photo"))
-        return ExportedFile(filename: PressReceipt.slug(project.name) + ".md") { Data(md.utf8) }
+        let options = options
+        let drawing = String(localized: "Drawing"), photo = String(localized: "Photo")
+        return ExportedFile(filename: PressReceipt.slug(project.name) + ".md") {
+            let page = await MainActor.run { PressPrefs.page(project, options: options) }
+            return Data(page.markdown(drawingLabel: drawing, photoLabel: photo).utf8)
+        }
     }
 }
 

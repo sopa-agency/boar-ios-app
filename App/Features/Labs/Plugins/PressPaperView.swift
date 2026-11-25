@@ -49,7 +49,8 @@ struct PressPaperView: View {
                     .padding(.vertical, s.pt(60))
             }
             // The same plan as the PDF: a side picture with the next text block beside it (PressLayout).
-            ForEach(PressLayout.plan(project.blocks), id: \.key) { item in
+            // A block this version doesn't know prints nothing (PressPDF skips it): no empty row, gap or tap target here.
+            ForEach(PressLayout.plan(project.blocks).filter { !$0.isUnknown }, id: \.key) { item in
                 switch item {
                 case .single(let b):
                     PaperBlock(block: b, page: page, dir: dir, s: s, edit: $edit)
@@ -94,6 +95,11 @@ extension PressLayout.Item {
         case .single(let b): b.id
         case .beside(let p, _, _): p.id
         }
+    }
+
+    /// A block type this version doesn't know (kept in the file, never drawn).
+    var isUnknown: Bool {
+        if case .single(.unknown) = self { true } else { false }
     }
 }
 
@@ -221,15 +227,23 @@ private struct PaperTitle: View {
             .accessibilityLabel(Text("Document title"))
             .onChange(of: draft) { _, d in if d.contains("\n") { draft = d.replacingOccurrences(of: "\n", with: " ") } }
             .task(id: draft) {
-                try? await Task.sleep(for: .milliseconds(600))
-                guard !Task.isCancelled else { return }
-                let t = draft.trimmingCharacters(in: .whitespacesAndNewlines)
-                if !t.isEmpty && t != project.name { PressStore.shared.change { $0.rename(project.id, draft) } }
+                // A key typed meanwhile cancels this wait: only the last one renames (pr-review #66).
+                guard (try? await Task.sleep(for: .milliseconds(600))) != nil else { return }
+                commit()
             }
+            // Leaving the page (or Return) before the wait ends still keeps the new title.
+            .onSubmit { commit() }
+            .onDisappear { commit() }
             .onChange(of: focused) { _, f in
-                if f { onFocus() } else if draft.allSatisfy(\.isWhitespace) { draft = project.name }
+                if f { onFocus() } else if draft.allSatisfy(\.isWhitespace) { draft = project.name } else { commit() }
             }
             .onChange(of: focusTitle) { _, _ in focused = true }
+    }
+
+    /// Renames to what is typed; a blank title keeps the old name.
+    private func commit() {
+        let t = draft.trimmingCharacters(in: .whitespacesAndNewlines)
+        if !t.isEmpty && t != project.name { PressStore.shared.change { $0.rename(project.id, draft) } }
     }
 }
 
@@ -355,14 +369,13 @@ private struct PaperField: View {
             .focused($focused)
             .background(PaperStyle.rgb(0xFFF3D6), in: .rect(cornerRadius: 2))
             .task(id: draft) {
-                try? await Task.sleep(for: .milliseconds(500))
-                guard !Task.isCancelled, draft != value else { return }
+                // Only the last key saves: a cancelled sleep must not fall through and write (pr-review #66).
+                guard (try? await Task.sleep(for: .milliseconds(500))) != nil, draft != value else { return }
                 onSave(draft)
             }
             .onDisappear { if draft != value { onSave(draft) } }
             .task {
-                guard fresh else { return }
-                try? await Task.sleep(for: .milliseconds(150))
+                guard fresh, (try? await Task.sleep(for: .milliseconds(150))) != nil else { return }
                 focused = true
                 selection = TextSelection(range: draft.startIndex..<draft.endIndex)
                 onFreshUsed()
