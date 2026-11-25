@@ -220,7 +220,7 @@ struct SessionsSidebar: View {
     }
 
     private func isAnswering(in session: ChatSession) -> Bool {
-        chat.isAnswering && chat.sessionId == session.id
+        chat.holdsModel && chat.sessionId == session.id
     }
 
     private func startRename(_ session: ChatSession) {
