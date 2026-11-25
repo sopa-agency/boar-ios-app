@@ -290,6 +290,7 @@ private struct PressSections: View {
             } else if let project {
                 Section("Document title") {
                     TextField(text: $name, prompt: Text(verbatim: project.name)) { Text("Document title") }
+                        .onSubmit { commitName() }
                 }
                 Section("Print") {
                     Toggle("Date under the title", isOn: optionBinding(\.date))
@@ -332,9 +333,15 @@ private struct PressSections: View {
             // Renamed a moment after typing stops; a blank name keeps the old one.
             // A key typed meanwhile cancels this wait: only the last one renames (pr-review #66).
             guard (try? await Task.sleep(for: .milliseconds(800))) != nil else { return }
-            if let id = project?.id, name != project?.name { store.change { $0.rename(id, name) } }
+            commitName()
         }
+        // Leaving (or Return) before the wait ends still keeps the new title.
+        .onDisappear { commitName() }
         .sheet(item: $editing) { a in PressAnswerEditor(answer: a) }
+    }
+
+    private func commitName() {
+        if let id = project?.id, name != project?.name { store.change { $0.rename(id, name) } }
     }
 
     private var blocksSection: some View {
