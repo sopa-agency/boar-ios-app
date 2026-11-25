@@ -144,17 +144,6 @@ struct SessionsSidebar: View {
         }
         .onChange(of: model.sidebarRequest) { _, request in handle(request) }
         #endif
-        // The plugins' lines for the delete dialog (android ChatSheet's deleteNotes), the chat's answers read off the main
-        // actor.
-        .task(id: deleting?.id) {
-            deleteNotes = []
-            guard let id = deleting?.id else { return }
-            let answers = (try? await chat.services.background { s in
-                try s.chats.messages(sessionId: id).filter { $0.role == "assistant" }.map(\.id)
-            }) ?? []
-            guard !Task.isCancelled, deleting?.id == id else { return }
-            deleteNotes = Labs.shared.deleteNotes(answers)
-        }
         .alert("Rename Chat", item: $renaming) { session in
             TextField("Title", text: $newTitle)
             Button("Cancel", role: .cancel) {}
@@ -249,8 +238,18 @@ struct SessionsSidebar: View {
     }
 
     /// Settings → Ask before deleting a chat: on, the dialog naming the chat; off, one tap deletes it.
+    /// The plugins' lines (android ChatSheet's deleteNotes) are read before the dialog opens, the chat's answers off the main
+    /// actor, so the dialog never shows without them (pr-review #68).
     private func askDelete(_ session: ChatSession) {
-        if chat.services.settings.confirmChatDelete { deleting = session } else { delete(session) }
+        guard chat.services.settings.confirmChatDelete else { delete(session); return }
+        let id = session.id
+        Task {
+            let answers = (try? await chat.services.background { s in
+                try s.chats.messages(sessionId: id).filter { $0.role == "assistant" }.map(\.id)
+            }) ?? []
+            deleteNotes = Labs.shared.deleteNotes(answers)
+            deleting = session
+        }
     }
 
     /// Hides the chat and shows "Deleted: title · Undo"; after `ChatList.undoMs` it is deleted for real (android ChatList).

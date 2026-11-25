@@ -27,6 +27,8 @@ final class PressRewriter {
     private static let timeoutMs: Int64 = 120_000
 
     var running: Bool { phase == .running }
+    /// Stopped by the user while the chat's job still winds down: that job is this rewrite's, not a chat answer (pr-review #68).
+    private(set) var stopping = false
 
     static var busyText: String { String(localized: "A chat answer is being written. Try again when it ends.") }
 
@@ -45,6 +47,7 @@ final class PressRewriter {
         let id = run
         let services = chat.services
         phase = .running
+        stopping = false
         let started = chat.runForLab { [weak self] stopped in
             await self?.generate(id, services, prompt, text, stopped)
         }
@@ -63,6 +66,7 @@ final class PressRewriter {
         run += 1
         phase = .idle
         if saying { line = String(localized: "Stopped. Your text is as it was.") }
+        stopping = true
         chat?.stop()
     }
 
@@ -173,7 +177,11 @@ struct PressEditSheet: View {
     }
 
     /// The chat writing an answer (or a plugin's work on the model): say so, and the options wait.
-    private var chatBusy: Bool { !rewriter.running && (model.chat?.modelBusy ?? false) }
+    private var chatBusy: Bool {
+        guard !rewriter.running, let chat = model.chat, chat.modelBusy else { return false }
+        // Right after Stop the model is still this rewrite's until its job ends: not "a chat answer is being written".
+        return !(rewriter.stopping && chat.labWorking)
+    }
 
     var body: some View {
         NavigationStack {
