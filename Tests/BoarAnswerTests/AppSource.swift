@@ -6,6 +6,13 @@ import Testing
 enum AppSource {
     static func text(_ path: String) throws -> String { try Fixtures.text(Fixtures.root.appending(path: path)) }
 
+    /// Every `.swift` file under `dir` (relative to the repository), as paths `text` reads.
+    static func swiftFiles(under dir: String) throws -> [String] {
+        let root = Fixtures.root.appending(path: dir)
+        let walker = try #require(FileManager.default.enumerator(atPath: root.path(percentEncoded: false)))
+        return walker.compactMap { $0 as? String }.filter { $0.hasSuffix(".swift") }.map { "\(dir)/\($0)" }
+    }
+
     /// `text` after the first `marker`, up to the next `end` (Kotlin's substringAfter().substringBefore()).
     static func slice(_ text: String, after marker: String, before end: String) throws -> String {
         let from = try #require(text.range(of: marker), Comment(rawValue: "no \(marker)")).upperBound

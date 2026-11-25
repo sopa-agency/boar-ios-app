@@ -270,41 +270,6 @@ final class EvalRunner: Sendable {
     static func ms(_ d: Duration) -> Double {
         Double(d.components.seconds) * 1000 + Double(d.components.attoseconds) / 1e15
     }
-
-    /// evalRowsToCsv: Android's columns, then the bench check's; arrays joined with "|".
-    static let csvColumns = ["runId", "evalSetVersion", "configId", "configLabel", "routingPreset", "personalityId", "maxTokens",
-                             "queryId", "category", "query", "modelId", "promptFormat", "taskType", "adaptiveRoutingUsed", "retrievalUsed",
-                             "retrievedTitles", "expectedKbTitles", "expectedKbHit", "reasonCodes", "modelSwitches", "crossMessageModelSwitch",
-                             "modelResidency", "modelLoadMs", "ttftMs", "retrievalMs", "contextTokensBefore", "contextTokensAfter",
-                             "generationLatencyMs", "promptTokens", "promptMs", "cachedTokens", "predictedTokens", "predictedMs", "totalLatencyMs",
-                             "tokensGenerated", "tokPerSec", "peakRssBytes", "outcome", "errorMessage", "timedOut", "answer", "createdAt", "appVersion",
-                             "benchSet", "gradingType", "check", "checkWhy", "checkPassed", "sourceHit", "referenceTitles"]
-
-    static func toCsv(_ rows: [JSONValue]) -> String {
-        ([csvColumns.joined(separator: ",")] + rows.map { r in csvColumns.map { csvCell(r[$0]) }.joined(separator: ",") }).joined(separator: "\n")
-    }
-
-    private static func csvCell(_ v: JSONValue?) -> String {
-        let s: String
-        switch v {
-        case nil, .null?: return ""
-        case .array(let items)?: s = items.map(cellText).joined(separator: "|")
-        case let other?: s = cellText(other)
-        }
-        return s.contains(where: { $0 == "\"" || $0 == "," || $0 == "\n" }) ? "\"" + s.replacingOccurrences(of: "\"", with: "\"\"") + "\"" : s
-    }
-
-    /// String(value) for a JSON value: whole numbers without ".0", as JavaScript prints them.
-    private static func cellText(_ v: JSONValue) -> String {
-        switch v {
-        case .string(let s): s
-        case .int(let i): String(i)
-        case .double(let d): d.isFinite && d == d.rounded() && abs(d) < 1e21 ? String(Int64(d)) : String(d)
-        case .bool(let b): b ? "true" : "false"
-        case .null: "null"
-        default: v.jsonString
-        }
-    }
 }
 
 /// The app's peak physical footprint while a question runs, sampled every 250 ms (android PeakRss over VmRSS).

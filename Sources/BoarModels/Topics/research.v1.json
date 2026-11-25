@@ -1,0 +1,72 @@
+{
+  "id": "research",
+  "version": 1,
+  "status": "reviewed by t9, 14 Nov",
+  "title": "Research",
+  "titlePt": "Pesquisa",
+  "about": "Questions that need several sources put together. At the complete level they also run through Deep Research, which nobody has timed yet.",
+  "deepResearch": true,
+  "questions": [
+    {
+      "id": "synthesis-1",
+      "fromSet": true,
+      "rules": {
+        "citesOnlyRealSources": true
+      }
+    },
+    {
+      "id": "synthesis-3",
+      "fromSet": true,
+      "rules": {
+        "citesOnlyRealSources": true
+      }
+    },
+    {
+      "id": "grounded-1",
+      "fromSet": true,
+      "rules": {
+        "citesOnlyRealSources": true
+      }
+    },
+    {
+      "id": "research-printing-press",
+      "query": "How did the printing press change Europe, and what did it lead to in science and religion?",
+      "category": "research",
+      "rules": {
+        "citesOnlyRealSources": true
+      },
+      "toRead": "Gutenberg about 1450; cheaper books, the Reformation, the spread of scientific results."
+    },
+    {
+      "id": "research-antibiotics-history",
+      "query": "How were antibiotics discovered, and why is resistance now a global problem?",
+      "category": "research",
+      "rules": {
+        "citesOnlyRealSources": true,
+        "answerHas": [
+          "Fleming"
+        ]
+      },
+      "toRead": "Fleming 1928, penicillin; overuse and selection explain resistance."
+    },
+    {
+      "id": "roman-empire-fall",
+      "query": "When did the Western Roman Empire fall, and who was its last emperor?",
+      "category": "research",
+      "rules": {
+        "numbers": [
+          {
+            "value": 476,
+            "tolerance": 0,
+            "label": "476"
+          }
+        ],
+        "answerHas": [
+          "Romulus Augustulus"
+        ],
+        "citesOnlyRealSources": true
+      },
+      "toRead": "476, Romulus Augustulus deposed by Odoacer."
+    }
+  ]
+}

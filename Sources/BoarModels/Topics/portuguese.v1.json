@@ -1,0 +1,301 @@
+{
+  "id": "portuguese",
+  "version": 1,
+  "status": "reviewed by t9, 14 Nov",
+  "title": "Portuguese",
+  "titlePt": "Português",
+  "about": "The language fix's 30 Portuguese questions (lang-20261114, arm 0 and arm 1): every answer in Portuguese, and no [n] without a real source.",
+  "questions": [
+    {
+      "id": "pt-greeting-1",
+      "query": "oi, tudo bem?",
+      "category": "greeting",
+      "rules": {
+        "language": "pt",
+        "citesOnlyRealSources": true
+      }
+    },
+    {
+      "id": "pt-factual-1",
+      "query": "Qual é a capital da Austrália?",
+      "category": "factual",
+      "rules": {
+        "language": "pt",
+        "citesOnlyRealSources": true,
+        "answerHas": [
+          "Canberra"
+        ]
+      }
+    },
+    {
+      "id": "pt-factual-2",
+      "query": "Quem propôs a teoria da evolução por seleção natural?",
+      "category": "factual",
+      "rules": {
+        "language": "pt",
+        "citesOnlyRealSources": true,
+        "answerHas": [
+          "Darwin"
+        ]
+      }
+    },
+    {
+      "id": "pt-explanation-1",
+      "query": "Como funcionam as vacinas?",
+      "category": "explanation",
+      "rules": {
+        "language": "pt",
+        "citesOnlyRealSources": true
+      }
+    },
+    {
+      "id": "pt-explanation-2",
+      "query": "Explique a fotossíntese em termos simples.",
+      "category": "explanation",
+      "rules": {
+        "language": "pt",
+        "citesOnlyRealSources": true
+      }
+    },
+    {
+      "id": "pt-comparison-1",
+      "query": "Compare a Revolução Francesa e a Revolução Industrial.",
+      "category": "comparison",
+      "rules": {
+        "language": "pt",
+        "citesOnlyRealSources": true
+      }
+    },
+    {
+      "id": "pt-comparison-2",
+      "query": "Compare como a oferta e a demanda explicam a mudança de preços com o que a economia comportamental complica nesse quadro: onde o modelo simples falha?",
+      "category": "comparison",
+      "rules": {
+        "language": "pt",
+        "citesOnlyRealSources": true
+      }
+    },
+    {
+      "id": "pt-synthesis-1",
+      "query": "O que a Revolução Agrícola e a Revolução Industrial têm em comum como viradas na história humana, e como diferiram na rapidez com que mudaram a vida diária?",
+      "category": "synthesis",
+      "rules": {
+        "language": "pt",
+        "citesOnlyRealSources": true
+      }
+    },
+    {
+      "id": "pt-synthesis-2",
+      "query": "Como a resposta do sistema imunológico a um patógeno se relaciona com o funcionamento de uma vacina? Explique o mecanismo.",
+      "category": "synthesis",
+      "rules": {
+        "language": "pt",
+        "citesOnlyRealSources": true
+      }
+    },
+    {
+      "id": "pt-synthesis-3",
+      "query": "Por que a floresta amazônica é considerada importante para o clima global, e o que a perda de biodiversidade ali ameaça além da perda óbvia de espécies?",
+      "category": "synthesis",
+      "rules": {
+        "language": "pt",
+        "citesOnlyRealSources": true
+      }
+    },
+    {
+      "id": "pt-reasoning-1",
+      "query": "Um trem sai às 15h40 e a viagem leva 2 horas e 35 minutos. A que horas ele chega?",
+      "category": "reasoning",
+      "rules": {
+        "language": "pt",
+        "citesOnlyRealSources": true,
+        "answerHasAny": [
+          "18h15",
+          "18:15",
+          "6:15"
+        ]
+      }
+    },
+    {
+      "id": "pt-reasoning-2",
+      "query": "Um aparelho tem 12 GB de RAM. O sistema e o app ocupam 2 GB, o modelo de embedding precisa de 200 MB e o cache KV do LLM precisa de 1,5 GB. Quanto sobra para os pesos do LLM, e um modelo de 9 GB caberia se carregado inteiro na RAM?",
+      "category": "reasoning",
+      "rules": {
+        "language": "pt",
+        "citesOnlyRealSources": true
+      }
+    },
+    {
+      "id": "pt-reasoning-3",
+      "query": "Se um modelo Mixture-of-Experts tem 100B de parâmetros no total mas ativa só 8B por token, e cada parâmetro ocupa 1 byte em Q8, qual o espaço mínimo em disco, e por que o uso de RAM não cresce com os 100B?",
+      "category": "reasoning",
+      "rules": {
+        "language": "pt",
+        "citesOnlyRealSources": true
+      }
+    },
+    {
+      "id": "pt-grounded-1",
+      "query": "Por que o Império Romano do Ocidente caiu?",
+      "category": "retrieval-grounded",
+      "rules": {
+        "language": "pt",
+        "citesOnlyRealSources": true
+      }
+    },
+    {
+      "id": "pt-grounded-2",
+      "query": "O que é um buraco negro e como ele se forma?",
+      "category": "retrieval-grounded",
+      "rules": {
+        "language": "pt",
+        "citesOnlyRealSources": true
+      }
+    },
+    {
+      "id": "pt-no-kb-1",
+      "query": "Quem foi Napoleão Bonaparte?",
+      "category": "no-kb-content",
+      "rules": {
+        "language": "pt",
+        "citesOnlyRealSources": true
+      }
+    },
+    {
+      "id": "pt-no-kb-2",
+      "query": "Como funcionam os antibióticos, e por que a resistência a antibióticos se desenvolve?",
+      "category": "no-kb-content",
+      "rules": {
+        "language": "pt",
+        "citesOnlyRealSources": true
+      }
+    },
+    {
+      "id": "pt-sug-q1",
+      "query": "Como a inclinação da Terra cria as estações, e por que elas se invertem entre os hemisférios",
+      "category": "suggestion",
+      "rules": {
+        "language": "pt",
+        "citesOnlyRealSources": true
+      }
+    },
+    {
+      "id": "pt-sug-q2",
+      "query": "Pandemias e epidemias: como os surtos se espalham e como são classificados",
+      "category": "suggestion",
+      "rules": {
+        "language": "pt",
+        "citesOnlyRealSources": true
+      }
+    },
+    {
+      "id": "pt-sug-q4",
+      "query": "Primeiros socorros para sangramento nasal: o que funciona e o que evitar",
+      "category": "suggestion",
+      "rules": {
+        "language": "pt",
+        "citesOnlyRealSources": true
+      }
+    },
+    {
+      "id": "pt-sug-q7",
+      "query": "O efeito estufa: quais gases retêm calor, e como",
+      "category": "suggestion",
+      "rules": {
+        "language": "pt",
+        "citesOnlyRealSources": true
+      }
+    },
+    {
+      "id": "pt-sug-q8",
+      "query": "Como as monções se formam, e por que importam para a agricultura no sul da Ásia",
+      "category": "suggestion",
+      "rules": {
+        "language": "pt",
+        "citesOnlyRealSources": true
+      }
+    },
+    {
+      "id": "pt-sug-q3",
+      "query": "Quanto é 30 °C em Fahrenheit?",
+      "category": "suggestion",
+      "rules": {
+        "language": "pt",
+        "citesOnlyRealSources": true,
+        "answerHas": [
+          "86"
+        ]
+      }
+    },
+    {
+      "id": "pt-extra-1",
+      "query": "Como funciona o sistema de vacinação no Brasil?",
+      "category": "extra",
+      "rules": {
+        "language": "pt",
+        "citesOnlyRealSources": true
+      }
+    },
+    {
+      "id": "pt-extra-2",
+      "query": "Por que o Brasil tem tantos fusos horários?",
+      "category": "extra",
+      "rules": {
+        "language": "pt",
+        "citesOnlyRealSources": true
+      }
+    },
+    {
+      "id": "pt-sug-q9",
+      "query": "Tectônica de placas: como as placas em movimento formam montanhas e causam terremotos",
+      "category": "suggestion",
+      "rules": {
+        "language": "pt",
+        "citesOnlyRealSources": true
+      }
+    },
+    {
+      "id": "pt-short-1",
+      "query": "Por que o céu é azul?",
+      "category": "short",
+      "rules": {
+        "language": "pt",
+        "citesOnlyRealSources": true
+      }
+    },
+    {
+      "id": "pt-short-2",
+      "query": "Quantos ossos tem o corpo humano?",
+      "category": "short",
+      "rules": {
+        "language": "pt",
+        "citesOnlyRealSources": true,
+        "numbers": [
+          {
+            "value": 206,
+            "tolerance": 0,
+            "label": "206"
+          }
+        ]
+      }
+    },
+    {
+      "id": "pt-short-3",
+      "query": "O que causa as marés?",
+      "category": "short",
+      "rules": {
+        "language": "pt",
+        "citesOnlyRealSources": true
+      }
+    },
+    {
+      "id": "pt-short-4",
+      "query": "Quem foi Santos Dumont?",
+      "category": "short",
+      "rules": {
+        "language": "pt",
+        "citesOnlyRealSources": true
+      }
+    }
+  ]
+}

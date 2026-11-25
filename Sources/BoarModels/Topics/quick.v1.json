@@ -1,0 +1,109 @@
+{
+  "id": "quick",
+  "version": 1,
+  "status": "reviewed by t9, 14 Nov",
+  "title": "Quick questions",
+  "titlePt": "Perguntas rápidas",
+  "about": "Short questions with one answer: the first word and the whole answer should both be fast.",
+  "questions": [
+    {
+      "id": "greeting-1",
+      "fromSet": true,
+      "rules": {
+        "language": "en"
+      },
+      "toRead": "A short greeting back, no sources."
+    },
+    {
+      "id": "factual-1",
+      "fromSet": true,
+      "rules": {
+        "answerHas": [
+          "Canberra"
+        ]
+      }
+    },
+    {
+      "id": "factual-2",
+      "fromSet": true,
+      "rules": {
+        "answerHas": [
+          "Darwin"
+        ]
+      }
+    },
+    {
+      "id": "reasoning-1",
+      "fromSet": true,
+      "rules": {
+        "answerHasAny": [
+          "6:15",
+          "18:15"
+        ]
+      }
+    },
+    {
+      "id": "quick-bones",
+      "query": "How many bones are in the adult human body?",
+      "category": "factual",
+      "rules": {
+        "numbers": [
+          {
+            "value": 206,
+            "tolerance": 0,
+            "label": "206"
+          }
+        ]
+      }
+    },
+    {
+      "id": "quick-sky",
+      "query": "Why is the sky blue?",
+      "category": "explanation",
+      "rules": {
+        "answerHasAny": [
+          "Rayleigh",
+          "scatter"
+        ]
+      }
+    },
+    {
+      "id": "quick-boiling",
+      "query": "At what temperature does water boil at sea level?",
+      "category": "factual",
+      "rules": {
+        "numbersAny": [
+          {
+            "value": 100,
+            "tolerance": 0,
+            "label": "100 °C"
+          },
+          {
+            "value": 212,
+            "tolerance": 0,
+            "label": "212 °F"
+          }
+        ]
+      }
+    },
+    {
+      "id": "quick-light",
+      "query": "How long does sunlight take to reach Earth?",
+      "category": "factual",
+      "rules": {
+        "numbersAny": [
+          {
+            "value": 8,
+            "tolerance": 0.07,
+            "label": "about 8 minutes"
+          },
+          {
+            "value": 499,
+            "tolerance": 0.02,
+            "label": "about 499 s"
+          }
+        ]
+      }
+    }
+  ]
+}

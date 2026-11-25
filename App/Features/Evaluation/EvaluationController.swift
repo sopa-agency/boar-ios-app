@@ -175,7 +175,7 @@ final class EvaluationController {
         guard let runId else { return nil }
         let rows = rows
         return ExportedFile(filename: "\(runId).\(jsonl ? "jsonl" : "csv")") {
-            Data((jsonl ? rows.map(\.jsonString).joined(separator: "\n") : EvalRunner.toCsv(rows)).utf8)
+            Data((jsonl ? EvalExport.jsonl(rows) : EvalExport.csv(rows)).utf8)
         }
     }
 

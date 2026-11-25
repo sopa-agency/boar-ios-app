@@ -1,0 +1,122 @@
+{
+  "id": "core",
+  "version": 1,
+  "status": "reviewed by t9, 14 Nov",
+  "title": "The fixed 17",
+  "titlePt": "As 17 fixas",
+  "about": "The 17 questions of eval-set.json since 6 Oct, run exactly as they are there (ids, text, set version). The rules only read their answers.",
+  "questions": [
+    {
+      "id": "greeting-1",
+      "fromSet": true
+    },
+    {
+      "id": "factual-1",
+      "fromSet": true,
+      "rules": {
+        "answerHas": [
+          "Canberra"
+        ],
+        "language": "en"
+      },
+      "toRead": "Canberra, not Sydney."
+    },
+    {
+      "id": "factual-2",
+      "fromSet": true,
+      "rules": {
+        "answerHas": [
+          "Darwin"
+        ],
+        "language": "en"
+      },
+      "toRead": "Charles Darwin (Alfred Russel Wallace may be named too)."
+    },
+    {
+      "id": "explanation-1",
+      "fromSet": true
+    },
+    {
+      "id": "explanation-2",
+      "fromSet": true
+    },
+    {
+      "id": "comparison-1",
+      "fromSet": true
+    },
+    {
+      "id": "comparison-2",
+      "fromSet": true
+    },
+    {
+      "id": "synthesis-1",
+      "fromSet": true
+    },
+    {
+      "id": "synthesis-2",
+      "fromSet": true
+    },
+    {
+      "id": "synthesis-3",
+      "fromSet": true
+    },
+    {
+      "id": "reasoning-1",
+      "fromSet": true,
+      "rules": {
+        "answerHasAny": [
+          "6:15",
+          "18:15"
+        ],
+        "language": "en"
+      },
+      "toRead": "6:15 pm."
+    },
+    {
+      "id": "reasoning-2",
+      "fromSet": true,
+      "rules": {
+        "numbers": [
+          {
+            "value": 8.3,
+            "tolerance": 0.01,
+            "label": "8.3 GB left"
+          }
+        ],
+        "language": "en"
+      },
+      "toRead": "8.3 GB left; a 9 GB model does not fit."
+    },
+    {
+      "id": "reasoning-3",
+      "fromSet": true,
+      "rules": {
+        "numbers": [
+          {
+            "value": 100,
+            "tolerance": 0.001,
+            "label": "100 GB on disk"
+          }
+        ],
+        "language": "en"
+      },
+      "toRead": "About 100 GB on disk; RAM follows the 8B active (plus what is mapped), not the 100B."
+    },
+    {
+      "id": "grounded-1",
+      "fromSet": true
+    },
+    {
+      "id": "grounded-2",
+      "fromSet": true
+    },
+    {
+      "id": "no-kb-1",
+      "fromSet": true
+    },
+    {
+      "id": "no-kb-2",
+      "fromSet": true
+    }
+  ]
+}
