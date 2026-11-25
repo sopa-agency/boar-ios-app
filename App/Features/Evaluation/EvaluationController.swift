@@ -177,9 +177,22 @@ final class EvaluationController {
         let planned = BenchPresets.plan(BenchPreset(level, [topic]), installed: installed, topics: topicsById, sets: sets)
         plan = planned.plan
         planError = planned.error
-        let last = runner.store.lastOfLevel(level.id).map { runner.store.rows($0.runId) }
-        estimate = planned.plan.map { BenchPresets.estimate($0, previousRows: last) }
+        estimate = nil
+        guard let chosen = planned.plan else { return }
+        // The last run of the level is read off the main actor (every meta and a whole JSONL); a newer pick wins.
+        replanGeneration += 1
+        let generation = replanGeneration
+        let store = runner.store
+        let levelId = level.id
+        Task {
+            let found = await Task.detached(priority: .userInitiated) {
+                BenchPresets.estimate(chosen, previousRows: store.lastOfLevel(levelId).map { store.rows($0.runId) })
+            }.value
+            if generation == replanGeneration { estimate = found }
+        }
     }
+
+    @ObservationIgnored private var replanGeneration = 0
 
     // MARK: saved runs
 
@@ -341,16 +354,44 @@ final class EvaluationController {
 
     // MARK: export
 
-    /// EvalTrace v1 for one model, the file `harness/judge.mjs` and `scorers/score.py` read (one system per file).
-    func traceFile(configId: String) -> ExportedFile? {
-        guard let runId else { return nil }
-        let rows = rows
+    /// EvalTrace v1 for one model, the files `harness/judge.mjs` and `scorers/score.py` read (one system per file). A run
+    /// with several passes (a preset's Succinct, Detailed and Deep Research) gets one file per pass, so each file is one
+    /// system; the pass comes from the row's `path` (Deep Research) or its `style`.
+    func traceFiles(configId: String) -> [TraceFile] {
+        guard let runId else { return [] }
+        let rows = rows.filter { $0["configId"]?.stringValue == configId }
         let ctx = EvalTraceExport.Context(appVersion: runner.appVersion, build: runner.build, host: EvalHost.description,
                                           ramBytes: DebugLaunch.ramBytes ?? services.totalRamBytes)
         let slug = configId.replacing("model:", with: "").replacing(/[^A-Za-z0-9._-]/, with: "-")
-        return ExportedFile(filename: "\(runId).\(slug).traces.jsonl") {
-            Data(EvalTraceExport.jsonl(rows, configId: configId, ctx).utf8)
+        var order: [String] = []
+        let byPass = Dictionary(grouping: rows) { row in
+            let key = Self.passKey(row)
+            if !order.contains(key) { order.append(key) }
+            return key
         }
+        guard order.count > 1 else {
+            return [TraceFile(pass: nil, file: ExportedFile(filename: "\(runId).\(slug).traces.jsonl") {
+                Data(EvalTraceExport.jsonl(rows, configId: configId, ctx).utf8)
+            })]
+        }
+        return order.map { key in
+            let passRows = byPass[key] ?? []
+            return TraceFile(pass: key, file: ExportedFile(filename: "\(runId).\(slug).\(key).traces.jsonl") {
+                Data(EvalTraceExport.jsonl(passRows, configId: configId, ctx).utf8)
+            })
+        }
+    }
+
+    struct TraceFile: Identifiable {
+        let pass: String?
+        let file: ExportedFile
+        var id: String { file.filename }
+    }
+
+    /// The bench pass a row belongs to: "deep" for Deep Research, else the pass's style ("" for an old run's rows).
+    nonisolated static func passKey(_ row: JSONValue) -> String {
+        if row["path"]?.stringValue == BenchPass.pathDeep { return BenchPass.pathDeep }
+        return row["style"]?.stringValue ?? ""
     }
 
     /// The results as JSONL or CSV (exportEvalResults): a run just made or one opened from the list.

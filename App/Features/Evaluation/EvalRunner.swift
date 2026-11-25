@@ -161,7 +161,8 @@ final class EvalRunner: Sendable {
         var meta = RunMeta(runId: runId, createdAt: Self.nowMs(), appVersion: appVersion,
                            models: configs.map { if case .model(let id, _) = $0 { id } else { $0.id } },
                            level: plan?.preset.level.id, topics: plan?.preset.topics ?? [],
-                           topicVersions: Dictionary(uniqueKeysWithValues: (plan?.preset.topics ?? []).compactMap { t in topics?[t].map { (t, $0.version) } }),
+                           topicVersions: Dictionary((plan?.preset.topics ?? []).compactMap { t in topics?[t].map { (t, $0.version) } },
+                                                     uniquingKeysWith: { _, last in last }),  // a topic named twice: Kotlin's toMap()
                            passes: passes.map(\.key), source: info.source, requestId: info.requestId)
         store.writeMeta(meta)
         onStart(runId)
