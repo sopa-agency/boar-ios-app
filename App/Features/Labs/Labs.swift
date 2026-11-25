@@ -179,7 +179,7 @@ final class Labs {
     init(defaults: UserDefaults, labs: [any LabPlugin] = Labs.registry) {
         self.defaults = defaults
         all = labs.sorted { $0.order < $1.order }
-        // The Labs build opens with Boar Labs on; every lab in it starts off.
+        // The master switch starts on; a plugin never switched follows the default list (LabDefaults) until the user flips it.
         on = defaults.object(forKey: "labs.on") as? Bool ?? true
         stored = Dictionary(uniqueKeysWithValues: all.compactMap { lab in
             // `bool(forKey:)` also reads a launch argument's "YES"; object(forKey:) tells never-set from off.

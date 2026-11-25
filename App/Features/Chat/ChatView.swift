@@ -11,8 +11,6 @@ struct ChatView: View {
 
     @State private var input = ""
     @State private var showingTones = false
-    /// The header's plugins sheet (the icon beside New Chat).
-    @State private var showingPlugins = false
     @State private var openSource: ChatSource?
     /// The header's mascot shown full screen.
     @State private var showingMascot = false
@@ -87,7 +85,7 @@ struct ChatView: View {
             // off; a tap lists the last three used.
             if Labs.shared.headerIconShown {
                 ToolbarItem(placement: .primaryAction) {
-                    Button("Plugins on", icon: Symbols.labs) { showingPlugins = true }
+                    Button("Plugins on", icon: Symbols.labs) { model.pluginsListShown = true }
                 }
             }
             #if os(macOS)
@@ -118,7 +116,8 @@ struct ChatView: View {
             ConnectionSheet(online: model.connectivity.online, busy: chat.isAnswering, models: model.models,
                             onCatalog: openCatalog, onClose: { showingConnection = false })
         }
-        .sheet(isPresented: $showingPlugins) { PluginsSheet() }
+        // In the model, not here: a Try row on a page opened inside it closes it (`askFromPlugin`).
+        .sheet(isPresented: Binding(get: { model.pluginsListShown }, set: { model.pluginsListShown = $0 })) { PluginsSheet() }
         #if os(macOS)
         .inspector(isPresented: $showingSources) {
             SourceInspector(sources: inspectedSources, selected: $inspectedSource, technicalDetails: chat.technicalDetails)

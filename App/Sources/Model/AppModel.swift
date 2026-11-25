@@ -139,12 +139,16 @@ final class AppModel {
     var citationRequest: URL?
     /// The plugin whose page is open over whatever is on screen (a tap on an answer's plugin name).
     var pluginSheet: String?
+    /// The chat header's plugins sheet (the icon beside New Chat); its pages open inside it.
+    var pluginsListShown = false
 
     func openPlugin(_ id: String) { pluginSheet = id }
 
     /// A plugin page's Try row (android `AskFromPlugin`): a new chat that asks it, or one with it waiting in the box.
+    /// Whichever sheet the page sits in closes, as Android's tap does.
     func askFromPlugin(_ question: String, send: Bool) {
         pluginSheet = nil
+        pluginsListShown = false
         newChat()
         guard let chat else { return }
         if send { chat.send(question) } else { chat.prefill = question }
