@@ -88,6 +88,14 @@ extension String {
         return String(s)
     }
 
+    /// Kotlin's `trimStart()` and `trimEnd()`.
+    func kotlinTrimStart() -> String { String(drop { $0.isWhitespace }) }
+    func kotlinTrimEnd() -> String {
+        var s = Substring(self)
+        while let l = s.last, l.isWhitespace { s.removeLast() }
+        return String(s)
+    }
+
     /// Kotlin's `lines()`: split on \r\n, \n or \r, keeping empty lines (and a last empty one after a final break).
     func kotlinLines() -> [String] {
         replacingOccurrences(of: "\r\n", with: "\n").replacingOccurrences(of: "\r", with: "\n")
