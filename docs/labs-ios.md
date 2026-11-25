@@ -72,7 +72,8 @@ Differences from Android, on purpose:
   question sent meanwhile waits in the chat's queue and starts after it, and Stop ends it. It uses only the model the chat
   already has: with none loaded it says "No answer model is loaded" instead of loading one (a model that may not fit asks
   first, in the chat). Not ported: `CardSpec` and `CanvasTest` (dead in v2.0.0), the move of pre-Cards files
-  (`files/canvas`, which iOS never had), and `cards.v1.json` (a bench topic, with Bench in BOAR-56). Press doesn't take the
+  (`files/canvas`, which iOS never had); `cards.v1.json` is a bench topic, ported with Bench in BOAR-56
+  (docs/BENCHMARK-SCREEN.md). Press doesn't take the
   card along yet (PressDoc, the PDF's card): that comes with Press in BOAR-55. Answer ids are never reused, so a deleted
   chat's cards need no `eraseAnswers`: their meta goes with the chat.
 - **Plugin answers (BOAR-56, against v2.0.0):** Lunar, Nomad and Vitals answer their questions in the chat (`PluginAnswers`,
@@ -84,7 +85,8 @@ Differences from Android, on purpose:
   says no memory figure). The tool slot runs synchronously, so the chat reads the compass (up to 900 ms, three readings, as
   Android) and the battery just before the tools run (`PhoneReads.prepare`), only for a question that plugin takes. The
   off line opens the plugin's page (its switch is there) in every profile, where Android's Pro opens the Plugins list.
-  Illustrate on these answers waits for Designer.
+  Illustrate on these answers waits for Designer. The bench's plugins topic runs them the same way, with the topic's labs
+  on whatever the app has on (docs/BENCHMARK-SCREEN.md).
 - **Waiting animation (BOAR-56, rc3 bfe69c4b, 50bdf593):** Android draws the boar's trail (or the Matrix rain, a Pro setting)
   on its Close BOAR screen, hoofprints only. iOS has no Close BOAR (an iOS app doesn't quit itself) and no Matrix rain, and
   Designer waits on Image Playground's own progress, so no iOS screen shows a waiting animation and the setting isn't
