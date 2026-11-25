@@ -9,7 +9,7 @@ Where each Android lab stands on iOS (2026-11-05), and what the rest would take.
 
 | Lab | Android id | Slot | Engine (iOS) | Tests |
 |---|---|---|---|---|
-| Press | `printer` | page, answer menu, chat toolbar | `BoarAnswer/Labs/` PressDoc, PressReceipt, PressLayout (+ PictureFit), PressFiles, PressEdit, PressRewrite (marks), DesignerCanvas, `PressPDF` (+ PressPage, PressPaper), `BoarAnswer/Chat/ChatExport` | `PressDocTests`, `PressReceiptTests`, `PressFilesTests`, `PressPDFTests` (PressSelfTest's projects), `PressEditTests`, `ChatExportTests` |
+| Press | `printer` | page, answer menu, chat toolbar | `BoarAnswer/Labs/` PressDoc, PressReceipt, PressLayout (+ PictureFit), PressFiles, PressEdit, PressRewrite (marks), DesignerCanvas, `PressPDF` (+ PressPage, PressPaper), `BoarAnswer/Chat/ChatExport` | `PressDocTests`, `PressReceiptTests`, `PressFilesTests`, `PressPDFTests` (PressSelfTest's projects), `PressEditTests`, `PressRewriteTests`, `ChatExportTests`, `KeepChatsTests` |
 | Vitals | `pulse` | page, tool | `BoarCore/CoreLoad`, thermal state, footprint, `BoarAnswer/Labs/PluginAnswers` | `CoreLoadTests` (Android has none), `PluginAnswersTests` |
 | Nomad | `compass` | page, tool | `BoarAnswer/Labs/CompassMath`, `PluginAnswers`, sensor: Core Motion | `CompassMathTests` (Android has none), `PluginAnswersTests` |
 | Lunar | `lunar` | page, tool | `BoarAnswer/Labs/MoonPhase`, `PluginAnswers` | `MoonPhaseTests` (Android has none), `PluginAnswersTests` |
@@ -76,8 +76,7 @@ Differences from Android, on purpose:
   already has: with none loaded it says "No answer model is loaded" instead of loading one (a model that may not fit asks
   first, in the chat). Not ported: `CardSpec` and `CanvasTest` (dead in v2.0.0), the move of pre-Cards files
   (`files/canvas`, which iOS never had); `cards.v1.json` is a bench topic, ported with Bench in BOAR-56
-  (docs/BENCHMARK-SCREEN.md). Press doesn't take the
-  card along yet (PressDoc, the PDF's card): that comes with Press in BOAR-55. Answer ids are never reused, so a deleted
+  (docs/BENCHMARK-SCREEN.md). Press takes the card along (PressDoc, the PDF's card; BOAR-55). Answer ids are never reused, so a deleted
   chat's cards need no `eraseAnswers`: their meta goes with the chat.
 - **Press redone (BOAR-55, against v2.0.0), part 6.1, the engine:** projects as documents of blocks (`PressDoc`), the old
   basket migrated once into "Field notes" (an unreadable basket stays and is retried, G-3), the receipt, the footer (models,
@@ -92,10 +91,8 @@ Differences from Android, on purpose:
     Kotlin's in Float. The pack-label regex counts `{1,60}` in code points, Java in UTF-16 units.
   - iOS Designer (Image Playground) keeps no recipe or per-answer illustration, so drawings in a project come only from
     Android-style data (`illustrations` is empty on migration) and the receipt's Drawings line is rare here.
-  - Not in 6.1: the page itself (6.2), the rewrite prompts and model work, several projects in the UI and presets (6.3).
-    Add to Press goes to the open project and takes the shown card with its ticks. A deleted chat's
-    answers leave every project (`LabPlugin.eraseAnswers`, from `ChatController.deleteSession`); the chat limit's prune
-    doesn't run it yet, and the prune and delete dialogs don't say Press loses them (`pluginsOn: false`).
+  - Add to Press goes to the open project. A deleted chat's answers leave every project (`LabPlugin.eraseAnswers`, from
+    `ChatController.deleteSession` and the chat limit's prune, see 6.3).
   - The Kotlin tests that read Android's screen sources (PressEraseTest, PressDesignerLayoutTest, parts of the gate) have
     no counterpart; the fuzz uses SplitMix64 with seed 7 instead of `java.util.Random(7)`.
 - **Press redone, part 6.2, the page:** `PressScreen` draws the open project on white A4 paper (`PressPaperView`) at the PDF's
@@ -110,10 +107,7 @@ Differences from Android, on purpose:
   speed); the note bar's "..." menu has Save as .pdf / .md, Rename and Delete. Deliberate differences:
   - No drawing button in the add bar: iOS Designer keeps no recipe and its pictures live at container paths, so there is
     nothing stable to point a block at yet.
-  - The bar only writes notes, and the pencil edits the text in place. Android's edit sheet (edit myself or ask BOAR) and the
-    bar asking BOAR to rewrite a selected block come with the rewrite in 6.3.
-  - The menu is a SwiftUI Menu with Save as, Rename and Delete; the project list, New project and All projects come in 6.3.
-    Save goes through the share sheet, with no printing animation.
+  - The menu is a SwiftUI Menu (the projects part is 6.3). Save goes through the share sheet, with no printing animation.
   - Undo of a removed block is a bar above the tools (for `ChatList.undoMs`) instead of a snackbar; the photo file goes 10 s
     after that.
   - Answers added from the page's chat list carry no model or speed, as on Android; the list shows the latest 12 chats.
@@ -122,6 +116,26 @@ Differences from Android, on purpose:
   - An unreadable projects file shows Android's warning on the page and the answer's More menu offers no Add to Press
     (Android still shows the row, with a blank project name). A block type this version doesn't know draws nothing on the
     paper (no empty row), as it prints nothing.
+- **Press redone, part 6.3, rewrite and projects:** the pencil on a text opens Edit this text (`PressEditSheet`): edit it
+  yourself on the page, or ask BOAR with a preset (Shorter, Simpler words, Fix the wording, As a list, As a paragraph, More
+  formal) or your own words. The prompts put the passage first and the task last, new text gets no source mark the passage
+  didn't have, and both versions show before Use (`BoarAnswer/Labs/PressRewrite`, `PressRewriter`). With a text selected the
+  note bar asks BOAR instead, and what was typed is used once. The menu lists the open project and the 3 most recent, All
+  projects (N) with a search, New project, Rename and Delete. Add to Press fills only what's missing, with the answer's
+  card. Deleting a chat takes its answers out of Press and its dialog says so (`Labs.deleteNotes`, `PressStore.countOf`);
+  the chat limit's prune does too, after the delete went through (`ChatStore.pruneAnswers`). Clear chat history keeps
+  Press unless "Clear and Also Delete Press Projects" is chosen. Deliberate differences:
+  - The rewrite runs as the chat's job (`ChatController.runForLab`, claimed at once, G-4): a chat answer being written
+    says so and nothing starts; Stop, ✕ or closing the sheet stop it. Only the model already loaded is used; with none,
+    the sheet says rewriting needs an answer model, and nothing is loaded for it.
+  - The projects are a SwiftUI Menu plus a searchable list sheet (All projects); New project is an alert with a name field.
+  - The prune dialogs' plugin line names Press and the cards only: iOS Designer keeps no pictures made from answers. For
+    the same reason `adoptDrawings` (R-A3) has nothing to do here.
+  - A chat's delete note shows in its confirmation dialog, so with the confirm-delete setting off nothing says it.
+    The note is read just after the dialog opens (the answers come off the main actor).
+  - Add to Press reads the card from the answer's meta when Cards hasn't read it (Cards off), as Android's `cardOf`.
+  - The Kotlin checks that read the screen's source (the sheet's strings, Use as the only write, G-4's claim) have no
+    counterpart.
 - **Plugin answers (BOAR-56, against v2.0.0):** Lunar, Nomad and Vitals answer their questions in the chat (`PluginAnswers`,
   tool codes `lunar-phase`, `compass-heading`, `vitals-phone`), and a model's answer to a question one of them would have
   taken while it's off says "<name> is off. Turn it on in Plugins ›". Differences: the answers name the device ("This iPhone
