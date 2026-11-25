@@ -265,11 +265,11 @@ struct PressScreen: View {
         Menu {
             Section("Save as…") {
                 ShareLink(item: pdfFile(project), preview: SharePreview(Text(verbatim: PressReceipt.slug(project.name) + ".pdf"))) {
-                    Label(".pdf", systemImage: "doc.richtext")
+                    Label { Text(verbatim: ".pdf") } icon: { Image(systemName: "doc.richtext") }
                 }
                 .disabled(project.blocks.isEmpty)
                 ShareLink(item: markdownFile(project), preview: SharePreview(Text(verbatim: PressReceipt.slug(project.name) + ".md"))) {
-                    Label(".md", systemImage: "doc.plaintext")
+                    Label { Text(verbatim: ".md") } icon: { Image(systemName: "doc.plaintext") }
                 }
             }
             Section("Projects") {

@@ -31,6 +31,16 @@
         }
       }
     },
+    "\"Made offline with BOAR\" always prints at the end." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "\"Feito offline com o BOAR\" sempre sai no final."
+          }
+        }
+      }
+    },
     "%@ %@" : {
       "localizations" : {
         "en" : {
@@ -1119,12 +1129,32 @@
         }
       }
     },
+    "Add a caption" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adicione uma legenda"
+          }
+        }
+      }
+    },
     "Add a model from Hugging Face." : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Adicione um modelo do Hugging Face."
+          }
+        }
+      }
+    },
+    "Add answers from a chat: under an answer, open More (…) and tap Add to Press. Or add a heading, a note or a photo." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Traga respostas de uma conversa: embaixo de uma resposta, abra Mais (…) e toque em Adicionar ao Press. Ou adicione um título, uma nota ou uma foto."
           }
         }
       }
@@ -1155,6 +1185,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Adicione o endereço do Mac em Ajustes → Avançado → Motor."
+          }
+        }
+      }
+    },
+    "Add the note" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adicionar a nota"
           }
         }
       }
@@ -1595,6 +1635,16 @@
         }
       }
     },
+    "Answers come from a chat: under an answer, open More (…) and tap Add to Press." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "As respostas vêm das conversas: embaixo de uma resposta, abra Mais (…) e toque em Adicionar ao Press."
+          }
+        }
+      }
+    },
     "Answers come from a chat: under an answer, open the plugins and tap Add to Press. Here you reorder, edit or drop them, then compile the page to an A4 PDF or a Markdown file, made offline on this %@." : {
       "localizations" : {
         "pt" : {
@@ -1611,6 +1661,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Responde com dados de uma tabela da Wikidata no celular. Hoje só em inglês."
+          }
+        }
+      }
+    },
+    "Answers from a chat" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Respostas de uma conversa"
           }
         }
       }
@@ -2766,6 +2826,16 @@
         }
       }
     },
+    "Caption" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Legenda"
+          }
+        }
+      }
+    },
     "Cards" : {
       "localizations" : {
         "pt" : {
@@ -3436,6 +3506,16 @@
         }
       }
     },
+    "Dashed lines on the page where the PDF's pages end." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Linhas tracejadas na página onde as páginas do PDF terminam."
+          }
+        }
+      }
+    },
     "Data Nomad" : {
       "localizations" : {
         "pt" : {
@@ -3646,6 +3726,36 @@
         }
       }
     },
+    "Delete “%@”" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apagar “%@”"
+          }
+        }
+      }
+    },
+    "Delete “%@” and all it holds" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apagar “%@” e tudo o que tem nele"
+          }
+        }
+      }
+    },
+    "Delete “%@”?" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apagar “%@”?"
+          }
+        }
+      }
+    },
     "Deleted %@" : {
       "localizations" : {
         "pt" : {
@@ -3816,6 +3926,16 @@
         }
       }
     },
+    "Divider" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Divisor"
+          }
+        }
+      }
+    },
     "Document title" : {
       "localizations" : {
         "pt" : {
@@ -3872,6 +3992,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "OK"
+          }
+        }
+      }
+    },
+    "Done editing" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Concluir edição"
+          }
+        }
+      }
+    },
+    "Done with the caption" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Concluir a legenda"
           }
         }
       }
@@ -4086,6 +4226,26 @@
         }
       }
     },
+    "Each project is its own document. The white page is what the PDF prints: A4, made offline on this %@. Tap a block to move it, edit it or remove it. Answers come from a chat, and every document ends with how it was made: the date, the models and their speed, and one numbered list of the sources." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cada projeto é um documento. A página branca é o que o PDF imprime: A4, feito offline neste %@. Toque num bloco para mover, editar ou remover. As respostas vêm das conversas, e todo documento termina contando como foi feito: a data, os modelos e a velocidade deles e uma lista numerada das fontes."
+          }
+        }
+      }
+    },
+    "Each source by its number, with the pack it came from. Off, the answers print without [n]." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cada fonte pelo número, com o pacote de onde veio. Desligado, as respostas saem sem [n]."
+          }
+        }
+      }
+    },
     "Earlier" : {
       "localizations" : {
         "pt" : {
@@ -4122,6 +4282,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Editar antes de perguntar"
+          }
+        }
+      }
+    },
+    "Edit text" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Editar texto"
           }
         }
       }
@@ -6267,6 +6437,16 @@
         }
       }
     },
+    "List" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lista"
+          }
+        }
+      }
+    },
     "Load Anyway" : {
       "localizations" : {
         "pt" : {
@@ -7093,6 +7273,16 @@
         }
       }
     },
+    "New heading" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Novo título"
+          }
+        }
+      }
+    },
     "New in this version: profiles. BOAR picked %@ from your settings. Change it any time." : {
       "localizations" : {
         "pt" : {
@@ -7593,6 +7783,16 @@
         }
       }
     },
+    "Nothing here yet." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nada aqui ainda."
+          }
+        }
+      }
+    },
     "Nothing to draw here" : {
       "localizations" : {
         "pt" : {
@@ -7809,6 +8009,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Um dado sobre um país, cidade, montanha, rio, monumento ou prêmio, de uma tabela da Wikidata, sem o modelo."
+          }
+        }
+      }
+    },
+    "One item per line…" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Um item por linha…"
           }
         }
       }
@@ -8073,6 +8283,16 @@
         }
       }
     },
+    "Paragraph" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Parágrafo"
+          }
+        }
+      }
+    },
     "Parameters" : {
       "localizations" : {
         "pt" : {
@@ -8203,6 +8423,16 @@
         }
       }
     },
+    "Photo from this %@" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Foto deste %@"
+          }
+        }
+      }
+    },
     "Photos of Pages" : {
       "localizations" : {
         "pt" : {
@@ -8299,6 +8529,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Boar Pixel"
+          }
+        }
+      }
+    },
+    "Place left, text beside" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "À esquerda, com o texto ao lado"
           }
         }
       }
@@ -8489,6 +8729,36 @@
         }
       }
     },
+    "Press can't read its projects file. It is kept as it is, and nothing is written over it." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Press não consegue ler o arquivo dos projetos. Ele fica como está, e nada é gravado por cima."
+          }
+        }
+      }
+    },
+    "Press menu" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Menu do Press"
+          }
+        }
+      }
+    },
+    "Press settings" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configurações do Press"
+          }
+        }
+      }
+    },
     "Press: %lld answers in the basket" : {
       "localizations" : {
         "pt" : {
@@ -8605,6 +8875,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Progresso"
+          }
+        }
+      }
+    },
+    "Projects" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Projetos"
+          }
+        }
+      }
+    },
+    "Projects as documents: chat answers, headings, notes and photos, saved as a PDF." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Projetos como documentos: respostas, títulos, notas e fotos, salvos em PDF."
           }
         }
       }
@@ -9019,6 +9309,16 @@
         }
       }
     },
+    "Removed from the page" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Removido da página"
+          }
+        }
+      }
+    },
     "Rename" : {
       "localizations" : {
         "pt" : {
@@ -9045,6 +9345,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Renomear conversa…"
+          }
+        }
+      }
+    },
+    "Rename “%@”" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Renomear “%@”"
           }
         }
       }
@@ -9345,6 +9655,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Salvar em Markdown"
+          }
+        }
+      }
+    },
+    "Save as…" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salvar como…"
           }
         }
       }
@@ -9831,6 +10151,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mostrar detalhes técnicos"
+          }
+        }
+      }
+    },
+    "Show page breaks" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar quebras de página"
           }
         }
       }
@@ -10799,6 +11129,16 @@
         }
       }
     },
+    "Tap for the next place" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toque para a próxima posição"
+          }
+        }
+      }
+    },
     "Tap or hold an address to copy it. Nothing opens from this page." : {
       "localizations" : {
         "pt" : {
@@ -10855,6 +11195,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "O tamanho do texto segue o Tipo Dinâmico do seu %@."
+          }
+        }
+      }
+    },
+    "That photo could not be read." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não deu para ler essa foto."
           }
         }
       }
@@ -11525,6 +11875,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Este modelo exige uma conta no Hugging Face e aceitar a licença. O BOAR baixa sem conta, então não consegue baixar este."
+          }
+        }
+      }
+    },
+    "This picture is no longer on this %@." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esta imagem não está mais neste %@."
           }
         }
       }
@@ -12570,6 +12930,26 @@
         }
       }
     },
+    "Write a note…" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escreva uma nota…"
+          }
+        }
+      }
+    },
+    "Write a paragraph…" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escreva um parágrafo…"
+          }
+        }
+      }
+    },
     "Write your own instructions…" : {
       "localizations" : {
         "pt" : {
@@ -13470,6 +13850,16 @@
         }
       }
     },
+    "page %lld" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "página %lld"
+          }
+        }
+      }
+    },
     "peak: %@" : {
       "localizations" : {
         "pt" : {
@@ -13656,6 +14046,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Как долго нужно кипятить воду, чтобы она была безопасной?"
+          }
+        }
+      }
+    },
+    "“%@” deleted" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“%@” apagado"
           }
         }
       }
