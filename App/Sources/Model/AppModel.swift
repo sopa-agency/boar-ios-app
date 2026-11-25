@@ -288,11 +288,11 @@ final class AppModel {
     func drainInbox() {
         guard case .ready = phase, let chat, lock?.locked != true else { return }
         let inbox = IntentInbox.shared
-        if let id = inbox.sessionId, !chat.isAnswering {
+        if let id = inbox.sessionId, !chat.holdsModel {
             inbox.sessionId = nil
             selection = .session(id)
         }
-        if let q = inbox.question, !chat.isAnswering {
+        if let q = inbox.question, !chat.holdsModel {
             inbox.question = nil
             newChat()
             chat.send(q)

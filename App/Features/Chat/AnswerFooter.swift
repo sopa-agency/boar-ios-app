@@ -87,7 +87,7 @@ struct AnswerFooter: View {
     private var moreMenu: some View {
         Menu("More", systemImage: "ellipsis") {
             Button("Ask Again", icon: Symbols.retry, action: askAgain)
-                .disabled(chat.isAnswering)
+                .disabled(chat.holdsModel)
             if chat.technicalDetails, message.receipt != nil {
                 Button("Performance Details", icon: Symbols.performance, action: showReceipt)
             }
@@ -95,7 +95,16 @@ struct AnswerFooter: View {
             if !actions.isEmpty {
                 Section {
                     ForEach(actions) { action in
-                        Button(action.title, systemImage: action.done ? "checkmark.circle.fill" : action.systemImage) { action.run() }
+                        Button { action.run() } label: {
+                            // The second line says what the action will do (Cards: "A chart of 3 numbers").
+                            Label {
+                                Text(verbatim: action.title)
+                                if let detail = action.detail { Text(verbatim: detail) }
+                            } icon: {
+                                Image(systemName: action.done ? "checkmark.circle.fill" : action.systemImage)
+                            }
+                        }
+                        .disabled(!action.enabled)
                     }
                 }
             }
@@ -107,10 +116,16 @@ struct AnswerFooter: View {
     private var answerRef: AnswerRef {
         let session = chat.sessionId.flatMap { id in model.sessions.first { $0.id == id } }
         let speed = message.receipt?.tokPerSec ?? 0
-        return AnswerRef(id: message.id, sessionId: chat.sessionId, chatTitle: session?.title ?? "",
-                         question: chat.question(for: message.id) ?? "", text: shown,
-                         sources: message.sources.map { ($0.title, $0.source) }, model: message.receipt?.model,
-                         tokPerSec: speed > 0 ? speed : nil)
+        return AnswerFooter.answerRef(message, chat: chat, shown: shown, chatTitle: session?.title ?? "", tokPerSec: speed > 0 ? speed : nil)
+    }
+
+    /// `message` as the lab slots see it; the footer's and the extras' (AnswerView) are the same.
+    static func answerRef(_ message: ChatItem, chat: ChatController, shown: String, chatTitle: String = "", tokPerSec: Double? = nil) -> AnswerRef {
+        AnswerRef(id: message.id, sessionId: chat.sessionId, chatTitle: chatTitle,
+                  question: chat.question(for: message.id) ?? "", text: shown,
+                  sources: message.sources.map { ($0.title, $0.source) }, model: message.receipt?.model,
+                  tokPerSec: tokPerSec, tool: message.receipt?.tool, styleNote: message.receipt?.styleNote,
+                  passages: message.sources.map { (title: $0.title, body: $0.body) }, chatBusy: chat.modelBusy, chat: chat)
     }
 
     private func askAgain() {

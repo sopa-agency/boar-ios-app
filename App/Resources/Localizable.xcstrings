@@ -347,6 +347,16 @@
         }
       }
     },
+    "%@, or %@" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@, ou %2$@"
+          }
+        }
+      }
+    },
     "%lld (%lld performance)" : {
       "localizations" : {
         "en" : {
@@ -369,6 +379,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld itens"
+          }
+        }
+      }
+    },
+    "%lld key facts" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld fatos principais"
           }
         }
       }
@@ -445,6 +465,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$lld de %2$lld avatares liberados"
+          }
+        }
+      }
+    },
+    "%lld of %lld done · kept with this chat" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld de %2$lld feitos · guardado com esta conversa"
           }
         }
       }
@@ -739,6 +769,36 @@
         }
       }
     },
+    "A chart of %lld numbers" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Um gráfico de %lld números"
+          }
+        }
+      }
+    },
+    "A chat answer is being written. Try again when it ends." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uma resposta está sendo escrita. Tente de novo quando terminar."
+          }
+        }
+      }
+    },
+    "A checklist of %lld steps" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uma lista de %lld passos"
+          }
+        }
+      }
+    },
     "A compass from the %@'s own sensors, offline, no location needed." : {
       "localizations" : {
         "pt" : {
@@ -789,6 +849,16 @@
         }
       }
     },
+    "A number on the card belongs to another item in the answer, so BOAR dropped it." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Um número do cartão pertence a outro item da resposta, então o BOAR descartou."
+          }
+        }
+      }
+    },
     "A research step took too long and was cut short" : {
       "localizations" : {
         "pt" : {
@@ -805,6 +875,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Um quiz diário curto da biblioteca do BOAR, offline. Respostas certas liberam Avatares do Boar."
+          }
+        }
+      }
+    },
+    "A table of %lld rows" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uma tabela de %lld linhas"
           }
         }
       }
@@ -1666,6 +1746,16 @@
         }
       }
     },
+    "Ask BOAR to make one · slower" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pedir ao BOAR para fazer um · mais lento"
+          }
+        }
+      }
+    },
     "Ask BOAR your first question." : {
       "localizations" : {
         "pt" : {
@@ -1742,6 +1832,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Perguntar numa nova conversa"
+          }
+        }
+      }
+    },
+    "Ask one of these, then open More (⋯) under the answer." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pergunte uma destas e abra Mais (⋯) embaixo da resposta."
           }
         }
       }
@@ -2296,6 +2396,16 @@
         }
       }
     },
+    "Bars" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Barras"
+          }
+        }
+      }
+    },
     "Battery Saver" : {
       "localizations" : {
         "pt" : {
@@ -2546,6 +2656,16 @@
         }
       }
     },
+    "Cards" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cartões"
+          }
+        }
+      }
+    },
     "Carry two knowledge packs." : {
       "localizations" : {
         "pt" : {
@@ -2642,6 +2762,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Confira se a coleção está ligada em Conhecimento → Arquivos pessoais."
+          }
+        }
+      }
+    },
+    "Checked" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Marcado"
           }
         }
       }
@@ -3102,6 +3232,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Não foi possível salvar o log"
+          }
+        }
+      }
+    },
+    "Create a card" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Criar um cartão"
           }
         }
       }
@@ -4637,6 +4777,16 @@
         }
       }
     },
+    "Four things compared" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quatro coisas comparadas"
+          }
+        }
+      }
+    },
     "Free Memory After" : {
       "localizations" : {
         "pt" : {
@@ -4663,6 +4813,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Armazenamento livre"
+          }
+        }
+      }
+    },
+    "From an answer about the highest mountains:" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A partir de uma resposta sobre as montanhas mais altas:"
           }
         }
       }
@@ -4927,12 +5087,32 @@
         }
       }
     },
+    "Hide what the model wrote" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ocultar o que o modelo escreveu"
+          }
+        }
+      }
+    },
     "Hides the details" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Oculta os detalhes"
+          }
+        }
+      }
+    },
+    "Highest mountains" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Montanhas mais altas"
           }
         }
       }
@@ -5033,6 +5213,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Como deixo a água segura para beber?"
+          }
+        }
+      }
+    },
+    "How do you purify water in the wild, step by step?" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Como purificar água na natureza, passo a passo?"
           }
         }
       }
@@ -5837,6 +6027,16 @@
         }
       }
     },
+    "Line" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Linha"
+          }
+        }
+      }
+    },
     "Links" : {
       "localizations" : {
         "pt" : {
@@ -6133,6 +6333,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Deixe do seu jeito"
+          }
+        }
+      }
+    },
+    "Making a card…" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Criando um cartão…"
           }
         }
       }
@@ -6833,6 +7043,16 @@
         }
       }
     },
+    "No answer model is loaded. Ask something first, then try again." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nenhum modelo de resposta está carregado. Pergunte algo primeiro e tente de novo."
+          }
+        }
+      }
+    },
     "No answer model on this device yet." : {
       "localizations" : {
         "pt" : {
@@ -7033,6 +7253,16 @@
         }
       }
     },
+    "Not checked" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não marcado"
+          }
+        }
+      }
+    },
     "Not checked by BOAR. Look at the model's page for its license before you use it." : {
       "localizations" : {
         "pt" : {
@@ -7099,6 +7329,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nada aqui sai do seu %@."
+          }
+        }
+      }
+    },
+    "Nothing to draw here" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nada para desenhar aqui"
           }
         }
       }
@@ -7763,6 +8003,16 @@
         }
       }
     },
+    "Pie" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pizza"
+          }
+        }
+      }
+    },
     "Pixel Boar" : {
       "localizations" : {
         "pt" : {
@@ -8389,6 +8639,16 @@
         }
       }
     },
+    "Refused: %@ (not in the answer)" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recusado: %@ (não está na resposta)"
+          }
+        }
+      }
+    },
     "Release build" : {
       "localizations" : {
         "pt" : {
@@ -8445,6 +8705,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tirar da lista?"
+          }
+        }
+      }
+    },
+    "Remove the card" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remover o cartão"
           }
         }
       }
@@ -9265,6 +9535,16 @@
         }
       }
     },
+    "Show what the model wrote" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar o que o modelo escreveu"
+          }
+        }
+      }
+    },
     "Shows performance details" : {
       "localizations" : {
         "pt" : {
@@ -9331,6 +9611,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mostra os tempos sob cada resposta, a velocidade ao vivo no topo da conversa e as barras de memória e armazenamento no menu."
+          }
+        }
+      }
+    },
+    "Side by side" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lado a lado"
           }
         }
       }
@@ -10099,6 +10389,16 @@
         }
       }
     },
+    "Table" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabela"
+          }
+        }
+      }
+    },
     "Tactical Boar" : {
       "localizations" : {
         "pt" : {
@@ -10279,6 +10579,36 @@
         }
       }
     },
+    "The card had a number that isn't in the answer, so BOAR dropped it." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O cartão tinha um número que não está na resposta, então o BOAR descartou."
+          }
+        }
+      }
+    },
+    "The card is under the answer" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O cartão está embaixo da resposta"
+          }
+        }
+      }
+    },
+    "The card named something that isn't in the answer, so BOAR dropped it." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O cartão citou algo que não está na resposta, então o BOAR descartou."
+          }
+        }
+      }
+    },
     "The connection" : {
       "localizations" : {
         "pt" : {
@@ -10409,12 +10739,42 @@
         }
       }
     },
+    "The model didn't write a card BOAR can draw. Try again; bigger models do better." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O modelo não escreveu um cartão que o BOAR consiga desenhar. Tente de novo; modelos maiores se saem melhor."
+          }
+        }
+      }
+    },
+    "The model found nothing in this answer worth a card." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O modelo não achou nada nesta resposta que valha um cartão."
+          }
+        }
+      }
+    },
     "The model lives on your %@" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "O modelo vive no seu %@"
+          }
+        }
+      }
+    },
+    "The model stopped before it finished. Try again." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O modelo parou antes de terminar. Tente de novo."
           }
         }
       }
@@ -10820,6 +11180,16 @@
         }
       }
     },
+    "Three things compared" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Três coisas comparadas"
+          }
+        }
+      }
+    },
     "Time Limit" : {
       "localizations" : {
         "pt" : {
@@ -11146,6 +11516,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ligar o bloqueio das suas conversas"
+          }
+        }
+      }
+    },
+    "Turns part of an answer into a chart, table, checklist or key facts." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transforma parte de uma resposta em gráfico, tabela, passos ou fatos."
+          }
+        }
+      }
+    },
+    "Two things compared" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Duas coisas comparadas"
           }
         }
       }
@@ -11526,6 +11916,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "O que o BOAR pesquisa offline, além dos seus Arquivos pessoais. O texto da Wikipédia é CC BY-SA 4.0."
+          }
+        }
+      }
+    },
+    "What are the three highest mountains, and how tall is each?" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quais são as três montanhas mais altas, e qual a altura de cada uma?"
           }
         }
       }
@@ -12221,6 +12621,16 @@
         }
       }
     },
+    "from this answer" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "desta resposta"
+          }
+        }
+      }
+    },
     "height, length, depth; which of two places is bigger, higher, longer or has more people" : {
       "localizations" : {
         "pt" : {
@@ -12466,6 +12876,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "carga %@"
+          }
+        }
+      }
+    },
+    "made by the model · checked against the answer" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "feito pelo modelo · conferido com a resposta"
           }
         }
       }
@@ -12790,6 +13210,16 @@
         }
       }
     },
+    "• Under any answer, open More (⋯). The Cards row already says what it can draw: \"A chart of 3 numbers\", \"A checklist of 5 steps\".\n• Create a card draws it at once, from the answer's own text, with no second model run: a chart, a table, a checklist, a comparison or key facts.\n• The card sits under the answer. When more than one shape fits, switch between them; a pie only for parts of a whole, a line only for years in order.\n• Tick the steps of a checklist; the ticks are kept with the chat.\n• Nothing to draw? Ask BOAR to make one. It is slower, and its card is still checked against the answer: a number or name that isn't there is left out.\n• Nothing for health or seed-phrase questions." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "• Em qualquer resposta, abra Mais (⋯). A linha Cartões já diz o que dá para desenhar: \"Um gráfico de 3 números\", \"Uma lista de 5 passos\".\n• Criar um cartão desenha na hora, a partir do próprio texto da resposta, sem rodar o modelo de novo: um gráfico, uma tabela, uma lista de passos, uma comparação ou fatos principais.\n• O cartão fica embaixo da resposta. Quando mais de uma forma serve, troque entre elas; pizza só para partes de um todo, linha só para anos em ordem.\n• Marque os passos de uma lista; as marcas ficam guardadas com a conversa.\n• Nada para desenhar? Peça ao BOAR para fazer um. É mais lento, e o cartão dele também é conferido com a resposta: um número ou nome que não está lá fica de fora.\n• Nada para perguntas de saúde ou de frase-semente."
+          }
+        }
+      }
+    },
     "• Worked out from the date on this %@, with no internet and no location.\n• The hemisphere only changes which side looks lit.\n• Moonrise and moonset need your location, so they aren't shown." : {
       "localizations" : {
         "pt" : {
@@ -12820,12 +13250,32 @@
         }
       }
     },
+    "⚠ Left out, not in the answer, the earlier answers or the sources: %@. Check the sources before trusting this card." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "⚠ Deixado de fora, não está na resposta, nas respostas anteriores nem nas fontes: %@. Confira as fontes antes de confiar neste cartão."
+          }
+        }
+      }
+    },
     "烧水需要多长时间才能安全饮用？" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "烧水需要多长时间才能安全饮用？"
+          }
+        }
+      }
+    },
+    "📊 BOAR is reading the answer to make a card…" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "📊 O BOAR está lendo a resposta para criar um cartão…"
           }
         }
       }

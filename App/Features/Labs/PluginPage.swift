@@ -13,6 +13,8 @@ struct PluginPage: View {
     var beforeLabel: LocalizedStringResource = "BEFORE"
     var afterLabel: LocalizedStringResource = "AFTER"
     var exampleLabel: LocalizedStringResource?
+    /// A line over the Try rows' footer saying what to do with the answer (Cards: "then open More under the answer").
+    var tryHint: String?
 
     @Environment(\.palette) private var palette
 
@@ -37,7 +39,12 @@ struct PluginPage: View {
             } header: {
                 Text("TRY IT")
             } footer: {
-                BoarFooter { Text("Tap to ask it in a new chat. Hold to edit it first.") }
+                BoarFooter {
+                    VStack(alignment: .leading, spacing: 4) {
+                        if let tryHint { Text(verbatim: tryHint) }
+                        Text("Tap to ask it in a new chat. Hold to edit it first.")
+                    }
+                }
             }
         }
         if let how {

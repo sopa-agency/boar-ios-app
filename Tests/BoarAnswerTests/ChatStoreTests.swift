@@ -28,6 +28,9 @@ struct ChatStoreTests {
         #expect(msgs[1].text == "A region of spacetime [1].")
         #expect(msgs[1].feedback == "up")
         #expect(msgs[1].meta == #"{"sources":[]}"#)
+        // One message's meta on its own (Cards reads and rewrites it); none for a message without one.
+        #expect(try s.messageMeta(messageId: "a1") == #"{"sources":[]}"#)
+        #expect(try s.messageMeta(messageId: "u1") == nil)
         #expect(msgs[0].feedback == nil)
         // The session used last comes first.
         #expect(try s.listSessions().map(\.id) == [a.id, b.id])

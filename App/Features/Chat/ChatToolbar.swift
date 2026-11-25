@@ -8,7 +8,7 @@ struct ChatToolbar: ToolbarContent {
     var body: some ToolbarContent {
         ToolbarItem(placement: .primaryAction) {
             Button("New Chat", icon: Symbols.newChat, action: onNewChat)
-                .disabled(chat.isAnswering)
+                .disabled(chat.holdsModel)
         }
     }
 }

@@ -85,7 +85,13 @@ struct AnswerView: View {
                     }
                 }
                 if !message.text.isEmpty && !streaming {
+                    // What the plugins show under the text (Cards' card), in the same bubble, before the footer.
+                    ForEach(Labs.shared.answerExtras(AnswerFooter.answerRef(message, chat: chat, shown: shown)), id: \.id) { $0.view }
                     AnswerFooter(message: message, chat: chat, shown: shown)
+                        // Again when the text changes (an answer written again) or a plugin is switched on.
+                        .task(id: "\(message.id)|\(shown.hashValue)|\(Labs.shared.active.map(\.id).joined(separator: ","))") {
+                            await Labs.shared.prepareAnswer(AnswerFooter.answerRef(message, chat: chat, shown: shown))
+                        }
                 }
             }
         }

@@ -146,4 +146,25 @@ struct LabTimingTests {
         LabCombos.report(out)
         #expect(bad.isEmpty, "\(LabCombos.failures(bad))")
     }
+
+    // MARK: android CardRulesTest B-7: a degenerate long answer can't stall the cards
+
+    @Test func aDegenerateLongAnswerCantStallTheCards() {
+        let clock = ContinuousClock()
+        func ms(_ d: Duration) -> Double { Double(d.components.seconds) * 1000 + Double(d.components.attoseconds) / 1e15 }
+        let limit = 200 * C.timeFactor
+        _ = CardRules.find("How tall?", "- Everest: 8,849 m")
+        let junk = String(repeating: "A", count: 40_000) + " is 5 m"
+        var found: [CardRules.Card] = []
+        let t0 = ms(clock.measure { found = CardRules.find("How tall?", junk) })
+        #expect(found.isEmpty)
+        #expect(t0 < limit, "took \(t0) ms")
+        // Under the cap too (validator R-E4: 11,900 "A" took 1.18 s).
+        for junk2 in [String(repeating: "A", count: 11_900), String(repeating: "É", count: 11_900),
+                      "Mount " + String(repeating: "A", count: 11_000) + " is 5 m. K2 is 8,611 m."] {
+            // The best of three, so a burst of load elsewhere doesn't fail it.
+            let t = (1...3).map { _ in ms(clock.measure { _ = CardRules.find("How tall?", junk2) }) }.min()!
+            #expect(t < limit, "took \(t) ms on \(junk2.utf16.count) chars")
+        }
+    }
 }

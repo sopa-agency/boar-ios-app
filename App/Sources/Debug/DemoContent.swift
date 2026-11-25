@@ -191,7 +191,9 @@ enum DemoSeed {
         let nowMs = Int64(Date().timeIntervalSince1970 * 1000)
         let clock = SeedClock(nowMs)
         guard let store = try? ChatStore(db: db, now: { clock.now }) else { return }
-        for session in DemoContent.sessions {
+        // `-uiScreen chat-card`: the first chat's answers carry the card Cards' rules find in them, as if made from the More menu.
+        let cards = DebugLaunch.isScreen("chat-card")
+        for (n, session) in DemoContent.sessions.enumerated() {
             let end = nowMs - Int64(session.minutesAgo) * 60_000
             clock.set(end - Int64(session.exchanges.count) * 120_000)
             guard let created = try? store.createSession(title: session.title) else { continue }
@@ -201,7 +203,12 @@ enum DemoSeed {
                 clock.advance(30_000)
                 let answerId = store.newId()
                 try? store.addMessage(sessionId: created.id, role: "assistant", text: exchange.answer, id: answerId)
-                try? store.setMessageMeta(messageId: answerId, meta: MessageMeta.encode(exchange.sources, exchange.receipt))
+                var meta: String? = MessageMeta.encode(exchange.sources, exchange.receipt)
+                if cards, n == 0, let best = CardRules.find(exchange.question, exchange.answer).first, let shape = best.shapes.first {
+                    let title = AnswerCard.titleFor(best, question: exchange.question, sources: exchange.sources.map(\.title))
+                    meta = AnswerCard.withCard(meta, AnswerCard.of(best, shape, title: title))
+                }
+                if let meta { try? store.setMessageMeta(messageId: answerId, meta: meta) }
                 if let rating = exchange.rating { try? store.setFeedback(messageId: answerId, rating: rating) }
                 clock.advance(30_000)
             }

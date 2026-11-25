@@ -29,7 +29,7 @@ struct SetupThemePicker: View {
 }
 
 /// Chips that wrap onto the next line when they don't fit (Compose's FlowRow).
-private struct FlowChips: Layout {
+struct FlowChips: Layout {
     var spacing: CGFloat = 8
 
     func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {

@@ -19,6 +19,7 @@ Where each Android lab stands on iOS (2026-11-05), and what the rest would take.
 | Facts | `facts` | tool + search stage (two or more countries: the table's dated figures as one more source, `SearchStages`) | `BoarAnswer/Labs/Facts` | `FactsTests`, `FactsCountryContextTests` |
 | Guard | `guard` | check | `BoarRouting/VerdictGuard` | `VerdictGuardTests` |
 | Cohazard | `cohazard` | tool (first) | `BoarRouting/CoHazard` | `CoHazardTests`, `CoHazardPtEsTests` |
+| Cards | `canvas` | answer menu, under the answer's text (`answerExtra`) | `BoarAnswer/Cards` (CardRules, AnswerCard, Visual, VisualContext, CiteMarks) | `CardRulesTests`, `AnswerCardTests`, `AnswerCardPtTests`, `VisualTests`, `VisualContextTests`, `VisualPairingMatrixTests`, `CiteMarksTests`, `CardsPluginTests` |
 | Daily Quiz | `dailyQuiz` | page, behind its classified tile | `BoarRAG/DailyQuiz`, `KnowledgeBase.seedArticles`, `BoarCore/KotlinRandom` | `DailyQuizTests`, `KotlinRandomTests` |
 
 All of them together: `LabToolsCombinationTests` and `LabToolsCompoundTests` (Android's, with `Fixtures/labs`).
@@ -41,7 +42,7 @@ Differences from Android, on purpose:
     the sheet row.
   - Selected plugin pages are opened from a plugin answer's picture and name through `AppModel.openPlugin` (a root sheet).
 - **No release manifest (decision):** Android's `released.txt` hides plugins that exist in code but aren't released. Every iOS plugin that exists
-  ships, and the ones that don't (Big Boar, Wisp, Canvas/Cards, Sanctuary, Signboard) have no code, so iOS needs no manifest; `LabDefaults`'s
+  ships, and the ones that don't (Big Boar, Wisp, Sanctuary, Signboard) have no code, so iOS needs no manifest; `LabDefaults`'s
   deprecated and start-off sets plus `PluginsUi` are the only gates. Revisit if a plugin lands in code before it's meant to ship.
 
 - **Daily Quiz:** right answers and days played count for Boar Avatars, and the copy says so, as on Android. The draw goes through `KotlinRandom` (Kotlin's
@@ -65,6 +66,17 @@ Differences from Android, on purpose:
   as Android hides them when no answer has a drawing. The PDF is Core Text on Android's A4 layout (`PressPDF`, same
   sizes, colors and spacing; Georgia for Android's serif, with Core Text's fallback for Arabic, Chinese and emoji);
   Android's 2.4 s printing animation is left out.
+- **Cards (BOAR-54, against v2.0.0):** the row ("Create a card" · what the rules found, or "Nothing to draw here" · "Ask BOAR
+  to make one · slower") is in the answer's More menu, with its second line, as Press's (no 🧩 sheet; the "How it works" text
+  says More). The model's card runs as the chat's own job (`ChatController.runForLab`) instead of Android's lab hold: a
+  question sent meanwhile waits in the chat's queue and starts after it, and Stop ends it (the composer's Stop, ⌘. and
+  New Chat treat it as an answer in progress, `ChatController.holdsModel`; the wait line also has a ✕, which Android's
+  lacks). It uses only the model the chat
+  already has: with none loaded it says "No answer model is loaded" instead of loading one (a model that may not fit asks
+  first, in the chat). Not ported: `CardSpec` and `CanvasTest` (dead in v2.0.0), the move of pre-Cards files
+  (`files/canvas`, which iOS never had), and `cards.v1.json` (a bench topic, with Bench in BOAR-56). Press doesn't take the
+  card along yet (PressDoc, the PDF's card): that comes with Press in BOAR-55. Answer ids are never reused, so a deleted
+  chat's cards need no `eraseAnswers`: their meta goes with the chat.
 - **Timing tests:** Kotlin's time limits are for a warm JVM; a Swift debug build with every suite in parallel takes about
   twice as long on the same regexes (`LabCombos.timeFactor`).
 
