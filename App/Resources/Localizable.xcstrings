@@ -8533,12 +8533,32 @@
         }
       }
     },
+    "Place in the center, full width" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No centro, na largura toda"
+          }
+        }
+      }
+    },
     "Place left, text beside" : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "À esquerda, com o texto ao lado"
+          }
+        }
+      }
+    },
+    "Place right, text beside" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "À direita, com o texto ao lado"
           }
         }
       }
