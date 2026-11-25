@@ -1,4 +1,5 @@
 #if DEBUG
+import BoarAnswer
 import BoarModels
 import CoreGraphics
 import Foundation
@@ -21,6 +22,7 @@ enum DemoFiles {
         AppPaths.markFilesDir(AppPaths.filesDir)
         if UserDefaults.standard.bool(forKey: "uiBasket") { DemoContent.writeBasket() }
         if UserDefaults.standard.bool(forKey: "uiDesigner") { writeDesignerPictures() }
+        if UserDefaults.standard.bool(forKey: "uiPressPage") { writePressPage() }
         // The setup screens need an empty phone; every other screen needs a ready one.
         if DebugLaunch.screen?.hasPrefix("setup") == true { return }
         guard let catalog = try? Catalog.bundled() else { return }
@@ -50,6 +52,59 @@ enum DemoFiles {
             CGImageDestinationAddImage(dest, image, nil)
             CGImageDestinationFinalize(dest)
         }
+    }
+
+    /// `-uiPressPage YES`: Boar Press's open project as a written page: a heading, paragraphs, a photo on the left with
+    /// a caption and text beside it, a list and one of the demo chats' answers.
+    private static func writePressPage() {
+        let now: Int64 = 1_793_000_000_000
+        let dir = PressStore.dir(AppPaths.filesDir)
+        try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+        var blocks: [PressDoc.Block] = [
+            .heading(id: "demo-h1", text: "Why the sea is salty"),
+            .paragraph(id: "demo-t1", text: "We walked the salt flats at low tide and tasted the water at three places along the shore. It was saltiest where the pools had dried in the sun."),
+        ]
+        if let data = shorePhoto(),
+           var pic = try? PressFiles.copyPhoto(data, pressDir: dir, projectId: "demo-press", blockId: "demo-pic", name: "photo-demo.jpg") {
+            pic.caption = "Salt crust on a dried pool"
+            pic.place = .left
+            blocks.append(.picture(pic))
+        }
+        blocks.append(.paragraph(id: "demo-t2", text: "The white crust is mostly sodium chloride. Rain wears it off the rocks inland, the rivers bring it down to the sea, and when the water evaporates the salt stays behind."))
+        blocks.append(.bullets(id: "demo-l1", text: "Bring a water bottle\nCheck the tide table\nTake a jar for a sample"))
+        var lib = PressDoc.Library("demo-press", [PressDoc.Project("demo-press", "Coast walk", now, blocks)])
+        if let s = DemoContent.sessions.first(where: { $0.title == "What is plate tectonics?" }), let e = s.exchanges.first {
+            lib = lib.addAnswer(PressDoc.Answer("demo-page-answer", s.title, e.question, e.answer,
+                                                e.sources.map { PressDoc.Source($0.title, $0.source) }, now + 1,
+                                                DemoContent.model, e.receipt.tokPerSec))
+        }
+        lib = lib.markSeen(now + 2)
+        try? Data(PressDoc.toJson(lib).utf8).write(to: PressStore.projectsURL(AppPaths.filesDir), options: .atomic)
+    }
+
+    /// A 900 × 600 PNG drawn here: a pale shore, the sea, the sky and the sun.
+    private static func shorePhoto() -> Data? {
+        let w = 900, h = 600
+        guard let ctx = CGContext(data: nil, width: w, height: h, bitsPerComponent: 8, bytesPerRow: 0,
+                                  space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: CGImageAlphaInfo.noneSkipLast.rawValue)
+        else { return nil }
+        // The origin is the bottom left: shore, sea, then sky.
+        let bands: [(CGFloat, CGFloat, CGFloat, CGFloat, CGFloat)] = [
+            (0, 0.42, 0.9, 0.86, 0.78), (0.42, 0.62, 0.2, 0.46, 0.64), (0.62, 1, 0.62, 0.8, 0.95),
+        ]
+        for (from, to, r, g, b) in bands {
+            ctx.setFillColor(red: r, green: g, blue: b, alpha: 1)
+            ctx.fill(CGRect(x: 0, y: CGFloat(h) * from, width: CGFloat(w), height: CGFloat(h) * (to - from)))
+        }
+        ctx.setFillColor(red: 1, green: 0.88, blue: 0.55, alpha: 1)
+        ctx.fillEllipse(in: CGRect(x: 640, y: 440, width: 90, height: 90))
+        ctx.setFillColor(red: 0.99, green: 0.98, blue: 0.96, alpha: 1)
+        ctx.fillEllipse(in: CGRect(x: 120, y: 60, width: 420, height: 110))
+        guard let image = ctx.makeImage() else { return nil }
+        let data = NSMutableData()
+        guard let dest = CGImageDestinationCreateWithData(data as CFMutableData, "public.png" as CFString, 1, nil) else { return nil }
+        CGImageDestinationAddImage(dest, image, nil)
+        return CGImageDestinationFinalize(dest) ? data as Data : nil
     }
 
     private static func makeSparse(_ url: URL, size: Int64) {

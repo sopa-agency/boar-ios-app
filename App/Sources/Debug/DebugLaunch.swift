@@ -9,6 +9,7 @@ import Foundation
 ///     -uiScroll <pts|end> scroll the main list that far once the screen is up
 ///     -uiBasket YES      with -uiDemo, Boar Press's basket starts with the demo chats' answers
 ///     -uiDesigner YES    with -uiDemo, Boar Designer's gallery starts with three pictures
+///     -uiPressPage YES   with -uiDemo, Boar Press's page starts written: a heading, paragraphs, a photo, a list, an answer
 ///     -uiStyle <id>      pick that answer style (succinct, detailed, personal, custom) on launch
 ///     -uiProfile <id>    open Settings as that profile (simple, explorer, pro); -uiProfileNote YES shows the update toast
 ///     -uiTheme <id>      show that theme (system, or any palette id: campfire, moonlight, paper, tactical_red…) for this

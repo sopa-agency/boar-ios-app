@@ -9,7 +9,7 @@ Where each Android lab stands on iOS (2026-11-05), and what the rest would take.
 
 | Lab | Android id | Slot | Engine (iOS) | Tests |
 |---|---|---|---|---|
-| Press | `printer` | page, answer menu, chat toolbar | `BoarAnswer/Labs/` PressDoc, PressReceipt, PressLayout (+ PictureFit), PressFiles, PressRewrite (marks), DesignerCanvas, `PressPDF` (+ PressPage, PressPaper), `BoarAnswer/Chat/ChatExport` | `PressDocTests`, `PressReceiptTests`, `PressFilesTests`, `PressPDFTests` (PressSelfTest's projects), `ChatExportTests` |
+| Press | `printer` | page, answer menu, chat toolbar | `BoarAnswer/Labs/` PressDoc, PressReceipt, PressLayout (+ PictureFit), PressFiles, PressEdit, PressRewrite (marks), DesignerCanvas, `PressPDF` (+ PressPage, PressPaper), `BoarAnswer/Chat/ChatExport` | `PressDocTests`, `PressReceiptTests`, `PressFilesTests`, `PressPDFTests` (PressSelfTest's projects), `PressEditTests`, `ChatExportTests` |
 | Vitals | `pulse` | page, tool | `BoarCore/CoreLoad`, thermal state, footprint, `BoarAnswer/Labs/PluginAnswers` | `CoreLoadTests` (Android has none), `PluginAnswersTests` |
 | Nomad | `compass` | page, tool | `BoarAnswer/Labs/CompassMath`, `PluginAnswers`, sensor: Core Motion | `CompassMathTests` (Android has none), `PluginAnswersTests` |
 | Lunar | `lunar` | page, tool | `BoarAnswer/Labs/MoonPhase`, `PluginAnswers` | `MoonPhaseTests` (Android has none), `PluginAnswersTests` |
@@ -35,8 +35,9 @@ Differences from Android, on purpose:
   - Tiles, the classified teasers, status tags, the easter egg and Daily Quiz are hidden (`PluginsUi`, as Android hides tiles and teasers);
     the list is the only view.
   - Lunar, Nomad and Vitals have no example or Try rows; their "How it works" says they answer in the chat (BOAR-56).
-  - Press and Designer have no canvas toolbar, gear or "..." menu (Press is rebuilt later). `LabPlugin.fullPage` exists, unused.
-  - Press's about text and body are iOS-specific (one project on the page until BOAR-55 part 6.2); Designer's "How it works" is about Image Playground.
+  - Designer has no canvas toolbar, gear or "..." menu. Press is the one `LabPlugin.fullPage` page: no form, the switch in the
+    navigation bar beside its gear (Press settings), its "..." menu in the note bar at the bottom.
+  - Press's about text and body leave out drawings and the recipes (iOS Designer keeps none); Designer's "How it works" is about Image Playground.
   - A Try row's long press is a context menu (ask, edit in the box, copy).
   - From the header sheet a plugin page opens as a push inside the sheet, with Done instead of Android's close; Press's basket count shows only in
     the sheet row.
@@ -61,9 +62,8 @@ Differences from Android, on purpose:
   card keeps engine (llama.cpp · Metal/CPU, Apple Intelligence or llama-server), CPU features, battery and device.
 - **Press:** the 📎 action sits in the answer's More menu (iOS has no 🧩 sheet); the projects are Android's JSON file at
   `labs/press/projects.json` (the old `labs/basket.json` migrated once), erased with the chats (Erase Chats unless Press
-  is kept, Erase All Data, the lock's erase). Reordering is the list's
-  drag, plus Move Up/Down in the context menu and as accessibility actions. Files go out through the share sheet (Save to
-  Files included) instead of Android's Save as. No drawings: iOS has no Image Gen, so the drawing switches stay hidden,
+  is kept, Erase All Data, the lock's erase). Files go out through the share sheet (Save to Files included) instead of
+  Android's Save as. No drawings: iOS has no Image Gen, so the drawing switches stay hidden,
   as Android hides them when no answer has a drawing. The PDF is Core Text on Android's A4 layout (`PressPDF`, same
   sizes, colors and spacing; Georgia for Android's serif, with Core Text's fallback for Arabic, Chinese and emoji);
   Android's 2.4 s printing animation is left out.
@@ -93,12 +93,35 @@ Differences from Android, on purpose:
   - iOS Designer (Image Playground) keeps no recipe or per-answer illustration, so drawings in a project come only from
     Android-style data (`illustrations` is empty on migration) and the receipt's Drawings line is rare here.
   - Not in 6.1: the page itself (6.2), the rewrite prompts and model work, several projects in the UI and presets (6.3).
-    Until 6.2 the iOS page is the basket's list on the open project (rename, the four print switches, move, edit, remove,
-    preview, PDF and .md); Add to Press goes to the open project and takes the shown card with its ticks. A deleted chat's
+    Add to Press goes to the open project and takes the shown card with its ticks. A deleted chat's
     answers leave every project (`LabPlugin.eraseAnswers`, from `ChatController.deleteSession`); the chat limit's prune
     doesn't run it yet, and the prune and delete dialogs don't say Press loses them (`pluginsOn: false`).
   - The Kotlin tests that read Android's screen sources (PressEraseTest, PressDesignerLayoutTest, parts of the gate) have
     no counterpart; the fuzz uses SplitMix64 with seed 7 instead of `java.util.Random(7)`.
+- **Press redone, part 6.2, the page:** `PressScreen` draws the open project on white A4 paper (`PressPaperView`) at the PDF's
+  sizes scaled to the screen width: the title (renamed on the page), the date, the blocks, the Sources section and the footer,
+  with dashed lines where the PDF's pages end (`PressPDF.pageStarts`, the "Show page breaks" setting). Text beside a left or
+  right picture is cut with the PDF's own Core Text lines (`PressPDF.splitBeside`), so the paper breaks where the PDF does.
+  Tapping a block selects it; the action bar moves it (keeping it in view, `PressLayout.scrollToShow`), opens its text on the
+  page, its caption, its place (left → center → right) or removes it, with Undo. The add bar is heading, paragraph, list,
+  divider, photo, then answers from a chat; a new block goes after the selected one (else after the bar's last note) and opens
+  with its text selected (`PressEdit`). Photos come from `PhotosPicker`, copied upright as a JPEG of at most 1600 px into the
+  project's folder (`PressFiles.copyPhoto`). The gear opens Press settings (page breaks, the date, sources, models and their
+  speed); the note bar's "..." menu has Save as .pdf / .md, Rename and Delete. Deliberate differences:
+  - No drawing button in the add bar: iOS Designer keeps no recipe and its pictures live at container paths, so there is
+    nothing stable to point a block at yet.
+  - The bar only writes notes, and the pencil edits the text in place. Android's edit sheet (edit myself or ask BOAR) and the
+    bar asking BOAR to rewrite a selected block come with the rewrite in 6.3.
+  - The menu is a SwiftUI Menu with Save as, Rename and Delete; the project list, New project and All projects come in 6.3.
+    Save goes through the share sheet, with no printing animation.
+  - Undo of a removed block is a bar above the tools (for `ChatList.undoMs`) instead of a snackbar; the photo file goes 10 s
+    after that.
+  - Answers added from the page's chat list carry no model or speed, as on Android; the list shows the latest 12 chats.
+  - On the paper a line's height is SwiftUI's line spacing over the font's natural height, an approximation of the PDF's
+    Core Text lines, so a block can sit a few points off its printed place; the page-break lines come from the PDF itself.
+  - An unreadable projects file shows Android's warning on the page and the answer's More menu offers no Add to Press
+    (Android still shows the row, with a blank project name). A block type this version doesn't know draws nothing on the
+    paper (no empty row), as it prints nothing.
 - **Plugin answers (BOAR-56, against v2.0.0):** Lunar, Nomad and Vitals answer their questions in the chat (`PluginAnswers`,
   tool codes `lunar-phase`, `compass-heading`, `vitals-phone`), and a model's answer to a question one of them would have
   taken while it's off says "<name> is off. Turn it on in Plugins ›". Differences: the answers name the device ("This iPhone

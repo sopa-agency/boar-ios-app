@@ -4,10 +4,9 @@ import os
 import SwiftUI
 
 /// Boar Press (android labs/plugins/printer `PrinterLab.kt`): projects as documents of blocks (BoarAnswer `PressDoc`).
-/// Answers come in from any chat (More → Add to Press) into the open project; here they're reordered, edited or
-/// dropped, and the project is compiled to an A4 PDF (BoarAnswer `PressPDF`) or a Markdown file, shared through the share
-/// sheet (Save to Files included). This page is the basket's, kept on the new model until Press's own page (BOAR-55
-/// part 6.2): it shows the open project's blocks; projects, the add toolbar, pictures and rewrites come with it.
+/// Each project is a page of blocks: answers sent from a chat (More → Add to Press, or Answers from a chat on the page),
+/// headings, paragraphs, lists, notes, dividers and photos. The page in the app is what the PDF prints (`PressScreen`);
+/// every document ends with how it was made.
 struct PressLab: LabPlugin {
     let id = "printer"
     let order = 30
@@ -15,12 +14,15 @@ struct PressLab: LabPlugin {
     let art: String? = "truffle_steampunk"
     let status = LabStatus.beta
     var title: String { String(localized: "Press") }
-    var body: String { String(localized: "Collect answers from any chat into a basket, then compile them into a PDF or a Markdown file.") }
+    var body: String { String(localized: "Projects as documents: chat answers, headings, notes and photos, saved as a PDF.") }
 
-    func content() -> AnyView { AnyView(PressSections()) }
+    /// The paper fills the page under the navigation bar; About this plugin is in Press settings (android `fullPage`).
+    var fullPage: Bool { true }
+
+    func content() -> AnyView { AnyView(PressScreen(lab: self)) }
 
     var about: String? {
-        String(localized: "Answers come from a chat: under an answer, open the plugins and tap Add to Press. Here you reorder, edit or drop them, then compile the page to an A4 PDF or a Markdown file, made offline on this \(Platform.deviceNoun).")
+        String(localized: "Each project is its own document. The white page is what the PDF prints: A4, made offline on this \(Platform.deviceNoun). Tap a block to move it, edit it or remove it. Answers come from a chat, and every document ends with how it was made: the date, the models and their speed, and one numbered list of the sources.")
     }
 
     /// 📎 in the answer's More menu: into the open project at the end, with its question, sources, chat title and the card
@@ -28,8 +30,11 @@ struct PressLab: LabPlugin {
     func answerActions(_ a: AnswerRef) -> [LabAnswerAction] {
         let store = PressStore.shared
         store.load()
-        let added = store.library?.has(a.id) == true
-        let project = store.library?.current.name ?? ""
+        // An unreadable projects file offers nothing: no "Add to Press: " with a blank name (pr-review #66; Android
+        // still shows the row).
+        guard let lib = store.library, !store.unreadable else { return [] }
+        let added = lib.has(a.id)
+        let project = lib.current.name
         return [LabAnswerAction(id: "printer.basket",
                                 title: added ? String(localized: "In \(project) (tap to remove)") : String(localized: "Add to Press: \(project)"),
                                 systemImage: "paperclip", done: added) {
@@ -163,6 +168,46 @@ final class PressStore {
         change { $0.eraseAnswers(ids) }
     }
 
+    /// Every answer of a chat, into the open project at the end (android `PressStore.addChat`, Press's "Answers from a
+    /// chat"): each with the question before it, its sources and its card from the chat's meta; no model or speed, as
+    /// Android. Read off the main actor.
+    func addChat(_ services: BoarServices, _ sessionId: String, _ title: String) async {
+        let records = (try? await services.background { try $0.chats.messages(sessionId: sessionId) }) ?? []
+        var question = ""
+        var answers: [PressDoc.Answer] = []
+        for m in records {
+            if m.role == "user" { question = m.text; continue }
+            if m.role != "assistant" || m.text.allSatisfy(\.isWhitespace) { continue }
+            let sources = MessageMeta.sources(m.meta).map { PressDoc.Source($0.title, $0.source.flatMap { $0.isEmpty ? nil : $0 }) }
+            answers.append(PressDoc.Answer(m.id, title, question, m.text, sources, Self.now, card: AnswerCard.fromMeta(m.meta)))
+        }
+        for a in answers { addAnswer(a) }
+    }
+
+    /// A photo picked on the device, copied into `projectId`'s folder off the main actor; nil when it can't be read (the
+    /// reason goes to the log, never the photo).
+    func copyPhoto(_ data: Data, projectId: String) async -> PressDoc.Picture? {
+        let dir = dir, id = Self.newId("pic"), name = Self.newId("photo") + ".jpg"
+        do {
+            return try await Task.detached(priority: .userInitiated) {
+                try PressFiles.copyPhoto(data, pressDir: dir, projectId: projectId, blockId: id, name: name)
+            }.value
+        } catch {
+            log.warning("press: photo copy failed: \(String(describing: error), privacy: .public)")
+            return nil
+        }
+    }
+
+    /// A photo block was removed: its copy goes when the Undo is over, if no block uses it again (validator G-1). The
+    /// cleanup at load stays as the safety net.
+    func dropPhotoLater(_ projectId: String, _ name: String, after: Duration) {
+        let dir = dir
+        Task { @MainActor [weak self] in
+            guard (try? await Task.sleep(for: after)) != nil, let self, self.loaded, let lib = self.library, PressFiles.unused(lib, projectId, name) else { return }
+            try? FileManager.default.removeItem(at: PressFiles.photoFile(dir, projectId, name))
+        }
+    }
+
     /// Projects that hold at least one block: what "Also delete Press" counts.
     var projectsWithContent: Int {
         load()
@@ -247,6 +292,12 @@ enum PressPrefs {
         }
     }
 
+    /// "Show page breaks" (Press settings): on unless switched off (android LabPrefs `printer.pageBreaks`).
+    static var showBreaks: Bool {
+        get { d.string(forKey: "labs.printer.pageBreaks") != "off" }
+        set { d.set(newValue ? "on" : "off", forKey: "labs.printer.pageBreaks") }
+    }
+
     static var labels: PressReceipt.Labels {
         var l = PressReceipt.Labels()
         l.madeWith = String(localized: "Made offline with BOAR · {{date}}")
@@ -258,306 +309,13 @@ enum PressPrefs {
 
     static var version: String { Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "" }
 
-    /// A project as it prints: a user's own file names scrubbed first (validator Q-B3), the words and switches set.
-    static func page(_ project: PressDoc.Project, options: PressReceipt.Options) -> PressPage {
+    /// A project as it prints: a user's own file names scrubbed first (validator Q-B3), the words and switches set. The
+    /// paper on screen (`scrub: false`) keeps the blocks as they are, so what is typed there is the project's own text;
+    /// its Sources section hides own file names all the same.
+    static func page(_ project: PressDoc.Project, options: PressReceipt.Options, scrub: Bool = true) -> PressPage {
         let l = labels
-        return PressPage(project: PressReceipt.scrubOwnFiles(project, ownFile: l.ownFile), date: today, version: version, labels: l,
+        return PressPage(project: scrub ? PressReceipt.scrubOwnFiles(project, ownFile: l.ownFile) : project, date: today, version: version, labels: l,
                          sourcesLabel: String(localized: "Sources"), options: options,
                          cardByModel: String(localized: "made by the model · checked against the answer"))
-    }
-}
-
-private struct PressSections: View {
-    @State private var store = PressStore.shared
-    @State private var name = ""
-    @State private var options = PressPrefs.options
-    @State private var preview = false
-    @State private var editing: PressDoc.Answer?
-
-    private var project: PressDoc.Project? { store.library?.current }
-    private var blocks: [PressDoc.Block] { project?.blocks ?? [] }
-
-    var body: some View {
-        Group {
-            if blocks.isEmpty {
-                Section {
-                    Text("The basket is empty.")
-                } footer: {
-                    BoarFooter {
-                        Text("Under any answer in a chat, open More (…) and add it to the basket. Collect from as many chats as you like, then come back to arrange and compile.")
-                    }
-                }
-            } else if let project {
-                Section("Document title") {
-                    TextField(text: $name, prompt: Text(verbatim: project.name)) { Text("Document title") }
-                        .onSubmit { commitName() }
-                }
-                Section("Print") {
-                    Toggle("Date under the title", isOn: optionBinding(\.date))
-                    Toggle("Sources at the end", isOn: optionBinding(\.sources))
-                    Toggle("Models", isOn: optionBinding(\.models))
-                    Toggle("Model speed", isOn: optionBinding(\.speed))
-                        .disabled(!options.models)
-                }
-                Section {
-                    Picker("Show", selection: $preview) {
-                        Text("Arrange").tag(false)
-                        Text("Preview").tag(true)
-                    }
-                    .pickerStyle(.segmented)
-                    .labelsHidden()
-                }
-                if preview {
-                    Section { PressPreview(page: PressPrefs.page(project, options: options)) }
-                        .listRowInsets(EdgeInsets())
-                } else {
-                    blocksSection
-                }
-                Section {
-                    ShareLink(item: pdfFile(project), preview: SharePreview(Text(verbatim: PressReceipt.slug(project.name) + ".pdf"))) {
-                        Label("Print to PDF", systemImage: "printer")
-                    }
-                    ShareLink(item: markdownFile(project), preview: SharePreview(Text(verbatim: PressReceipt.slug(project.name) + ".md"))) {
-                        Label("Save as Markdown", systemImage: "doc.text")
-                    }
-                }
-            }
-        }
-        .onAppear {
-            store.load()
-            name = project?.name ?? ""
-            // The user looked: the project's answers are no longer new.
-            store.change { $0.markSeen(PressStore.now) }
-        }
-        .task(id: name) {
-            // Renamed a moment after typing stops; a blank name keeps the old one.
-            // A key typed meanwhile cancels this wait: only the last one renames (pr-review #66).
-            guard (try? await Task.sleep(for: .milliseconds(800))) != nil else { return }
-            commitName()
-        }
-        // Leaving (or Return) before the wait ends still keeps the new title.
-        .onDisappear { commitName() }
-        .sheet(item: $editing) { a in PressAnswerEditor(answer: a) }
-    }
-
-    private func commitName() {
-        if let id = project?.id, name != project?.name { store.change { $0.rename(id, name) } }
-    }
-
-    private var blocksSection: some View {
-        let answers = blocks.compactMap(\.answer)
-        return Section {
-            ForEach(Array(blocks.enumerated()), id: \.element.id) { i, block in
-                Group {
-                    if let a = block.answer {
-                        Button { editing = a } label: { PressItemRow(number: (answers.firstIndex { $0.id == a.id } ?? 0) + 1, answer: a) }
-                            .buttonStyle(.plain)
-                    } else {
-                        PressBlockRow(block: block)
-                    }
-                }
-                .accessibilityAction(named: Text("Move up")) { store.change { $0.move(block.id, by: -1) } }
-                .accessibilityAction(named: Text("Move down")) { store.change { $0.move(block.id, by: 1) } }
-                .contextMenu {
-                    if let a = block.answer { Button("Edit", systemImage: "pencil") { editing = a } }
-                    Button("Move up", systemImage: "arrow.up") { store.change { $0.move(block.id, by: -1) } }
-                        .disabled(i == 0)
-                    Button("Move down", systemImage: "arrow.down") { store.change { $0.move(block.id, by: 1) } }
-                        .disabled(i == blocks.count - 1)
-                    Button("Remove", systemImage: "trash", role: .destructive) { store.change { $0.remove(block.id) } }
-                }
-            }
-            .onMove { from, to in
-                store.change { lib in
-                    var out = lib
-                    guard let k = out.projects.firstIndex(where: { $0.id == lib.current.id }) else { return lib }
-                    out.projects[k].blocks.move(fromOffsets: from, toOffset: to)
-                    return out
-                }
-            }
-            .onDelete { offsets in
-                let ids = offsets.map { blocks[$0].id }
-                store.change { lib in ids.reduce(lib) { $0.remove($1) } }
-            }
-        } header: {
-            HStack {
-                Text(answers.count == 1 ? String(localized: "1 item") : String(localized: "\(answers.count) items"))
-                Spacer()
-                // Android's Clear (PrinterLab.kt): crimson400 in mono.xs. Empties the open project.
-                Button("Clear", role: .destructive) {
-                    store.change { lib in lib.current.blocks.reduce(lib) { $0.remove($1.id) } }
-                }
-                .boarText("mono.xs")
-                .bold()
-                .foregroundStyle(.boar(.danger))
-            }
-        } footer: {
-            BoarFooter {
-                if blocks.count > 1 { Text("Touch and hold an answer, then drag it to change the order.") }
-            }
-        }
-    }
-
-    private func optionBinding(_ key: WritableKeyPath<PressReceipt.Options, Bool>) -> Binding<Bool> {
-        Binding(get: { options[keyPath: key] }, set: { options[keyPath: key] = $0; PressPrefs.options = options })
-    }
-
-    /// The A4 PDF, compiled when the share sheet asks for it.
-    private func pdfFile(_ project: PressDoc.Project) -> ExportedFile {
-        let page = PressPrefs.page(project, options: options)
-        let fileOf = PressStore.fileOf(store.dir, project.id)
-        return ExportedFile(filename: PressReceipt.slug(project.name) + ".pdf") { PressPDF.compile(page, fileOf: fileOf) }
-    }
-
-    private func markdownFile(_ project: PressDoc.Project) -> ExportedFile {
-        let md = PressPrefs.page(project, options: options).markdown(drawingLabel: String(localized: "Drawing"), photoLabel: String(localized: "Photo"))
-        return ExportedFile(filename: PressReceipt.slug(project.name) + ".md") { Data(md.utf8) }
-    }
-}
-
-extension PressDoc.Answer: @retroactive Identifiable {}
-
-/// One answer in the project: its number, heading, the start of its text and how many sources it has.
-private struct PressItemRow: View {
-    let number: Int
-    let answer: PressDoc.Answer
-
-    var body: some View {
-        HStack(alignment: .firstTextBaseline, spacing: 10) {
-            Text(verbatim: "\(number)")
-                .font(.boar("mono.xs").weight(.heavy))
-                .foregroundStyle(.tint)
-            VStack(alignment: .leading, spacing: 4) {
-                Text(verbatim: PressPage.oneLine(answer.shownHeading))
-                    .font(.boar("ui.titleSm"))
-                    .lineLimit(2)
-                Text(verbatim: PressReceipt.plain(answer.text))
-                    .font(.boar("ui.caption"))
-                    .foregroundStyle(.boar(.muted))
-                    .lineLimit(3)
-                if !answer.sources.isEmpty {
-                    Text(answer.sources.count == 1 ? String(localized: "1 source") : String(localized: "\(answer.sources.count) sources"))
-                        .font(.boar("mono.xs"))
-                        .foregroundStyle(.boar(.dim))
-                }
-            }
-            Spacer(minLength: 0)
-        }
-        .contentShape(.rect)
-    }
-}
-
-/// A block that isn't an answer (a heading, a note, a list, a picture, from Android's Press or a later version): shown,
-/// moved and removed here; edited on Press's own page (part 6.2).
-private struct PressBlockRow: View {
-    let block: PressDoc.Block
-
-    var body: some View {
-        switch block {
-        case .heading(_, let t):
-            Text(verbatim: PressPage.oneLine(t)).font(.boar("ui.titleSm"))
-        case .divider:
-            Divider()
-        case .picture(let p):
-            Label(p.caption.allSatisfy(\.isWhitespace) ? (p.kind == .photo ? String(localized: "Photo") : String(localized: "Drawing")) : p.caption, systemImage: "photo")
-                .foregroundStyle(.boar(.muted))
-        case .bullets(_, let t):
-            Text(verbatim: PressDoc.bulleted(t)).font(.boar("ui.caption")).lineLimit(4)
-        default:
-            Text(verbatim: block.text ?? "").font(.boar("ui.caption")).italic().foregroundStyle(.boar(.muted)).lineLimit(4)
-        }
-    }
-}
-
-/// The heading printed above an answer, then its text; both saved as you type. A changed text drops the answer's card,
-/// as Android's Press does (it showed the old text's figures).
-private struct PressAnswerEditor: View {
-    let answer: PressDoc.Answer
-    @State private var heading = ""
-    @State private var text = ""
-    @Environment(\.dismiss) private var dismiss
-
-    var body: some View {
-        NavigationStack {
-            BoarForm {
-                Section {
-                    TextField(text: $heading, prompt: Text(verbatim: answer.question)) { Text("Heading") }
-                } header: {
-                    BoarHeader {
-                        Text("Heading")
-                    }
-                }
-                Section {
-                    TextEditor(text: $text)
-                        .scrollContentBackground(.hidden)
-                        .frame(minHeight: 240)
-                }
-            }
-            .navigationTitle(Text(verbatim: PressPage.oneLine(answer.shownHeading)))
-            .inlineNavigationTitle()
-            .toolbar {
-                ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() } }
-            }
-        }
-        .onAppear {
-            heading = answer.shownHeading
-            text = answer.text
-        }
-        .onChange(of: heading) { _, h in PressStore.shared.change { $0.editText(answer.id, .heading, h) } }
-        .onChange(of: text) { _, t in PressStore.shared.change { $0.editText(answer.id, .text, t) } }
-    }
-}
-
-/// The document as it will print, on paper colors: the same blocks, switches, Sources section and footer as the PDF.
-/// Press's own page (part 6.2) replaces it with the paper itself.
-private struct PressPreview: View {
-    let page: PressPage
-
-    private static let ink = Color(red: 0x22 / 255, green: 0x22 / 255, blue: 0x22 / 255)
-    private static let dim = Color(red: 0x77 / 255, green: 0x77 / 255, blue: 0x77 / 255)
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text(verbatim: PressPage.oneLine(page.project.name)).font(.system(size: 20, weight: .bold, design: .serif)).foregroundStyle(Self.ink)
-            if page.options.date {
-                Text(verbatim: page.date.uppercased()).font(.system(size: 10)).foregroundStyle(Self.dim)
-            }
-            ForEach(page.project.blocks, id: \.id) { block in
-                switch block {
-                case .answer(let a):
-                    Text(verbatim: PressPage.oneLine(a.shownHeading))
-                        .font(.system(size: 14, weight: .bold, design: .serif)).foregroundStyle(Self.ink)
-                        .padding(.top, 6)
-                    if let q = a.shownQuestion {
-                        Text(verbatim: q).font(.system(size: 11, design: .serif)).italic().foregroundStyle(Self.dim)
-                    }
-                    Text(verbatim: page.answerText(a))
-                        .font(.system(size: 12, design: .serif)).lineSpacing(5).foregroundStyle(Self.ink)
-                    if let refs = page.refsLine(a) {
-                        Text(verbatim: refs).font(.system(size: 9)).foregroundStyle(Self.dim)
-                    }
-                case .heading(_, let t):
-                    Text(verbatim: PressPage.oneLine(t)).font(.system(size: 16, weight: .bold, design: .serif)).foregroundStyle(Self.ink).padding(.top, 6)
-                case .divider:
-                    Rectangle().fill(Self.dim.opacity(0.4)).frame(height: 1)
-                case .bullets(_, let t):
-                    Text(verbatim: PressDoc.bulleted(t)).font(.system(size: 12, design: .serif)).foregroundStyle(Self.ink)
-                case .note(_, let t), .paragraph(_, let t):
-                    Text(verbatim: t).font(.system(size: 12, design: .serif)).foregroundStyle(Self.ink)
-                default:
-                    EmptyView()
-                }
-            }
-            if !page.sourceLines.isEmpty {
-                Text(verbatim: page.sourcesLabel).font(.system(size: 11, weight: .bold, design: .serif)).foregroundStyle(Self.ink).padding(.top, 10)
-                ForEach(page.sourceLines, id: \.self) { Text(verbatim: $0).font(.system(size: 9)).foregroundStyle(Self.dim) }
-            }
-            Rectangle().fill(Self.dim.opacity(0.4)).frame(width: 40, height: 1).padding(.top, 10)
-            ForEach(page.footer, id: \.self) { Text(verbatim: $0).font(.system(size: 9)).foregroundStyle(Self.dim) }
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(18)
-        .background(Color.white)
-        .environment(\.colorScheme, .light)
     }
 }

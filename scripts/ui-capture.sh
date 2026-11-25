@@ -107,6 +107,8 @@ lock|lock|
 labs|labs|
 labs-2|labs|end
 lab-image|lab-image|
+lab-printer|lab-printer|
+lab-printer-page|lab-printer|
 avatars|avatars|
 avatars-2|avatars|end
 "
@@ -127,6 +129,7 @@ for MODE in ${MODES:-light dark}; do
     # A lab's page shows its content only switched on (-uiDemo starts every lab off); Designer with pictures to show.
     case "$SCREEN" in lab-*) ARGS+=("-labs.enabled.${SCREEN#lab-}" YES) ;; esac
     [ "$SCREEN" = lab-image ] && ARGS+=(-uiDesigner YES)
+    [ "$FILE" = lab-printer-page ] && ARGS+=(-uiPressPage YES)
     [ -n "${THEME:-}" ] && ARGS+=(-uiTheme "$THEME")
     [ -n "${VAULT:-}" ] && ARGS+=(-uiBoarverse YES -uiVault "$VAULT")
     [ -n "${ICON:-}" ] && ARGS+=(-uiIcon "$ICON")
