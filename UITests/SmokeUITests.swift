@@ -117,9 +117,9 @@ final class SmokeUITests: BoarUITestCase {
 
     func testLabs() {
         launch()
-        openMenuRow("Boar Labs")
-        let title = app.navigationBars[L("Boar Labs")]
-        XCTAssertTrue(title.waitForExistence(timeout: 5), "Boar Labs didn't open")
+        openMenuRow("Plugins")
+        let title = app.navigationBars[L("Plugins")]
+        XCTAssertTrue(title.waitForExistence(timeout: 5), "Plugins didn't open")
         auditLabels("labs")
         // Every tile, top to bottom: an open lab pushes its page (audit it, come back); a classified one only counts
         // the tap.
@@ -199,7 +199,7 @@ final class SmokeUITests: BoarUITestCase {
         goBack()
 
         // Experimental, on the Settings page: Pro's moved rows and the switches.
-        for name in ["Show Technical Details", "Free Memory When I Leave BOAR", "Adaptive Routing", "Boar Labs"] {
+        for name in ["Show Technical Details", "Free Memory When I Leave BOAR", "Adaptive Routing", "Plugins"] {
             flipTwice(name)
         }
 
