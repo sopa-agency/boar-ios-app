@@ -8,7 +8,7 @@ struct SessionsSidebar: View {
     let chat: ChatController
     @State private var renaming: ChatSession?
     @State private var deleting: ChatSession?
-    /// What deleting `deleting` takes from the plugins on (Press: its answers in a project), read as the dialog opens.
+    /// What deleting `deleting` takes from the plugins on (Press: its answers in a project), read before the dialog opens.
     @State private var deleteNotes: [String] = []
     @State private var newTitle = ""
     @State private var query = ""
