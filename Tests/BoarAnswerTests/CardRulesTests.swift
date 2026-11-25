@@ -196,4 +196,12 @@ struct CiteMarksTests {
         #expect(steps?.contains { $0.contains("[") } == false, "\(steps ?? [])")
     }
 
+    @Test func aModelCardDropsThemFromTheTitleTheColumnsAndTheCells() {
+        let v = Visual.table(.init("Peaks 【1】", ["Name [ 1 ]", "Height [^1]"], [["Everest [S1]", "8,849 m [1, 2]"]]))
+        let card = AnswerCard.ofVisual(v, leftOut: [], fallbackTitle: "x", answer: "Everest is 8,849 m.")
+        #expect(card.title == "Peaks")
+        guard case .table(let header, let rows) = card.body else { Issue.record("not a table"); return }
+        #expect(header == ["Name", "Height"])
+        #expect(!rows.joined().contains { $0.contains("[") }, "\(rows)")
+    }
 }
