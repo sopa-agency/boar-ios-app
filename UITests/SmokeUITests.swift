@@ -8,7 +8,8 @@ final class SmokeUITests: BoarUITestCase {
     private func openMenu() {
         let back = app.navigationBars.buttons["BackButton"].firstMatch
         if back.waitForExistence(timeout: 3) { back.tap() }
-        XCTAssertTrue(text("Chats").waitForExistence(timeout: 5) || anything("Chats").exists, "the menu didn't open")
+        // The chats are listed by day, with no "Chats" header once there is one: the menu's Settings button says it's open.
+        XCTAssertTrue(button("Settings").waitForExistence(timeout: 5), "the menu didn't open")
         assertRunning()
     }
 
@@ -149,59 +150,58 @@ final class SmokeUITests: BoarUITestCase {
     // MARK: Settings
 
     func testSettings() {
-        launch()
+        // Pro shows every part of Settings (a new install is Starter).
+        launch(["-uiProfile", "pro"])
         openMenu()
         tap(button("Settings"), "Settings")
         XCTAssertTrue(app.navigationBars[L("Settings")].waitForExistence(timeout: 5), "Settings didn't open")
         auditLabels("settings")
 
-        // Answers: the style list pushes, and back.
+        // Answers: the style list pushes, and back; the length menu.
         tap(anything("Answer Style"), "Answer Style row")
         auditLabels("settings answer style")
         goBack()
+        tap(menuButton("Answer Length"), "Answer Length")
+        menuItem("Auto").tap()
+        assertRunning()
         flipTwice("Deep Research")
 
-        // Memory, display, privacy, voice.
-        for name in ["Generate Chat Titles", "Ask Before Deleting a Chat", "Free Memory When I Leave BOAR", "Haptics"] {
+        // Chats, display, privacy, voice.
+        for name in ["Generate Chat Titles", "Summarize Older Turns", "Ask Before Deleting a Chat", "Haptics"] {
             flipTwice(name)
         }
         // The theme menu: Campfire, then back to System.
-        tap(anything("Theme"), "Theme")
+        tap(menuButton("Theme"), "Theme")
         menuItem("Campfire").tap()
         assertRunning()
-        tap(anything("Theme"), "Theme")
+        tap(menuButton("Theme"), "Theme")
         menuItem("System").tap()
         assertRunning()
         auditLabels("settings after theme")
 
-        // Advanced and everything under it.
+        // Advanced (Pro) and everything under it.
         tap(anything("Advanced"), "Advanced")
         XCTAssertTrue(app.navigationBars[L("Advanced")].waitForExistence(timeout: 5))
         auditLabels("advanced")
-        tap(anything("Answer Length"), "Answer Length")
-        menuItem("Auto").tap()
-        assertRunning()
         tap(anything("Engine"), "Engine")
         auditLabels("engine choice")
         goBack()
-        flipTwice("Summarize Older Turns")
         // Built from "%@ & Storage" with the device's name, so it has no catalog key of its own.
         tap(anything(String(format: L("%@ & Storage"), "iPhone")), "iPhone & Storage")
         auditLabels("device info")
         goBack()
-        let technical = reveal(toggle("Show Technical Details"), "Show Technical Details")
-        let wasOn = technical.value as? String == "1"
-        if !wasOn { flipOnce(technical) }
-        flipTwice("Adaptive Routing")
         tap(anything("Engine Tweaks"), "Engine Tweaks")
         auditLabels("engine tweaks")
         goBack()
         tap(anything("Benchmark"), "Benchmark")
         auditLabels("benchmark")
         goBack()
-        if !wasOn { flipOnce(reveal(toggle("Show Technical Details"), "Show Technical Details")) }
-        flipTwice("Boar Labs")
         goBack()
+
+        // Experimental, on the Settings page: Pro's moved rows and the switches.
+        for name in ["Show Technical Details", "Free Memory When I Leave BOAR", "Adaptive Routing", "Boar Labs"] {
+            flipTwice(name)
+        }
 
         // About, to its end.
         tap(anything("About BOAR"), "About BOAR")
@@ -219,6 +219,11 @@ final class SmokeUITests: BoarUITestCase {
             cancelDialog()
         }
         XCTAssertTrue(app.navigationBars[L("Settings")].exists, "a cancelled dialog left Settings")
+    }
+
+    /// A menu picker's button ("Answer Length, Auto"): the text under it isn't hittable.
+    private func menuButton(_ english: String) -> XCUIElement {
+        app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", L(english))).firstMatch
     }
 
     /// An item of the menu on screen ("🔥 Campfire" for "Campfire").

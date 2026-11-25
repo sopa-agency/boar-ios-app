@@ -146,7 +146,20 @@ struct ModelsScreen: View {
         }
     }
 
+    /// The embedding model's friendly name when it is missing: without it answers can't use the library (the warning
+    /// Settings carried until profiles; android moved it here with the Models list).
+    private var missingSearchModel: String? {
+        guard let emb = controller.embeddingModel, !controller.isPresent(emb) else { return nil }
+        return emb.friendlyName
+    }
+
     @ViewBuilder private var listContent: some View {
+        if let missing = missingSearchModel {
+            Section {
+                Label("The search model (\(missing)) isn't on this \(Platform.deviceNoun), so answers can't use your library. Run Setup Again in Settings.", icon: Symbols.caution)
+                    .foregroundStyle(.boar(.warning))
+            }
+        }
         if sectioned {
             sections
         } else {

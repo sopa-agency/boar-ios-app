@@ -6,11 +6,11 @@ import Foundation
 ///     -uiDemo            seed an in-memory-style demo state (no model needed); wipes BOAR's files in the app container
 ///     -uiScreen <name>   open that screen directly (see `DebugRouter`); `lab-<id>` opens that lab's page; a setup screen
 ///                        is a preview that never downloads or saves setup's progress (safe on a phone already set up)
-///     -uiScreen tour-<card>  the tour on that card (welcome, theme, styles…), over Settings
 ///     -uiScroll <pts|end> scroll the main list that far once the screen is up
 ///     -uiBasket YES      with -uiDemo, Boar Press's basket starts with the demo chats' answers
 ///     -uiDesigner YES    with -uiDemo, Boar Designer's gallery starts with three pictures
 ///     -uiStyle <id>      pick that answer style (succinct, detailed, personal, custom) on launch
+///     -uiProfile <id>    open Settings as that profile (simple, explorer, pro); -uiProfileNote YES shows the update toast
 ///     -uiTheme <id>      show that theme (system, or any palette id: campfire, moonlight, paper, tactical_red…) for this
 ///                        run, without saving it; a Boar Avatars theme needs -uiBoarverse YES
 ///     -uiDialog <name>   with -uiScreen settings, open a delete dialog: lower-<n> (Saved Chats to Keep n) or clear-history
@@ -39,6 +39,9 @@ enum DebugLaunch {
     static let dialog: String? = UserDefaults.standard.string(forKey: "uiDialog")
     /// `-uiTheme <id>`: the theme to show for this run (the stored choice is left alone).
     static let theme: String? = UserDefaults.standard.string(forKey: "uiTheme")
+    /// `-uiProfile <simple|explorer|pro>`: the profile to open with, and `-uiProfileNote YES` the one-time update note.
+    static let profile: String? = UserDefaults.standard.string(forKey: "uiProfile")
+    static let profileNote = UserDefaults.standard.bool(forKey: "uiProfileNote")
     /// `-uiAsk "<q1> || <q2>"`: questions asked in a new chat on launch, each after the previous answer ends.
     static let questions: [String] = (UserDefaults.standard.string(forKey: "uiAsk") ?? "")
         .components(separatedBy: " || ").map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }.filter { !$0.isEmpty }
@@ -73,8 +76,6 @@ enum DebugLaunch {
     static var labId: String? { screen.flatMap { $0.hasPrefix("lab-") ? String($0.dropFirst(4)) : nil } }
     /// The lock screen stays as it is drawn: no Face ID / passcode prompt, no error text under it.
     static var holdsLockScreen: Bool { screen == "lock" }
-    /// `-uiScreen tour-<card>` (`tour-welcome`, `tour-theme`…): the tour on that card, over Settings.
-    static var tourCard: TourCard? { screen.flatMap { $0.hasPrefix("tour-") ? TourCard(rawValue: String($0.dropFirst(5))) : nil } }
     /// `-uiScreen setup…`: setup is a preview this run (`SetupFlow.preview`): no download, no saved progress.
     static var previewsSetup: Bool { screen?.hasPrefix("setup") ?? false }
     #else
@@ -84,7 +85,6 @@ enum DebugLaunch {
     static func isScreen(_ name: String) -> Bool { false }
     static var labId: String? { nil }
     static var holdsLockScreen: Bool { false }
-    static var tourCard: TourCard? { nil }
     static var previewsSetup: Bool { false }
     #endif
 }

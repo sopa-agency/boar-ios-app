@@ -1,143 +1,117 @@
 import BoarCore
 import SwiftUI
 
-/// About BOAR (android AboutScreen.kt / AboutScreen.tsx): what it is, its official addresses, the source, the team, the
-/// open work it stands on, and the version and engine.
+/// About BOAR as a page of sections and rows (android AboutScreen.kt, 555e62ac): the mark, the tagline and the version
+/// block at the top (press and hold copies it for a bug report), then what BOAR is, privacy, measuring, the addresses, the
+/// plugins on, the knowledge packs, the core team and the credits. Addresses copy on tap or press and hold; nothing opens
+/// from here.
 struct AboutScreen: View {
+    @State private var copied = false
+    @State private var copies = 0
+
     private var version: String { Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "—" }
     private var build: String { Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "—" }
 
     var body: some View {
+        let plugins = Labs.shared.active.map(\.title)
         GroupedList {
-            Section {
-                VStack {
-                    Image(decorative: "Brand/mascot")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 72, height: 72)
-                    Text(verbatim: "BOAR")
-                        .font(.boarDisplay(size: 34, relativeTo: .largeTitle))
-                        .foregroundStyle(.boar(.heading))
-                    Text("Knowledge that travels with you")
-                        .font(.boar("ui.titleSm"))
-                        .foregroundStyle(.boar(.secondary))
-                    #if DEBUG
-                    Text("Version \(version) (\(build)) · Development build")
-                        .boarText("mono.xs")
-                        .foregroundStyle(.boar(.secondary))
-                    #else
-                    Text("Version \(version) (\(build)) · Release build")
-                        .boarText("mono.xs")
-                        .foregroundStyle(.boar(.secondary))
-                    #endif
-                }
-                .frame(maxWidth: .infinity)
-                .accessibilityElement(children: .combine)
-            }
-            .listRowBackground(Color.clear)
+            top(plugins: plugins)
 
             Section {
-                AboutFeatureRow(title: "Works Offline", symbol: Symbols.offline,
-                                text: "Answers come from models and a library on this \(Platform.deviceNoun). No internet needed.")
-                AboutFeatureRow(title: "Stays on Your \(Platform.deviceNoun)", symbol: Self.lockSymbol,
-                                text: "Your questions, chats and documents never leave it.")
-                AboutFeatureRow(title: "Measure It Yourself", symbol: Symbols.benchmark,
-                                text: "Turn on Show Technical Details in Settings → Advanced to see timings and run the benchmark.")
-            }
-
-            // Android's thread posts as sections: the official addresses, the open source, the packs, the team and the
-            // credits. An address copies on tap or press and hold; nothing opens from here, like Android.
-            Section {
-                AddressRow("boarapp.com")
-                AddressRow("x.com/boar_app")
-                AddressRow("farcaster.xyz/boarapp")
+                AboutInfoRow("Offline AI research on your \(Platform.deviceNoun). Answers with sources, no signal needed.")
             } header: {
-                BoarHeader {
-                    Text("Official Site")
+                AboutHeader(title: "What BOAR is", symbol: "info.circle")
+            } footer: {
+                BoarFooter {
+                    Text("Answers are AI-generated from the sources BOAR finds on this \(Platform.deviceNoun). They are not reviewed by clinicians or experts.")
                 }
+            }
+
+            Section {
+                AboutInfoRow("The model lives on your \(Platform.deviceNoun)", "No server receives your questions, so no one holds a switch.")
+                AboutInfoRow("One download at setup", "Then airplane mode is fine: BOAR answers from the library on your \(Platform.deviceNoun) and shows the articles it used.")
+                AboutInfoRow("The connection", "Only for downloading models or packs, searching Hugging Face and sharing evaluation results, if you turn that on.")
+            } header: {
+                AboutHeader(title: "Your privacy", symbol: "lock")
+            }
+
+            Section {
+                AboutInfoRow("Every answer records how it ran", "The model, time to the first word, tokens per second, memory and sources.")
+                AboutInfoRow("Measure your own \(Platform.deviceNoun)", "Settings, Advanced, Benchmark (Pro profile).")
+                AboutInfoRow("Checked before it loads", "BOAR checks each model against your \(Platform.deviceNoun)'s memory. Downloads stay within a 50 GB storage budget; in Pro you can change it in Experimental.")
+            } header: {
+                AboutHeader(title: "Measure it yourself", symbol: "speedometer")
+            }
+
+            Section {
+                AddressRow("boarapp.com", label: String(localized: "Official website"))
+                AddressRow("github.com/rferrari/boar-app", label: String(localized: "Source code"), note: "Open source, MIT.")
+                AddressRow("x.com/boar_app", label: "X")
+                AddressRow("farcaster.xyz/boarapp", label: "Farcaster")
+            } header: {
+                AboutHeader(title: "Links", symbol: "link")
             } footer: {
                 BoarFooter {
                     VStack(alignment: .leading, spacing: 4) {
-                        Text("News comes only from these addresses. Check the address before you download anything that says it is BOAR.")
                         Text("Don't trust, verify.")
-                            .font(.boar("ui.subtext").weight(.heavy))
-                            .foregroundStyle(.boar(.success))
+                            .font(.boar("ui.titleSm").weight(.bold))
+                            .foregroundStyle(.boar(.link))
+                        Text("News comes only from these addresses. Check the address before you download anything that says it is BOAR.")
                     }
                 }
             }
 
             Section {
-                AddressRow("github.com/sopa-agency/boar-ios-app")
-                AddressRow("github.com/rferrari/boar-app")
+                if plugins.isEmpty {
+                    AboutInfoRow("None on")
+                } else {
+                    AboutInfoRow(verbatim: String(localized: "\(plugins.count) on"), plugins.joined(separator: ", "))
+                }
             } header: {
-                BoarHeader {
-                    Text("Open Source")
-                }
-            } footer: {
-                BoarFooter {
-                    Text("MIT. The code of this app and of the Android app, the model list and the scripts that build the knowledge packs.")
-                }
+                AboutHeader(title: "Plugins on", symbol: "puzzlepiece.extension")
             }
 
             Section {
-                AddressRow("huggingface.co/datasets/r4topunk/boar-packs")
+                AddressRow("huggingface.co/datasets/r4topunk/boar-packs", label: String(localized: "Packs from R4to's R&D Labs"))
             } header: {
-                BoarHeader {
-                    Text("Knowledge Packs")
-                }
-            } footer: {
-                BoarFooter {
-                    Text("Packs from R4to's R&D Lab.")
-                }
+                AboutHeader(title: "Knowledge packs", symbol: "books.vertical")
             }
 
             Section {
                 ForEach(Self.team, id: \.handle) { member in
-                    AddressRow("\(member.name) · @\(member.handle)", copy: "x.com/\(member.handle)")
+                    TeamRow(name: member.name, handle: member.handle)
                 }
             } header: {
-                BoarHeader {
-                    Text("Core Team")
-                }
-            } footer: {
-                BoarFooter {
-                    Text("On X. Tap an address to copy it.")
-                }
+                AboutHeader(title: "Core team, on X", symbol: "person.2")
             }
 
             Section {
                 ForEach(AboutCredits.all, id: \.self) { credit in
                     LabeledContent {
                         Text(verbatim: credit.license)
-                            .boarText("mono.xs")
-                            .foregroundStyle(.boar(.dim))
+                            .font(.boar("ui.subtext"))
+                            .foregroundStyle(.boar(.secondary))
                     } label: {
                         Text(verbatim: credit.name)
                             .font(.boar("ui.subtext"))
-                            .foregroundStyle(.boar(.secondary))
+                            .foregroundStyle(.boar(.primary))
                     }
                     .accessibilityElement(children: .combine)
                 }
             } header: {
-                BoarHeader {
-                    Text("Credits")
-                }
+                AboutHeader(title: "Credits", symbol: "heart")
             } footer: {
                 BoarFooter {
                     Text("Standing on open work, each under its own license.")
                 }
             }
 
+            // Last, as the footer: how the addresses copy (android, Nov 10).
             Section {
-                ValueRow(label: "Engine", value: Self.engine)
-                ValueRow(label: "Retrieval", value: "SQLite \(sqliteVersion) · FTS5")
-            } header: {
-                BoarHeader {
-                    Text("Engine")
-                }
             } footer: {
                 BoarFooter {
-                    Text("Answers are AI-generated from the sources BOAR finds on this \(Platform.deviceNoun). They are not reviewed by clinicians or experts.")
+                    Text("Tap or hold an address to copy it. Nothing opens from this page.")
+                        .foregroundStyle(.boar(.dim))
                 }
             }
         }
@@ -145,13 +119,82 @@ struct AboutScreen: View {
         .inlineNavigationTitle()
     }
 
-    private var sqliteVersion: String { SqliteDatabase.version }
+    /// The mark, the tagline, then the version block: version, build and engine. Press and hold copies it with the device and
+    /// the plugins on, for a bug report. Only the clipboard.
+    private func top(plugins: [String]) -> some View {
+        Section {
+            VStack(spacing: 12) {
+                Image(decorative: "Brand/mascot")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 72, height: 72)
+                Text("Your questions.\nYour phone. Your AI.")
+                    .font(.boar("ui.title").weight(.bold))
+                    .foregroundStyle(.boar(.heading))
+                    .multilineTextAlignment(.center)
+                versionBlock(plugins: plugins)
+            }
+            .frame(maxWidth: .infinity)
+        }
+        .listRowBackground(Color.clear)
+    }
 
-    private static var lockSymbol: AppIcon {
-        #if os(macOS)
-        "lock.laptopcomputer"
+    private func versionBlock(plugins: [String]) -> some View {
+        let kind = Self.debugBuild ? String(localized: "Development build") : String(localized: "Release build")
+        let line = "\(kind) · \(Self.engine)"
+        return HStack {
+            VStack(alignment: .leading, spacing: 2) {
+                Text(verbatim: "v\(version) (\(build))")
+                    .boarText("mono.sm")
+                    .foregroundStyle(.boar(.primary))
+                Text(verbatim: line)
+                    .font(.boar("ui.subtext"))
+                    .foregroundStyle(.boar(.secondary))
+                Text("Press and hold to copy for a bug report.")
+                    .font(.boar("ui.subtext"))
+                    .foregroundStyle(.boar(.dim))
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            if copied {
+                Label("Copied", systemImage: "checkmark")
+                    .labelStyle(.titleAndIcon)
+                    .boarText("mono.xs")
+                    .foregroundStyle(.boar(.success))
+            } else {
+                Image(systemName: "doc.on.doc")
+                    .foregroundStyle(.boar(.dim))
+                    .accessibilityHidden(true)
+            }
+        }
+        .frame(minHeight: 44)
+        .padding(.vertical, 6)
+        .overlay(alignment: .top) { Divider() }
+        .overlay(alignment: .bottom) { Divider() }
+        .contentShape(.rect)
+        .onLongPressGesture { copyReport(line: line, plugins: plugins) }
+        .accessibilityElement(children: .combine)
+        .accessibilityAddTraits(.isButton)
+        .accessibilityAction(named: Text("Press and hold to copy for a bug report.")) { copyReport(line: line, plugins: plugins) }
+    }
+
+    private func copyReport(line: String, plugins: [String]) {
+        let device = [DeviceName.current ?? DeviceName.identifier, ProcessInfo.processInfo.operatingSystemVersionString]
+            .joined(separator: " · ")
+        Platform.copy(AboutReport.text(version: "v\(version) (\(build)) · \(line)", device: device, plugins: plugins))
+        withAnimation { copied = true }
+        copies += 1
+        let mine = copies
+        Task {
+            try? await Task.sleep(for: .seconds(1.5))
+            if mine == copies { withAnimation { copied = false } }
+        }
+    }
+
+    private static var debugBuild: Bool {
+        #if DEBUG
+        true
         #else
-        "lock.iphone"
+        false
         #endif
     }
 

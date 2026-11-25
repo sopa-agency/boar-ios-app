@@ -115,7 +115,7 @@ private struct SetupProgressStrip: View {
     }
 }
 
-/// The strip's numbers (android tourProgress): bytes while files arrive, then the index.
+/// The strip's numbers (android setupProgress): bytes while files arrive, then the index.
 struct SetupGuideProgress {
     let fraction: Double
     let line: String
@@ -235,7 +235,7 @@ extension SetupGuide.Page {
         case .pin: "Only for BOAR: your \(Platform.deviceNoun)'s own lock doesn't change."
         case .notify: "One notification, only while BOAR answers."
         case .privacy: "How BOAR treats your chats and your \(Platform.deviceNoun)'s memory."
-        case .labs: "Experiments, labelled beta or alpha. They all start off: switch on the ones you want."
+        case .labs: "Extra tools in the menu and under answers. They all start off: switch on the ones you want."
         case .ready: "BOAR opens as soon as the download and the index are done."
         }
     }

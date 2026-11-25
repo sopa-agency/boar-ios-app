@@ -24,6 +24,8 @@ enum AboutCredits {
         [
             Credit(name: String(localized: "Wikipedia (the built-in library and the Vital Articles pack)"), license: "CC BY-SA 4.0"),
             Credit(name: String(localized: "Hugging Face (where BOAR's models download from)"), license: "—"),
+            // The FAQ BOAR answers from (BoarPack).
+            Credit(name: String(localized: "The BOAR FAQ, written by Amandita (@AAmandita_) from her Zebra Talks interview"), license: "MIT"),
         ]
     }
 

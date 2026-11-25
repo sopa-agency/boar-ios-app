@@ -4,7 +4,7 @@ import UIKit
 
 extension View {
     /// Shows `cover` in a window of its own above the app's while `isPresented`. An overlay in the view tree sits under
-    /// every sheet and full-screen cover, so a receipt, a source or the tour stayed readable on a locked BOAR and in the
+    /// every sheet and full-screen cover, so a receipt or a source stayed readable on a locked BOAR and in the
     /// app switcher's snapshot; a window above them covers those too. `takesFocus` (the lock screen) ends editing and
     /// becomes the key window; the app switcher's cover only shows, so pulling down Control Center keeps the composer's
     /// focus.

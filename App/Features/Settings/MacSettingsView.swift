@@ -1,4 +1,5 @@
 #if os(macOS)
+import BoarCore
 import SwiftUI
 
 /// The Mac's Settings window (⌘,): the iPhone's Settings page split into General, Privacy and Advanced tabs, each a
@@ -24,7 +25,8 @@ private struct MacSettingsTabs: View {
     @Environment(AppModel.self) private var model
     let services: BoarServices
     @State private var bridge: SettingsBridge
-    @State private var touring = false
+    /// What the iPhone's toasts say (the update note, what a pick down pauses), kept under the pills.
+    @State private var note: String?
 
     init(services: BoarServices) {
         self.services = services
@@ -32,14 +34,27 @@ private struct MacSettingsTabs: View {
     }
 
     var body: some View {
+        let profile = bridge.read { $0.userProfile }
         TabView {
             Tab("General", systemImage: "gearshape") {
                 BoarForm {
-                    SettingsToneSection(services: services, bridge: bridge)
-                    SettingsMemorySection(services: services, bridge: bridge)
-                    SettingsDisplaySection(bridge: bridge)
-                    SettingsAvatarsSection(vault: services.vault)
-                    SettingsVoiceSection(bridge: bridge)
+                    if SettingsPart.profile.shown(in: profile) {
+                        Section {
+                            MacProfileRow(bridge: bridge, profile: profile) { p in
+                                note = p.ordinal < profile.ordinal ? ProfileCopy.pauseNote : nil
+                            }
+                        } header: {
+                            BoarHeader { Text("Profile") }
+                        } footer: {
+                            if let note {
+                                BoarFooter { Text(verbatim: note) }
+                            }
+                        }
+                    }
+                    if SettingsPart.tone.shown(in: profile) { SettingsToneSection(services: services, bridge: bridge) }
+                    if SettingsPart.memory.shown(in: profile) { SettingsMemorySection(services: services, bridge: bridge) }
+                    SettingsDisplaySection(bridge: bridge, profile: profile)
+                    if SettingsPart.voice.shown(in: profile) { SettingsVoiceSection(bridge: bridge) }
                 }
                 .formStyle(.grouped)
                 .frame(width: 600, height: 620)
@@ -47,23 +62,31 @@ private struct MacSettingsTabs: View {
             Tab("Privacy", systemImage: "hand.raised") {
                 BoarForm {
                     if let lock = model.lock { SettingsSecuritySection(lock: lock) }
-                    SettingsRecoverySection(services: services, bridge: bridge, touring: $touring)
+                    SettingsRecoverySection(services: services, bridge: bridge)
                 }
                 .formStyle(.grouped)
                 .frame(width: 600, height: 380)
-                .tourCover(isPresented: $touring)
             }
-            Tab("Advanced", systemImage: "gearshape.2") {
-                AdvancedSettingsScreen(services: services, bridge: bridge)
+            if LabsBuild.experimental && SettingsPart.experimentalShown(in: profile) {
+                Tab("Experimental", systemImage: "flask") {
+                    BoarForm {
+                        SettingsExperimentalSection(services: services, bridge: bridge, profile: profile)
+                    }
                     .formStyle(.grouped)
-                    .frame(width: 600, height: 620)
+                    .frame(width: 600, height: 520)
+                }
             }
-            Tab("Storage", systemImage: "internaldrive") {
-                DeviceInfoScreen(services: services)
-                    .formStyle(.grouped)
-                    .frame(width: 600, height: 480)
-            }
-            if bridge.read({ $0.showLiveStats }) {
+            if SettingsPart.tweaks.shown(in: profile) {
+                Tab("Advanced", systemImage: "gearshape.2") {
+                    AdvancedSettingsScreen(services: services, bridge: bridge)
+                        .formStyle(.grouped)
+                        .frame(width: 600, height: 620)
+                }
+                Tab("Storage", systemImage: "internaldrive") {
+                    DeviceInfoScreen(services: services)
+                        .formStyle(.grouped)
+                        .frame(width: 600, height: 480)
+                }
                 Tab("Engine", systemImage: "slider.horizontal.3") {
                     EngineTweaksScreen(services: services, bridge: bridge)
                         .formStyle(.grouped)
@@ -73,6 +96,34 @@ private struct MacSettingsTabs: View {
         }
         .onChange(of: bridge.version) {
             Task { await model.chat?.refreshSettings() }
+        }
+        // After an update that gave the install a profile, its note shows once, under the pills.
+        .task {
+            guard bridge.settings.profileNotePending else { return }
+            bridge.settings.profileNotePending = false
+            note = ProfileCopy.updateToast(bridge.read { $0.userProfile })
+        }
+    }
+}
+
+/// The profile pills as a row of the General tab. A pick has no toast here: what it gives sits beside the pills, and what a
+/// pick down pauses under them (`onPick`).
+private struct MacProfileRow: View {
+    let bridge: SettingsBridge
+    let profile: UserProfile
+    let onPick: (UserProfile) -> Void
+
+    var body: some View {
+        HStack {
+            ProfilePills(profile: profile) { p in
+                bridge.settings.userProfile = p
+                bridge.touch()
+                onPick(p)
+            }
+            Spacer()
+            Text(verbatim: ProfileCopy.gives(profile))
+                .boarText("ui.subtext")
+                .foregroundStyle(.boar(.muted))
         }
     }
 }

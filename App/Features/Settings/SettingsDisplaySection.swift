@@ -1,11 +1,13 @@
 import BoarCore
 import SwiftUI
 
-/// The theme (System plus Android's picker: Campfire, Moonlight, and Boar Avatars' while Boarverse is on), the avatar
-/// while Boarverse is on (android `AvatarPicker`, under the theme), and haptics.
+/// Display & theme (android SettingsScreen): the theme (System plus Android's picker: Campfire, Moonlight, and Boar
+/// Avatars' while Boarverse is on), the Boar Avatar strip while Boarverse is on (android `AvatarPicker`, under the
+/// theme; no section of its own), speed while answering, and haptics from Explorer.
 struct SettingsDisplaySection: View {
     @Environment(AppModel.self) private var model
     let bridge: SettingsBridge
+    let profile: UserProfile
 
     var body: some View {
         let vault = model.services?.vault
@@ -18,20 +20,22 @@ struct SettingsDisplaySection: View {
                 SettingsLabel("Theme", symbol: Symbols.theme)
             }
             .pickerStyle(.menu)
-            if let vault, vault.enabled {
+            if let vault, vault.enabled, SettingsPart.avatars.shown(in: profile) {
                 AvatarPicker(vault: vault)
             }
             Toggle(isOn: bridge.binding({ $0.showLiveSpeed }, { $0.showLiveSpeed = $1 })) {
                 SettingsLabel("Show speed while answering", symbol: "speedometer")
             }
             #if !os(macOS)
-            Toggle(isOn: bridge.binding({ $0.hapticsEnabled }, { $0.hapticsEnabled = $1 })) {
-                SettingsLabel("Haptics", symbol: "hand.tap.fill")
+            if SettingsPart.haptics.shown(in: profile) {
+                Toggle(isOn: bridge.binding({ $0.hapticsEnabled }, { $0.hapticsEnabled = $1 })) {
+                    SettingsLabel("Haptics", symbol: "hand.tap.fill")
+                }
             }
             #endif
         } header: {
             BoarHeader {
-                Text("Display")
+                Text("Display & Theme")
             }
         } footer: {
             BoarFooter {
@@ -52,33 +56,69 @@ struct SettingsDisplaySection: View {
     }
 }
 
-/// The equipped boar (android `AvatarPicker`): BOAR's own, then each unlocked avatar in the vault's order, in a row that
-/// scrolls sideways.
+/// The Boar Avatar row (android `AvatarPicker`): BOAR's own, the one worn and the latest unlocked (`AvatarStrip`), and a
+/// last box, "All ›", that opens the Boar Avatars page.
 private struct AvatarPicker: View {
     let vault: TruffleVault
     @Environment(\.palette) private var palette
     @ScaledMetric(relativeTo: .body) private var side = 52
+    #if os(macOS)
+    /// The Settings window has no navigation stack: the page opens as a sheet.
+    @State private var showing = false
+    #endif
 
     var body: some View {
+        let strip = AvatarStrip.pick(unlocked: vault.state.unlocked, known: Vault.rules.map(\.id), equipped: vault.icon)
         VStack(alignment: .leading, spacing: 10) {
-            Text("Boar")
+            Text("Boar Avatar")
                 .boarText("ui.caption")
                 .fontWeight(.semibold)
                 .foregroundStyle(.boar(.secondary))
-            ScrollView(.horizontal) {
-                HStack(spacing: 8) {
-                    avatar(nil)
-                    ForEach(Vault.rules.map(\.id).filter(vault.unlocked), id: \.self) { avatar($0) }
-                }
-                .padding(.vertical, 3)
+            HStack(spacing: 8) {
+                ForEach(strip, id: \.self) { avatar($0) }
+                all
             }
-            .scrollIndicators(.hidden)
+            .padding(.vertical, 3)
             // Android's notes; the iOS menu has no boar, and iOS changes the app icon at once (with its own alert).
             Text(TruffleVault.launcherIcons ? "Changes the boar in the chat and the app icon." : "Changes the boar in the chat.")
                 .boarText("ui.subtext")
                 .foregroundStyle(.boar(.muted))
         }
         .padding(.vertical, 4)
+    }
+
+    /// The last box: no count, the page has it.
+    @ViewBuilder private var all: some View {
+        #if os(macOS)
+        Button { showing = true } label: { allBox }
+            .buttonStyle(.plain)
+            .sheet(isPresented: $showing) {
+                NavigationStack {
+                    BoarAvatarsScreen(vault: vault)
+                        .toolbar {
+                            ToolbarItem(placement: .confirmationAction) {
+                                Button("Done") { showing = false }
+                            }
+                        }
+                }
+                .macSheetSize(width: 560, height: 600)
+            }
+        #else
+        NavigationLink { BoarAvatarsScreen(vault: vault) } label: { allBox }
+            .buttonStyle(.plain)
+            .accessibilityIdentifier("settings.avatars")
+        #endif
+    }
+
+    private var allBox: some View {
+        Text("All ›")
+            .boarText("ui.caption")
+            .fontWeight(.semibold)
+            .foregroundStyle(.boar(.link))
+            .frame(width: side, height: side)
+            .background(Color(palette.bgCard), in: .rect(cornerRadius: 12))
+            .overlay { RoundedRectangle(cornerRadius: 12).strokeBorder(Color(palette.borderDefault), lineWidth: 1) }
+            .contentShape(.rect)
     }
 
     private func avatar(_ id: String?) -> some View {

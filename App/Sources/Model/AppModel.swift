@@ -93,7 +93,7 @@ final class AppModel {
     /// Boarverse is off (android MainActivity).
     var theme: ThemeChoice { chosenTheme.shown(boarverse: boarverse) }
 
-    /// The theme pickers' choices (Settings → Display, the tour): the open themes, and Boar Avatars' while Boarverse is
+    /// The theme pickers' choices (Settings → Display, setup): the open themes, and Boar Avatars' while Boarverse is
     /// on and they're unlocked.
     var themeChoices: [ThemeChoice] {
         let available = services.map { ThemeTokens.available(boarverse: boarverse, state: $0.vault.state) } ?? ThemeTokens.open
@@ -113,7 +113,7 @@ final class AppModel {
     func setTheme(_ choice: ThemeChoice) {
         chosenTheme = choice
         services?.settings.themeId = choice.storedId
-        // Settings → Display and the tour's theme card both come here (android SettingsScreen, MainActivity's tour).
+        // Settings → Display and setup's theme page both come here (android SettingsScreen, SetupGuide).
         services?.vault.record { $0.themeChanged = true }
     }
 
@@ -162,6 +162,15 @@ final class AppModel {
             // BOAR's guide and FAQ into the index (a no-op once this build's passages are there).
             Task.detached(priority: .utility) { _ = await services.syncBoarPack() }
             Self.migrateTechnicalDetails(services)
+            // The install's profile, once: from what the user changed (a lab counts only while Boar Labs is on).
+            let labs = Labs.shared
+            services.settings.settleProfile(
+                anyLabOn: LabDefaults.userChoseOn(labsOn: labs.labsOn, stored: labs.all.map { labs.enabled($0.id) }),
+                boarverseOn: services.vault.enabled)
+            #if DEBUG
+            if let p = DebugLaunch.profile.flatMap(UserProfile.of) { services.settings.userProfile = p }
+            if DebugLaunch.profileNote { services.settings.profileNotePending = true }
+            #endif
             #if DEBUG
             await DemoSeed.run(services: services)
             if let remote = DebugLaunch.remote {

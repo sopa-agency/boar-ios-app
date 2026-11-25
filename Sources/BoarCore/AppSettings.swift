@@ -24,6 +24,64 @@ public final class AppSettings: @unchecked Sendable {
         if str("personalityId") == Self.retiredSummaryStyle { set("personalityId", .string("detailed")) }
     }
 
+    // MARK: profile (android UserProfile)
+
+    /// Settings → Profile. Starter until set; see `UserProfile`.
+    public var userProfile: UserProfile {
+        get { UserProfile.of(str(Self.profileKey)) ?? .default }
+        set { set(Self.profileKey, .string(newValue.key)) }
+    }
+
+    /// False on an install from before profiles until `settleProfile` runs.
+    public var profileSettled: Bool { UserProfile.of(str(Self.profileKey)) != nil }
+
+    /// Gives the install its profile, once, at launch after the labs are known: from what is stored, not from the effective
+    /// values (`UserProfile.forUpdate`). A fresh install (no answer model chosen yet, no lab on, no Boarverse) gets Starter
+    /// quietly; an install from before profiles gets a one-time note (`profileNotePending`). `anyLabOn`: a lab the user
+    /// switched on (`LabDefaults.userChoseOn`); `boarverseOn`: Boarverse is on (both live outside these settings).
+    @discardableResult
+    public func settleProfile(anyLabOn: Bool, boarverseOn: Bool = false) -> UserProfile {
+        if profileSettled { return userProfile }
+        let fresh = activeModelId("llm") == nil && !anyLabOn && !boarverseOn
+        let proChanged = !storedTweaks.isAuto || bool("adaptiveRoutingEnabled") == true || int("freeMemoryAfterMinutes") != nil
+            || bool("debugLogEnabled") == true || anyLabOn
+        let explorerChanged = boarverseOn || Self.explorerChanges.contains { key, isDefault in
+            store.value(forKey: key).map { !$0.isNull && !isDefault($0) } ?? false
+        }
+        let p = UserProfile.forUpdate(proChanged: proChanged, explorerChanged: explorerChanged)
+        set(Self.profileKey, .string(p.key))
+        if !fresh { set("profileNotePending", .bool(true)) }
+        return p
+    }
+
+    /// Settings shows a one-time note after an update gave the user a profile.
+    public var profileNotePending: Bool {
+        get { bool("profileNotePending") ?? false }
+        set { set("profileNotePending", newValue ? .bool(true) : nil) }
+    }
+
+    /// Pro's settings (Advanced tweaks, adaptive routing, technical details, the debug log) count only in Pro: below it they
+    /// read as their defaults, and what is stored stays for when the user comes back to Pro. An install not settled yet
+    /// keeps the old behavior.
+    private var proActive: Bool { !profileSettled || userProfile == .pro }
+
+    public static let profileKey = "userProfile"
+
+    /// Settings Explorer shows, each with what its default looks like: one stored away from its default means the user
+    /// changed it, so an install from before profiles with it becomes Explorer at least (`settleProfile`). Android's
+    /// screen orientation has no row on iOS. Haptics default to on here (Android: off), so off is the change.
+    private static let explorerChanges: [(String, @Sendable (JSONValue) -> Bool)] = [
+        ("personalityId", { v in [nil, "detailed"].contains(v.stringValue) }),
+        ("maxTokens", { _ in false }),
+        ("hapticsEnabled", { v in v.boolValue != false }),
+        ("voiceInputEnabled", { v in v.boolValue != false }),
+        ("autoSummarize", { v in v.boolValue != false }),
+        ("autoGenerateTitles", { v in v.boolValue != false }),
+        ("confirmChatDelete", { v in v.boolValue != false }),
+        ("historyTurnThreshold", { v in [nil, 6].contains(v.intValue) }),
+        ("maxSavedSessions", { v in [nil, AppSettings.keepAllChats, 10].contains(v.intValue) }),
+    ]
+
     // MARK: typed access
 
     private func str(_ key: String) -> String? { store.value(forKey: key)?.stringValue }
@@ -157,7 +215,7 @@ public final class AppSettings: @unchecked Sendable {
     public var ratingNoteShown: Bool { get { bool("ratingNoteShown") ?? false } set { set("ratingNoteShown", .bool(newValue)) } }
     /// The user closed the "Mixture of agents" line under the header (it stays closed).
     public var researchBannerHidden: Bool { get { bool("researchBannerHidden") ?? false } set { set("researchBannerHidden", .bool(newValue)) } }
-    public var adaptiveRoutingEnabled: Bool { get { bool("adaptiveRoutingEnabled") ?? false } set { set("adaptiveRoutingEnabled", .bool(newValue)) } }
+    public var adaptiveRoutingEnabled: Bool { get { proActive && (bool("adaptiveRoutingEnabled") ?? false) } set { set("adaptiveRoutingEnabled", .bool(newValue)) } }
     /// Staged answers, the sources' quotes before the answer (android `stagedQuotes`, core since Nov 12): on by default, and a
     /// stored off holds.
     public var stagedQuotes: Bool { get { bool("stagedQuotes") ?? true } set { set("stagedQuotes", .bool(newValue)) } }
@@ -175,16 +233,17 @@ public final class AppSettings: @unchecked Sendable {
     public var runPresetWarned: Bool { get { bool("runPresetWarned") ?? false } set { set("runPresetWarned", .bool(newValue)) } }
     /// Settings → "Free memory when I leave BOAR" (FreeMemory): on by default.
     public var freeMemoryInBackground: Bool { get { bool("freeMemoryInBackground") ?? true } set { set("freeMemoryInBackground", .bool(newValue)) } }
-    /// Advanced → "Free memory after", in minutes; nil is Auto (at once).
-    public var freeMemoryAfterMinutes: Int? { get { int("freeMemoryAfterMinutes") } set { set("freeMemoryAfterMinutes", newValue.map { JSONValue($0) }) } }
+    /// Advanced → "Free memory after", in minutes; nil is Auto (at once). Pro's: below it, Auto.
+    public var freeMemoryAfterMinutes: Int? { get { proActive ? int("freeMemoryAfterMinutes") : nil } set { set("freeMemoryAfterMinutes", newValue.map { JSONValue($0) }) } }
     public var hidePromptIdeas: Bool { get { bool("hidePromptIdeas") ?? false } set { set("hidePromptIdeas", .bool(newValue)) } }
     /// Settings → Engine Tweaks → Debug Log (android `debugLogEnabled`).
-    public var debugLogEnabled: Bool { get { bool("debugLogEnabled") ?? false } set { set("debugLogEnabled", .bool(newValue)) } }
+    public var debugLogEnabled: Bool { get { proActive && (bool("debugLogEnabled") ?? false) } set { set("debugLogEnabled", .bool(newValue)) } }
     /// Live tokens per second at the top of the chat while BOAR writes; off by default and in every profile (android
     /// AppSettings.showLiveSpeed, rc3 0978191f). Display & theme has the switch.
     public var showLiveSpeed: Bool { get { bool("showLiveSpeed") ?? false } set { set("showLiveSpeed", .bool(newValue)) } }
     /// Advanced tweaks → Show technical details. On by default: the bounty's judges and early users want the numbers.
-    public var showLiveStats: Bool { get { bool("showLiveStats") ?? true } set { set("showLiveStats", .bool(newValue)) } }
+    /// Below Pro the technical details stay out of sight (rc3 profiles).
+    public var showLiveStats: Bool { get { proActive && (bool("showLiveStats") ?? true) } set { set("showLiveStats", .bool(newValue)) } }
 
     // MARK: chat memory (DEFAULT_MEMORY_SETTINGS when unset)
 
@@ -207,9 +266,11 @@ public final class AppSettings: @unchecked Sendable {
 
     /// Advanced tweaks; all Auto when unset or unreadable. All-Auto tweaks are stored as no key at all.
     public var engineTweaks: EngineTweaks {
-        get { EngineTweaks.fromJSON(store.value(forKey: "engineTweaks")?.jsonString) }
+        get { proActive ? storedTweaks : EngineTweaks() }
         set { set("engineTweaks", newValue.isAuto ? nil : JSONValue(jsonString: newValue.toJSON())) }
     }
+
+    private var storedTweaks: EngineTweaks { EngineTweaks.fromJSON(store.value(forKey: "engineTweaks")?.jsonString) }
 
     // MARK: load guard bookkeeping (Models builds `LoadGuard.Ledger` on these)
 
