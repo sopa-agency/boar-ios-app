@@ -373,6 +373,16 @@
         }
       }
     },
+    "%lld in %@" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld em %@"
+          }
+        }
+      }
+    },
     "%lld items" : {
       "localizations" : {
         "pt" : {
@@ -1085,6 +1095,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Adicionar ao Press"
+          }
+        }
+      }
+    },
+    "Add to Press: %@" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adicionar ao Press: %@"
           }
         }
       }
@@ -3336,6 +3356,16 @@
         }
       }
     },
+    "Date under the title" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Data abaixo do título"
+          }
+        }
+      }
+    },
     "Debug Log" : {
       "localizations" : {
         "pt" : {
@@ -3912,6 +3942,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Desenhe uma ilustração com poucas palavras, com o Image Playground da Apple, neste %@."
+          }
+        }
+      }
+    },
+    "Drawing" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desenho"
           }
         }
       }
@@ -5507,6 +5547,16 @@
         }
       }
     },
+    "In %@ (tap to remove)" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Em %@ (toque para tirar)"
+          }
+        }
+      }
+    },
     "In Memory" : {
       "localizations" : {
         "pt" : {
@@ -6307,6 +6357,16 @@
         }
       }
     },
+    "Made offline with BOAR · {{date}}" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Feito offline com o BOAR · {{date}}"
+          }
+        }
+      }
+    },
     "Madrid and Barcelona are about 504 km (313 miles) apart in a straight line. Roads and trails are usually longer than the straight line, by about a quarter, so expect roughly 630 km by land. This is an estimate from the cities' coordinates, not a mapped route; the real route can differ." : {
       "localizations" : {
         "pt" : {
@@ -6563,16 +6623,6 @@
         }
       }
     },
-    "Model & speed" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Modelo e velocidade"
-          }
-        }
-      }
-    },
     "Model Page" : {
       "localizations" : {
         "pt" : {
@@ -6589,6 +6639,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Carga do modelo"
+          }
+        }
+      }
+    },
+    "Model speed" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Velocidade do modelo"
           }
         }
       }
@@ -7909,6 +7969,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Phi 3.5 Mini"
+          }
+        }
+      }
+    },
+    "Photo" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Foto"
           }
         }
       }
@@ -9837,6 +9907,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Fontes"
+          }
+        }
+      }
+    },
+    "Sources at the end" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fontes no final"
           }
         }
       }
@@ -12381,6 +12461,16 @@
         }
       }
     },
+    "Your own file" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arquivo seu"
+          }
+        }
+      }
+    },
     "Your own files" : {
       "localizations" : {
         "pt" : {
@@ -12507,16 +12597,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "bateria"
-          }
-        }
-      }
-    },
-    "compiled offline with BOAR" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "compilado offline com o BOAR"
           }
         }
       }
@@ -13276,16 +13356,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "📊 O BOAR está lendo a resposta para criar um cartão…"
-          }
-        }
-      }
-    },
-    "📎 %lld in the basket" : {
-      "localizations" : {
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "📎 %lld na cesta"
           }
         }
       }

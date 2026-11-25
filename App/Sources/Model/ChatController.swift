@@ -320,7 +320,10 @@ final class ChatController {
     /// The chat and its messages; the open one becomes a new chat. Not the chat still being answered.
     func deleteSession(_ id: String) async {
         if job != nil && sessionId == id { return }
+        // Its answers leave what the labs kept of them (Press's projects), once the chat is gone.
+        let answers = (try? await services.background { try $0.chats.messages(sessionId: id).filter { $0.role == "assistant" }.map(\.id) }) ?? []
         _ = try? await services.background { try $0.chats.deleteSession(sessionId: id) }
+        Labs.shared.eraseAnswers(answers)
         if sessionId == id {
             flow.clear()
             newChat()
