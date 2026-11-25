@@ -85,6 +85,11 @@ Differences from Android, on purpose:
   Android) and the battery just before the tools run (`PhoneReads.prepare`), only for a question that plugin takes. The
   off line opens the plugin's page (its switch is there) in every profile, where Android's Pro opens the Plugins list.
   Illustrate on these answers waits for Designer.
+- **Waiting animation (BOAR-56, rc3 bfe69c4b, 50bdf593):** Android draws the boar's trail (or the Matrix rain, a Pro setting)
+  on its Close BOAR screen, hoofprints only. iOS has no Close BOAR (an iOS app doesn't quit itself) and no Matrix rain, and
+  Designer waits on Image Playground's own progress, so no iOS screen shows a waiting animation and the setting isn't
+  offered (it would change nothing). Only the trail's math is ported (`BoarAnswer/Labs/Trail`, `TrailTests`), ready for
+  the first iOS wait that needs it.
 - **Timing tests:** Kotlin's time limits are for a warm JVM; a Swift debug build with every suite in parallel takes about
   twice as long on the same regexes (`LabCombos.timeFactor`).
 
