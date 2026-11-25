@@ -121,15 +121,19 @@ enum DemoContent {
         ]),
     ]
 
-    /// `-uiBasket YES`: Boar Press's basket holds the demo chats' answers, as if added from each chat's More menu.
+    /// `-uiBasket YES`: Boar Press's open project holds the demo chats' answers, as if added from each chat's More menu.
     static func writeBasket() {
         let pairs = sessions.flatMap { s in s.exchanges.map { (s.title, $0) } }
-        let items = pairs.enumerated().map { n, pair in
-            Basket.Item(id: "demo-basket-\(n)", chatTitle: pair.0, question: pair.1.question, text: pair.1.answer,
-                        sources: pair.1.sources.map { Basket.Source(title: $0.title, source: $0.source) },
-                        addedAt: 1_793_000_000_000 + Int64(n), model: model, tokPerSec: pair.1.receipt.tokPerSec)
+        var lib = PressDoc.emptyLibrary("demo-press", String(localized: "Field notes"), 1_793_000_000_000)
+        for (n, pair) in pairs.enumerated() {
+            lib = lib.addAnswer(PressDoc.Answer("demo-basket-\(n)", pair.0, pair.1.question, pair.1.answer,
+                                                pair.1.sources.map { PressDoc.Source($0.title, $0.source) },
+                                                1_793_000_000_000 + Int64(n), model, pair.1.receipt.tokPerSec))
         }
-        try? Basket.save(items, to: AppPaths.filesDir.appending(path: "labs/basket.json"))
+        lib = lib.markSeen(1_793_000_000_000 + Int64(pairs.count))
+        let url = PressStore.projectsURL(AppPaths.filesDir)
+        try? FileManager.default.createDirectory(at: url.deletingLastPathComponent(), withIntermediateDirectories: true)
+        try? Data(PressDoc.toJson(lib).utf8).write(to: url, options: .atomic)
     }
 
     /// The question and the text so far of the answer shown in progress.

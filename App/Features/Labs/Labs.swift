@@ -90,6 +90,9 @@ protocol LabPlugin {
     /// Erases what this lab made from the user's chats (android `eraseUserData`): runs with the chats' erase, even while
     /// the lab is switched off.
     func eraseUserData(_ scope: UserDataScope)
+    /// One chat deleted: its answers (`answerIds`) leave what this lab kept of them (android `eraseAnswers`); runs even
+    /// while the lab is switched off.
+    func eraseAnswers(_ answerIds: [String])
 }
 
 /// A finished answer, as the answer slots see it (android `plugins.AnswerRef`).
@@ -155,6 +158,7 @@ extension LabPlugin {
     var about: String? { nil }
     var fullPage: Bool { false }
     func eraseUserData(_ scope: UserDataScope) {}
+    func eraseAnswers(_ answerIds: [String]) {}
     /// A lab under review (frozen) shows the ice boar, whatever its own art.
     var shownArt: String? { status == .review ? "lab_frozen" : art }
 }
@@ -312,8 +316,15 @@ final class Labs {
     /// The chat erased: every lab drops what it made from it, switched on or not (android `UserData.Scope.CHATS`).
     func eraseUserData(_ scope: UserDataScope = .chats) { all.forEach { $0.eraseUserData(scope) } }
 
-    /// What Press holds that "Also delete Press" would delete: the basket's answers (android `UserData.pressProjects`).
-    var pressItems: Int { BasketModel.shared.items.count }
+    /// One chat deleted: every lab drops what it kept of its answers, switched on or not (android `UserData.eraseAnswers`).
+    func eraseAnswers(_ answerIds: [String]) {
+        guard !answerIds.isEmpty else { return }
+        all.forEach { $0.eraseAnswers(answerIds) }
+    }
+
+    /// What Press holds that "Also delete Press" would delete: its projects with something in them (android
+    /// `UserData.pressProjects`, `PressStore.projectsWithContent`).
+    var pressItems: Int { PressStore.shared.projectsWithContent }
 
     /// The switch as shown: the user's own choice, else the default-on list (`LabDefaults.switchOf`).
     func enabled(_ id: String) -> Bool { LabDefaults.switchOf(id, stored: stored[id]) }

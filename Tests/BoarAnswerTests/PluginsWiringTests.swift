@@ -58,7 +58,7 @@ struct PluginsWiringTests {
         #expect(store.contains("RecentPlugins.pick("))
         #expect(sheet.contains("Manage plugins ›") && sheet.contains("model.selection = .screen(.labs)"))
         let press = try AppSource.text("App/Features/Labs/Plugins/PressLab.swift")
-        #expect(press.contains("func headerCount()") && press.contains("in the basket"))
+        #expect(press.contains("func headerCount()") && press.contains("PressStore.shared.library?.current.answers.count"))
         for key in ["RECENT PLUGINS", "Manage plugins ›", "Plugins on", "Search plugins", "No plugin matches."] {
             #expect(try AppSource.portuguese(key) != nil, Comment(rawValue: key))
         }

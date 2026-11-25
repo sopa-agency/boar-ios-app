@@ -9,7 +9,7 @@ Where each Android lab stands on iOS (2026-11-05), and what the rest would take.
 
 | Lab | Android id | Slot | Engine (iOS) | Tests |
 |---|---|---|---|---|
-| Press | `printer` | page, answer menu, chat toolbar | `BoarAnswer/Labs/Basket` (Basket, Press), `PressPDF`, `BoarAnswer/Chat/ChatExport` | `BasketTests`, `PressPDFTests` (PressSelfTest's baskets), `ChatExportTests` |
+| Press | `printer` | page, answer menu, chat toolbar | `BoarAnswer/Labs/` PressDoc, PressReceipt, PressLayout (+ PictureFit), PressFiles, PressRewrite (marks), DesignerCanvas, `PressPDF` (+ PressPage, PressPaper), `BoarAnswer/Chat/ChatExport` | `PressDocTests`, `PressReceiptTests`, `PressFilesTests`, `PressPDFTests` (PressSelfTest's projects), `ChatExportTests` |
 | Vitals | `pulse` | page, tool | `BoarCore/CoreLoad`, thermal state, footprint, `BoarAnswer/Labs/PluginAnswers` | `CoreLoadTests` (Android has none), `PluginAnswersTests` |
 | Nomad | `compass` | page, tool | `BoarAnswer/Labs/CompassMath`, `PluginAnswers`, sensor: Core Motion | `CompassMathTests` (Android has none), `PluginAnswersTests` |
 | Lunar | `lunar` | page, tool | `BoarAnswer/Labs/MoonPhase`, `PluginAnswers` | `MoonPhaseTests` (Android has none), `PluginAnswersTests` |
@@ -36,7 +36,7 @@ Differences from Android, on purpose:
     the list is the only view.
   - Lunar, Nomad and Vitals have no example or Try rows; their "How it works" says they answer in the chat (BOAR-56).
   - Press and Designer have no canvas toolbar, gear or "..." menu (Press is rebuilt later). `LabPlugin.fullPage` exists, unused.
-  - Press's about text and body are iOS-specific (no projects); Designer's "How it works" is about Image Playground.
+  - Press's about text and body are iOS-specific (one project on the page until BOAR-55 part 6.2); Designer's "How it works" is about Image Playground.
   - A Try row's long press is a context menu (ask, edit in the box, copy).
   - From the header sheet a plugin page opens as a push inside the sheet, with Done instead of Android's close; Press's basket count shows only in
     the sheet row.
@@ -59,8 +59,9 @@ Differences from Android, on purpose:
   the cores card shows each core's load from Mach's tick counters (`host_processor_info`); memory is BOAR's footprint
   against what iOS lets it use (`os_proc_available_memory`; the Mac against its RAM), as on the device screen. The chip
   card keeps engine (llama.cpp · Metal/CPU, Apple Intelligence or llama-server), CPU features, battery and device.
-- **Press:** the 📎 action sits in the answer's More menu (iOS has no 🧩 sheet); the basket is Android's JSON file at
-  `labs/basket.json`, erased with the chats (Erase Chats, Erase All Data, the lock's erase). Reordering is the list's
+- **Press:** the 📎 action sits in the answer's More menu (iOS has no 🧩 sheet); the projects are Android's JSON file at
+  `labs/press/projects.json` (the old `labs/basket.json` migrated once), erased with the chats (Erase Chats unless Press
+  is kept, Erase All Data, the lock's erase). Reordering is the list's
   drag, plus Move Up/Down in the context menu and as accessibility actions. Files go out through the share sheet (Save to
   Files included) instead of Android's Save as. No drawings: iOS has no Image Gen, so the drawing switches stay hidden,
   as Android hides them when no answer has a drawing. The PDF is Core Text on Android's A4 layout (`PressPDF`, same
@@ -78,6 +79,26 @@ Differences from Android, on purpose:
   (docs/BENCHMARK-SCREEN.md). Press doesn't take the
   card along yet (PressDoc, the PDF's card): that comes with Press in BOAR-55. Answer ids are never reused, so a deleted
   chat's cards need no `eraseAnswers`: their meta goes with the chat.
+- **Press redone (BOAR-55, against v2.0.0), part 6.1, the engine:** projects as documents of blocks (`PressDoc`), the old
+  basket migrated once into "Field notes" (an unreadable basket stays and is retried, G-3), the receipt, the footer (models,
+  "Made offline with BOAR"), the Sources section, own file names scrubbed out of both exports, the validator gate (G-1 to
+  G-6, G-9) and the PDF of the block document, with pictures left / center / right and text beside. Deliberate
+  differences:
+  - Android's `Paper` is `PressPaper`; Android's `PdfCompiler` is `PressPDF`, its `PressPage` lives in the engine (the app
+    fills the words and switches, `PressPrefs.page`). Noto Serif and Roboto are Georgia and the system sans; a line's
+    height is Core Text's ascent + descent times the spacing, so page breaks can fall a line apart from Android's.
+  - The projects JSON is written with sorted keys (BoarCore `JSONValue`), not Kotlin's insertion order; both read either.
+  - `PressFiles.copyInto` takes a writer of a temporary URL instead of an `OutputStream`; the photo pixels work in Double,
+    Kotlin's in Float. The pack-label regex counts `{1,60}` in code points, Java in UTF-16 units.
+  - iOS Designer (Image Playground) keeps no recipe or per-answer illustration, so drawings in a project come only from
+    Android-style data (`illustrations` is empty on migration) and the receipt's Drawings line is rare here.
+  - Not in 6.1: the page itself (6.2), the rewrite prompts and model work, several projects in the UI and presets (6.3).
+    Until 6.2 the iOS page is the basket's list on the open project (rename, the four print switches, move, edit, remove,
+    preview, PDF and .md); Add to Press goes to the open project and takes the shown card with its ticks. A deleted chat's
+    answers leave every project (`LabPlugin.eraseAnswers`, from `ChatController.deleteSession`); the chat limit's prune
+    doesn't run it yet, and the prune and delete dialogs don't say Press loses them (`pluginsOn: false`).
+  - The Kotlin tests that read Android's screen sources (PressEraseTest, PressDesignerLayoutTest, parts of the gate) have
+    no counterpart; the fuzz uses SplitMix64 with seed 7 instead of `java.util.Random(7)`.
 - **Plugin answers (BOAR-56, against v2.0.0):** Lunar, Nomad and Vitals answer their questions in the chat (`PluginAnswers`,
   tool codes `lunar-phase`, `compass-heading`, `vitals-phone`), and a model's answer to a question one of them would have
   taken while it's off says "<name> is off. Turn it on in Plugins ›". Differences: the answers name the device ("This iPhone
