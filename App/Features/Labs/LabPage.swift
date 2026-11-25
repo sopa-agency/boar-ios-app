@@ -18,7 +18,8 @@ struct LabPage: View {
                     if lab.status == .review, let review = lab.review { reviewNote(review) }
                     lab.content()
                 }
-                .toolbar { ToolbarItem(placement: .primaryAction) { PluginSwitch(lab: lab, fromPage: true) } }
+                // A switch: in a toolbar a Toggle's default style is a button showing its label.
+                .toolbar { ToolbarItem(placement: .primaryAction) { PluginSwitch(lab: lab, fromPage: true).toggleStyle(.switch) } }
             } else {
                 BoarForm {
                     Section {

@@ -76,9 +76,11 @@ struct PressPaperView: View {
         }
         .padding(s.pt(PressPaper.m))
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color.white, in: .rect(cornerRadius: 2))
+        // The shadow on the sheet's shape only: on the whole view every letter would get one.
+        .background {
+            RoundedRectangle(cornerRadius: 2).fill(Color.white).shadow(color: .black.opacity(0.25), radius: 6, y: 2)
+        }
         .overlay { PaperBreaks(starts: starts, frames: frames, s: s) }
-        .shadow(color: .black.opacity(0.25), radius: 6, y: 2)
         .coordinateSpace(.named(PaperScale.space))
         .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { width = $0 }
         .environment(\.colorScheme, .light)
