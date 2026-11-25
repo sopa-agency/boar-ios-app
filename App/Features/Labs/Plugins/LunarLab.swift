@@ -1,10 +1,12 @@
 import BoarAnswer
+import BoarRAG
 import SwiftUI
 
 /// Boar Lunar (android labs/plugins/lunar): the moon from the date alone, offline and without location (BoarAnswer
 /// `MoonPhase`, Meeus ch. 49): today's phase and lit share, the next full and new moon, and a month of phases. The
 /// hemisphere only mirrors the drawing; a waxing moon is lit on the right in the north and on the left in the south.
-/// Moonrise and moonset would need the user's location, so they're left out. No slot: the lab is its page.
+/// Moonrise and moonset would need the user's location, so they're left out. In the chat it answers a question about the
+/// moon now ("what phase is the moon tonight", PluginAnswers), from the date.
 struct LunarLab: LabPlugin {
     let id = "lunar"
     let order = 60
@@ -15,6 +17,17 @@ struct LunarLab: LabPlugin {
     var body: String { String(localized: "Tonight's moon phase, and the next full and new moon.") }
 
     func content() -> AnyView { AnyView(LunarSections()) }
+
+    func recognizes(_ query: String) -> Bool { PluginAnswers.isMoonQuestion(query) }
+    var answerTool: (any AnswerTool)? { Tool() }
+
+    struct Tool: AnswerTool {
+        func run(query: String, history: [ConversationTurn]) -> ToolResult? {
+            guard PluginAnswers.isMoonQuestion(query) else { return nil }
+            return .instant(tool: "lunar-phase", text: PluginAnswers.moonAnswer(query, nowMs: Int64((Date.now.timeIntervalSince1970 * 1000).rounded(.down)),
+                                                                                device: PhoneReads.device))
+        }
+    }
 
     /// Time zones south of the equator: the default hemisphere until the user picks one. The time zone, not the language:
     /// a phone in Brazil set to English (US) said "north" (X6, Oct 16).
@@ -96,7 +109,7 @@ private struct LunarSections: View {
             Section {
                 LunarMonth(now: now, offset: monthOffset, south: south) { monthOffset += $0 }
             }
-            PluginPage(how: String(localized: "• Worked out from the date on this \(Platform.deviceNoun), with no internet and no location.\n• The hemisphere only changes which side looks lit.\n• Moonrise and moonset need your location, so they aren't shown."))
+            PluginPage(how: String(localized: "• Worked out from the date on this \(Platform.deviceNoun), with no internet and no location.\n• The hemisphere only changes which side looks lit.\n• Moonrise and moonset need your location, so they aren't shown.\n• You can also ask in the chat."))
         }
     }
 

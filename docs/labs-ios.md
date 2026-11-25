@@ -10,9 +10,9 @@ Where each Android lab stands on iOS (2026-11-05), and what the rest would take.
 | Lab | Android id | Slot | Engine (iOS) | Tests |
 |---|---|---|---|---|
 | Press | `printer` | page, answer menu, chat toolbar | `BoarAnswer/Labs/Basket` (Basket, Press), `PressPDF`, `BoarAnswer/Chat/ChatExport` | `BasketTests`, `PressPDFTests` (PressSelfTest's baskets), `ChatExportTests` |
-| Vitals | `pulse` | page | `BoarCore/CoreLoad`, thermal state, footprint | `CoreLoadTests` (Android has none) |
-| Nomad | `compass` | page | `BoarAnswer/Labs/CompassMath`, sensor: Core Motion | `CompassMathTests` (Android has none) |
-| Lunar | `lunar` | page | `BoarAnswer/Labs/MoonPhase` | `MoonPhaseTests` (Android has none) |
+| Vitals | `pulse` | page, tool | `BoarCore/CoreLoad`, thermal state, footprint, `BoarAnswer/Labs/PluginAnswers` | `CoreLoadTests` (Android has none), `PluginAnswersTests` |
+| Nomad | `compass` | page, tool | `BoarAnswer/Labs/CompassMath`, `PluginAnswers`, sensor: Core Motion | `CompassMathTests` (Android has none), `PluginAnswersTests` |
+| Lunar | `lunar` | page, tool | `BoarAnswer/Labs/MoonPhase`, `PluginAnswers` | `MoonPhaseTests` (Android has none), `PluginAnswersTests` |
 | Polyglot | `polyglot` | tool | `BoarRouting/LanguageGate`, detector: NaturalLanguage | `LanguageGateTests` |
 | Calculator | `calc` | tool | `BoarRouting/Arithmetic`, `NumGuard`, `CalcShortcut` | `ArithmeticTests`, `NumGuardTests` |
 | Distance | `distance` | tool | `BoarRouting/TravelDistance` | `TravelDistanceTests` |
@@ -34,7 +34,7 @@ Differences from Android, on purpose:
   - Polyglot is deprecated (`LabDefaults.deprecated`): out of the list, never active.
   - Tiles, the classified teasers, status tags, the easter egg and Daily Quiz are hidden (`PluginsUi`, as Android hides tiles and teasers);
     the list is the only view.
-  - Lunar, Nomad and Vitals have no example or Try rows and no "ask in the chat" bullet until plugins answer in the chat (separate PR).
+  - Lunar, Nomad and Vitals have no example or Try rows; their "How it works" says they answer in the chat (BOAR-56).
   - Press and Designer have no canvas toolbar, gear or "..." menu (Press is rebuilt later). `LabPlugin.fullPage` exists, unused.
   - Press's about text and body are iOS-specific (no projects); Designer's "How it works" is about Image Playground.
   - A Try row's long press is a context menu (ask, edit in the box, copy).
@@ -75,6 +75,16 @@ Differences from Android, on purpose:
   (`files/canvas`, which iOS never had), and `cards.v1.json` (a bench topic, with Bench in BOAR-56). Press doesn't take the
   card along yet (PressDoc, the PDF's card): that comes with Press in BOAR-55. Answer ids are never reused, so a deleted
   chat's cards need no `eraseAnswers`: their meta goes with the chat.
+- **Plugin answers (BOAR-56, against v2.0.0):** Lunar, Nomad and Vitals answer their questions in the chat (`PluginAnswers`,
+  tool codes `lunar-phase`, `compass-heading`, `vitals-phone`), and a model's answer to a question one of them would have
+  taken while it's off says "<name> is off. Turn it on in Plugins ›". Differences: the answers name the device ("This iPhone
+  has no compass", "Read on this iPhone just now") where Android says "phone"; "my iPhone" / "this iPad" count as the device
+  in Vitals' question; Vitals says the system's heat level ("heat level warm") instead of the battery temperature iOS
+  doesn't give, and its "free memory" is what BOAR can still use before iOS closes it (`os_proc_available_memory`; the Mac
+  says no memory figure). The tool slot runs synchronously, so the chat reads the compass (up to 900 ms, three readings, as
+  Android) and the battery just before the tools run (`PhoneReads.prepare`), only for a question that plugin takes. The
+  off line opens the plugin's page (its switch is there) in every profile, where Android's Pro opens the Plugins list.
+  Illustrate on these answers waits for Designer.
 - **Timing tests:** Kotlin's time limits are for a warm JVM; a Swift debug build with every suite in parallel takes about
   twice as long on the same regexes (`LabCombos.timeFactor`).
 

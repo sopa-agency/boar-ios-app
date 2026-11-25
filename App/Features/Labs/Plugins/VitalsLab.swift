@@ -1,4 +1,6 @@
+import BoarAnswer
 import BoarCore
+import BoarRAG
 import BoarLlama
 import BoarModels
 import SwiftUI
@@ -10,7 +12,8 @@ import UIKit
 /// Android reads the battery temperature, each core's clock and the other apps' memory; iOS gives apps none of those, so
 /// here the heat is the system's thermal state (with the last two minutes as a line), each core shows its load (Mach tick
 /// counters, BoarCore `CoreLoad`), and memory is BOAR's footprint against what iOS lets it use. The chip card keeps
-/// Android's lines: engine, CPU features, battery, device.
+/// Android's lines: engine, CPU features, battery, device. In the chat it answers "how hot is my iPhone?" (PluginAnswers)
+/// from a reading the chat takes just before (PhoneReads).
 struct VitalsLab: LabPlugin {
     let id = "pulse"
     let order = 10
@@ -21,6 +24,16 @@ struct VitalsLab: LabPlugin {
     var body: String { String(localized: "Watch your \(Platform.deviceNoun) work: heat, battery, cores and memory.") }
 
     func content() -> AnyView { AnyView(VitalsSections()) }
+
+    func recognizes(_ query: String) -> Bool { PluginAnswers.isPhoneQuestion(query) }
+    var answerTool: (any AnswerTool)? { Tool() }
+
+    struct Tool: AnswerTool {
+        func run(query: String, history: [ConversationTurn]) -> ToolResult? {
+            guard PluginAnswers.isPhoneQuestion(query), let now = PhoneReads.lastPhone() else { return nil }
+            return .instant(tool: "vitals-phone", text: PluginAnswers.phoneAnswer(query, now, device: PhoneReads.device))
+        }
+    }
 }
 
 private struct VitalsSample {
@@ -103,7 +116,7 @@ private struct VitalsSections: View {
                         Text("Leave this open, ask BOAR something, then come back to see what it cost.")
                     }
                 }
-                PluginPage(how: String(localized: "• Heat, battery, every core's load, memory and the chip BOAR runs on, read on this \(Platform.deviceNoun)."))
+                PluginPage(how: String(localized: "• Heat, battery, every core's load, memory and the chip BOAR runs on, read on this \(Platform.deviceNoun).\n• You can also ask in the chat how hot your \(Platform.deviceNoun) is."))
             } else {
                 // Something on screen before the first sample: an empty Group in a Form never runs its .task.
                 Section { ProgressView().frame(maxWidth: .infinity) }

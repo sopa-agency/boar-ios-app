@@ -739,6 +739,10 @@ final class ChatController {
         // Deep Research or Personal Files only a safety answer (Cohazard).
         let deep = deepOn && !personal
         let skipTools = carried.skipTools
+        // Nomad's and Vitals' answers read the device: taken now, before the tools run (PhoneReads).
+        if !(skipTools || aboutConversation) {
+            await PhoneReads.prepare(query: q, active: Set(Labs.shared.active.map(\.id)))
+        }
         // A merged queue goes to the model whole: an instant answer would take one question and drop the rest (validator Q-8).
         let tool = skipTools || aboutConversation ? nil : AnswerTools.run(
             Labs.shared.activeTools, query: q,
@@ -1142,6 +1146,8 @@ final class ChatController {
             messages[i].nextLimit = nextLimit
             messages[i].receipt = receipt
             messages[i].staged = stagedView
+            // The question was a plugin's, but it's off: named under a model's answer that wasn't stopped.
+            messages[i].offPlugin = instant == nil && !stopped ? Labs.shared.offPlugin(q) : nil
             messages[i].answerSeconds = Self.seconds(startAt.duration(to: clock.now))
             if let failure {
                 messages[i].failureNoModel = { if case ChatError.noModel = failure { true } else { false } }()

@@ -117,6 +117,16 @@
         }
       }
     },
+    "%@ is off. Turn it on in Plugins ›" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ está desligado. Ligue em Plugins ›"
+          }
+        }
+      }
+    },
     "%@ leaked, and it's yours: tap it to open it and switch it on. Still in testing." : {
       "localizations" : {
         "pt" : {
@@ -13160,12 +13170,12 @@
         }
       }
     },
-    "• Heat, battery, every core's load, memory and the chip BOAR runs on, read on this %@." : {
+    "• Heat, battery, every core's load, memory and the chip BOAR runs on, read on this %@.\n• You can also ask in the chat how hot your %@ is." : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "• Calor, bateria, a carga de cada núcleo, a memória e o chip em que o BOAR roda, lidos neste %@."
+            "value" : "• Calor, bateria, a carga de cada núcleo, a memória e o chip em que o BOAR roda, lidos neste %@.\n• Você também pode perguntar na conversa se o %@ está quente."
           }
         }
       }
@@ -13180,12 +13190,12 @@
         }
       }
     },
-    "• Points to magnetic north, worked out on this %@ with no internet.\n• True north is a few degrees off, depending on where you are; it would need your location, which BOAR doesn't ask for.\n• Hold the %@ flat." : {
+    "• Points to magnetic north, worked out on this %@ with no internet.\n• True north is a few degrees off, depending on where you are; it would need your location, which BOAR doesn't ask for.\n• Hold the %@ flat.\n• You can also ask in the chat which way is north." : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "• Aponta para o norte magnético, calculado neste %@ sem internet.\n• O norte verdadeiro fica alguns graus ao lado, conforme onde você está; precisaria da sua localização, que o BOAR não pede.\n• Segure o %@ na horizontal."
+            "value" : "• Aponta para o norte magnético, calculado neste %@ sem internet.\n• O norte verdadeiro fica alguns graus ao lado, conforme onde você está; precisaria da sua localização, que o BOAR não pede.\n• Segure o %@ na horizontal.\n• Você também pode perguntar na conversa onde fica o norte."
           }
         }
       }
@@ -13220,12 +13230,12 @@
         }
       }
     },
-    "• Worked out from the date on this %@, with no internet and no location.\n• The hemisphere only changes which side looks lit.\n• Moonrise and moonset need your location, so they aren't shown." : {
+    "• Worked out from the date on this %@, with no internet and no location.\n• The hemisphere only changes which side looks lit.\n• Moonrise and moonset need your location, so they aren't shown.\n• You can also ask in the chat." : {
       "localizations" : {
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "• Calculado pela data do %@, sem internet e sem localização.\n• O hemisfério só muda o lado que aparece iluminado.\n• Nascer e pôr da lua precisam da sua localização, por isso não aparecem."
+            "value" : "• Calculado pela data do %@, sem internet e sem localização.\n• O hemisfério só muda o lado que aparece iluminado.\n• Nascer e pôr da lua precisam da sua localização, por isso não aparecem.\n• Você também pode perguntar na conversa."
           }
         }
       }
