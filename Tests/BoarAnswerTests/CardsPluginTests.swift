@@ -29,7 +29,9 @@ struct CardsPluginTests {
         #expect(try lab().contains("await Task.detached(priority: .utility) {\n                text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? [] : CardRules.find(question, text)"))
         // The menu shows the row's second line, and a disabled row can't be chosen.
         let footer = try AppSource.text("App/Features/Chat/AnswerFooter.swift")
-        #expect(footer.contains("if let detail = action.detail { Text(verbatim: detail) }") && footer.contains(".disabled(!action.enabled)"))
+        // The second line as a Text beside the title, which a menu shows as a subtitle (inside a Label's title it's dropped).
+        #expect(footer.contains("if let detail = action.detail {") && footer.contains("Text(verbatim: action.title)\n                                    Text(verbatim: detail)")
+                && footer.contains(".disabled(!action.enabled)"))
     }
 
     @Test func theCardHasItsTitleWhereItCameFromTheBodyOneSwitchAndRemoveAndNoOtherButton() throws {

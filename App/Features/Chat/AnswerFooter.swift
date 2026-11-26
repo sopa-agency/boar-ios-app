@@ -85,7 +85,7 @@ struct AnswerFooter: View {
     }
 
     private var moreMenu: some View {
-        Menu("More", systemImage: "ellipsis") {
+        Menu {
             Button("Ask Again", icon: Symbols.retry, action: askAgain)
                 .disabled(chat.holdsModel)
             if chat.technicalDetails, message.receipt != nil {
@@ -95,21 +95,28 @@ struct AnswerFooter: View {
             if !actions.isEmpty {
                 Section {
                     ForEach(actions) { action in
-                        Button { action.run() } label: {
-                            // The second line says what the action will do (Cards: "A chart of 3 numbers").
-                            Label {
-                                Text(verbatim: action.title)
-                                if let detail = action.detail { Text(verbatim: detail) }
-                            } icon: {
-                                Image(systemName: action.done ? "checkmark.circle.fill" : action.systemImage)
+                        // The second line says what the action will do (Cards: "A chart of 3 numbers"). A menu item
+                        // takes it as a second Text beside the title, not inside a Label's title, where it was dropped.
+                        let icon = action.done ? "checkmark.circle.fill" : action.systemImage
+                        Group {
+                            if let detail = action.detail {
+                                Button { action.run() } label: {
+                                    Text(verbatim: action.title)
+                                    Text(verbatim: detail)
+                                    Image(systemName: icon)
+                                }
+                            } else {
+                                Button { action.run() } label: { Label { Text(verbatim: action.title) } icon: { Image(systemName: icon) } }
                             }
                         }
                         .disabled(!action.enabled)
                     }
                 }
             }
+        } label: {
+            Label("More", systemImage: "ellipsis")
+                .labelStyle(.iconOnly)
         }
-        .labelStyle(.iconOnly)
     }
 
     /// This answer as the lab slots see it.

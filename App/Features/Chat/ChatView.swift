@@ -116,8 +116,9 @@ struct ChatView: View {
             ConnectionSheet(online: model.connectivity.online, busy: chat.isAnswering, models: model.models,
                             onCatalog: openCatalog, onClose: { showingConnection = false })
         }
-        // In the model, not here: a Try row on a page opened inside it closes it (`askFromPlugin`).
-        .sheet(isPresented: Binding(get: { model.pluginsListShown }, set: { model.pluginsListShown = $0 })) { PluginsSheet() }
+        // In the model, not here: a row closes it and its page opens once it's gone (`openPluginFromList`).
+        .sheet(isPresented: Binding(get: { model.pluginsListShown }, set: { model.pluginsListShown = $0 }),
+               onDismiss: { model.pluginsListDismissed() }) { PluginsSheet() }
         #if os(macOS)
         .inspector(isPresented: $showingSources) {
             SourceInspector(sources: inspectedSources, selected: $inspectedSource, technicalDetails: chat.technicalDetails)

@@ -4,8 +4,8 @@ import SwiftUI
 /// first, each opening its page; the plugins switched off from their pages (and an off safety plugin) under OFF, one tap
 /// from their switch; and Manage plugins, the list with every switch. The rest of the plugins are one tap away there.
 ///
-/// A plugin's page opens inside the sheet (a push, Back returns to the list) rather than on top of it, which is how an
-/// iPhone sheet takes a second level; Android navigates to the page and closes the sheet.
+/// A tap on a plugin closes the sheet and opens its page over the chat with Done, as Android closes the sheet and
+/// navigates to the page (`go("lab:id")`).
 struct PluginsSheet: View {
     @Environment(AppModel.self) private var model
     @Environment(\.dismiss) private var dismiss
@@ -16,9 +16,10 @@ struct PluginsSheet: View {
             List {
                 Section {
                     ForEach(labs.recentShown, id: \.id) { lab in
-                        NavigationLink(value: LabRoute(id: lab.id)) {
+                        Button { model.openPluginFromList(lab.id) } label: {
                             SheetRow(lab: lab, trailing: count(lab))
                         }
+                        .listRowButton()
                     }
                 } header: {
                     Text("RECENT PLUGINS")
@@ -27,9 +28,10 @@ struct PluginsSheet: View {
                 if !off.isEmpty {
                     Section {
                         ForEach(off, id: \.id) { lab in
-                            NavigationLink(value: LabRoute(id: lab.id)) {
+                            Button { model.openPluginFromList(lab.id) } label: {
                                 SheetRow(lab: lab, trailing: String(localized: "Off"), off: true)
                             }
+                            .listRowButton()
                         }
                     } header: {
                         Text("OFF")
@@ -49,9 +51,6 @@ struct PluginsSheet: View {
             }
             .navigationTitle("Plugins")
             .inlineNavigationTitle()
-            .navigationDestination(for: LabRoute.self) { route in
-                if let lab = labs.byId(route.id) { LabPage(lab: lab) }
-            }
             .toolbar { ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() } } }
         }
         #if os(macOS)
@@ -92,5 +91,17 @@ private struct SheetRow: View {
                     .foregroundStyle(.boar(off ? .muted : .success))
             }
         }
+        .contentShape(Rectangle())
+    }
+}
+
+private extension View {
+    /// A row of the list on the Mac, where a plain Button in a List draws as a bordered push button.
+    @ViewBuilder func listRowButton() -> some View {
+        #if os(macOS)
+        buttonStyle(.plain)
+        #else
+        self
+        #endif
     }
 }
