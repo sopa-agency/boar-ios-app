@@ -19,6 +19,7 @@ struct PluginsSheet: View {
                         Button { model.openPluginFromList(lab.id) } label: {
                             SheetRow(lab: lab, trailing: count(lab))
                         }
+                        .listRowButton()
                     }
                 } header: {
                     Text("RECENT PLUGINS")
@@ -30,6 +31,7 @@ struct PluginsSheet: View {
                             Button { model.openPluginFromList(lab.id) } label: {
                                 SheetRow(lab: lab, trailing: String(localized: "Off"), off: true)
                             }
+                            .listRowButton()
                         }
                     } header: {
                         Text("OFF")
@@ -90,5 +92,16 @@ private struct SheetRow: View {
             }
         }
         .contentShape(Rectangle())
+    }
+}
+
+private extension View {
+    /// A row of the list on the Mac, where a plain Button in a List draws as a bordered push button.
+    @ViewBuilder func listRowButton() -> some View {
+        #if os(macOS)
+        buttonStyle(.plain)
+        #else
+        self
+        #endif
     }
 }
