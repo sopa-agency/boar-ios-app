@@ -139,10 +139,26 @@ final class AppModel {
     var citationRequest: URL?
     /// The plugin whose page is open over whatever is on screen (a tap on an answer's plugin name).
     var pluginSheet: String?
-    /// The chat header's plugins sheet (the icon beside New Chat); its pages open inside it.
+    /// The chat header's plugins sheet (the icon beside New Chat).
     var pluginsListShown = false
+    /// The plugin tapped in the plugins sheet, opened once that sheet is gone (one sheet at a time).
+    @ObservationIgnored private var pluginAfterList: String?
 
     func openPlugin(_ id: String) { pluginSheet = id }
+
+    /// A row of the plugins sheet (android `HeaderBadges`, `open = false; go("lab:id")`): the sheet closes and the
+    /// plugin's page opens over the chat.
+    func openPluginFromList(_ id: String) {
+        pluginAfterList = id
+        pluginsListShown = false
+    }
+
+    /// The plugins sheet finished closing: open the page tapped in it, if any.
+    func pluginsListDismissed() {
+        guard let id = pluginAfterList else { return }
+        pluginAfterList = nil
+        pluginSheet = id
+    }
 
     /// A plugin page's Try row (android `AskFromPlugin`): a new chat that asks it, or one with it waiting in the box.
     /// Whichever sheet the page sits in closes, as Android's tap does.
